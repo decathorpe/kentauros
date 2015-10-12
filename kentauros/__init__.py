@@ -1,0 +1,4 @@
+"""
+kentauros module
+"""
+

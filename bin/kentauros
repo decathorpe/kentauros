@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+"""
+kentauros.py
+"""
+
+from kentauros.cli import CLI_ARGS, DEBUG, PACKAGES
+from kentauros.action import package_update, package_build, package_upload
+
+
+print("DEBUG set: " + str(DEBUG))
+
+if "action" not in CLI_ARGS:
+    print("Select a sub-command: create, verify, update, build or upload.",
+          end="\n\n")
+    raise SystemExit
+
+if len(PACKAGES) is 0:
+    print("No packages have been provided by command line or --pkgfile.")
+    raise SystemExit
+
+ACTION = CLI_ARGS.action
+
+
+if ACTION == "create":
+    for package in PACKAGES:
+#        package_create(package)
+        pass
+
+if ACTION == "verify":
+    for package in PACKAGES:
+#        package_verify(package)
+        pass
+
+if ACTION == "update":
+    REFRESH = CLI_ARGS.refresh
+    for package in PACKAGES:
+        package_update(package, refresh=REFRESH)
+
+if ACTION == "build":
+    FORCE = CLI_ARGS.force
+    for package in PACKAGES:
+        package_build(package, force=FORCE)
+
+if ACTION == "upload":
+    WATCH = CLI_ARGS.watch
+    FORCE = CLI_ARGS.force
+    for package in PACKAGES:
+        package_upload(package, watch=WATCH, force=FORCE)
+
