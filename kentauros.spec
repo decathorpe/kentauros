@@ -54,4 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 12 2015 Fabio Valentini <decathorpe@gmail.com> - 0.0.1-1
+- Release 0.0.1.
+
 
