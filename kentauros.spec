@@ -14,6 +14,8 @@ Source0: %{name}-%{version}.tar.gz
 BuildRequires: python3-devel
 
 Requires: python3
+Requires: python3-appdirs
+
 Requires: rpmdevtools
 Requires: copr-cli
 Requires: bzr
@@ -48,7 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files
-%{_bindir}/kentauros
+%{_bindir}/ktr
 %{python3_sitelib}/kentauros
 %{python3_sitelib}/kentauros-%{version}-py3.4.egg-info
 

@@ -12,5 +12,5 @@ setup(
     keywords = "development packaging",
     url = "http://github.com/decathorpe/kentauros",
     packages = ['kentauros'],
-    scripts = ['bin/kentauros'],
+    scripts = ['ktr'],
 )
