@@ -12,7 +12,7 @@ from kentauros.cli import DEBUG
 BASEDIR = os.getcwd()
 HOME = os.environ['HOME']
 
-SUPPORTED_ARCHIVE_TYPES = [".tar.gz", ".tar.xz"]
+SUPPORTED_ARCHIVE_TYPES = ["*.tar.gz", "*.tar.xz"]
 
 
 def dbg(msg):

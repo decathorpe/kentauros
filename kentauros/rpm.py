@@ -124,7 +124,7 @@ def rpmbuild_copy_result(pkgname):
 
     os.chdir(RPMBUILD_SRPMS)
 
-    src_rpms = glob.glob(".src.rpm")
+    src_rpms = glob.glob("*.src.rpm")
 
     for src_rpm in src_rpms:
         subprocess.call(["cp", src_rpm, pkgdir])
