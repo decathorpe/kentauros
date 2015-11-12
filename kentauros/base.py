@@ -2,6 +2,7 @@
 kentauros.base
 """
 
+# import appdirs
 import os
 import subprocess
 

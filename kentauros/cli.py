@@ -74,7 +74,7 @@ CREATEPARSER = PARSERS.add_parser(
 VERIFYPARSER = PARSERS.add_parser(
     "verify",
     description="verify that package directory, configuration and package " +
-        "specification are present and valid",
+    "specification are present and valid",
     help="verify package files and configuration",
     parents=[PACKAGEPARSER])
 

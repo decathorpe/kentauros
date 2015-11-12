@@ -76,7 +76,7 @@ def rpmbuild_copy_sources(pkgname):
     """
     check_rpmbuild()
 
-    goto_pkgdir()
+    goto_pkgdir(pkgname)
 
     conf_file = pkgname + ".conf"
     spec_file = pkgname + ".spec"
@@ -127,7 +127,7 @@ def rpmbuild_copy_result(pkgname):
     src_rpms = glob.glob(".src.rpm")
 
     for src_rpm in src_rpms:
-        subprcess.call(["cp", src_rpm, pkgdir])
+        subprocess.call(["cp", src_rpm, pkgdir])
 
     goto_basedir()
 
