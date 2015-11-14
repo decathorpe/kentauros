@@ -2,7 +2,11 @@
 kentauros.config module
 """
 
+__all__ = ["envVar", "rcFile", "xdgConfig"]
+
+
 import os
+
 
 HOME_PATH = os.environ.get("HOME")
 
