@@ -1,4 +1,5 @@
 """
-kentauros module
+kentauros package
 """
 
+__all__ = ["fs"]
