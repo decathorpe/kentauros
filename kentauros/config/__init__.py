@@ -1,24 +1,17 @@
 """
 kentauros.config module
+explicitly determines order in which configurations are read.
+later items in the list can override already determined configuration,
+or act as fallback if none has been found so far.
 """
 
-__all__ = ["envVar", "rcFile", "xdgConfig"]
+
+__all__ = ["defaults", "environ", "fallback", "rcfile", "xdgconfig"]
 
 
-import os
-
-
-HOME_PATH = os.environ.get("HOME")
-
-KTR_CONF_PATH = os.environ.get("KTR_CONF_DIR")
-KTR_SRC_PATH = os.environ.get("KTR_SRC_DIR")
-
-if HOME_PATH is None:
-    HOME_PATH = "/tmp/ktr"
-
-if KTR_CONF_PATH is None:
-    KTR_CONF_PATH = "./"
-
-if KTR_SRC_PATH is None:
-    KTR_SRC_PATH = "./"
+class KtrConf:
+    def __init__(self):
+        self.basedir = ""
+        self.confdir = ""
+        self.datadir = ""
 
