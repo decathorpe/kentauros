@@ -2,9 +2,9 @@
 kentauros.base
 """
 
-# import appdirs
 import os
 import subprocess
+import sys
 
 from kentauros.cli import DEBUG
 
@@ -22,6 +22,15 @@ def dbg(msg):
     """
     if DEBUG:
         print("DEBUG: " + str(msg))
+
+
+def err(msg):
+    """
+    kentauros.err()
+    prints error messages to sys.stderr. format: ERROR: >message>
+    """
+
+    print("ERROR: " + msg, file=sys.stderr)
 
 
 def get_date():
