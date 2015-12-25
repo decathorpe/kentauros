@@ -12,7 +12,7 @@ from kentauros.conf import get_pkgcopr, get_coprrepo
 def copr_build(pkgname, wait=False):
     """
     kentauros.copr.copr_build()
-    uploads and builds all srpms in rpmbuild directory
+    uploads and builds all srpms in package base directory
     """
     pkgcopr = get_pkgcopr(pkgname)
 
