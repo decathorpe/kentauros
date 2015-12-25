@@ -42,17 +42,13 @@ configure copr-cli, and automagic updating, building, uploading to copr works.
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
-
-
-%post
-%postun
+rm -rf %{buildroot}
 
 
 %files
 %{_bindir}/ktr
 %{python3_sitelib}/kentauros
-%{python3_sitelib}/kentauros-%{version}-py3.4.egg-info
+%{python3_sitelib}/kentauros-%{version}-py%{python3_version}.egg-info
 
 
 %changelog
