@@ -46,13 +46,13 @@ def read_conf(force=False):
     try:
         conf.confdir = configfile['main']['confdir']
     except KeyError:
-        err("Configuration file does not contain main/confdir value.")
+        err("Configuration file does not contain main section or confdir value.")
         return None
 
     try:
         conf.datadir = configfile['main']['datadir']
     except KeyError:
-        err("Configuration file does not contain main/datadir value.")
+        err("Configuration file does not contain main section or datadir value.")
         return None
 
     return conf
