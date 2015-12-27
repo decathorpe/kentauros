@@ -5,7 +5,7 @@
 Summary:        Small build system, written in python
 Name:           kentauros
 Version:        0.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -15,6 +15,7 @@ Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 BuildRequires:  python3-devel
 
 Requires:       python3
+Requires:       python3-kentauros
 
 
 %description
@@ -31,7 +32,6 @@ Requires:       copr-cli
 Requires:       bzr
 Requires:       git
 Requires:       mock
-Requires:       python3-kentauros
 Requires:       wget
 
 %description -n python3-kentauros
@@ -67,6 +67,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Dec 27 2015 Fabio Valentini <decathorpe@gmail.com> - 0.0.2-3
+- Fix dep of main package on py3 package.
+
 * Sat Dec 26 2015 Fabio Valentini <decathorpe@gmail.com> - 0.0.2-2
 - Fix src.rpm package build with make-srpm.sh.
 
