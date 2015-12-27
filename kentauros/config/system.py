@@ -1,16 +1,16 @@
 """
-kentauros.config.defaults
-provides default locations for
-- configuration files
-- source directories / tarballs
-which are used if no configuration file is found.
+kentauros.config.system
+reads /etc/kentaurosrc to eventually determine location of
+- configuration files (confdir)
+- source directories / tarballs (datadir)
 """
 
-from kentauros.config import KtrConf
+import configparser
+import os
+
+from kentauros.config.base import KtrConf, KtrConfType
 
 
 DEFAULT_CONF = KtrConf()
-DEFAULT_CONF.basedir = "/tmp/ktr"
-DEFAULT_CONF.confdir = "/tmp/ktr"
-DEFAULT_CONF.datadir = "/tmp/ktr"
+
 

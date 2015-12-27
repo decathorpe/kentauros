@@ -6,12 +6,12 @@ or act as fallback if none has been found so far.
 """
 
 
-__all__ = ["defaults", "environ", "fallback", "rcfile", "xdgconfig"]
+from kentauros.config import cli, default, envvar, project, system, user
 
-
-class KtrConf:
-    def __init__(self):
-        self.basedir = ""
-        self.confdir = ""
-        self.datadir = ""
+KTR_CONF_LIST = [default.CONF,
+                 system.CONF,
+                 user.CONF,
+                 project.CONF,
+                 env.CONF,
+                 cli.CONF]
 

@@ -1,19 +1,18 @@
 """
-kentauros.config.environ
+kentauros.config.envvar
 reads environment variables to eventually determine location of
-- configuration files
-- source directories / tarballs
+- configuration files (confdir)
+- source directories / tarballs (datadir)
 """
 
 import os
-from kentauros.config import KtrConf
+from kentauros.config.base import KtrConf, KtrConfType
 
 
-ENVIRON_CONF = KtrConf()
-ENVIRON_CONF.basedir = os.environ.get("HOME")
-ENVIRON_CONF.confdir = os.environ.get("KTR_CONF_DIR")
-ENVIRON_CONF.datadir = os.environ.get("KTR_DATA_DIR")
+CONF = KtrConf()
+CONF.confdir = os.environ.get("KTR_CONF_DIR")
+CONF.datadir = os.environ.get("KTR_DATA_DIR")
 
-if (ENVIRON_CONF.confdir is None) and (ENVIRON_CONF.datadir is None):
-    ENVIRON_CONF = None
+if (CONF.confdir is None) or (CONF.datadir is None):
+    CONF = None
 
