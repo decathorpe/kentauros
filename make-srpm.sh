@@ -1,12 +1,12 @@
 #!/usr/bin/bash
 
 NAME=kentauros
-VERSION=0.0.1
+VERSION=0.0.2
 
 mkdir -p $HOME/rpmbuild/SOURCES
 mkdir -p $HOME/rpmbuild/SPECS
 
-git archive --format=tar.gz --prefix=$NAME-$VERSION/ HEAD > $HOME/rpmbuild/SOURCES/$NAME-$VERSION.tar.gz
+git archive --format=tar.gz --prefix=$NAME-$VERSION/ HEAD > $HOME/rpmbuild/SOURCES/$VERSION.tar.gz
 
 cp ./$NAME.spec $HOME/rpmbuild/SPECS/
 

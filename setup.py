@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name = "kentauros",
-    version = "0.0.1",
+    version = "0.0.2",
     author = "Fabio Valentini",
     author_email = "decathorpe (at) gmail (dot) com",
     description = "small build system, written in python",

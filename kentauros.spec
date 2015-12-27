@@ -4,8 +4,8 @@
 
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.0.1
-Release:        1%{?dist}
+Version:        0.0.2
+Release:        2%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -67,6 +67,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Dec 26 2015 Fabio Valentini <decathorpe@gmail.com> - 0.0.2-2
+- Fix src.rpm package build with make-srpm.sh.
+
+* Sat Dec 26 2015 Fabio Valentini <decathorpe@gmail.com> - 0.0.2-1
+- Bump version for test release.
+
 * Mon Oct 12 2015 Fabio Valentini <decathorpe@gmail.com> - 0.0.1-1
 - Release 0.0.1.
 
