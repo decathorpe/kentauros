@@ -5,12 +5,13 @@ reads /etc/kentaurosrc to eventually determine location of
 - source directories / tarballs (datadir)
 """
 
-import configparser
-import os
+from kentauros.config.common import KtrConf, KtrConfType
 
-from kentauros.config.base import KtrConf, KtrConfType
+FILE_PATH = "/etc/kentaurosrc"
+ERR_MSG = "/etc/kentaurosrc does not exist or is not readable."
 
-
-DEFAULT_CONF = KtrConf()
-
+CONF = KtrConf()
+CONF.read(filepath=FILE_PATH,
+          conftype=KtrConfType.SYSTEM_CONF,
+          err_msg=ERR_MSG)
 

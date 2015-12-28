@@ -5,13 +5,18 @@ later items in the list can override already determined configuration,
 or act as fallback if none has been found so far.
 """
 
+import configparser
+from enum import Enum
+import os
 
+from kentauros.base import dbg, err
 from kentauros.config import cli, default, envvar, project, system, user
+
 
 KTR_CONF_LIST = [default.CONF,
                  system.CONF,
                  user.CONF,
                  project.CONF,
-                 env.CONF,
+                 envvar.CONF,
                  cli.CONF]
 

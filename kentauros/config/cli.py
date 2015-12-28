@@ -5,6 +5,8 @@ processes given command line switches to eventually determine location of
 - source directories / tarballs (datadir)
 """
 
-from kentauros.config.base import KtrConf, KtrConfType
+from kentauros.config.common import KtrConf, KtrConfType
 
+CONF = KtrConf()
+CONF.type = KtrConfType.CLI_CONF
 
