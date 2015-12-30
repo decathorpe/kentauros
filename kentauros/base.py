@@ -9,6 +9,17 @@ import sys
 from kentauros.cli import DEBUG
 
 
+class SrcType(Enum):
+    """
+    kentauros.pkgconf.SrcType
+    class (Enum) that contains all supported source types
+    """
+    local = 1
+    url = 2
+    git = 3
+    bzr = 4
+
+
 BASEDIR = os.getcwd()
 HOME = os.environ['HOME']
 
