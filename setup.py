@@ -13,6 +13,7 @@ setup(
     url="http://github.com/decathorpe/kentauros",
     packages=['kentauros'],
     scripts=['ktr'],
+    data_files=['/usr/share/kentauros/', ['data/default.conf']],
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
