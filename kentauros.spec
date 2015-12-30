@@ -61,6 +61,8 @@ rm -rf %{buildroot}
 %files
 %{_bindir}/ktr
 
+%{_datadir}/kentauros/
+
 %files       -n python3-kentauros
 %{python3_sitelib}/kentauros
 %{python3_sitelib}/kentauros-%{version}-py%{python3_version}.egg-info/
