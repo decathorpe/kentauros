@@ -2,4 +2,5 @@
 kentauros package
 """
 
-__all__ = ["fs"]
+__all__ = ["config"]
+
