@@ -53,6 +53,8 @@ This package contains the python3 module only. For the main script, see ktr.
 %install
 %py3_install
 
+mkdir -p %{buildroot}/%{_localstatedir}/lib/kentauros
+
 
 %clean
 rm -rf %{buildroot}
@@ -60,8 +62,8 @@ rm -rf %{buildroot}
 
 %files
 %{_bindir}/ktr
-
 %{_datadir}/kentauros/
+%{_localstatedir}/lib/kentauros/
 
 %files       -n python3-kentauros
 %{python3_sitelib}/kentauros
