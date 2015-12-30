@@ -4,8 +4,8 @@
 
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.0.2
-Release:        3%{?dist}
+Version:        0.0.3
+Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -62,11 +62,14 @@ rm -rf %{buildroot}
 %{_bindir}/ktr
 
 %files       -n python3-kentauros
-%{python3_sitelib}/kentauros
-%{python3_sitelib}/kentauros-%{version}-py%{python3_version}.egg-info
+#%{python3_sitelib}/kentauros
+#%{python3_sitelib}/kentauros-%{version}-py%{python3_version}.egg-info/
 
 
 %changelog
+* Wed Dec 30 2015 Fabio Valentini <decathorpe@gmail.com> - 0.0.3-1
+- Bump version to 0.0.3.
+
 * Sun Dec 27 2015 Fabio Valentini <decathorpe@gmail.com> - 0.0.2-3
 - Fix dep of main package on py3 package.
 
