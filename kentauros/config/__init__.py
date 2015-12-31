@@ -13,6 +13,9 @@ from kentauros.base import dbg, err
 from kentauros.config import cli, default, envvar, project, system, user
 
 
+__all__ = []
+
+
 KTR_CONF_LIST = [default.CONF,
                  system.CONF,
                  user.CONF,

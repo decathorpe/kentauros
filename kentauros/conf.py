@@ -2,13 +2,13 @@
 kentauros.conf
 """
 
-import configparser
+from configparser import ConfigParser
 
 from kentauros.base import dbg
 from kentauros.base import goto_basedir, goto_pkgdir
 
 
-#class PkgConf:
+#class PkgConf(ConfigParser):
 #    """
 #    kentauros.PkgConf
 #    This class is an object that holds all available configuration information
@@ -26,7 +26,7 @@ def get_confval(pkgname, section, key):
     assert isinstance(key, str)
 
     goto_pkgdir(pkgname)
-    pkgconfig = configparser.ConfigParser()
+    pkgconfig = ConfigParser()
     pkgconfig.read(pkgname + ".conf")
     value = pkgconfig[section][key]
     goto_basedir()

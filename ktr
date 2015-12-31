@@ -4,47 +4,33 @@
 ktr is kentauros.py
 """
 
-from kentauros.cli import CLI_ARGS, DEBUG, PACKAGES
-from kentauros.action import package_update, package_build, package_upload
+import os
+
+from kentauros.base import err
+from kentauros.init import init_dirs
 
 
-print("DEBUG set: " + str(DEBUG))
+# check if being run as root (EUID == 0)
+ROOT = not bool(os.geteuid())
 
-if "action" not in CLI_ARGS:
-    print("Select a sub-command: create, verify, update, build or upload.",
-          end="\n\n")
+# get user running ktr
+USER = os.getenv('USER')
+
+# get user home
+HOME = os.path.join("/home/", USER)
+
+# base directories for being run as user and as root
+SYSTEM_BASEDIR = "/var/lib/kentauros/"
+USER_BASEDIR = os.path.join(HOME, ".local/share/kentauros/")
+
+if ROOT:
+    BASEDIR = SYSTEM_BASEDIR
+else:
+    BASEDIR = USER_BASEDIR
+
+try:
+    init_dirs(BASEDIR)
+except OSError:
+    err("Initialisation failed. Could not create kentauros directories.")
     raise SystemExit
-
-if len(PACKAGES) is 0:
-    print("No packages have been provided by command line or --pkgfile.")
-    raise SystemExit
-
-ACTION = CLI_ARGS.action
-
-
-if ACTION == "create":
-    for package in PACKAGES:
-#        package_create(package)
-        pass
-
-if ACTION == "verify":
-    for package in PACKAGES:
-#        package_verify(package)
-        pass
-
-if ACTION == "update":
-    REFRESH = CLI_ARGS.refresh
-    for package in PACKAGES:
-        package_update(package, refresh=REFRESH)
-
-if ACTION == "build":
-    FORCE = CLI_ARGS.force
-    for package in PACKAGES:
-        package_build(package, force=FORCE)
-
-if ACTION == "upload":
-    WATCH = CLI_ARGS.watch
-    FORCE = CLI_ARGS.force
-    for package in PACKAGES:
-        package_upload(package, watch=WATCH, force=FORCE)
 

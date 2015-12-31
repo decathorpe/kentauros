@@ -4,13 +4,13 @@ kentauros.cli
 
 import argparse
 
-
+"""
 def get_pkglist(args):
-    """
+    ""#"
     kentauros.cli.get_pkglist()
     reads command line package arguments, reads lines from pkglist files,
     and returns a list of all gathered packages.
-    """
+    ""#"
     packages = list()
 
     for pkg in args.package:
@@ -22,7 +22,7 @@ def get_pkglist(args):
                 packages.append(line.rstrip("\n\r"))
 
     return packages
-
+"""
 
 CLIPARSER = argparse.ArgumentParser(
     description="Update, build, upload packages. All from source.",
@@ -42,7 +42,7 @@ CLIPARSER.add_argument(
     default=False,
     help="enable verbose output")
 
-
+"""
 PACKAGEPARSER = argparse.ArgumentParser(add_help=False)
 PACKAGEPARSER.add_argument(
     "package",
@@ -134,8 +134,9 @@ VERIFYPARSER.set_defaults(action="verify")
 UPDATEPARSER.set_defaults(action="update")
 BUILDPARSER.set_defaults(action="build")
 UPLOADPARSER.set_defaults(action="upload")
+"""
 
 CLI_ARGS = CLIPARSER.parse_args()
 DEBUG = CLI_ARGS.debug or CLI_ARGS.verbose
-PACKAGES = get_pkglist(CLI_ARGS)
+# PACKAGES = get_pkglist(CLI_ARGS)
 
