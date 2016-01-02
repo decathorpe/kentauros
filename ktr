@@ -4,33 +4,7 @@
 ktr is kentauros.py
 """
 
-import os
+from kentauros.init import ktr_init
 
-from kentauros.base import err
-from kentauros.init import init_dirs
-
-
-# check if being run as root (EUID == 0)
-ROOT = not bool(os.geteuid())
-
-# get user running ktr
-USER = os.getenv('USER')
-
-# get user home
-HOME = os.path.join("/home/", USER)
-
-# base directories for being run as user and as root
-SYSTEM_BASEDIR = "/var/lib/kentauros/"
-USER_BASEDIR = os.path.join(HOME, ".local/share/kentauros/")
-
-if ROOT:
-    BASEDIR = SYSTEM_BASEDIR
-else:
-    BASEDIR = USER_BASEDIR
-
-try:
-    init_dirs(BASEDIR)
-except OSError:
-    err("Initialisation failed. Could not create kentauros directories.")
-    raise SystemExit
+ktr_init()
 

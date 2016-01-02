@@ -8,7 +8,16 @@ import configparser
 from enum import Enum
 import os
 
-from kentauros.base import dbg, err
+from kentauros.base import err
+from kentauros.init import HOME
+
+
+def __replace_home__(string):
+    if "$HOME" in string:
+        newstring = string.replace("$HOME", HOME)
+    elif "~" in string:
+        newstring = string.replace("~", HOME)
+    return newstring
 
 
 class KtrConfType(Enum):
@@ -35,11 +44,15 @@ class KtrConf:
     - may be extended
     """
     def __init__(self):
-        self.confdir = ""
-        self.datadir = ""
+        self.sysbasedir = ""
+        self.sysconfdir = ""
+        self.sysdatadir = ""
+        self.usrbasedir = ""
+        self.usrconfdir = ""
+        self.usrdatadir = ""
         self.type = KtrConfType()
 
-    def read(self, filepath, conftype, err_msg, force=False):
+    def read(self, filepath, conftype, force=False):
         """
         kentauros.config.KtrConf.read()
         method that reads configuration file and parses the options.
@@ -50,33 +63,68 @@ class KtrConf:
             returns False.
         returns True if everything worked.
         """
+
         file_access = os.access(filepath, os.R_OK)
 
         if not file_access:
-            if not force:
-                dbg(err_msg)
-                return None
+            if force:
+                raise OSError
             else:
-                raise OSError(err_msg)
+                return None
 
         configfile = configparser.ConfigParser()
         configfile.read(filepath)
 
         self.type = conftype
 
-        try:
-            self.confdir = configfile['main']['confdir']
-        except KeyError:
-            err("Configuration file does not contain main section or confdir value.")
-            return False
+        errors = 0
 
         try:
-            self.datadir = configfile['main']['datadir']
+            self.sysbasedir = configfile['system']['basedir']
+            self.sysbasedir = __replace_home__(self.sysbasedir)
         except KeyError:
-            err("Configuration file does not contain main section or datadir value.")
-            return False
+            err("Configuration file does not contain system section or confdir value.")
+            errors += 1
 
-        return True
+        try:
+            self.sysconfdir = configfile['system']['confdir']
+            self.sysconfdir = __replace_home__(self.sysconfdir)
+        except KeyError:
+            err("Configuration file does not contain system section or confdir value.")
+            errors += 1
+
+        try:
+            self.sysdatadir = configfile['system']['datadir']
+            self.sysdatadir = __replace_home__(self.sysdatadir)
+        except KeyError:
+            err("Configuration file does not contain system section or datadir value.")
+            errors += 1
+
+        try:
+            self.usrbasedir = configfile['user']['basedir']
+            self.usrbasedir = __replace_home__(self.usrbasedir)
+        except KeyError:
+            err("Configuration file does not contain user section or confdir value.")
+            errors += 1
+
+        try:
+            self.usrconfdir = configfile['user']['confdir']
+            self.usrconfdir = __replace_home__(self.usrconfdir)
+        except KeyError:
+            err("Configuration file does not contain user section or confdir value.")
+            errors += 1
+
+        try:
+            self.usrdatadir = configfile['user']['datadir']
+            self.usrdatadir = __replace_home__(self.usrdatadir)
+        except KeyError:
+            err("Configuration file does not contain user section or datadir value.")
+            errors += 1
+
+        if not errors:
+            return False
+        else:
+            return True
 
     def verify(self):
         """

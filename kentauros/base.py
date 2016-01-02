@@ -4,10 +4,22 @@ kentauros.base
 
 import enum
 import os
-import subprocess
 import sys
 
 from kentauros.cli import DEBUG
+
+
+# check if being run as root (EUID == 0)
+ROOT = not bool(os.geteuid())
+
+# get user running ktr
+USER = os.getenv('USER')
+
+# get user home
+HOME = os.path.join("/home/", USER)
+
+
+SUPPORTED_ARCHIVE_TYPES = ["*.tar.gz", "*.tar.xz"]
 
 
 class SrcType(enum.Enum):
@@ -19,12 +31,6 @@ class SrcType(enum.Enum):
     url = 2
     git = 3
     bzr = 4
-
-
-BASEDIR = os.getcwd()
-HOME = os.environ['HOME']
-
-SUPPORTED_ARCHIVE_TYPES = ["*.tar.gz", "*.tar.xz"]
 
 
 def dbg(msg):

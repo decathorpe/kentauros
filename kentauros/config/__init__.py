@@ -15,11 +15,17 @@ from kentauros.config import cli, default, envvar, project, system, user
 
 __all__ = []
 
-
+# configurations, in ascending priority
 KTR_CONF_LIST = [default.CONF,
                  system.CONF,
                  user.CONF,
                  project.CONF,
                  envvar.CONF,
                  cli.CONF]
+
+# KTR_CONF contains the highest-priority, non-None configuration
+KTR_CONF = None
+for conf in KTR_CONF_LIST:
+    if conf != None:
+        KTR_CONF = conf
 

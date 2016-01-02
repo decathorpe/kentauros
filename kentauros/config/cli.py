@@ -10,3 +10,6 @@ from kentauros.config.common import KtrConf, KtrConfType
 CONF = KtrConf()
 CONF.type = KtrConfType.CLI_CONF
 
+# TODO: read CLI switches. for now, return empty config (no effect)
+CONF = None
+
