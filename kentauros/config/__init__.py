@@ -9,7 +9,7 @@ import configparser
 from enum import Enum
 import os
 
-from kentauros.base import dbg, err
+from kentauros.init import dbg, err
 from kentauros.config import cli, default, envvar, project, system, user
 
 

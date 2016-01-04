@@ -6,8 +6,8 @@ base data structures containing information about and methods for packages
 from configparser import ConfigParser
 import os
 
-from kentauros.base import err
-from kentauros.init import BASEDIR, CONFDIR, DATADIR
+from kentauros.init import err
+from kentauros.bootstrap import BASEDIR, CONFDIR, DATADIR
 
 
 class Package:

@@ -5,7 +5,7 @@ reads /etc/kentaurosrc to eventually determine location of
 - source directories / tarballs (datadir)
 """
 
-from kentauros.base import err
+from kentauros.init import err
 from kentauros.config.common import KtrConf, KtrConfType
 
 FILE_PATH = "/etc/kentaurosrc"

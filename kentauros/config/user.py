@@ -5,8 +5,8 @@ reads $HOME/.config/kentaurosrc to eventually determine location of
 - source directories / tarballs (datadir)
 """
 
-from kentauros.base import err
 from kentauros.config.common import KtrConf, KtrConfType
+from kentauros.init import err
 
 FILE_PATH = "~/.config/kentaurosrc"
 ERR_MSG = "$HOME/.config/kentaurosrc does not exist or is not readable."

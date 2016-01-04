@@ -4,7 +4,8 @@
 ktr is kentauros.py
 """
 
-from kentauros.init import ktr_init
+from kentauros.init import DEBUG, VERBY
 
-ktr_init()
+print("DEBUG set: " + str(DEBUG))
+print("VERBOSITY: " + str(VERBY))
 

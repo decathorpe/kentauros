@@ -1,58 +1,72 @@
 """
-kentauros.config module
-explicitly determines order in which configurations are read.
-later items in the list can override already determined configuration,
-or act as fallback if none has been found so far.
+kentauros.init module
 """
-
-import os
-
-from kentauros.base import err, ROOT, USER, HOME
-from kentauros.config import KTR_CONF
-
 
 __all__ = []
 
-# base directories for being run as user and as root
-SYSBASEDIR = KTR_CONF.sysbasedir
-SYSCONFDIR = KTR_CONF.sysconfdir
-SYSDATADIR = KTR_CONF.sysdatadir
+import enum
+import sys
 
-USRBASEDIR = KTR_CONF.usrbasedir
-USRCONFDIR = KTR_CONF.usrconfdir
-USRDATADIR = KTR_CONF.usrdatadir
-
-# define base directories depending on whether being run as root or not
-if not ROOT:
-    BASEDIR = USRBASEDIR
-    CONFDIR = USRCONFDIR
-    DATADIR = USRDATADIR
-else:
-    BASEDIR = SYSBASEDIR
-    CONFDIR = SYSCONFDIR
-    DATADIR = SYSDATADIR
+from kentauros.init.env import ENVDEBUG, ENVVERBY
+from kentauros.init.cli import CLIDEBUG, CLIVERBY
 
 
-def __init_dirs__(basedir, confdir, datadir):
-    if not os.access(basedir, os.R_OK):
-        os.mkdir(basedir)
-    if not os.access(confdir, os.W_OK):
-        os.mkdir(confdir)
-    if not os.access(datadir, os.W_OK):
-        os.mkdir(datadir)
+def __smaller_int__(int1, int2):
+    if int1 < int2:
+        return int1
+    else:
+        return int2
 
 
-def ktr_init():
+DEBUG = ENVDEBUG or CLIDEBUG
+VERBY = __smaller_int__(ENVVERBY, CLIVERBY)
+
+
+class SrcType(enum.Enum):
     """
-    kentauros.init.ktr_init()
-    read configuration, initialise directories, etc.
+    kentauros.pkgconf.SrcType
+    class (Enum) that contains all supported source types
     """
-    if ROOT:
-        print("Running as root is discouraged.")
+    local = 1
+    url = 2
+    git = 3
+    bzr = 4
 
-    try:
-        __init_dirs__(BASEDIR, CONFDIR, DATADIR)
-    except OSError:
-        err("Initialisation failed. Could not create kentauros directories.")
-        raise SystemExit
+
+SUPPORTED_ARCHIVE_TYPES = ["*.tar.gz", "*.tar.xz"]
+
+
+def dbg(msg):
+    """
+    kentauros.init.dbg()
+    prints debug messages if DEBUG is True
+    set by --debug or by environment variable KTR_DEBUG=1
+    """
+    if DEBUG:
+        print("DEBUG: " + str(msg))
+
+
+def err(msg):
+    """
+    kentauros.init.err()
+    prints error messages to sys.stderr
+    format: ERROR: <message>
+    """
+
+    print("ERROR: " + msg, file=sys.stderr)
+
+
+def log(msg, pri=2):
+    """
+    kentauros.init.log()
+    prints log messages if "priority" is equal or less to verbosity level.
+    priority levels mean (2 is the default):
+    - 0: every message is printed and subprocesses are invoked with --verbose
+    - 1: some messages are printed and subprocesses get no CLI flags
+    - 2: few messages are printed and subprocesses are invoked with --quiet
+    format: <message>
+    """
+
+    if (pri <= VERBY) or DEBUG:
+        print(msg)
 

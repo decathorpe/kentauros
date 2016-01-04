@@ -5,8 +5,8 @@ reads /usr/share/kentauros/default.conf to eventually determine location of
 - source directories / tarballs (datadir)
 """
 
-from kentauros.base import err
 from kentauros.config.common import KtrConf, KtrConfType
+from kentauros.init import err
 
 FILE_PATH = "/usr/share/kentauros/default.conf"
 ERR_MSG = "/usr/share/kentauros/default.conf does not exist or it is not readable."
