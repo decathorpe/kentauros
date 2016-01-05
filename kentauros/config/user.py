@@ -8,7 +8,7 @@ reads $HOME/.config/kentaurosrc to eventually determine location of
 import os
 
 from kentauros.config.common import KtrConf, KtrConfType
-from kentauros.init import err
+from kentauros.init import log
 from kentauros.init.env import HOME
 
 
@@ -21,6 +21,6 @@ try:
     CONF.read(filepath=FILE_PATH,
               conftype=KtrConfType.USER)
 except FileNotFoundError:
-    err(ERR_MSG)
+    log(ERR_MSG, 1)
     CONF = None
 

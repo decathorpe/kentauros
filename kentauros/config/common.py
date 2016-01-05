@@ -8,7 +8,7 @@ import configparser
 from enum import Enum
 import os
 
-from kentauros.init import err
+from kentauros.init import dbg, err
 from kentauros.init.env import HOME
 
 
@@ -48,6 +48,23 @@ class KtrConf:
         self.datadir = ""
         self.specdir = ""
         self.type = None
+
+    def succby(self, other):
+        """
+        kentauros.config.common.KtrConf.succby()
+        method that replaces config values in this KtrConf (self) with non-None
+          config values from another KtrConf (other)
+        """
+        assert isinstance(other, KtrConf)
+        if other.confdir != None:
+            dbg("config: confdir overridden by value in" + repr(other))
+            self.confdir = other.confdir
+        if other.datadir != None:
+            dbg("config: datadir overridden by value in" + repr(other))
+            self.datadir = other.datadir
+        if other.specdir != None:
+            dbg("config: specdir overridden by value in" + repr(other))
+            self.specdir = other.specdir
 
     def read(self, filepath, conftype):
         """

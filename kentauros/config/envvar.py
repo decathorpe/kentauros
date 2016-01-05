@@ -11,9 +11,16 @@ from kentauros.config.common import KtrConf, KtrConfType
 
 CONF = KtrConf()
 
-CONF.confdir = os.environ.get("KTR_CONF_DIR")
-CONF.datadir = os.environ.get("KTR_DATA_DIR")
-CONF.specdir = os.environ.get("KTR_SPEC_DIR")
+ENV_CONFDIR = os.environ.get("KTR_CONF_DIR")
+ENV_DATADIR = os.environ.get("KTR_DATA_DIR")
+ENV_SPECDIR = os.environ.get("KTR_SPEC_DIR")
 
-CONF.type = KtrConfType.ENV
+
+if (ENV_CONFDIR == None) and (ENV_DATADIR == None) and (ENV_SPECDIR == None):
+    CONF = None
+else:
+    CONF.confdir = ENV_CONFDIR
+    CONF.datadir = ENV_DATADIR
+    CONF.specdir = ENV_SPECDIR
+    CONF.type = KtrConfType.ENV
 

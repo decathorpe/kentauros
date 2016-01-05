@@ -12,7 +12,7 @@ import os
 
 from kentauros.init import dbg, err
 from kentauros.init.cli import CLI_PREF_CONF
-from kentauros.config import cli, default, envvar, project, system, user
+from kentauros.config import cli, default, envvar, fallback, project, system, user
 from kentauros.config.common import KtrConfType
 
 
@@ -21,6 +21,7 @@ __all__ = []
 
 # configurations, in ascending priority
 KTR_CONF_DICT = OrderedDict()
+KTR_CONF_DICT[KtrConfType.FALLBACK] = fallback.CONF
 KTR_CONF_DICT[KtrConfType.DEFAULT] = default.CONF
 KTR_CONF_DICT[KtrConfType.SYSTEM] = system.CONF
 KTR_CONF_DICT[KtrConfType.USER] = user.CONF
@@ -29,13 +30,12 @@ KTR_CONF_DICT[KtrConfType.ENV] = envvar.CONF
 KTR_CONF_DICT[KtrConfType.CLI] = cli.CONF
 
 
-# KTR_CONF contains the highest-priority, non-None configuration
-# TODO: allow superseding partial configurations
-KTR_CONF = None
-for conf in KTR_CONF_DICT:
+# KTR_CONF contains the highest-priority, non-None configuration for every value
+KTR_CONF = fallback.CONF
+for conftype in KTR_CONF_DICT:
+    conf = KTR_CONF_DICT[conftype]
     if conf != None:
-        # TODO: KTR_CONF.succby(conf)
-        KTR_CONF = conf
+        KTR_CONF.succby(conf)
 
 
 if CLI_PREF_CONF:

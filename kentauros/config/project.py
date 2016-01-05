@@ -5,7 +5,7 @@ reads project-specific ./kentaurosrc to eventually determine location of
 - source directories / tarballs (datadir)
 """
 
-from kentauros.init import err
+from kentauros.init import log
 from kentauros.config.common import KtrConf, KtrConfType
 
 
@@ -18,6 +18,6 @@ try:
     CONF.read(filepath=FILE_PATH,
               conftype=KtrConfType.PROJECT)
 except FileNotFoundError:
-    err(ERR_MSG)
+    log(ERR_MSG, 1)
     CONF = None
 

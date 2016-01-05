@@ -4,9 +4,14 @@
 ktr is kentauros.py
 """
 
-from kentauros.init import DEBUG, VERBY
+from kentauros.init import DEBUG, VERBY, log
 from kentauros.config import KTR_CONF
 
-print("DEBUG set: " + str(DEBUG))
-print("VERBOSITY: " + str(VERBY))
+log("DEBUG set: " + str(DEBUG), 1)
+log("VERBOSITY: " + str(VERBY), 1)
+
+log("CONFDIR: " + KTR_CONF.confdir, 1)
+log("DATADIR: " + KTR_CONF.datadir, 1)
+log("SPECDIR: " + KTR_CONF.specdir, 1)
+
 

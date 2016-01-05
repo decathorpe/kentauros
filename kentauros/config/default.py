@@ -6,7 +6,7 @@ reads /usr/share/kentauros/default.conf to eventually determine location of
 """
 
 from kentauros.config.common import KtrConf, KtrConfType
-from kentauros.init import err
+from kentauros.init import log
 
 
 FILE_PATH = "/usr/share/kentauros/default.conf"
@@ -18,6 +18,6 @@ try:
     CONF.read(filepath=FILE_PATH,
               conftype=KtrConfType.DEFAULT)
 except FileNotFoundError:
-    err(ERR_MSG)
+    log(ERR_MSG, 1)
     CONF = None
 

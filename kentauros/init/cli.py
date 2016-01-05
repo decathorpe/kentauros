@@ -70,5 +70,7 @@ CLI_CONFDIR = CLI_ARGS.confdir
 CLI_DATADIR = CLI_ARGS.datadir
 CLI_SPECDIR = CLI_ARGS.specdir
 
-CLI_PREF_CONF = CLI_ARGS.prefconf.upper()
+CLI_PREF_CONF = None
+if CLI_ARGS.prefconf != None:
+    CLI_PREF_CONF = CLI_ARGS.prefconf.upper()
 
