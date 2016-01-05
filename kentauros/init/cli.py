@@ -49,6 +49,14 @@ CLIPARSER.add_argument(
     help="specify rpm .spec directory to be used")
 
 
+# --prefconf switch
+CLIPARSER.add_argument(
+    "--prefconf",
+    action="store",
+    default=None,
+    help="specify preferred configuration to be used")
+
+
 CLI_ARGS = CLIPARSER.parse_args()
 
 CLIDEBUG = CLI_ARGS.debug
@@ -62,5 +70,5 @@ CLI_CONFDIR = CLI_ARGS.confdir
 CLI_DATADIR = CLI_ARGS.datadir
 CLI_SPECDIR = CLI_ARGS.specdir
 
-print(CLIVERBY)
+CLI_PREF_CONF = CLI_ARGS.prefconf.upper()
 

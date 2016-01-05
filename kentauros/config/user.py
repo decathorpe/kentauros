@@ -5,18 +5,22 @@ reads $HOME/.config/kentaurosrc to eventually determine location of
 - source directories / tarballs (datadir)
 """
 
+import os
+
 from kentauros.config.common import KtrConf, KtrConfType
 from kentauros.init import err
+from kentauros.init.env import HOME
+
 
 FILE_PATH = "~/.config/kentaurosrc"
-ERR_MSG = "$HOME/.config/kentaurosrc does not exist or is not readable."
+ERR_MSG = os.path.join(HOME, ".config/kentaurosrc") + " does not exist or is not readable."
 
 CONF = KtrConf()
 
 try:
     CONF.read(filepath=FILE_PATH,
-              conftype=KtrConfType.USER_CONF)
-except OSError:
+              conftype=KtrConfType.USER)
+except FileNotFoundError:
     err(ERR_MSG)
     CONF = None
 

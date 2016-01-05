@@ -25,13 +25,13 @@ class KtrConfType(Enum):
     kentauros.config.base.KtrConfType
     enum that defines all possible configuration sources.
     """
-    CLI_CONF = 1
-    ENVVAR_CONF = 2
-    PROJECT_CONF = 3
-    USER_CONF = 4
-    SYSTEM_CONF = 5
-    DEFAULT_CONF = 6
-    FALLBACK_CONF = 7
+    CLI = 1
+    ENV = 2
+    PROJECT = 3
+    USER = 4
+    SYSTEM = 5
+    DEFAULT = 6
+    FALLBACK = 7
 
 
 class KtrConf:
@@ -47,9 +47,9 @@ class KtrConf:
         self.confdir = ""
         self.datadir = ""
         self.specdir = ""
-        self.type = KtrConfType()
+        self.type = None
 
-    def read(self, filepath, conftype, force=False):
+    def read(self, filepath, conftype):
         """
         kentauros.config.KtrConf.read()
         method that reads configuration file and parses the options.
@@ -64,10 +64,7 @@ class KtrConf:
         file_access = os.access(filepath, os.R_OK)
 
         if not file_access:
-            if force:
-                raise OSError
-            else:
-                return None
+            raise FileNotFoundError
 
         configfile = configparser.ConfigParser()
         configfile.read(filepath)

@@ -8,10 +8,11 @@ processes given command line switches to eventually determine location of
 from kentauros.config.common import KtrConf, KtrConfType
 from kentauros.init.cli import CLI_CONFDIR, CLI_DATADIR, CLI_SPECDIR
 
+
 CONF = KtrConf()
 
 CONF.confdir = CLI_CONFDIR
 CONF.datadir = CLI_DATADIR
 CONF.specdir = CLI_SPECDIR
-CONF.type = KtrConfType.CLI_CONF
+CONF.type = KtrConfType.CLI
 

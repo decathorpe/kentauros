@@ -15,8 +15,5 @@ CONF.confdir = os.environ.get("KTR_CONF_DIR")
 CONF.datadir = os.environ.get("KTR_DATA_DIR")
 CONF.specdir = os.environ.get("KTR_SPEC_DIR")
 
-CONF.type = KtrConfType.CLI_CONF
-
-if (CONF.confdir is None) or (CONF.datadir is None) or  (CONF.specdir is None):
-    CONF = None
+CONF.type = KtrConfType.ENV
 
