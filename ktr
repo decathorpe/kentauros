@@ -14,4 +14,3 @@ log("CONFDIR: " + KTR_CONF.confdir, 1)
 log("DATADIR: " + KTR_CONF.datadir, 1)
 log("SPECDIR: " + KTR_CONF.specdir, 1)
 
-

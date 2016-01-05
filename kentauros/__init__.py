@@ -2,5 +2,5 @@
 kentauros package
 """
 
-__all__ = ["config"]
+__all__ = ["bootstrap", "config", "init", "package", "source"]
 

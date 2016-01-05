@@ -13,7 +13,7 @@ import os
 from kentauros.init import dbg, err
 from kentauros.init.cli import CLI_PREF_CONF
 from kentauros.config import cli, default, envvar, fallback, project, system, user
-from kentauros.config.common import KtrConfType
+from kentauros.config.common import KtrConf, KtrConfType
 
 
 __all__ = []
@@ -30,35 +30,48 @@ KTR_CONF_DICT[KtrConfType.ENV] = envvar.CONF
 KTR_CONF_DICT[KtrConfType.CLI] = cli.CONF
 
 
-# KTR_CONF contains the highest-priority, non-None configuration for every value
-KTR_CONF = fallback.CONF
-for conftype in KTR_CONF_DICT:
-    conf = KTR_CONF_DICT[conftype]
-    if conf != None:
-        KTR_CONF.succby(conf)
-
-
-if CLI_PREF_CONF:
-    CONFTYPE = None
+def get_pref_conf(pref_conf):
+    """
+    kentauros.config.get_pref_conf()
+    get and return preferred-by-CLI configuration
+    """
 
     # check if requirested config type is in Enum
     try:
-        CONFTYPE = KtrConfType[CLI_PREF_CONF]
+        conf_type = KtrConfType[pref_conf]
     except KeyError:
         err("Configuration type not supported.")
         err("Try one of: default, system, user, project, cli, env")
 
-    KTR_CONF_NEW = None
-    # check if requirested config type is in Dict
-    try:
-        KTR_CONF_NEW = KTR_CONF_DICT[CONFTYPE]
-    except KeyError:
-        err("Unknown error occurred, requested configuration not in list.")
+    # getr requested config from Dict
+    ktr_conf_new = KTR_CONF_DICT[conf_type]
 
-    print(KTR_CONF_NEW)
-    if KTR_CONF_NEW:
-        # only apply preferred configuration if it is not None
-        KTR_CONF = KTR_CONF_NEW
-    else:
-        err("Preferred configuration file does not exist or is not valid.")
+    # apply it if it is not None
+    if ktr_conf_new:
+        return ktr_conf_new
+
+
+def get_conf():
+    """
+    kentauros.config.get_conf()
+    get and return highest-priority configuration for every config value
+    """
+
+    if CLI_PREF_CONF:
+        return get_pref_conf(CLI_PREF_CONF)
+
+    # KTR_CONF should contain the highest-priority,
+    # non-None configuration for every value
+    ktr_conf = fallback.CONF
+    for conftype in KTR_CONF_DICT:
+        # skip FALLBACK config
+        if conftype != KtrConfType.FALLBACK:
+            conf = KTR_CONF_DICT[conftype]
+            if conf != None:
+                ktr_conf.succby(conf)
+
+    return ktr_conf
+
+
+KTR_CONF = get_conf()
 

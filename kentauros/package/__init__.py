@@ -6,8 +6,8 @@ base data structures containing information about and methods for packages
 from configparser import ConfigParser
 import os
 
+from kentauros.config import KTR_CONF
 from kentauros.init import err
-from kentauros.bootstrap import BASEDIR, CONFDIR, DATADIR
 
 
 class Package:
@@ -27,7 +27,7 @@ class Package:
         """
         self.conf = ConfigParser()
         try:
-            self.conf.read(os.path.join(CONFDIR, self.name + ".conf"))
+            self.conf.read(os.path.join(KTR_CONF.confdir, self.name + ".conf"))
         except OSError:
             err("Package configuration file for " + self.name + " could not be read.")
             self.conf = None
@@ -40,7 +40,7 @@ class Package:
         if self.conf is None:
             err("Package configuration is not present and cannot be written to file.")
         try:
-            self.conf.write(os.path.join(CONFDIR, self.name + ".conf"))
+            self.conf.write(os.path.join(KTR_CONF.confdir, self.name + ".conf"))
         except OSError:
             err("Package configuration file for " + self.name + " could not be written.")
 

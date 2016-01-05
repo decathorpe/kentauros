@@ -57,13 +57,13 @@ class KtrConf:
         """
         assert isinstance(other, KtrConf)
         if other.confdir != None:
-            dbg("config: confdir overridden by value in" + repr(other))
+            dbg("confdir overridden by value in " + other.type.name + " config")
             self.confdir = other.confdir
         if other.datadir != None:
-            dbg("config: datadir overridden by value in" + repr(other))
+            dbg("datadir overridden by value in " + other.type.name + " config")
             self.datadir = other.datadir
         if other.specdir != None:
-            dbg("config: specdir overridden by value in" + repr(other))
+            dbg("specdir overridden by value in " + other.type.name + " config")
             self.specdir = other.specdir
 
     def read(self, filepath, conftype):
