@@ -12,8 +12,8 @@ from kentauros.init import log
 from kentauros.init.env import HOME
 
 
-FILE_PATH = "~/.config/kentaurosrc"
-ERR_MSG = os.path.join(HOME, ".config/kentaurosrc") + " does not exist or is not readable."
+FILE_PATH = os.path.join(HOME, ".config/kentaurosrc")
+ERR_MSG = FILE_PATH + " does not exist or is not readable."
 
 CONF = KtrConf()
 

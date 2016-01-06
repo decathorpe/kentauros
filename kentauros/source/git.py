@@ -27,7 +27,7 @@ class GitSource(Source):
         # returns revision of master
         cmd = ["git", "clone", self.orig, self.dest]
         cmd_shallow = ["git", "clone", "--depth=1", self.orig, self.dest]
-        if not os.access(self.dir, os.W_OK):
+        if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
         if self.shallow:

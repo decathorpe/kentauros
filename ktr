@@ -6,6 +6,7 @@ ktr is kentauros.py
 
 from kentauros.init import DEBUG, VERBY, log
 from kentauros.config import KTR_CONF
+from kentauros.bootstrap import ktr_bootstrap
 
 log("DEBUG set: " + str(DEBUG), 1)
 log("VERBOSITY: " + str(VERBY), 1)
@@ -13,4 +14,6 @@ log("VERBOSITY: " + str(VERBY), 1)
 log("CONFDIR: " + KTR_CONF.confdir, 1)
 log("DATADIR: " + KTR_CONF.datadir, 1)
 log("SPECDIR: " + KTR_CONF.specdir, 1)
+
+ktr_bootstrap()
 
