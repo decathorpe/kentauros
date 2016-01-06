@@ -1,4 +1,7 @@
 """
+kentauros.source.bzr
+contains GitSource class and methods
+this class is for handling sources that are specified by bzr repo URL
 """
 
 # import subprocess

@@ -1,4 +1,7 @@
 """
+kentauros.source.url
+contains UrlSource class and methods
+this class is for handling sources that are specified by URL pointing to a tarball
 """
 
 from kentauros.source.common import Source, SourceType

@@ -1,4 +1,7 @@
 """
+kentauros.source.local
+contains LocalSource class and methods
+this class is for handling sources that are specified by file path pointing to a tarball
 """
 
 from kentauros.source.common import Source, SourceType
