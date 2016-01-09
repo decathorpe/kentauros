@@ -34,30 +34,35 @@ class Source():
     - keep: determines if sources are kept between builds
     """
     def __init__(self, name):
-        self.name = name
         self.sdir = os.path.join(KTR_CONF.datadir, name)
         self.dest = os.path.join(self.sdir, name)
-        self.orig = ""
-        self.type = SourceType()
+
         self.keep = bool()
+        self.orig = ""
+        self.type = None
+        self.version = ""
 
-    def get(self):
-        "put source into datadir"
-        pass
-
-    def update(self, oldver=None, newver=None):
-        "update source in datadir from oldver to newver and update package.conf in confdir"
-        pass
-
-    def refresh(self):
-        "re-put source into datadir"
+    def clean(self, force=False):
+        "remove downloaded files in datadir (respect keep and force!)"
         pass
 
     def export(self):
         "export source into tarball in datadir, if neccessary"
         pass
 
-    def clean(self, force=False):
-        "remove downloaded files in datadir (respect keep and force!)"
+    def get(self):
+        "put source into datadir"
+        pass
+
+    def refresh(self):
+        "re-put source into datadir"
+        pass
+
+    def update(self, oldver=None, newver=None):
+        "update source in datadir from oldver to newver and update package.conf in confdir"
+        pass
+
+    def formatver(self):
+        "returns formatted version string, depending on SourceType"
         pass
 

@@ -1,16 +1,3 @@
-"""
-kentauros.git
-"""
-
-import subprocess
-
-from kentauros.cli import DEBUG
-from kentauros.base import dbg, get_date
-from kentauros.base import goto_basedir, goto_pkgdir, goto_srcdir
-
-from kentauros.conf import get_srcname
-
-
 def format_version_git(ver, rev):
     """
     kentauros.git.format_version_git()
@@ -22,46 +9,6 @@ def format_version_git(ver, rev):
 
     # this evaluates to e.g. 11.1.0~devel~git20150903~34af7e2b
     return ver + "~git" + date + "~" + rev
-
-
-def get_srcrev_git(pkgname, srcname):
-    """
-    kentauros.git.get_srcrev_git()
-    function that returns the current commit id of the repository
-    """
-    goto_srcdir(pkgname, srcname)
-    rev = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode()
-    rev = rev.rstrip('\r\n')[0:8]
-    goto_basedir()
-
-    dbg(pkgname + " repo is at commit: " + rev)
-    return rev
-
-
-def get_source_git(pkgname, orig, dest, keep=True):
-    """
-    kentauros.git.get_source_git()
-    function that downloads the specified git repository (whole or shallow)
-    """
-    srcname = get_srcname(pkgname)
-    dbg("Checking out git repository " + orig + " to directory " + dest + ".")
-
-    quietstr = "--quiet"
-    if DEBUG:
-        quietstr = "--verbose"
-
-    goto_pkgdir(pkgname)
-    if keep:
-        subprocess.call(["git", "clone", quietstr, orig, dest])
-    else:
-        subprocess.call(["git", "clone", "--depth=1", quietstr, orig, dest])
-    goto_basedir()
-
-    dbg("Checkout to " + dest + " successful.")
-    rev = get_srcrev_git(pkgname, srcname)
-    dbg("Revision of checkout: " + rev)
-
-    return rev
 
 
 def src_update_git(pkgname, srcname):

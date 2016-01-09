@@ -3,11 +3,16 @@ kentauros.package module
 base data structures containing information about and methods for packages
 """
 
-from configparser import ConfigParser
+from configobj import ConfigObj
 import os
+from validate import Validator
 
 from kentauros.config import KTR_CONF
-from kentauros.init import err
+from kentauros.init import err, log
+
+
+SPECFILE = "/usr/share/kentauros/package_verifyspec.conf"
+CONFIGSPEC = ConfigObj(SPECFILE, list_values=False)
 
 
 class Package:
@@ -19,17 +24,23 @@ class Package:
     def __init__(self, name):
         self.name = name
         self.conf = None
+        self.file = os.path.join(KTR_CONF.confdir,
+                                 self.name + ".conf")
 
     def readin(self):
         """
         kentauros.package.Package.readin()
         method that reads package configuration from $NAME.conf file in CONFDIR
         """
-        self.conf = ConfigParser()
         try:
-            self.conf.read(os.path.join(KTR_CONF.confdir, self.name + ".conf"))
+            self.conf = ConfigObj(self.file,
+                                  write_empty_values=True,
+                                  configspec=CONFIGSPEC)
         except OSError:
-            err("Package configuration file for " + self.name + " could not be read.")
+            err("Package configuration file for " +
+                self.name +
+                " could not be read.")
+            err("Path: " + self.file)
             self.conf = None
 
     def writeout(self):
@@ -39,8 +50,36 @@ class Package:
         """
         if self.conf is None:
             err("Package configuration is not present and cannot be written to file.")
+
         try:
-            self.conf.write(os.path.join(KTR_CONF.confdir, self.name + ".conf"))
+            self.conf.write()
         except OSError:
-            err("Package configuration file for " + self.name + " could not be written.")
+            err("Package configuration file for " +
+                self.name +
+                " could not be written.")
+            err("Path: " + self.file)
+
+    def validate(self):
+        """
+        kentauros.package.Package.validate()
+        method that validates that every expected config value is present
+        """
+
+        val = Validator()
+        test = self.conf.validate(val)
+        return test
+
+    def create(self):
+        """
+        kentauros.package.Package.validate()
+        method that creates a new config file with default or empty values
+        """
+
+        val = Validator()
+
+        self.conf = ConfigObj(self.file, configspec=CONFIGSPEC)
+        test = self.conf.validate(val, copy=True)
+
+        log("Dummy package configuration written successfully.", 2)
+        return test
 
