@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="kentauros",
-    version="0.0.3",
+    version="0.0.4",
     author="Fabio Valentini",
     author_email="decathorpe@gmail.com",
     description="build system for building RPM package from upstream sources",
