@@ -15,3 +15,7 @@
 - add PACKAGE_CONF.verify() to verify configuration validity
 - refactor to allow modularisation into plugins (less dependencies)
 
+- write release number to config file (so --force is not necessary for packaging changes)
+- git: write last git commit date and commit ID to config file
+- bzr: write last bzr rev date and revision to config file
+
