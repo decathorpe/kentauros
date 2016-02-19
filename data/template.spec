@@ -3,7 +3,7 @@
 # if bzr: %%define revno xxx
 
 Summary:        Summary
-Name:           $NAME
+Name:           YOUR_PACKAGE_NAME
 # Version:        $VERSION if building from release tarball
 # Version:        $VERSION~git%{date}~%{rev} if building from git master
 # Version:        $VERSION~rev%{revno} if building from bzr master
@@ -17,9 +17,11 @@ Source1: %{name}.conf
 
 # Patch0:
 
-# BuildRequires:
+# BuildRequires: desktop-file-utils
+# BuildRequires: libappstream-util
 
 # Requires:
+
 
 %description
 
