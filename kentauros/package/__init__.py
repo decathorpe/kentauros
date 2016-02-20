@@ -3,16 +3,16 @@ kentauros.package module
 base data structures containing information about and methods for packages
 """
 
-from configobj import ConfigObj
+import configparser
 import os
-from validate import Validator
+
+from kentauros import KTR_SYSTEM_DATADIR
 
 from kentauros.config import KTR_CONF
 from kentauros.init import err, log
 
 
-SPECFILE = "/usr/share/kentauros/package_verifyspec.conf"
-CONFIGSPEC = ConfigObj(SPECFILE, list_values=False)
+PKG_DEFAULT_CONF_FILE = os.path.join(KTR_SYSTEM_DATADIR, "package.conf")
 
 
 class Package:
@@ -24,8 +24,7 @@ class Package:
     def __init__(self, name):
         self.name = name
         self.conf = None
-        self.file = os.path.join(KTR_CONF.confdir,
-                                 self.name + ".conf")
+        self.file = os.path.join(KTR_CONF.confdir, self.name + ".conf")
 
     def readin(self):
         """
@@ -33,9 +32,8 @@ class Package:
         method that reads package configuration from $NAME.conf file in CONFDIR
         """
         try:
-            self.conf = ConfigObj(self.file,
-                                  write_empty_values=True,
-                                  configspec=CONFIGSPEC)
+            self.conf = configparser.ConfigParser()
+            self.conf.read(self.file)
         except OSError:
             err("Package configuration file for " +
                 self.name +
@@ -52,7 +50,7 @@ class Package:
             err("Package configuration is not present and cannot be written to file.")
 
         try:
-            self.conf.write()
+            self.conf.write(self.file)
         except OSError:
             err("Package configuration file for " +
                 self.name +
@@ -64,22 +62,5 @@ class Package:
         kentauros.package.Package.validate()
         method that validates that every expected config value is present
         """
-
-        val = Validator()
-        test = self.conf.validate(val)
-        return test
-
-    def create(self):
-        """
-        kentauros.package.Package.validate()
-        method that creates a new config file with default or empty values
-        """
-
-        val = Validator()
-
-        self.conf = ConfigObj(self.file, configspec=CONFIGSPEC)
-        test = self.conf.validate(val, copy=True)
-
-        log("Dummy package configuration written successfully.", 2)
-        return test
+        pass
 

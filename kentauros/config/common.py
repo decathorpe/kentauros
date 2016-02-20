@@ -6,9 +6,8 @@ all configuration methods.
 
 import configparser
 from enum import Enum
-import os
 
-from kentauros.init import dbg, err
+from kentauros.init import dbg, log
 from kentauros.init.env import HOME
 
 
@@ -34,7 +33,7 @@ class KtrConfType(Enum):
     FALLBACK = 7
 
 
-class KtrConf:
+class KtrConf(configparser.ConfigParser): # pylint: disable=too-many-ancestors
     """
     kentauros.config.base.KtrConf
     class that contains information about kentauros configuration options.
@@ -44,9 +43,7 @@ class KtrConf:
     - may be extended
     """
     def __init__(self):
-        self.confdir = ""
-        self.datadir = ""
-        self.specdir = ""
+        super().__init__()
         self.type = None
 
     def succby(self, other):
@@ -56,65 +53,11 @@ class KtrConf:
           config values from another KtrConf (other)
         """
         assert isinstance(other, KtrConf)
-        if other.confdir != None:
-            dbg("confdir overridden by value in " + other.type.name + " config")
-            self.confdir = other.confdir
-        if other.datadir != None:
-            dbg("datadir overridden by value in " + other.type.name + " config")
-            self.datadir = other.datadir
-        if other.specdir != None:
-            dbg("specdir overridden by value in " + other.type.name + " config")
-            self.specdir = other.specdir
 
-    def read(self, filepath, conftype):
-        """
-        kentauros.config.KtrConf.read()
-        method that reads configuration file and parses the options.
-        - if file is not present:
-            - if force=True is specified: OSError is raised.
-            - else: a debug message might be displayed. returns False.
-        - if file is present but does not contain neccessary keys:
-            returns False.
-        returns True if everything worked.
-        """
-
-        file_access = os.access(filepath, os.R_OK)
-
-        if not file_access:
-            raise FileNotFoundError
-
-        configfile = configparser.ConfigParser()
-        configfile.read(filepath)
-
-        self.type = conftype
-
-        errors = 0
-
-        try:
-            self.confdir = configfile['main']['confdir']
-            self.confdir = __replace_home__(self.confdir)
-        except KeyError:
-            err("Configuration file does not contain main section or confdir value.")
-            errors += 1
-
-        try:
-            self.datadir = configfile['main']['datadir']
-            self.datadir = __replace_home__(self.datadir)
-        except KeyError:
-            err("Configuration file does not contain main section or datadir value.")
-            errors += 1
-
-        try:
-            self.specdir = configfile['main']['specdir']
-            self.specdir = __replace_home__(self.specdir)
-        except KeyError:
-            err("Configuration file does not contain main section or specdir value.")
-            errors += 1
-
-        if not errors:
-            return False
-        else:
-            return True
+        for section in other:
+            for key in other[section]:
+                self[section][key] = other[section][key]
+                dbg(section + " overridden by value in " + other.type.name + " config")
 
     def verify(self):
         """
@@ -125,12 +68,31 @@ class KtrConf:
         # pass
         # check for directory r/w access
 
-    def write(self, dest):
-        """
-        kentauros.config.base.KtrConf.write()
-        method for writing a changed configuration out to a config file.
-        """
-        assert isinstance(dest, KtrConfType)
-        print(self)
-        # write config file to dest if type matches and dest is writable
+
+def get_config_from_file(filepath, errmsg, conftype):
+    """
+    kentauros.config.common.get_config_from_file():
+    function that reads and returns configuration from filepath
+    - prints error message if file does not exist
+    - sets type to conftype
+    """
+    assert isinstance(filepath, str)
+    assert isinstance(errmsg, str)
+    assert isinstance(conftype, KtrConfType)
+
+    config = KtrConf()
+    result = config.read(filepath)
+
+    if result == []:
+        log(errmsg, 1)
+        return None
+
+    else:
+        config.type = conftype
+
+        for section in config:
+            for key in config[section]:
+                config[section][key] = __replace_home__(config[section][key])
+
+        return config
 

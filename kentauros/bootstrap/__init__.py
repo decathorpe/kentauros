@@ -15,17 +15,22 @@ def ktr_create_dirs():
     kentauros.bootstrap.ktr_create_dirs()
     create confdir, datadir, specdir specified by ENV, CLI, configuration files
     """
-    if not os.access(KTR_CONF.confdir, os.W_OK):
+
+    if not os.access(KTR_CONF['main']['basedir'], os.W_OK):
+        log("kentauros basedir does not exist and will be created.", 1)
+        os.makedirs(KTR_CONF['main']['basedir'])
+
+    if not os.access(KTR_CONF['main']['confdir'], os.W_OK):
         log("kentauros confdir does not exist and will be created.", 1)
-        os.makedirs(KTR_CONF.confdir)
+        os.makedirs(KTR_CONF['main']['confdir'])
 
-    if not os.access(KTR_CONF.datadir, os.W_OK):
+    if not os.access(KTR_CONF['main']['datadir'], os.W_OK):
         log("kentauros datadir does not exist and will be created.", 1)
-        os.makedirs(KTR_CONF.datadir)
+        os.makedirs(KTR_CONF['main']['datadir'])
 
-    if not os.access(KTR_CONF.specdir, os.W_OK):
+    if not os.access(KTR_CONF['main']['specdir'], os.W_OK):
         log("kentauros specdir does not exist and will be created.", 1)
-        os.makedirs(KTR_CONF.specdir)
+        os.makedirs(KTR_CONF['main']['specdir'])
 
 
 def ktr_bootstrap():

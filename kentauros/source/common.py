@@ -16,9 +16,8 @@ class SourceType(enum.Enum):
     """
     LOCAL = 1
     URL = 2
-    SRPM = 3
-    GIT = 4
-    BZR = 5
+    GIT = 3
+    BZR = 4
 
 
 class Source():

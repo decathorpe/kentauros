@@ -68,5 +68,5 @@ def log(msg, pri=2):
     """
 
     if (pri >= VERBY) or DEBUG:
-        print(msg)
+        print("LOG: " + msg)
 

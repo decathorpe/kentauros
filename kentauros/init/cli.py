@@ -27,6 +27,13 @@ CLIPARSER.add_argument(
     dest="verby",
     help="enable verbose output. use twice for extra verbosity")
 
+# --basedir switch
+CLIPARSER.add_argument(
+    "--basedir",
+    action="store",
+    default=None,
+    help="specify base directory for storing configuration, specs, data")
+
 # --confdir switch
 CLIPARSER.add_argument(
     "--confdir",
@@ -54,7 +61,7 @@ CLIPARSER.add_argument(
     "--prefconf",
     action="store",
     default=None,
-    help="specify preferred configuration to be used")
+    help="specify preferred configuration to be used (cli, env, project, user, system, default, fallback)")
 
 
 CLI_ARGS = CLIPARSER.parse_args()
@@ -66,6 +73,7 @@ if CLIVERBY < 0:
     print("DBG: Verbosity levels only range from 0 to 2.")
     CLIVERBY = 0
 
+CLI_BASEDIR = CLI_ARGS.basedir
 CLI_CONFDIR = CLI_ARGS.confdir
 CLI_DATADIR = CLI_ARGS.datadir
 CLI_SPECDIR = CLI_ARGS.specdir

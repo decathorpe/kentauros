@@ -2,6 +2,9 @@
 
 from setuptools import setup
 
+from kentauros import KTR_SYSTEM_DATADIR
+
+
 setup(
     name="kentauros",
     version="0.0.4",
@@ -13,7 +16,7 @@ setup(
     url="http://github.com/decathorpe/kentauros",
     packages=['kentauros'],
     scripts=['ktr'],
-    data_files=[('/usr/share/kentauros/', ['data/default.conf'])],
+    data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf'])],
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
