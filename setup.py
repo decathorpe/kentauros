@@ -16,7 +16,8 @@ setup(
     url="http://github.com/decathorpe/kentauros",
     packages=['kentauros'],
     scripts=['ktr'],
-    data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf'])],
+    data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
+                (KTR_SYSTEM_DATADIR, ['data/package.conf'])],
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',

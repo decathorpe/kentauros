@@ -5,9 +5,11 @@ this class is for handling sources that are specified by git repo URL
 """
 
 import os
+import shutil
 import subprocess
 
-from kentauros.init import DEBUG, VERBY, err, log
+from kentauros.init import DEBUG, VERBY, dbg, err, log
+from kentauros.config import KTR_CONF
 from kentauros.source.common import Source, SourceType
 
 
@@ -21,22 +23,36 @@ class GitSource(Source):
     - checking out master branch
     """
 
-    def __init__(self,
-                 name,
-                 branch="master",
-                 commit=None,
-                 keep=True,
-                 shallow=False):
+    def __init__(self, pkgconfig):
+        super().__init__(pkgconfig)
 
-        super().__init__(name)
-
-        self.branch = branch
-        self.commit = commit
-        self.keep = keep
-        self.lastdate = None
-        self.lastrev = None
-        self.shallow = shallow
+        self.branch = pkgconfig['git']['branch']
+        self.commit = pkgconfig['git']['commit']
+        self.gitkeep = bool(pkgconfig['git']['keep'])
+        self.shallow = bool(pkgconfig['git']['shallow'])
         self.type = SourceType.GIT
+
+
+    def date(self):
+        """
+        kentauros.source.git.date()
+        returns date of HEAD commit
+        """
+
+        cmd = ["git", "show", "-s", "--date=short", "--format=%cd"]
+
+        prevdir = os.getcwd()
+
+        if not os.access(self.dest, os.R_OK):
+            err("Sources need to be .get() before .date() can be determined.")
+            return None
+
+        os.chdir(self.dest)
+        dbg("git command: " + str(cmd))
+        date = subprocess.check_output(cmd).decode().rstrip('\r\n').replace("-", "")
+        os.chdir(prevdir)
+
+        return date
 
 
     def rev(self):
@@ -54,10 +70,15 @@ class GitSource(Source):
             return None
 
         os.chdir(self.dest)
+        dbg("git command: " + str(cmd))
         rev = subprocess.check_output(cmd).decode().rstrip('\r\n')
         os.chdir(prevdir)
 
         return rev
+
+
+    def formatver(self):
+        return self.version + "~git" + self.date() + "~" + self.rev()[0:8]
 
 
     def get(self):
@@ -89,17 +110,19 @@ class GitSource(Source):
         cmd.append("--branch")
         cmd.append(self.branch)
 
+        # TODO: check out commit instead if branch master if specified
+
         cmd.append(self.orig)
         cmd.append(self.dest)
 
-        log("git command: " + str(cmd), 0)
+        dbg("git command: " + str(cmd))
         subprocess.call(cmd)
 
         rev = self.rev()
         return rev
 
 
-    def update(self, oldver=None, newver=None):
+    def update(self):
         """
         kentauros.source.git.update()
         update sources to latest commit in specified branch
@@ -122,30 +145,59 @@ class GitSource(Source):
         rev_old = self.rev()
 
         os.chdir(self.dest)
-        log("git command: " + str(cmd), 0)
+        dbg("git command: " + str(cmd))
         subprocess.call(cmd)
         os.chdir(prevdir)
 
         rev_new = self.rev()
 
         if rev_new != rev_old:
-            return rev_new
+            return True
         else:
-            return None
+            return False
 
 
     def refresh(self):
-        # TODO: remove source repo ad exported tarballs from datadir
-        # and redownload git repo
-        pass
+        self.clean()
+        self.get()
 
-
+    """
     def export(self):
         # TODO: git archive HEAD > tar.gz to datadir
-        pass
+        ""
+        kentauros.source.git.export()
+        exports current git commit to tarball (.tar.gz)
+        ""
 
+        cmd = ["git", "rev-parse", "HEAD"]
 
-    def clean(self, force=False):
-        # TODO: remove downloaded git repo from datadir (respect keep, force)
-        pass
+        prevdir = os.getcwd()
+
+        if not os.access(self.dest, os.R_OK):
+            err("Sources need to be .get() before .rev() can be determined.")
+            return None
+
+        os.chdir(self.dest)
+        dbg("git command: " + str(cmd))
+        rev = subprocess.check_output(cmd).decode().rstrip('\r\n')
+        os.chdir(prevdir)
+
+        return rev
+    """
+
+    def clean(self):
+        """
+        kentauros.source.git.update()
+        update sources to latest commit in specified branch
+        returns commit id of new commit, otherwise returns None
+        """
+
+        if not os.access(self.dest, os.R_OK):
+            log("Nothing here to be cleaned.", 0)
+            return False
+
+        # try to be careful with "rm -r"
+        assert os.path.isabs(self.dest)
+        assert KTR_CONF['main']['datadir'] in self.dest
+        shutil.rmtree(self.dest)
 

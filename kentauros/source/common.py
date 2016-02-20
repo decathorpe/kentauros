@@ -3,13 +3,13 @@ kentauros.source.common
 contains Source class definition that is inherited by other classes
 """
 
-import enum
+from enum import Enum
 import os
 
 from kentauros.config import KTR_CONF
 
 
-class SourceType(enum.Enum):
+class SourceType(Enum):
     """
     kentauros.source.common.SourceType
     enum that describes the kind of package sources supported
@@ -32,16 +32,16 @@ class Source():
     - type: determines type of upstream source
     - keep: determines if sources are kept between builds
     """
-    def __init__(self, name):
-        self.sdir = os.path.join(KTR_CONF.datadir, name)
+    def __init__(self, pkgconfig):
+        name = pkgconfig['package']['name']
+        self.sdir = os.path.join(KTR_CONF['main']['datadir'], name)
         self.dest = os.path.join(self.sdir, name)
-
-        self.keep = bool()
-        self.orig = ""
+        self.keep = bool(pkgconfig['source']['keep'])
+        self.orig = pkgconfig['source']['orig']
+        self.version = pkgconfig['source']['version']
         self.type = None
-        self.version = ""
 
-    def clean(self, force=False):
+    def clean(self):
         "remove downloaded files in datadir (respect keep and force!)"
         pass
 
@@ -57,7 +57,7 @@ class Source():
         "re-put source into datadir"
         pass
 
-    def update(self, oldver=None, newver=None):
+    def update(self):
         "update source in datadir from oldver to newver and update package.conf in confdir"
         pass
 

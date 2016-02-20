@@ -4,11 +4,14 @@
 ktr is kentauros.py
 """
 
+from configparser import ConfigParser
+import os
+
 from kentauros.init import DEBUG, VERBY, log
 from kentauros.config import KTR_CONF
 from kentauros.bootstrap import ktr_bootstrap
 
-# from kentauros.source.git import GitSource
+from kentauros.source.git import GitSource
 
 
 log("DEBUG set: " + str(DEBUG), 1)
@@ -21,7 +24,16 @@ log("SPECDIR: " + KTR_CONF['main']['specdir'], 1)
 
 ktr_bootstrap()
 
-# source = GitSource("mesa", shallow=True)
-# source.orig = "git://anongit.freedesktop.org/mesa/mesa"
-# rev = source.get()
+
+config = ConfigParser()
+config.read(os.path.join(KTR_CONF['main']['confdir'], "mesa.conf"))
+
+source = GitSource(config)
+source.get()
+print(source.rev())
+print(source.formatver())
+source.update()
+print(source.rev())
+print(source.formatver())
+source.clean()
 

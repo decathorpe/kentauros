@@ -14,32 +14,18 @@ Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
 BuildRequires:  python3-devel
 
-Requires:       python3-kentauros
+Requires:       bzr
+Requires:       copr-cli
+Requires:       git
+Requires:       mock
+Requires:       rpmdevtools
+Requires:       wget
 
 
 %description
 kentauros is a small build system with little need for configuration.
 create a directory named after the project, drop in a .conf and RPM .spec file,
 configure copr-cli, and automagic updating, building, uploading to copr works.
-
-
-%package     -n python3-kentauros
-Summary:        Small build system, written in python
-
-Requires:       bzr
-Requires:       copr-cli
-Requires:       git
-Requires:       mock
-Requires:	python3-configobj
-Requires:       rpmdevtools
-Requires:       wget
-
-%description -n python3-kentauros
-kentauros is a small build system with little need for configuration.
-create a directory named after the project, drop in a .conf and RPM .spec file,
-configure copr-cli, and automagic updating, building, uploading to copr works.
-
-This package contains the python3 module only. For the main script, see ktr.
 
 
 %prep
@@ -53,8 +39,6 @@ This package contains the python3 module only. For the main script, see ktr.
 %install
 %py3_install
 
-mkdir -p %{buildroot}/%{_localstatedir}/lib/kentauros
-
 
 %clean
 rm -rf %{buildroot}
@@ -63,9 +47,7 @@ rm -rf %{buildroot}
 %files
 %{_bindir}/ktr
 %{_datadir}/kentauros/
-%{_localstatedir}/lib/kentauros/
 
-%files       -n python3-kentauros
 %{python3_sitelib}/kentauros
 %{python3_sitelib}/kentauros-%{version}-py%{python3_version}.egg-info/
 
