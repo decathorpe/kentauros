@@ -17,6 +17,7 @@ def get_fallback_config():
     result['main']['basedir'] = "./"
     result['main']['confdir'] = "./"
     result['main']['datadir'] = "./"
+    result['main']['packdir'] = "./"
     result['main']['specdir'] = "./"
     result.type = KtrConfType.FALLBACK
     return result

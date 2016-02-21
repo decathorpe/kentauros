@@ -8,7 +8,7 @@ processes given command line switches to eventually determine location of
 
 from kentauros.config.common import KtrConf, KtrConfType
 
-from kentauros.init.cli import CLI_BASEDIR, CLI_CONFDIR
+from kentauros.init.cli import CLI_BASEDIR, CLI_CONFDIR, CLI_PACKDIR
 from kentauros.init.cli import CLI_DATADIR, CLI_SPECDIR
 
 
@@ -28,6 +28,7 @@ def get_cli_config():
         result['main']['basedir'] = CLI_BASEDIR
         result['main']['confdif'] = CLI_CONFDIR
         result['main']['datadir'] = CLI_DATADIR
+        result['main']['packdir'] = CLI_PACKDIR
         result['main']['specdir'] = CLI_SPECDIR
         result.type = KtrConfType.CLI
         return result

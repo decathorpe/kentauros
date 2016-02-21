@@ -41,22 +41,46 @@ class Source():
 
         self.type = None
 
-    def get_keep(self): # pylint: disable=missing-docstring
+    def get_keep(self):
+        """
+        kentauros.source.Source.get_keep():
+        get from config if source tarball shall be kept
+        """
         return bool(self.conf['source']['keep'])
 
-    def get_orig(self): # pylint: disable=missing-docstring
+    def get_orig(self):
+        """
+        kentauros.source.Source.get_orig():
+        get upstream source location from config
+        """
         return self.conf['source']['orig']
 
-    def get_version(self): # pylint: disable=missing-docstring
+    def get_version(self):
+        """
+        kentauros.source.Source.get_version():
+        get upstream source version from config
+        """
         return self.conf['source']['version']
 
-    def set_keep(self, keep): # pylint: disable=missing-docstring
+    def set_keep(self, keep):
+        """
+        kentauros.source.Source.set_keep():
+        set config value that determines if source tarball is kept
+        """
         self.conf['source']['keep'] = keep
 
-    def set_orig(self, orig): # pylint: disable=missing-docstring
+    def set_orig(self, orig):
+        """
+        kentauros.source.Source.set_orig():
+        set config value that determines upstream source location
+        """
         self.conf['source']['orig'] = orig
 
-    def set_version(self, version): # pylint: disable=missing-docstring
+    def set_version(self, version):
+        """
+        kentauros.source.Source.set_version():
+        set config value that determines upstream source version
+        """
         self.conf['source']['version'] = version
 
     def clean(self):

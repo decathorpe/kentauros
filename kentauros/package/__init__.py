@@ -3,47 +3,47 @@ kentauros.package module
 base data structures containing information about and methods for packages
 """
 
-import configparser
+from configparser import ConfigParser
 import os
 
 from kentauros import KTR_SYSTEM_DATADIR
 
 from kentauros.config import KTR_CONF
 from kentauros.init import err, log
+from kentauros.source import SourceType, SOURCE_TYPE_DICT
 
 
-class Package(configparser.ConfigParser): # pylint: disable=too-many-ancestors
+class Package:
     """
     kentauros.package.Package:
     class that holds information about packages.
     at the moment, this only includes package name and the ConfigParser object
     """
     def __init__(self, name):
-        super().__init__()
-        self.file = os.path.join(KTR_CONF.confdir, name + ".conf")
-        self.source = None
+        self.file = os.path.join(KTR_CONF['main']['confdir'], name + ".conf")
+        self.conf = ConfigParser()
 
-    def readin(self):
-        """
-        kentauros.package.Package.readin()
-        method that reads package configuration from $NAME.conf file in CONFDIR
-        """
-        result = self.read(self.file)
-
+        result = self.conf.read(self.file)
         if result == []:
-            err("Package configuration file could not be read.")
+            self.conf = None
+            err("Package configuration could not be read.")
             err("Path: " + self.file)
 
-        return False
+        else:
+            # set source to Source subclass corresponding to setting in source/type
+            self.source = SOURCE_TYPE_DICT[SourceType[self.conf['source']['type'].upper()]](self.conf)
+            #self.builder = MockBuilder(self.conf)
+            #self.uploader = CoprUploader(self.conf)
 
-    def writeout(self):
+
+    def conf_write(self):
         """
         kentauros.package.Package.writeout()
         method that writes package configuration out to $NAME.conf in CONFDIR
         """
 
         try:
-            self.write(self.file)
+            self.conf.write(self.file)
         except OSError:
             err("Package configuration file could not be written.")
             err("Path: " + self.file)

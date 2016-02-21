@@ -39,28 +39,60 @@ class GitSource(Source):
             self.set_shallow("false")
 
 
-    def get_branch(self): # pylint: disable=missing-docstring
+    def get_branch(self):
+        """
+        kentauros.source.Source.get_branch():
+        get upstream git repo branch from config
+        """
         return self.conf['git']['branch']
 
-    def get_commit(self): # pylint: disable=missing-docstring
+    def get_commit(self):
+        """
+        kentauros.source.Source.get_commit():
+        get upstream git repo commit ID from config
+        """
         return self.conf['git']['commit']
 
-    def get_gitkeep(self): # pylint: disable=missing-docstring
+    def get_gitkeep(self):
+        """
+        kentauros.source.Source.get_gitkeep():
+        get value from config if git repo should be kept after export to tarball
+        """
         return self.conf['git']['keep']
 
-    def get_shallow(self): # pylint: disable=missing-docstring
+    def get_shallow(self):
+        """
+        kentauros.source.Source.get_shallow():
+        get value from config if git repo should be a shallow checkout
+        """
         return self.conf['git']['shallow']
 
-    def set_branch(self, branch): # pylint: disable=missing-docstring
+    def set_branch(self, branch):
+        """
+        kentauros.source.Source.set_branch():
+        set config value that determines which branch of upstream git repo to use
+        """
         self.conf['git']['branch'] = branch
 
-    def set_commit(self, commit): # pylint: disable=missing-docstring
+    def set_commit(self, commit):
+        """
+        kentauros.source.Source.set_commit():
+        set config value that determines which commit of upstream git repo to use
+        """
         self.conf['git']['commit'] = commit
 
-    def set_gitkeep(self, keep): # pylint: disable=missing-docstring
+    def set_gitkeep(self, keep):
+        """
+        kentauros.source.Source.set_gitkeep():
+        set config value that determines whether git repo is kept after export to tarball
+        """
         self.conf['git']['keep'] = keep
 
-    def set_shallow(self, shallow): # pylint: disable=missing-docstring
+    def set_shallow(self, shallow):
+        """
+        kentauros.source.Source.set_shallow():
+        set config value that determines whether shallow clone or full clone is done
+        """
         self.conf['git']['shallow'] = shallow
 
 
