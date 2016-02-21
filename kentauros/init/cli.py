@@ -61,7 +61,8 @@ CLIPARSER.add_argument(
     "--prefconf",
     action="store",
     default=None,
-    help="specify preferred configuration to be used (cli, env, project, user, system, default, fallback)")
+    help="specify preferred configuration to be used " +\
+         "(cli, env, project, user, system, default, fallback)")
 
 
 CLI_ARGS = CLIPARSER.parse_args()

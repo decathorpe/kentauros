@@ -11,16 +11,15 @@ class UrlSource(Source):
     kentauros.source.UrlSource
     information about and methods for tarballs available at specified URL
     """
-    def __init__(self, keep=True):
+    def __init__(self):
         super().__init__()
         self.type = SourceType.URL
-        self.keep = keep
 
     def get(self):
         # TODO: download source from orig to datadir
         pass
 
-    def update(self, oldver=None, newver=None):
+    def update(self):
         # TODO: string.replace(oldversion, newversion) in orig
         # TODO: remove old download
         # TODO: download source from orig to datadir
@@ -35,7 +34,7 @@ class UrlSource(Source):
         # release tarballs do not need to be exported before they can be used
         pass
 
-    def clean(self, force=False):
+    def clean(self):
         # TODO: remove downloaded file from datadir (respect keep, force)
         pass
 

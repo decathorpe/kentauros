@@ -4,6 +4,7 @@ contains GitSource class and methods
 this class is for handling sources that are specified by git repo URL
 """
 
+import glob
 import os
 import shutil
 import subprocess
@@ -25,12 +26,22 @@ class GitSource(Source):
 
     def __init__(self, pkgconfig):
         super().__init__(pkgconfig)
+        self.config = pkgconfig
+        self.daily = 0
+        self.type = SourceType.GIT
 
         self.branch = pkgconfig['git']['branch']
         self.commit = pkgconfig['git']['commit']
         self.gitkeep = bool(pkgconfig['git']['keep'])
         self.shallow = bool(pkgconfig['git']['shallow'])
-        self.type = SourceType.GIT
+
+        # either branch or commit must be set. default to branch=master
+        if self.branch == "" and self.commit == "":
+            self.branch = "master"
+
+        # shallow clones and checking out a specific commit is not supported
+        if self.commit != "":
+            self.shallow = False
 
 
     def date(self):
@@ -78,7 +89,14 @@ class GitSource(Source):
 
 
     def formatver(self):
-        return self.version + "~git" + self.date() + "~" + self.rev()[0:8]
+        ver = self.version          # base version
+        ver += "~git"               # git prefix
+        ver += self.date()          # date of commit
+        ver += "."
+        ver += str(self.daily)      # incr in case of multiple builds per day
+        ver += "~"
+        ver += self.rev()[0:8]      # first 8 chars of git commit ID
+        return ver
 
 
     def get(self):
@@ -88,37 +106,74 @@ class GitSource(Source):
         returns commit id of latest commit
         """
 
+        # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
+        # if source directory seems to already exist, quit and return commit id
         if os.access(self.dest, os.R_OK):
             rev = self.rev()
             log("Sources already downloaded. Latest commit id:", 1)
             log(rev, 1)
             return rev
 
-        cmd = ["git", "clone"]
+        # construct git commands
+        cmd = ["git"]
 
+        # construct clone command
+        cmd1 = cmd
+        cmd1.append("clone")
+
+        # add --verbose or --quiet depending on settings
         if (VERBY == 2) and not DEBUG:
-            cmd.append("--quiet")
+            cmd1.append("--quiet")
         if (VERBY == 0) or DEBUG:
-            cmd.append("--verbose")
+            cmd1.append("--verbose")
 
-        if self.shallow:
-            cmd.append("--depth=1")
+        # set --depth==1 if shallow and no commit is specified
+        if self.shallow and not self.commit:
+            cmd1.append("--depth=1")
 
-        cmd.append("--branch")
-        cmd.append(self.branch)
+        # set branch if specified
+        if self.branch:
+            cmd1.append("--branch")
+            cmd1.append(self.branch)
 
-        # TODO: check out commit instead if branch master if specified
+        # set origin and destination
+        cmd1.append(self.orig)
+        cmd1.append(self.dest)
 
-        cmd.append(self.orig)
-        cmd.append(self.dest)
+        # clone git repo from orig to dest
+        dbg("git command: " + str(cmd1))
+        subprocess.call(cmd1)
 
-        dbg("git command: " + str(cmd))
-        subprocess.call(cmd)
+        # if commit is specified: checkout commit
+        if self.commit:
+            # construct checkout command
+            cmd2 = cmd
+            cmd2.append("checkout")
+            cmd2.append(self.commit)
 
+            # go to git repo and remember old cwd
+            prevdir = os.getcwd()
+            os.chdir(self.dest)
+
+            # checkout commit
+            dbg("git command: " + str(cmd2))
+            subprocess.call(cmd2)
+
+            # go to previous dir
+            os.chdir(prevdir)
+
+        # get commit ID
         rev = self.rev()
+
+        # check if checkout worked
+        if self.commit:
+            if self.commit != rev:
+                err("Something went wrong, requested commit is not commit in repo.")
+
+        # return commit ID
         return rev
 
 
@@ -129,29 +184,50 @@ class GitSource(Source):
         returns commit id of new commit, otherwise returns None
         """
 
-        cmd = ["git", "pull", "--rebase"]
+        # construct git command
+        cmd = ["git"]
 
+        cmd.append("pull")
+        cmd.append("--rebase")
+
+        # add --verbose or --quiet depending on settings
         if (VERBY == 2) and not DEBUG:
             cmd.append("--quiet")
         if (VERBY == 0) or DEBUG:
             cmd.append("--verbose")
 
-        prevdir = os.getcwd()
-
-        if not os.access(self.dest, os.R_OK):
+        # check if source directory exists before going there
+        if not os.access(self.dest, os.W_OK):
             err("Sources need to be .get() before .update() can be run.")
             return None
 
+        # get old commit ID
         rev_old = self.rev()
+        date_old = self.date()
 
+        # change to git repodir
+        prevdir = os.getcwd()
         os.chdir(self.dest)
+
+        # get updates
         dbg("git command: " + str(cmd))
         subprocess.call(cmd)
+
+        # go back to previous dir
         os.chdir(prevdir)
 
+        # get new commit ID
         rev_new = self.rev()
+        date_new = self.date()
 
+        # return True if update found, False if not
         if rev_new != rev_old:
+            # if new snapshot is of same day as old snapshot: verion incr
+            if date_new == date_old:
+                self.daily += 1
+            # if new snapshot is of other day as old snapshot: verion reset
+            else:
+                self.daily = 0
             return True
         else:
             return False
@@ -161,29 +237,74 @@ class GitSource(Source):
         self.clean()
         self.get()
 
-    """
+
     def export(self):
-        # TODO: git archive HEAD > tar.gz to datadir
-        ""
+        """
         kentauros.source.git.export()
         exports current git commit to tarball (.tar.gz)
-        ""
+        """
 
-        cmd = ["git", "rev-parse", "HEAD"]
+        # construct git command
+        cmd = ["git"]
 
-        prevdir = os.getcwd()
+        cmd.append("archive")
 
+        # add --verbose or --quiet depending on settings
+        if (VERBY == 2) and not DEBUG:
+            cmd.append("--quiet")
+        if (VERBY == 0) or DEBUG:
+            cmd.append("--verbose")
+
+        # export HEAD or specified commit
+        if self.commit == "":
+            cmd.append("HEAD")
+        else:
+            cmd.append(self.commit)
+
+        # check if git repo exists
         if not os.access(self.dest, os.R_OK):
-            err("Sources need to be .get() before .rev() can be determined.")
+            err("Sources need to be .get() before they can be .export()ed.")
             return None
 
-        os.chdir(self.dest)
-        dbg("git command: " + str(cmd))
-        rev = subprocess.check_output(cmd).decode().rstrip('\r\n')
-        os.chdir(prevdir)
+        version = self.formatver()
+        name_version = self.name + "-" + version
 
-        return rev
-    """
+        # add prefix
+        cmd.append("--prefix=" + name_version + "/")
+
+        file_name = os.path.join(KTR_CONF['main']['datadir'],
+                                 self.name,
+                                 name_version + ".tar.gz")
+
+        cmd.append("--output")
+        cmd.append(file_name)
+
+        # check if file has already been exported
+        if os.path.exists(file_name):
+            log("Tarball has already been exported.", 1)
+            return False
+
+        # remember previous directory
+        prevdir = os.getcwd()
+
+        # change to git repodir
+        os.chdir(self.dest)
+
+        # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
+        dbg("git command: " + str(cmd))
+        subprocess.call(cmd)
+
+        if not self.gitkeep:
+            os.chdir(self.sdir)
+            tarballs = glob.glob(self.name + "*.tar.gz")
+            for tarball in tarballs:
+                abspath = os.path.abspath(tarball)
+                assert KTR_CONF['main']['datadir'] in abspath
+                os.remove(abspath)
+
+        os.chdir(prevdir)
+        return True
+
 
     def clean(self):
         """
@@ -194,10 +315,10 @@ class GitSource(Source):
 
         if not os.access(self.dest, os.R_OK):
             log("Nothing here to be cleaned.", 0)
-            return False
 
-        # try to be careful with "rm -r"
-        assert os.path.isabs(self.dest)
-        assert KTR_CONF['main']['datadir'] in self.dest
-        shutil.rmtree(self.dest)
+        else:
+            # try to be careful with "rm -r"
+            assert os.path.isabs(self.dest)
+            assert KTR_CONF['main']['datadir'] in self.dest
+            shutil.rmtree(self.dest)
 

@@ -35,5 +35,5 @@ print(source.formatver())
 source.update()
 print(source.rev())
 print(source.formatver())
-source.clean()
+source.export()
 

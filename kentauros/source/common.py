@@ -33,12 +33,14 @@ class Source():
     - keep: determines if sources are kept between builds
     """
     def __init__(self, pkgconfig):
-        name = pkgconfig['package']['name']
-        self.sdir = os.path.join(KTR_CONF['main']['datadir'], name)
-        self.dest = os.path.join(self.sdir, name)
+        self.name = pkgconfig['package']['name']
+        self.sdir = os.path.join(KTR_CONF['main']['datadir'], self.name)
+        self.dest = os.path.join(self.sdir, self.name)
+
         self.keep = bool(pkgconfig['source']['keep'])
         self.orig = pkgconfig['source']['orig']
         self.version = pkgconfig['source']['version']
+
         self.type = None
 
     def clean(self):

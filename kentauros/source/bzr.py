@@ -4,8 +4,6 @@ contains GitSource class and methods
 this class is for handling sources that are specified by bzr repo URL
 """
 
-# import subprocess
-
 from kentauros.source.common import Source, SourceType
 
 
@@ -14,18 +12,16 @@ class BzrSource(Source):
     kentauros.source.BzrSource
     information about and methods for bzr repositories available at specified URL
     """
-    def __init__(self, keep=True, shallow=False):
+    def __init__(self):
         super().__init__()
         self.type = SourceType.BZR
-        self.keep = keep
-        self.shallow = shallow
 
     def get(self):
         # TODO: download bzr repo from orig to dest (package name?)
         # is shallow possible with bzr?
         pass
 
-    def update(self, oldver=None, newver=None):
+    def update(self):
         # TODO: bzr pull in source repo
         pass
 
@@ -38,7 +34,7 @@ class BzrSource(Source):
         # TODO: bzr archive tar.gz to datadir
         pass
 
-    def clean(self, force=False):
+    def clean(self):
         # TODO: remove downloaded bzr repo and exported files
         # from datadir (respect keep, force)
         pass

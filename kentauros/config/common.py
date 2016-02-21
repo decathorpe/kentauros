@@ -57,7 +57,8 @@ class KtrConf(configparser.ConfigParser): # pylint: disable=too-many-ancestors
         for section in other:
             for key in other[section]:
                 self[section][key] = other[section][key]
-                dbg(section + " overridden by value in " + other.type.name + " config")
+                dbg(section + "/" + key + ":" + \
+                    " overridden by value in " + other.type.name + " config")
 
     def verify(self):
         """

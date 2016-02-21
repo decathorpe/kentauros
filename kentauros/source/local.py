@@ -22,7 +22,7 @@ class LocalSource(Source):
         # don't do anything if orig is inside datadir
         pass
 
-    def update(self, oldver=None, newver=None):
+    def update(self):
         # local tarball does not need updating
         pass
 
@@ -35,7 +35,7 @@ class LocalSource(Source):
         # local tarballs do not need to be exported
         pass
 
-    def clean(self, force=False):
+    def clean(self):
         # TODO: clean local files from datadir (only if orig is not in datadir)
         pass
 
