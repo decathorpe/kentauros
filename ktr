@@ -29,11 +29,8 @@ config = ConfigParser()
 config.read(os.path.join(KTR_CONF['main']['confdir'], "mesa.conf"))
 
 source = GitSource(config)
+
 source.get()
-print(source.rev())
-print(source.formatver())
 source.update()
-print(source.rev())
-print(source.formatver())
 source.export()
 

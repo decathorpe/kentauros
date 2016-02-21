@@ -33,15 +33,31 @@ class Source():
     - keep: determines if sources are kept between builds
     """
     def __init__(self, pkgconfig):
+        self.conf = pkgconfig
+
         self.name = pkgconfig['package']['name']
         self.sdir = os.path.join(KTR_CONF['main']['datadir'], self.name)
         self.dest = os.path.join(self.sdir, self.name)
 
-        self.keep = bool(pkgconfig['source']['keep'])
-        self.orig = pkgconfig['source']['orig']
-        self.version = pkgconfig['source']['version']
-
         self.type = None
+
+    def get_keep(self): # pylint: disable=missing-docstring
+        return bool(self.conf['source']['keep'])
+
+    def get_orig(self): # pylint: disable=missing-docstring
+        return self.conf['source']['orig']
+
+    def get_version(self): # pylint: disable=missing-docstring
+        return self.conf['source']['version']
+
+    def set_keep(self, keep): # pylint: disable=missing-docstring
+        self.conf['source']['keep'] = keep
+
+    def set_orig(self, orig): # pylint: disable=missing-docstring
+        self.conf['source']['orig'] = orig
+
+    def set_version(self, version): # pylint: disable=missing-docstring
+        self.conf['source']['version'] = version
 
     def clean(self):
         "remove downloaded files in datadir (respect keep and force!)"

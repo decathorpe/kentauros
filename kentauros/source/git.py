@@ -30,18 +30,38 @@ class GitSource(Source):
         self.daily = 0
         self.type = SourceType.GIT
 
-        self.branch = pkgconfig['git']['branch']
-        self.commit = pkgconfig['git']['commit']
-        self.gitkeep = bool(pkgconfig['git']['keep'])
-        self.shallow = bool(pkgconfig['git']['shallow'])
-
         # either branch or commit must be set. default to branch=master
-        if self.branch == "" and self.commit == "":
-            self.branch = "master"
+        if self.get_branch() == "" and self.get_commit() == "":
+            self.set_branch("master")
 
         # shallow clones and checking out a specific commit is not supported
-        if self.commit != "":
-            self.shallow = False
+        if self.get_commit() != "":
+            self.set_shallow("false")
+
+
+    def get_branch(self): # pylint: disable=missing-docstring
+        return self.conf['git']['branch']
+
+    def get_commit(self): # pylint: disable=missing-docstring
+        return self.conf['git']['commit']
+
+    def get_gitkeep(self): # pylint: disable=missing-docstring
+        return self.conf['git']['keep']
+
+    def get_shallow(self): # pylint: disable=missing-docstring
+        return self.conf['git']['shallow']
+
+    def set_branch(self, branch): # pylint: disable=missing-docstring
+        self.conf['git']['branch'] = branch
+
+    def set_commit(self, commit): # pylint: disable=missing-docstring
+        self.conf['git']['commit'] = commit
+
+    def set_gitkeep(self, keep): # pylint: disable=missing-docstring
+        self.conf['git']['keep'] = keep
+
+    def set_shallow(self, shallow): # pylint: disable=missing-docstring
+        self.conf['git']['shallow'] = shallow
 
 
     def date(self):
@@ -89,7 +109,7 @@ class GitSource(Source):
 
 
     def formatver(self):
-        ver = self.version          # base version
+        ver = self.get_version()    # base version
         ver += "~git"               # git prefix
         ver += self.date()          # date of commit
         ver += "."
@@ -131,16 +151,16 @@ class GitSource(Source):
             cmd1.append("--verbose")
 
         # set --depth==1 if shallow and no commit is specified
-        if self.shallow and not self.commit:
+        if self.get_shallow() and not self.get_commit():
             cmd1.append("--depth=1")
 
         # set branch if specified
-        if self.branch:
+        if self.get_branch():
             cmd1.append("--branch")
-            cmd1.append(self.branch)
+            cmd1.append(self.get_branch())
 
         # set origin and destination
-        cmd1.append(self.orig)
+        cmd1.append(self.get_orig())
         cmd1.append(self.dest)
 
         # clone git repo from orig to dest
@@ -148,11 +168,11 @@ class GitSource(Source):
         subprocess.call(cmd1)
 
         # if commit is specified: checkout commit
-        if self.commit:
+        if self.get_commit():
             # construct checkout command
             cmd2 = cmd
             cmd2.append("checkout")
-            cmd2.append(self.commit)
+            cmd2.append(self.get_commit())
 
             # go to git repo and remember old cwd
             prevdir = os.getcwd()
@@ -169,8 +189,8 @@ class GitSource(Source):
         rev = self.rev()
 
         # check if checkout worked
-        if self.commit:
-            if self.commit != rev:
+        if self.get_commit():
+            if self.get_commit() != rev:
                 err("Something went wrong, requested commit is not commit in repo.")
 
         # return commit ID
@@ -256,10 +276,10 @@ class GitSource(Source):
             cmd.append("--verbose")
 
         # export HEAD or specified commit
-        if self.commit == "":
+        if self.get_commit() == "":
             cmd.append("HEAD")
         else:
-            cmd.append(self.commit)
+            cmd.append(self.get_commit())
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
@@ -294,7 +314,7 @@ class GitSource(Source):
         dbg("git command: " + str(cmd))
         subprocess.call(cmd)
 
-        if not self.gitkeep:
+        if not self.get_gitkeep():
             os.chdir(self.sdir)
             tarballs = glob.glob(self.name + "*.tar.gz")
             for tarball in tarballs:
