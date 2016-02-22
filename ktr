@@ -11,13 +11,13 @@ from kentauros.bootstrap import ktr_bootstrap
 from kentauros.package import Package
 
 
-log("DEBUG set: " + str(DEBUG), 1)
-log("VERBOSITY: " + str(VERBY), 1)
+log("ktr: DEBUG set: " + str(DEBUG), 0)
+log("ktr: VERBOSITY: " + str(VERBY), 1)
 
-log("BASEDIR: " + KTR_CONF['main']['basedir'], 1)
-log("CONFDIR: " + KTR_CONF['main']['confdir'], 1)
-log("DATADIR: " + KTR_CONF['main']['datadir'], 1)
-log("SPECDIR: " + KTR_CONF['main']['specdir'], 1)
+log("ktr: BASEDIR: " + KTR_CONF['main']['basedir'], 1)
+log("ktr: CONFDIR: " + KTR_CONF['main']['confdir'], 1)
+log("ktr: DATADIR: " + KTR_CONF['main']['datadir'], 1)
+log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 1)
 
 ktr_bootstrap()
 
@@ -26,4 +26,10 @@ mesa_package = Package("mesa")
 mesa_package.source.get()
 mesa_package.source.update()
 mesa_package.source.export()
+
+mesa_package.constructor.init()
+mesa_package.constructor.prepare()
+mesa_package.constructor.build()
+mesa_package.constructor.export()
+mesa_package.constructor.clean()
 

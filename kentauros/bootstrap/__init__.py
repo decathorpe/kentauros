@@ -17,19 +17,23 @@ def ktr_create_dirs():
     """
 
     if not os.access(KTR_CONF['main']['basedir'], os.W_OK):
-        log("kentauros basedir does not exist and will be created.", 1)
+        log("bootstrap: kentauros basedir does not exist and will be created.", 1)
         os.makedirs(KTR_CONF['main']['basedir'])
 
     if not os.access(KTR_CONF['main']['confdir'], os.W_OK):
-        log("kentauros confdir does not exist and will be created.", 1)
+        log("bootstrap: kentauros confdir does not exist and will be created.", 1)
         os.makedirs(KTR_CONF['main']['confdir'])
 
     if not os.access(KTR_CONF['main']['datadir'], os.W_OK):
-        log("kentauros datadir does not exist and will be created.", 1)
+        log("bootstrap: kentauros datadir does not exist and will be created.", 1)
         os.makedirs(KTR_CONF['main']['datadir'])
 
+    if not os.access(KTR_CONF['main']['packdir'], os.W_OK):
+        log("bootstrap: kentauros packdir does not exist and will be created.", 1)
+        os.makedirs(KTR_CONF['main']['packdir'])
+
     if not os.access(KTR_CONF['main']['specdir'], os.W_OK):
-        log("kentauros specdir does not exist and will be created.", 1)
+        log("bootstrap: kentauros specdir does not exist and will be created.", 1)
         os.makedirs(KTR_CONF['main']['specdir'])
 
 

@@ -165,8 +165,8 @@ class GitSource(Source):
         # if source directory seems to already exist, quit and return commit id
         if os.access(self.dest, os.R_OK):
             rev = self.rev()
-            log("Sources already downloaded. Latest commit id:", 1)
-            log(rev, 1)
+            log("source/git: Sources already downloaded. Latest commit id:", 1)
+            log("source/git: " + rev, 1)
             return rev
 
         # construct git commands
@@ -333,7 +333,7 @@ class GitSource(Source):
 
         # check if file has already been exported
         if os.path.exists(file_name):
-            log("Tarball has already been exported.", 1)
+            log("source/git: Tarball has already been exported.", 1)
             return False
 
         # remember previous directory
@@ -366,7 +366,7 @@ class GitSource(Source):
         """
 
         if not os.access(self.dest, os.R_OK):
-            log("Nothing here to be cleaned.", 0)
+            log("source/git: Nothing here to be cleaned.", 0)
 
         else:
             # try to be careful with "rm -r"

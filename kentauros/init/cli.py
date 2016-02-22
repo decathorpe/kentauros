@@ -48,6 +48,13 @@ CLIPARSER.add_argument(
     default=None,
     help="specify source directory to be used")
 
+# --packdir switch
+CLIPARSER.add_argument(
+    "----packdir",
+    action="store",
+    default=None,
+    help="specify .src.rpm directory to be used")
+
 # --specdir switch
 CLIPARSER.add_argument(
     "--specdir",
@@ -77,6 +84,7 @@ if CLIVERBY < 0:
 CLI_BASEDIR = CLI_ARGS.basedir
 CLI_CONFDIR = CLI_ARGS.confdir
 CLI_DATADIR = CLI_ARGS.datadir
+CLI_PACKDIR = CLI_ARGS.packdir
 CLI_SPECDIR = CLI_ARGS.specdir
 
 CLI_PREF_CONF = None

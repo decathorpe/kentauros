@@ -85,7 +85,7 @@ def get_config_from_file(filepath, errmsg, conftype):
     result = config.read(filepath)
 
     if result == []:
-        log(errmsg, 1)
+        log("config: " + errmsg, 1)
         return None
 
     else:

@@ -9,6 +9,7 @@ import os
 from kentauros import KTR_SYSTEM_DATADIR
 
 from kentauros.config import KTR_CONF
+from kentauros.construct import SrpmConstructor
 from kentauros.init import err, log
 from kentauros.source import SourceType, SOURCE_TYPE_DICT
 
@@ -20,7 +21,9 @@ class Package:
     at the moment, this only includes package name and the ConfigParser object
     """
     def __init__(self, name):
-        self.file = os.path.join(KTR_CONF['main']['confdir'], name + ".conf")
+        self.name = name
+        self.file = os.path.join(KTR_CONF['main']['confdir'], self.name + ".conf")
+
         self.conf = ConfigParser()
 
         result = self.conf.read(self.file)
@@ -31,7 +34,9 @@ class Package:
 
         else:
             # set source to Source subclass corresponding to setting in source/type
-            self.source = SOURCE_TYPE_DICT[SourceType[self.conf['source']['type'].upper()]](self.conf)
+            src_type = self.conf['source']['type'].upper()
+            self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self.conf)
+            self.constructor = SrpmConstructor(self)
             #self.builder = MockBuilder(self.conf)
             #self.uploader = CoprUploader(self.conf)
 
