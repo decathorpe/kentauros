@@ -32,4 +32,5 @@ mesa_package.constructor.prepare()
 mesa_package.constructor.build()
 mesa_package.constructor.export()
 mesa_package.constructor.clean()
+mesa_package.builder.build()
 

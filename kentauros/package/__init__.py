@@ -8,6 +8,7 @@ import os
 
 from kentauros import KTR_SYSTEM_DATADIR
 
+from kentauros.build import MockBuilder
 from kentauros.config import KTR_CONF
 from kentauros.construct import SrpmConstructor
 from kentauros.init import err, log
@@ -37,7 +38,7 @@ class Package:
             src_type = self.conf['source']['type'].upper()
             self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self.conf)
             self.constructor = SrpmConstructor(self)
-            #self.builder = MockBuilder(self.conf)
+            self.builder = MockBuilder(self)
             #self.uploader = CoprUploader(self.conf)
 
 
