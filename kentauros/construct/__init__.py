@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 
 from kentauros.config import KTR_CONF
+from kentauros.construct.rpm_spec import munge_line, spec_bump
 from kentauros.init import VERBY, DEBUG, log
 from kentauros.source.common import SourceType
 
@@ -111,8 +112,29 @@ class SrpmConstructor(Constructor):
         shutil.copy2(pkg_conf_file, self.srcsdir)
         log("construct: File copied: " + pkg_conf_file, 0)
 
-        shutil.copy2(pkg_spec_file, self.specdir)
-        log("construct: File copied: " + pkg_spec_file, 0)
+        new_spec_file = os.path.join(self.specdir, self.package.name + ".spec")
+
+        old_specfile = open(pkg_spec_file, "r")
+        new_specfile = open(new_spec_file, "x")
+
+        if self.package.source.type == SourceType.GIT:
+            date_define = "%define date " + \
+                          self.package.source.date() + \
+                          "." + str(self.package.source.daily) + "\n"
+            rev_define = "%define rev " + \
+                         self.package.source.rev()[0:8] + "\n"
+
+            new_specfile.write(date_define)
+            new_specfile.write(rev_define)
+            new_specfile.write("\n")
+
+        for line in old_specfile:
+            new_specfile.write(munge_line(line, self.package))
+
+        old_specfile.close()
+        new_specfile.close()
+
+        spec_bump(new_spec_file)
 
 
     def build(self):
@@ -130,22 +152,7 @@ class SrpmConstructor(Constructor):
 
         cmd.append("-bs")
 
-        if self.package.source.type == SourceType.GIT:
-            # define date macro
-            cmd.append("--define=date " + \
-                       self.package.source.date() + "." + \
-                       str(self.package.source.daily))
-
-            # define rev macro
-            cmd.append("--define=rev " + \
-                       self.package.source.rev()[0:8])
-
-        # TODO: case bzr
-        # TODO: case url
-
-        pkg_spec_file = os.path.join(self.specdir, self.package.name + ".spec")
-
-        cmd.append(pkg_spec_file)
+        cmd.append(os.path.join(self.specdir, self.package.name + ".spec"))
 
         log("rpmbuild command: " + str(cmd), 1)
         subprocess.call(cmd)

@@ -8,19 +8,38 @@ import os
 import subprocess
 
 from kentauros.config import KTR_CONF
-from kentauros.init import log
+from kentauros.init import DEBUG, VERBY, err, log
 from kentauros.source.common import SourceType
 
 
 class Builder:
+    """
+    kentauros.build.Builder:
+    base class for source package builders
+    """
     def __init__(self, package):
         self.package = package
 
     def build(self):
+        """
+        kentauros.build.Builder.build():
+        method that runs the package build
+        """
+        pass
+
+    def export(self):
+        """
+        kentauros.build.Builder.export():
+        method that exports built packages
+        """
         pass
 
 
 class MockBuilder(Builder):
+    """
+    kentauros.build.MockBuilder:
+    class for .src.rpm source package preparator
+    """
     def __init__(self, package):
         super().__init__(package)
 
@@ -36,18 +55,11 @@ class MockBuilder(Builder):
         # construct mock command
         cmd = ["mock"]
 
-        if self.package.source.type == SourceType.GIT:
-            # define date macro
-            cmd.append("--define=date " + \
-                       self.package.source.date() + "." + \
-                       str(self.package.source.daily))
-
-            # define rev macro
-            cmd.append("--define=rev " + \
-                       self.package.source.rev()[0:8])
-
-        # TODO: case bzr
-        # TODO: case url
+        # add --verbose or --quiet depending on settings
+        if (VERBY == 2) and not DEBUG:
+            cmd.append("--quiet")
+        if (VERBY == 0) or DEBUG:
+            cmd.append("--verbose")
 
         build_succ = list()
         build_fail = list()
@@ -77,4 +89,11 @@ class MockBuilder(Builder):
                     build_fail.append(srpm)
                 else:
                     build_succ.append(srpm)
+
+        if build_fail == []:
+            return True
+        else:
+            err("build: There are failed builds:")
+            err("build: " + str(build_fail))
+            return False
 
