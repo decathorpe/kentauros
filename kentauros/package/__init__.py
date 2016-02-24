@@ -13,6 +13,7 @@ from kentauros.config import KTR_CONF
 from kentauros.construct import SrpmConstructor
 from kentauros.init import err, log
 from kentauros.source import SourceType, SOURCE_TYPE_DICT
+from kentauros.upload import CoprUploader
 
 
 class Package:
@@ -36,10 +37,11 @@ class Package:
         else:
             # set source to Source subclass corresponding to setting in source/type
             src_type = self.conf['source']['type'].upper()
+
             self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self.conf)
             self.constructor = SrpmConstructor(self)
             self.builder = MockBuilder(self)
-            #self.uploader = CoprUploader(self.conf)
+            self.uploader = CoprUploader(self)
 
 
     def conf_write(self):
