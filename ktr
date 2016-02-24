@@ -21,19 +21,22 @@ log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 1)
 
 ktr_bootstrap()
 
+# initialise mesa package, read $KTR_CONFDIR/mesa.conf
 MESA_PKG = Package("mesa")
 
+# prepare mesa sources
 MESA_PKG.source.get()
 MESA_PKG.source.update()
 MESA_PKG.source.export()
 
+# construct mesa-VERSION.src.rpm
 MESA_PKG.constructor.init()
 MESA_PKG.constructor.prepare()
 MESA_PKG.constructor.build()
 MESA_PKG.constructor.export()
 MESA_PKG.constructor.clean()
 
-# MESA_PKG.builder.build()
-
-MESA_PKG.uploader.upload()
+# upload package to copr if mock build is successful
+if MESA_PKG.builder.build():
+    MESA_PKG.uploader.upload()
 
