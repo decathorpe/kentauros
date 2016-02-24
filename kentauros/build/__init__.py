@@ -44,13 +44,36 @@ class MockBuilder(Builder):
         super().__init__(package)
 
 
+    def get_active(self):
+        """
+        kentauros.build.MockBuilder.get_active():
+        check if mock building is active
+        """
+        return bool(self.package.conf['mock']['active'])
+
+
+    def get_dists(self):
+        """
+        kentauros.build.MockBuilder.get_dists():
+        returns list of dists
+        """
+        dists = self.package.conf['mock']['dist'].split(",")
+
+        if dists == [""]:
+            dists = []
+
+        return dists
+
+
     def build(self):
+        if not self.get_active():
+            return True
+
+        # WARNING: MockBuilder.build() builds all name*.src.rpm packages found in PACKDIR
         srpms = glob.glob(os.path.join(KTR_CONF['main']['packdir'],
                                        self.package.name + "*.src.rpm"))
 
-        dists = self.package.conf['mock']['dist'].split(",")
-        if dists == [""]:
-            dists = None
+        dists = self.get_dists()
 
         # construct mock command
         cmd = ["mock"]
@@ -64,7 +87,7 @@ class MockBuilder(Builder):
         build_succ = list()
         build_fail = list()
 
-        if dists != None:
+        if dists == []:
             for dist in dists:
                 cmd_new = cmd.copy()
                 cmd_new.append("-r")

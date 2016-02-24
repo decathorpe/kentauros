@@ -42,8 +42,53 @@ class CoprUploader(Uploader):
             raise KeyError(self.package.name + ".conf does not have an copr/active key.")
 
 
+    def get_active(self):
+        """
+        kentauros.upload.CoprUploader.get_active():
+        check if copr uploading is active
+        """
+        return bool(self.package.conf['copr']['active'])
+
+
+    def get_dists(self):
+        """
+        kentauros.upload.CoprUploader.get_dists():
+        returns list of dists
+        """
+        dists = self.package.conf['copr']['dist'].split(",")
+
+        if dists == [""]:
+            dists = []
+
+        return dists
+
+
+    def get_keep(self):
+        """
+        kentauros.upload.CoprUploader.get_keep():
+        check if srpm should be kept after uploading
+        """
+        return bool(self.package.conf['copr']['keep'])
+
+
+    def get_repo(self):
+        """
+        kentauros.upload.CoprUploader.get_repo():
+        returns copr repo specified in .conf
+        """
+        return self.package.conf['copr']['repo']
+
+
+    def get_wait(self):
+        """
+        kentauros.upload.CoprUploader.get_wait():
+        check if copr-cli should wait for build success or failure
+        """
+        return bool(self.package.conf['copr']['wait'])
+
+
     def upload(self):
-        if not self.package.conf['copr']['active']:
+        if not self.get_active():
             return None
 
         # get all srpms in the package directory
@@ -54,9 +99,7 @@ class CoprUploader(Uploader):
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        dists = self.package.conf['copr']['dist'].split(",")
-        if dists == [""]:
-            dists = []
+        dists = self.get_dists()
 
         # construct copr-cli command
         cmd = ["copr-cli"]
@@ -68,7 +111,7 @@ class CoprUploader(Uploader):
         cmd.append("build")
 
         # append copr repo
-        cmd.append(self.package.conf['copr']['repo'])
+        cmd.append(self.get_repo())
 
         # append chroots (dists)
         for dist in dists:
@@ -76,7 +119,7 @@ class CoprUploader(Uploader):
             cmd.append(dist)
 
         # append --nowait if wait=False
-        if self.package.conf['copr']['wait'] == False:
+        if self.get_wait():
             cmd.append("--nowait")
 
         # append package
@@ -86,6 +129,6 @@ class CoprUploader(Uploader):
         subprocess.call(cmd)
 
         # remove source package if keep=False is specified
-        if not self.package.conf['copr']['keep']:
+        if not self.get_keep():
             os.remove(srpm)
 

@@ -4,6 +4,12 @@
 ktr is kentauros.py
 """
 
+# this script is here for testing purposes
+# it can only be executed if:
+# - data/default.conf is present in an expected location
+# - $HOME/.local/share/kentauros/configs/mesa.conf exists
+# - $HOME/.local/share/kentauros/specs/mesa.specs exists
+
 from kentauros.init import DEBUG, VERBY, log
 from kentauros.config import KTR_CONF
 from kentauros.bootstrap import ktr_bootstrap
@@ -17,6 +23,7 @@ log("ktr: VERBOSITY: " + str(VERBY), 1)
 log("ktr: BASEDIR: " + KTR_CONF['main']['basedir'], 1)
 log("ktr: CONFDIR: " + KTR_CONF['main']['confdir'], 1)
 log("ktr: DATADIR: " + KTR_CONF['main']['datadir'], 1)
+log("ktr: PACKDIR: " + KTR_CONF['main']['packdir'], 1)
 log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 1)
 
 ktr_bootstrap()
@@ -26,7 +33,12 @@ MESA_PKG = Package("mesa")
 
 # prepare mesa sources
 MESA_PKG.source.get()
-MESA_PKG.source.update()
+UPDATE = MESA_PKG.source.update()
+
+if not UPDATE:
+    print("No updates. Exiting.")
+    raise SystemExit
+
 MESA_PKG.source.export()
 
 # construct mesa-VERSION.src.rpm
