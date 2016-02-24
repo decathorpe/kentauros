@@ -4,7 +4,7 @@
 
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.0.4
+Version:        0.1.0
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
@@ -14,12 +14,12 @@ Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
 BuildRequires:  python3-devel
 
-Requires:       bzr
+# Requires:       bzr
 Requires:       copr-cli
 Requires:       git
 Requires:       mock
 Requires:       rpmdevtools
-Requires:       wget
+# Requires:       wget
 
 
 %description
@@ -53,6 +53,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Feb 24 2016 Fabio Valentini <decathorpe@gmail.com> - 0.1.0-1
+- Bump to version 0.1.0.
+
 * Sat Jan 09 2016 Fabio Valentini <decathorpe@gmail.com> - 0.0.4-1
 - Bump version to 0.0.4.
 

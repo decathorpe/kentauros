@@ -7,7 +7,7 @@ from kentauros import KTR_SYSTEM_DATADIR
 
 setup(
     name="kentauros",
-    version="0.0.4",
+    version="0.1.0",
     author="Fabio Valentini",
     author_email="decathorpe@gmail.com",
     description="build system for building RPM package from upstream sources",
