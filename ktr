@@ -26,13 +26,13 @@ LOGPREFIX2 = "     - "
 print()
 
 log("ktr: DEBUG set: " + str(DEBUG), 0)
-log("ktr: VERBOSITY: " + str(VERBY), 1)
+log("ktr: VERBOSITY: " + str(VERBY) + "/2", 1)
 
-log("ktr: BASEDIR: " + KTR_CONF['main']['basedir'], 1)
-log("ktr: CONFDIR: " + KTR_CONF['main']['confdir'], 1)
-log("ktr: DATADIR: " + KTR_CONF['main']['datadir'], 1)
-log("ktr: PACKDIR: " + KTR_CONF['main']['packdir'], 1)
-log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 1)
+log("ktr: BASEDIR: " + KTR_CONF['main']['basedir'], 0)
+log("ktr: CONFDIR: " + KTR_CONF['main']['confdir'], 0)
+log("ktr: DATADIR: " + KTR_CONF['main']['datadir'], 0)
+log("ktr: PACKDIR: " + KTR_CONF['main']['packdir'], 0)
+log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 0)
 
 
 ktr_bootstrap()

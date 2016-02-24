@@ -70,6 +70,15 @@ class SrpmConstructor(Constructor):
     def __init__(self, package):
         super().__init__(package)
 
+        self.tempdir = None
+        self.rpmbdir = None
+        self.specdir = None
+        self.srpmdir = None
+        self.srcsdir = None
+
+
+    def init(self):
+        # make sure to finally call self.clean()
         self.tempdir = tempfile.mkdtemp()
 
         log(LOGPREFIX1 + "Temporary directory " + self.tempdir + " created.", 1)
@@ -79,7 +88,6 @@ class SrpmConstructor(Constructor):
         self.srpmdir = os.path.join(self.tempdir, "rpmbuild", "SRPMS")
         self.srcsdir = os.path.join(self.tempdir, "rpmbuild", "SOURCES")
 
-    def init(self):
         if not os.path.exists(self.rpmbdir):
             os.mkdir(self.rpmbdir)
 

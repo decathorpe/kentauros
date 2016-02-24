@@ -89,7 +89,7 @@ def get_config_from_file(filepath, errmsg, conftype):
     result = config.read(filepath)
 
     if result == []:
-        log(LOGPREFIX1 + errmsg, 1)
+        log(LOGPREFIX1 + errmsg, 0)
         return None
 
     else:

@@ -114,7 +114,7 @@ class GitSource(Source):
             return None
 
         os.chdir(self.dest)
-        log_command(LOGPREFIX1, "git", cmd, 1)
+        log_command(LOGPREFIX1, "git", cmd, 0)
         date = subprocess.check_output(cmd).decode().rstrip('\r\n').replace("-", "")
         os.chdir(prevdir)
 
@@ -136,7 +136,7 @@ class GitSource(Source):
             return None
 
         os.chdir(self.dest)
-        log_command(LOGPREFIX1, "git", cmd, 1)
+        log_command(LOGPREFIX1, "git", cmd, 0)
         rev = subprocess.check_output(cmd).decode().rstrip('\r\n')
         os.chdir(prevdir)
 
@@ -199,7 +199,7 @@ class GitSource(Source):
         cmd1.append(self.dest)
 
         # clone git repo from orig to dest
-        log_command(LOGPREFIX1, "git", cmd1, 1)
+        log_command(LOGPREFIX1, "git", cmd1, 0)
         subprocess.call(cmd1)
 
         # if commit is specified: checkout commit
@@ -214,7 +214,7 @@ class GitSource(Source):
             os.chdir(self.dest)
 
             # checkout commit
-            log_command(LOGPREFIX1, "git", cmd2, 1)
+            log_command(LOGPREFIX1, "git", cmd2, 0)
             subprocess.call(cmd2)
 
             # go to previous dir
@@ -265,7 +265,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        log_command(LOGPREFIX1, "git", cmd, 1)
+        log_command(LOGPREFIX1, "git", cmd, 0)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -346,7 +346,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        log_command(LOGPREFIX1, "git", cmd, 1)
+        log_command(LOGPREFIX1, "git", cmd, 0)
         subprocess.call(cmd)
 
         if not self.get_gitkeep():
