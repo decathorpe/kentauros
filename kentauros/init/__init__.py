@@ -58,7 +58,7 @@ def err(msg):
 
 def log(msg, pri=2):
     """
-    kentauros.init.log()
+    kentauros.init.log():
     prints log messages if "priority" is equal or less to verbosity level.
     priority levels mean (2 is the default):
     - 0: every message is printed and subprocesses are invoked with --verbose
@@ -66,7 +66,21 @@ def log(msg, pri=2):
     - 2: few messages are printed and subprocesses are invoked with --quiet
     format: <message>
     """
-
     if (pri >= VERBY) or DEBUG:
-        print("LOG: " + msg)
+        print(msg)
+
+
+def log_command(prefix1, basename, cmdlist, pri=2):
+    """
+    kentauros.init.log_command():
+    prints commands that are executed using the subprocess module.
+    """
+    cmdstr = ""
+    prefix2 = " " * len(prefix1)
+
+    for cmd in cmdlist:
+        cmdstr += (cmd + " ")
+
+    log(prefix1 + basename + " command:", pri)
+    log(prefix2 + cmdstr, pri)
 

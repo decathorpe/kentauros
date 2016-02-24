@@ -9,9 +9,12 @@ import os
 import shutil
 import subprocess
 
-from kentauros.init import DEBUG, VERBY, dbg, err, log
+from kentauros.init import DEBUG, VERBY, err, log, log_command
 from kentauros.config import KTR_CONF
 from kentauros.source.common import Source, SourceType
+
+
+LOGPREFIX1 = "ktr/source/git: "
 
 
 class GitSource(Source):
@@ -107,11 +110,11 @@ class GitSource(Source):
         prevdir = os.getcwd()
 
         if not os.access(self.dest, os.R_OK):
-            err("Sources need to be .get() before .date() can be determined.")
+            err(LOGPREFIX1 + "Sources need to be .get() before .date() can be determined.")
             return None
 
         os.chdir(self.dest)
-        dbg("git command: " + str(cmd))
+        log_command(LOGPREFIX1, "git", cmd, 1)
         date = subprocess.check_output(cmd).decode().rstrip('\r\n').replace("-", "")
         os.chdir(prevdir)
 
@@ -133,7 +136,7 @@ class GitSource(Source):
             return None
 
         os.chdir(self.dest)
-        dbg("git command: " + str(cmd))
+        log_command(LOGPREFIX1, "git", cmd, 1)
         rev = subprocess.check_output(cmd).decode().rstrip('\r\n')
         os.chdir(prevdir)
 
@@ -165,8 +168,8 @@ class GitSource(Source):
         # if source directory seems to already exist, quit and return commit id
         if os.access(self.dest, os.R_OK):
             rev = self.rev()
-            log("source/git: Sources already downloaded. Latest commit id:", 1)
-            log("source/git: " + rev, 1)
+            log(LOGPREFIX1 + "Sources already downloaded. Latest commit id:", 1)
+            log(LOGPREFIX1 + rev, 1)
             return rev
 
         # construct git commands
@@ -196,7 +199,7 @@ class GitSource(Source):
         cmd1.append(self.dest)
 
         # clone git repo from orig to dest
-        dbg("git command: " + str(cmd1))
+        log_command(LOGPREFIX1, "git", cmd1, 1)
         subprocess.call(cmd1)
 
         # if commit is specified: checkout commit
@@ -211,7 +214,7 @@ class GitSource(Source):
             os.chdir(self.dest)
 
             # checkout commit
-            dbg("git command: " + str(cmd2))
+            log_command(LOGPREFIX1, "git", cmd2, 1)
             subprocess.call(cmd2)
 
             # go to previous dir
@@ -223,7 +226,7 @@ class GitSource(Source):
         # check if checkout worked
         if self.get_commit():
             if self.get_commit() != rev:
-                err("Something went wrong, requested commit is not commit in repo.")
+                err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
 
         # return commit ID
         return rev
@@ -250,7 +253,7 @@ class GitSource(Source):
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            err("Sources need to be .get() before .update() can be run.")
+            err(LOGPREFIX1 + "Sources need to be .get() before .update() can be run.")
             return None
 
         # get old commit ID
@@ -262,7 +265,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        dbg("git command: " + str(cmd))
+        log_command(LOGPREFIX1, "git", cmd, 1)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -315,7 +318,7 @@ class GitSource(Source):
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
-            err("Sources need to be .get() before they can be .export()ed.")
+            err(LOGPREFIX1 + "Sources need to be .get() before they can be .export()ed.")
             return None
 
         version = self.formatver()
@@ -333,7 +336,7 @@ class GitSource(Source):
 
         # check if file has already been exported
         if os.path.exists(file_name):
-            log("source/git: Tarball has already been exported.", 1)
+            log(LOGPREFIX1 + "Tarball has already been exported.", 1)
             return False
 
         # remember previous directory
@@ -343,7 +346,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        dbg("git command: " + str(cmd))
+        log_command(LOGPREFIX1, "git", cmd, 1)
         subprocess.call(cmd)
 
         if not self.get_gitkeep():
@@ -366,7 +369,7 @@ class GitSource(Source):
         """
 
         if not os.access(self.dest, os.R_OK):
-            log("source/git: Nothing here to be cleaned.", 0)
+            log(LOGPREFIX1 + "Nothing here to be cleaned.", 0)
 
         else:
             # try to be careful with "rm -r"

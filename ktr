@@ -10,12 +10,20 @@ ktr is kentauros.py
 # - $HOME/.local/share/kentauros/configs/mesa.conf exists
 # - $HOME/.local/share/kentauros/specs/mesa.specs exists
 
+import glob
+import os
+
 from kentauros.init import DEBUG, VERBY, log
 from kentauros.config import KTR_CONF
 from kentauros.bootstrap import ktr_bootstrap
-
 from kentauros.package import Package
 
+
+LOGPREFIX1 = "ktr: "
+LOGPREFIX2 = "     - "
+
+
+print()
 
 log("ktr: DEBUG set: " + str(DEBUG), 0)
 log("ktr: VERBOSITY: " + str(VERBY), 1)
@@ -26,29 +34,42 @@ log("ktr: DATADIR: " + KTR_CONF['main']['datadir'], 1)
 log("ktr: PACKDIR: " + KTR_CONF['main']['packdir'], 1)
 log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 1)
 
+
 ktr_bootstrap()
 
-# initialise mesa package, read $KTR_CONFDIR/mesa.conf
-MESA_PKG = Package("mesa")
 
-# prepare mesa sources
-MESA_PKG.source.get()
-UPDATE = MESA_PKG.source.update()
+# get package configs present in CONFDIR
+PKG_CONF_PATHS = glob.glob(os.path.join(KTR_CONF['main']['confdir'], "*.conf"))
 
-if not UPDATE:
-    print("No updates. Exiting.")
-    raise SystemExit
+PKGS = []
 
-MESA_PKG.source.export()
+for pkg_conf_path in PKG_CONF_PATHS:
+    PKGS.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
 
-# construct mesa-VERSION.src.rpm
-MESA_PKG.constructor.init()
-MESA_PKG.constructor.prepare()
-MESA_PKG.constructor.build()
-MESA_PKG.constructor.export()
-MESA_PKG.constructor.clean()
+# log list of found packages
+log(LOGPREFIX1 + "list of found packages:", 2)
+for package in PKGS:
+    log(LOGPREFIX2 + package, 2)
 
-# upload package to copr if mock build is successful
-if MESA_PKG.builder.build():
-    MESA_PKG.uploader.upload()
+
+# process found packages
+for package in PKGS:
+    pkg = Package(package)
+
+    pkg.source.get()
+    if not pkg.source.update():
+        log(LOGPREFIX1 + "No updates for " + package + ".", 2)
+        break
+    pkg.source.export()
+
+    pkg.constructor.init()
+    pkg.constructor.prepare()
+    pkg.constructor.build()
+    pkg.constructor.export()
+    pkg.constructor.clean()
+
+    if pkg.builder.build():
+        pkg.uploader.upload()
+
+print()
 

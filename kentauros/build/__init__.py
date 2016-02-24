@@ -8,8 +8,12 @@ import os
 import subprocess
 
 from kentauros.config import KTR_CONF
-from kentauros.init import DEBUG, VERBY, err, log
+from kentauros.init import DEBUG, VERBY, err, log, log_command
 from kentauros.source.common import SourceType
+
+
+LOGPREFIX1 = "ktr/build: "
+LOGPREFIX2 = "           - "
 
 
 class Builder:
@@ -65,7 +69,7 @@ class MockBuilder(Builder):
         return dists
 
 
-    def build(self):
+    def build(self): # pylint: disable=too-many-branches
         if not self.get_active():
             return True
 
@@ -73,7 +77,16 @@ class MockBuilder(Builder):
         srpms = glob.glob(os.path.join(KTR_CONF['main']['packdir'],
                                        self.package.name + "*.src.rpm"))
 
+        log(LOGPREFIX1 + "list of found source packages:", 2)
+        for srpm in srpms:
+            log(LOGPREFIX2 + srpm)
+
         dists = self.get_dists()
+
+        if dists != []:
+            log(LOGPREFIX1 + "list of specified chroots:", 2)
+            for dist in dists:
+                log(LOGPREFIX2 + dist, 2)
 
         # construct mock command
         cmd = ["mock"]
@@ -87,7 +100,9 @@ class MockBuilder(Builder):
         build_succ = list()
         build_fail = list()
 
-        if dists == []:
+        mock_cmds = list()
+
+        if dists != []:
             for dist in dists:
                 cmd_new = cmd.copy()
                 cmd_new.append("-r")
@@ -95,28 +110,27 @@ class MockBuilder(Builder):
                 for srpm in srpms:
                     cmd_newest = cmd_new.copy()
                     cmd_newest.append(srpm)
-                    log("build: mock command: " + str(cmd_newest), 1)
-                    ret = subprocess.call(cmd_newest)
-                    if ret:
-                        build_fail.append(srpm)
-                    else:
-                        build_succ.append(srpm)
+                    mock_cmds.append(cmd_newest)
         else:
             cmd_new = cmd.copy()
             for srpm in srpms:
                 cmd_newest = cmd_new.copy()
                 cmd_newest.append(srpm)
-                log("build: mock command: " + str(cmd_newest), 1)
-                ret = subprocess.call(cmd_newest)
-                if ret:
-                    build_fail.append(srpm)
-                else:
-                    build_succ.append(srpm)
+                mock_cmds.append(cmd_newest)
+
+        for mock_cmd in mock_cmds:
+            log_command(LOGPREFIX1, "mock", mock_cmd, 1)
+            ret = subprocess.call(cmd)
+            if ret:
+                build_fail.append(mock_cmd)
+            else:
+                build_succ.append(mock_cmd)
 
         if build_fail == []:
             return True
         else:
-            err("build: There are failed builds:")
-            err("build: " + str(build_fail))
+            err(LOGPREFIX1 + "There are failed builds:")
+            for fail in build_fail:
+                err(LOGPREFIX2 + fail)
             return False
 

@@ -8,7 +8,10 @@ import os
 import subprocess
 
 from kentauros.config import KTR_CONF
-from kentauros.init import DEBUG, err, log
+from kentauros.init import DEBUG, err, log, log_command
+
+
+LOGPREFIX1 = "ktr/upload: "
 
 
 class Uploader:
@@ -125,7 +128,7 @@ class CoprUploader(Uploader):
         # append package
         cmd.append(srpm)
 
-        log("upload: copr-cli command: " + str(cmd), 1)
+        log_command(LOGPREFIX1, "copr-cli", cmd, 1)
         subprocess.call(cmd)
 
         # remove source package if keep=False is specified

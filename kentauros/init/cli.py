@@ -78,7 +78,7 @@ CLIDEBUG = CLI_ARGS.debug
 
 CLIVERBY = 2 - CLI_ARGS.verby
 if CLIVERBY < 0:
-    print("DBG: Verbosity levels only range from 0 to 2.")
+    print("DEBUG: Verbosity levels only range from 0 to 2.")
     CLIVERBY = 0
 
 CLI_BASEDIR = CLI_ARGS.basedir

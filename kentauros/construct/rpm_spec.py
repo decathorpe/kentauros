@@ -5,8 +5,11 @@ contains helper functions for building rpm source packages
 
 import subprocess
 
-from kentauros.init import DEBUG, VERBY, log
+from kentauros.init import DEBUG, VERBY, log_command
 from kentauros.source.common import SourceType
+
+
+LOGPREFIX1 = "ktr/construct/rpm_spec: "
 
 
 def if_version(line):
@@ -91,6 +94,6 @@ def spec_bump(specfile, comment=None):
 
     cmd.append('--comment=' + comment)
 
-    log("construct: rpmdev-bumpspec command: " + str(cmd), 1)
+    log_command(LOGPREFIX1, "rpmdev-bumpspec", cmd, 1)
     subprocess.call(cmd)
 

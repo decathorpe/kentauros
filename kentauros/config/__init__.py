@@ -34,6 +34,10 @@ SYSTEM_ERR_MSG = SYSTEM_FILE_PATH + " does not exist or is not readable."
 USER_ERR_MSG = USER_FILE_PATH + " does not exist or is not readable."
 
 
+LOGPREFIX1 = "ktr/config: "
+LOGPREFIX2 = "            - "
+
+
 # configurations, in ascending priority
 KTR_CONF_DICT = OrderedDict()
 
@@ -64,8 +68,8 @@ def get_pref_conf(pref_conf):
     try:
         conf_type = KtrConfType[pref_conf]
     except KeyError:
-        err("Configuration type not supported.")
-        err("Try one of: default, system, user, project, cli, env")
+        err(LOGPREFIX1 + "Configuration type not supported.")
+        err(LOGPREFIX1 + "Supported: default, system, user, project, cli, env")
 
     # getr requested config from Dict
     ktr_conf_new = KTR_CONF_DICT[conf_type]

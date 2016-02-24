@@ -11,8 +11,11 @@ import tempfile
 
 from kentauros.config import KTR_CONF
 from kentauros.construct.rpm_spec import munge_line, spec_bump
-from kentauros.init import VERBY, DEBUG, log
+from kentauros.init import VERBY, DEBUG, log, log_command
 from kentauros.source.common import SourceType
+
+
+LOGPREFIX1 = "ktr/construct: "
 
 
 class Constructor:
@@ -69,25 +72,24 @@ class SrpmConstructor(Constructor):
 
         self.tempdir = tempfile.mkdtemp()
 
-        log("construct: Temporary directory " + self.tempdir + " created.", 1)
+        log(LOGPREFIX1 + "Temporary directory " + self.tempdir + " created.", 1)
 
         self.rpmbdir = os.path.join(self.tempdir, "rpmbuild")
         self.specdir = os.path.join(self.tempdir, "rpmbuild", "SPECS")
         self.srpmdir = os.path.join(self.tempdir, "rpmbuild", "SRPMS")
         self.srcsdir = os.path.join(self.tempdir, "rpmbuild", "SOURCES")
 
-
     def init(self):
         if not os.path.exists(self.rpmbdir):
             os.mkdir(self.rpmbdir)
 
-        log("construct: Temporary rpmbuild directory created.", 1)
+        log(LOGPREFIX1 + "Temporary rpmbuild directory created.", 1)
 
         for directory in [self.specdir, self.srpmdir, self.srcsdir]:
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
-        log("construct: Temporary SOURCES, SPECS, SRPMS directory created.", 1)
+        log(LOGPREFIX1 + "Temporary SOURCES, SPECS, SRPMS directory created.", 1)
 
 
     def prepare(self):
@@ -107,10 +109,10 @@ class SrpmConstructor(Constructor):
             entry_path = os.path.join(pkg_data_dir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.srcsdir)
-                log("construct: File copied: " + entry_path, 0)
+                log(LOGPREFIX1 + "File copied: " + entry_path, 0)
 
         shutil.copy2(pkg_conf_file, self.srcsdir)
-        log("construct: File copied: " + pkg_conf_file, 0)
+        log(LOGPREFIX1 + "File copied: " + pkg_conf_file, 0)
 
         new_spec_file = os.path.join(self.specdir, self.package.name + ".spec")
 
@@ -154,7 +156,7 @@ class SrpmConstructor(Constructor):
 
         cmd.append(os.path.join(self.specdir, self.package.name + ".spec"))
 
-        log("rpmbuild command: " + str(cmd), 1)
+        log_command(LOGPREFIX1, "rpmbuild", cmd, 1)
         subprocess.call(cmd)
 
         os.environ['HOME'] = old_home
@@ -165,7 +167,7 @@ class SrpmConstructor(Constructor):
 
         for srpm in srpms:
             shutil.copy2(srpm, KTR_CONF['main']['packdir'])
-            log("construct: File copied: " + srpm, 0)
+            log(LOGPREFIX1 + "File copied: " + srpm, 0)
 
 
     def clean(self):
