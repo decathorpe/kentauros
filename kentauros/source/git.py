@@ -5,7 +5,6 @@ this class is for handling sources that are specified by git repo URL
 """
 
 import dateutil.parser
-import glob
 import os
 import shutil
 import subprocess
@@ -44,56 +43,56 @@ class GitSource(Source):
 
     def get_branch(self):
         """
-        kentauros.source.Source.get_branch():
+        kentauros.source.git.GitSource.get_branch():
         get upstream git repo branch from config
         """
         return self.conf['git']['branch']
 
     def get_commit(self):
         """
-        kentauros.source.Source.get_commit():
+        kentauros.source.git.GitSource.get_commit():
         get upstream git repo commit ID from config
         """
         return self.conf['git']['commit']
 
     def get_gitkeep(self):
         """
-        kentauros.source.Source.get_gitkeep():
+        kentauros.source.git.GitSource.get_gitkeep():
         get value from config if git repo should be kept after export to tarball
         """
         return self.conf['git']['keep']
 
     def get_shallow(self):
         """
-        kentauros.source.Source.get_shallow():
+        kentauros.source.git.GitSource.get_shallow():
         get value from config if git repo should be a shallow checkout
         """
         return self.conf['git']['shallow']
 
     def set_branch(self, branch):
         """
-        kentauros.source.Source.set_branch():
+        kentauros.source.git.GitSource.set_branch():
         set config value that determines which branch of upstream git repo to use
         """
         self.conf['git']['branch'] = branch
 
     def set_commit(self, commit):
         """
-        kentauros.source.Source.set_commit():
+        kentauros.source.git.GitSource.set_commit():
         set config value that determines which commit of upstream git repo to use
         """
         self.conf['git']['commit'] = commit
 
     def set_gitkeep(self, keep):
         """
-        kentauros.source.Source.set_gitkeep():
+        kentauros.source.git.GitSource.set_gitkeep():
         set config value that determines whether git repo is kept after export to tarball
         """
         self.conf['git']['keep'] = keep
 
     def set_shallow(self, shallow):
         """
-        kentauros.source.Source.set_shallow():
+        kentauros.source.git.GitSource.set_shallow():
         set config value that determines whether shallow clone or full clone is done
         """
         self.conf['git']['shallow'] = shallow
@@ -101,7 +100,7 @@ class GitSource(Source):
 
     def date(self):
         """
-        kentauros.source.git.date()
+        kentauros.source.git.GitSource.date()
         returns date of HEAD commit
         """
 
@@ -129,7 +128,7 @@ class GitSource(Source):
 
     def rev(self):
         """
-        kentauros.source.git.rev()
+        kentauros.source.git.GitSource.rev()
         returns commit id of repository
         """
 
@@ -143,7 +142,7 @@ class GitSource(Source):
 
         os.chdir(self.dest)
         log_command(LOGPREFIX1, "git", cmd, 0)
-        rev = subprocess.check_output(cmd).decode().rstrip('\r\n')
+        rev = subprocess.check_output(cmd).decode().rstrip("\n")
         os.chdir(prevdir)
 
         return rev
@@ -160,7 +159,7 @@ class GitSource(Source):
 
     def get(self):
         """
-        kentauros.source.git.get()
+        kentauros.source.git.GitSource.get()
         get sources from specified branch at orig
         returns commit id of latest commit
         """
@@ -238,10 +237,14 @@ class GitSource(Source):
 
     def update(self):
         """
-        kentauros.source.git.update()
+        kentauros.source.git.GitSource.update()
         update sources to latest commit in specified branch
-        returns commit id of new commit, otherwise returns None
+        returns True if update happened, False if not
         """
+
+        # if specific commit is requested, do not pull updates (obviously)
+        if self.get_commit():
+            return False
 
         # construct git command
         cmd = ["git"]
@@ -284,14 +287,9 @@ class GitSource(Source):
             return False
 
 
-    def refresh(self):
-        self.clean()
-        self.get()
-
-
     def export(self):
         """
-        kentauros.source.git.export()
+        kentauros.source.git.GitSource.export()
         exports current git commit to tarball (.tar.gz)
         """
 
@@ -345,31 +343,13 @@ class GitSource(Source):
         log_command(LOGPREFIX1, "git", cmd, 0)
         subprocess.call(cmd)
 
+        # remove git repo if keep is False
         if not self.get_gitkeep():
-            os.chdir(self.sdir)
-            tarballs = glob.glob(self.name + "*.tar.gz")
-            for tarball in tarballs:
-                abspath = os.path.abspath(tarball)
-                assert KTR_CONF['main']['datadir'] in abspath
-                os.remove(abspath)
-
-        os.chdir(prevdir)
-        return True
-
-
-    def clean(self):
-        """
-        kentauros.source.git.update()
-        update sources to latest commit in specified branch
-        returns commit id of new commit, otherwise returns None
-        """
-
-        if not os.access(self.dest, os.R_OK):
-            log(LOGPREFIX1 + "Nothing here to be cleaned.", 0)
-
-        else:
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
             assert KTR_CONF['main']['datadir'] in self.dest
             shutil.rmtree(self.dest)
+
+        os.chdir(prevdir)
+        return True
 

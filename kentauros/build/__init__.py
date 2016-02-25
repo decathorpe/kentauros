@@ -47,6 +47,11 @@ class MockBuilder(Builder):
     def __init__(self, package):
         super().__init__(package)
 
+        # if mock is not installed: decativate mock builder in conf file
+        if subprocess.call(["which", "mock"]):
+            self.package.conf['mock']['active'] = False
+            self.package.conf.update_conf()
+
 
     def get_active(self):
         """
@@ -54,6 +59,15 @@ class MockBuilder(Builder):
         check if mock building is active
         """
         return bool(self.package.conf['mock']['active'])
+
+
+    def set_active(self, active):
+        """
+        kentauros.build.MockBuilder.set_active():
+        set mock builder to active or inactive
+        """
+        assert isinstance(active, bool)
+        self.package.conf['mock']['active'] = str(active)
 
 
     def get_dists(self):

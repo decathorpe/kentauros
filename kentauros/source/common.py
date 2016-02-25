@@ -5,8 +5,13 @@ contains Source class definition that is inherited by other classes
 
 from enum import Enum
 import os
+import shutil
 
+from kentauros.init import log
 from kentauros.config import KTR_CONF
+
+
+LOGPREFIX1 = "ktr/source: "
 
 
 class SourceType(Enum):
@@ -85,7 +90,13 @@ class Source():
 
     def clean(self):
         "remove downloaded files in datadir (respect keep and force!)"
-        pass
+        if not os.access(self.sdir, os.R_OK):
+            log(LOGPREFIX1 + "Nothing here to be cleaned.", 0)
+        else:
+            # try to be careful with "rm -r"
+            assert os.path.isabs(self.sdir)
+            assert KTR_CONF['main']['datadir'] in self.sdir
+            shutil.rmtree(self.sdir)
 
     def export(self):
         "export source into tarball in datadir, if neccessary"
@@ -97,7 +108,8 @@ class Source():
 
     def refresh(self):
         "re-put source into datadir"
-        pass
+        self.clean()
+        self.get()
 
     def update(self):
         "update source in datadir from oldver to newver and update package.conf in confdir"

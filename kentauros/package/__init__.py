@@ -44,9 +44,9 @@ class Package:
             self.uploader = CoprUploader(self)
 
 
-    def conf_write(self):
+    def update_config(self):
         """
-        kentauros.package.Package.writeout()
+        kentauros.package.Package.update_config()
         method that writes package configuration out to $NAME.conf in CONFDIR
         """
 
