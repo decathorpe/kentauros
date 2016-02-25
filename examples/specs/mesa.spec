@@ -46,8 +46,8 @@
 
 Summary:        Mesa graphics libraries
 Name:           mesa
-Version:        11.2.0~devel~git%{date}~%{rev}
-Release:        0%{dist}
+Version:        11.3.0~devel~git%{date}~%{rev}
+Release:        0%{?dist}
 License:        MIT
 Group:          System Environment/Libraries
 URL:            http://www.mesa3d.org
@@ -340,7 +340,12 @@ export CXXFLAGS="$RPM_OPT_FLAGS %{?with_opencl:-frtti -fexceptions} %{!?with_ope
     --enable-shared-glapi \
     --enable-gbm \
     %{?with_omx:--enable-omx} \
+%if 0%{?fedora} < 24
     %{?with_opencl:--enable-opencl --enable-opencl-icd --with-clang-libdir=%{_prefix}/lib} %{!?with_opencl:--disable-opencl} \
+%endif
+%if 0%{?fedora} > 23
+    %{?with_opencl:--enable-opencl --enable-opencl-icd} %{!?with_opencl:--disable-opencl} \
+%endif
     --enable-glx-tls \
     --enable-texture-float=yes \
     %{?with_llvm:--enable-gallium-llvm} \

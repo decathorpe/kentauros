@@ -120,7 +120,7 @@ class MockBuilder(Builder):
 
         for mock_cmd in mock_cmds:
             log_command(LOGPREFIX1, "mock", mock_cmd, 1)
-            ret = subprocess.call(cmd)
+            ret = subprocess.call(mock_cmd)
             if ret:
                 build_fail.append(mock_cmd)
             else:
@@ -131,6 +131,6 @@ class MockBuilder(Builder):
         else:
             err(LOGPREFIX1 + "There are failed builds:")
             for fail in build_fail:
-                err(LOGPREFIX2 + fail)
+                err(LOGPREFIX2 + str(fail))
             return False
 

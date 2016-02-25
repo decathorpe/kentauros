@@ -4,6 +4,7 @@ contains GitSource class and methods
 this class is for handling sources that are specified by git repo URL
 """
 
+import dateutil.parser
 import glob
 import os
 import shutil
@@ -30,7 +31,6 @@ class GitSource(Source):
     def __init__(self, pkgconfig):
         super().__init__(pkgconfig)
         self.config = pkgconfig
-        self.daily = 0
         self.type = SourceType.GIT
 
         # either branch or commit must be set. default to branch=master
@@ -105,7 +105,7 @@ class GitSource(Source):
         returns date of HEAD commit
         """
 
-        cmd = ["git", "show", "-s", "--date=short", "--format=%cd"]
+        cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
 
         prevdir = os.getcwd()
 
@@ -115,8 +115,14 @@ class GitSource(Source):
 
         os.chdir(self.dest)
         log_command(LOGPREFIX1, "git", cmd, 0)
-        date = subprocess.check_output(cmd).decode().rstrip('\r\n').replace("-", "")
+        date_raw = subprocess.check_output(cmd).decode().rstrip('\r\n')
         os.chdir(prevdir)
+
+        # pylint: disable=no-member
+        dateobj = dateutil.parser.parse(date_raw)
+        date = str(dateobj.year) + str(dateobj.month) + str(dateobj.day) + \
+               "." + \
+               str(dateobj.hour) + str(dateobj.minute) + str(dateobj.second)
 
         return date
 
@@ -146,9 +152,7 @@ class GitSource(Source):
     def formatver(self):
         ver = self.get_version()    # base version
         ver += "~git"               # git prefix
-        ver += self.date()          # date of commit
-        ver += "."
-        ver += str(self.daily)      # incr in case of multiple builds per day
+        ver += self.date()          # date and time of commit
         ver += "~"
         ver += self.rev()[0:8]      # first 8 chars of git commit ID
         return ver
@@ -258,7 +262,6 @@ class GitSource(Source):
 
         # get old commit ID
         rev_old = self.rev()
-        date_old = self.date()
 
         # change to git repodir
         prevdir = os.getcwd()
@@ -273,16 +276,9 @@ class GitSource(Source):
 
         # get new commit ID
         rev_new = self.rev()
-        date_new = self.date()
 
         # return True if update found, False if not
         if rev_new != rev_old:
-            # if new snapshot is of same day as old snapshot: verion incr
-            if date_new == date_old:
-                self.daily += 1
-            # if new snapshot is of other day as old snapshot: verion reset
-            else:
-                self.daily = 0
             return True
         else:
             return False

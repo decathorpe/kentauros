@@ -129,8 +129,7 @@ class SrpmConstructor(Constructor):
 
         if self.package.source.type == SourceType.GIT:
             date_define = "%define date " + \
-                          self.package.source.date() + \
-                          "." + str(self.package.source.daily) + "\n"
+                          self.package.source.date() + "\n"
             rev_define = "%define rev " + \
                          self.package.source.rev()[0:8] + "\n"
 
