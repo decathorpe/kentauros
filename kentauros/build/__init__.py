@@ -3,6 +3,7 @@ kentauros.build module
 contains classes, methods and functions for building packages locally
 """
 
+from distutils.util import strtobool
 import glob
 import os
 import subprocess
@@ -48,7 +49,9 @@ class MockBuilder(Builder):
         super().__init__(package)
 
         # if mock is not installed: decativate mock builder in conf file
-        if subprocess.call(["which", "mock"]):
+        try:
+            subprocess.check_output(["which", "mock"])
+        except subprocess.CalledProcessError:
             self.package.conf['mock']['active'] = False
             self.package.conf.update_conf()
 
@@ -58,7 +61,7 @@ class MockBuilder(Builder):
         kentauros.build.MockBuilder.get_active():
         check if mock building is active
         """
-        return bool(self.package.conf['mock']['active'])
+        return bool(strtobool(self.package.conf['mock']['active']))
 
 
     def set_active(self, active):
@@ -81,6 +84,14 @@ class MockBuilder(Builder):
             dists = []
 
         return dists
+
+
+    def get_keep(self):
+        """
+        kentauros.build.MockBuilder.get_keep():
+        check if srpm should be kept after building
+        """
+        return bool(strtobool(self.package.conf['mock']['keep']))
 
 
     def build(self): # pylint: disable=too-many-branches
@@ -139,6 +150,11 @@ class MockBuilder(Builder):
                 build_fail.append(mock_cmd)
             else:
                 build_succ.append(mock_cmd)
+
+        # remove source package if keep=False is specified
+        if not self.get_keep():
+            for srpm in srpms:
+                os.remove(srpm)
 
         if build_fail == []:
             return True

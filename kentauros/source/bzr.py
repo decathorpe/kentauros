@@ -4,6 +4,7 @@ contains GitSource class and methods
 this class is for handling sources that are specified by bzr repo URL
 """
 
+from distutils.util import strtobool
 import os
 import shutil
 import subprocess
@@ -40,7 +41,7 @@ class BzrSource(Source):
         kentauros.source.bzr.BzrSource.get_bzrkeep():
         get value from config if bzr repo should be kept after export to tarball
         """
-        return bool(self.conf['bzr']['keep'])
+        return bool(strtobool(self.conf['bzr']['keep']))
 
 
     def set_bzrkeep(self, keep):
@@ -49,7 +50,7 @@ class BzrSource(Source):
         set config value that determines whether bzr repo is kept after export to tarball
         """
         assert isinstance(keep, bool)
-        self.conf['bzr']['keep'] = keep
+        self.conf['bzr']['keep'] = str(keep)
 
 
     def get_rev(self):
@@ -132,7 +133,7 @@ class BzrSource(Source):
 
         # branch bzr repo from orig to dest
         log_command(LOGPREFIX1, "bzr", cmd, 0)
-        #subprocess.call(cmd)
+        subprocess.call(cmd)
 
         # get commit ID
         rev = self.rev()
@@ -180,7 +181,7 @@ class BzrSource(Source):
 
         # get updates
         log_command(LOGPREFIX1, "bzr", cmd, 0)
-        #subprocess.call(cmd)
+        subprocess.call(cmd)
 
         # go back to previous dir
         os.chdir(prevdir)
@@ -242,14 +243,16 @@ class BzrSource(Source):
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
         log_command(LOGPREFIX1, "bzr", cmd, 0)
-        #subprocess.call(cmd)
+        subprocess.call(cmd)
 
         # remove bzr repo if keep is False
+        print(self.get_bzrkeep())
         if not self.get_bzrkeep():
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
             assert KTR_CONF['main']['datadir'] in self.dest
             shutil.rmtree(self.dest)
+            log(LOGPREFIX1 + "bzr repo deleted after export to tarball", 1)
 
         os.chdir(prevdir)
         return True

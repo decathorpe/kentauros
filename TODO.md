@@ -20,3 +20,6 @@ def internet_on():
 - allow variables in package.conf and substitute
  - ```$(VERSION)```, ```$(NAME)```, etc.
 
+- bzr: allow lightweight checkouts (conf/bzr/shallow=true)
+- construct: sources do not neccessarily exist, calling source.rev() doesn't work then
+

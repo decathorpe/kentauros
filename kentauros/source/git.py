@@ -5,6 +5,7 @@ this class is for handling sources that are specified by git repo URL
 """
 
 import dateutil.parser
+from distutils.util import strtobool
 import os
 import shutil
 import subprocess
@@ -60,14 +61,14 @@ class GitSource(Source):
         kentauros.source.git.GitSource.get_gitkeep():
         get value from config if git repo should be kept after export to tarball
         """
-        return self.conf['git']['keep']
+        return bool(strtobool(self.conf['git']['keep']))
 
     def get_shallow(self):
         """
         kentauros.source.git.GitSource.get_shallow():
         get value from config if git repo should be a shallow checkout
         """
-        return self.conf['git']['shallow']
+        return bool(strtobool(self.conf['git']['shallow']))
 
     def set_branch(self, branch):
         """
@@ -88,14 +89,16 @@ class GitSource(Source):
         kentauros.source.git.GitSource.set_gitkeep():
         set config value that determines whether git repo is kept after export to tarball
         """
-        self.conf['git']['keep'] = keep
+        assert isinstance(keep, bool)
+        self.conf['git']['keep'] = str(keep)
 
     def set_shallow(self, shallow):
         """
         kentauros.source.git.GitSource.set_shallow():
         set config value that determines whether shallow clone or full clone is done
         """
-        self.conf['git']['shallow'] = shallow
+        assert isinstance(shallow, bool)
+        self.conf['git']['shallow'] = str(shallow)
 
 
     def date(self):
@@ -349,6 +352,7 @@ class GitSource(Source):
             assert os.path.isabs(self.dest)
             assert KTR_CONF['main']['datadir'] in self.dest
             shutil.rmtree(self.dest)
+            log(LOGPREFIX1 + "git repo deleted after export to tarball", 1)
 
         os.chdir(prevdir)
         return True

@@ -3,6 +3,7 @@ kentauros.source.common
 contains Source class definition that is inherited by other classes
 """
 
+from distutils.util import strtobool
 from enum import Enum
 import os
 import shutil
@@ -51,7 +52,7 @@ class Source():
         kentauros.source.Source.get_keep():
         get from config if source tarball shall be kept
         """
-        return bool(self.conf['source']['keep'])
+        return bool(strtobool(self.conf['source']['keep']))
 
     def get_orig(self):
         """
@@ -72,7 +73,8 @@ class Source():
         kentauros.source.Source.set_keep():
         set config value that determines if source tarball is kept
         """
-        self.conf['source']['keep'] = keep
+        assert isinstance(keep, bool)
+        self.conf['source']['keep'] = str(keep)
 
     def set_orig(self, orig):
         """

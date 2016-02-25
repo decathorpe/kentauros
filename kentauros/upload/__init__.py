@@ -3,6 +3,7 @@ kentauros.upload module
 contains classes, methods and functions for uploading packages to build servers
 """
 
+from distutils.util import strtobool
 import glob
 import os
 import subprocess
@@ -50,7 +51,7 @@ class CoprUploader(Uploader):
         kentauros.upload.CoprUploader.get_active():
         check if copr uploading is active
         """
-        return bool(self.package.conf['copr']['active'])
+        return bool(strtobool(self.package.conf['copr']['active']))
 
 
     def get_dists(self):
@@ -71,7 +72,7 @@ class CoprUploader(Uploader):
         kentauros.upload.CoprUploader.get_keep():
         check if srpm should be kept after uploading
         """
-        return bool(self.package.conf['copr']['keep'])
+        return bool(strtobool(self.package.conf['copr']['keep']))
 
 
     def get_repo(self):
@@ -87,7 +88,7 @@ class CoprUploader(Uploader):
         kentauros.upload.CoprUploader.get_wait():
         check if copr-cli should wait for build success or failure
         """
-        return bool(self.package.conf['copr']['wait'])
+        return bool(strtobool(self.package.conf['copr']['wait']))
 
 
     def upload(self):

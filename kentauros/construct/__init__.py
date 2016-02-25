@@ -127,6 +127,7 @@ class SrpmConstructor(Constructor):
         old_specfile = open(pkg_spec_file, "r")
         new_specfile = open(new_spec_file, "x")
 
+        # TODO: use dict of functions for different enum members of SourceType
         if self.package.source.type == SourceType.GIT:
             date_define = "%define date " + \
                           self.package.source.date() + "\n"
@@ -134,6 +135,11 @@ class SrpmConstructor(Constructor):
                          self.package.source.rev()[0:8] + "\n"
 
             new_specfile.write(date_define)
+            new_specfile.write(rev_define)
+            new_specfile.write("\n")
+
+        if self.package.source.type == SourceType.BZR:
+            rev_define = "%define rev " + self.package.source.rev() + "\n"
             new_specfile.write(rev_define)
             new_specfile.write("\n")
 

@@ -28,10 +28,13 @@ def of_version(package):
     kentauros.construct.rpm_spec.of_version()
     function returns a line with the version tag and the current version
     """
+    # TODO: use dict of functions for different enum members of SourceType
     if package.source.type == SourceType.GIT:
         verstr = "Version:" + 8 * " " + package.source.get_version() + "~git%{date}~%{rev}" + "\n"
+    elif package.source.type == SourceType.BZR:
+        verstr = "Version:" + 8 * " " + package.source.get_version() + "~rev%{rev}" + "\n"
     else:
-        verstr = verstr = "Version:" + 8 * " " + package.source.get_version() + "\n"
+        verstr = "Version:" + 8 * " " + package.source.get_version() + "\n"
     return verstr
 
 
