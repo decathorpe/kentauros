@@ -16,6 +16,7 @@ import os
 from kentauros.init import DEBUG, VERBY, log
 from kentauros.config import KTR_CONF
 from kentauros.bootstrap import ktr_bootstrap
+from kentauros.source.common import SourceType
 from kentauros.package import Package
 
 
@@ -60,7 +61,7 @@ for package in PKGS:
     update = pkg.source.update()
 
     # break if no update is found, but continue if source type is URL
-    if (not update) and (package.source.type != SourceType.URL):
+    if (not update) and (pkg.source.type != SourceType.URL):
         log(LOGPREFIX1 + "No updates for " + package + ".", 2)
         break
 
