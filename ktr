@@ -57,18 +57,29 @@ for package in PKGS:
     pkg = Package(package)
 
     pkg.source.get()
-    if not pkg.source.update():
-        log(LOGPREFIX1 + "No updates for " + package + ".", 2)
-        # break
-    pkg.source.export()
+    update = pkg.source.update()
 
+    # break if no update is found, but continue if source type is URL
+    if (not update) and (package.source.type != SourceType.URL):
+        log(LOGPREFIX1 + "No updates for " + package + ".", 2)
+        break
+
+    pkg.source.export()
     pkg.constructor.init()
-    pkg.constructor.prepare()
+
+    # reset release to 0 if update is found (version is incremented)
+    if update:
+        pkg.constructor.prepare(relreset=True)
+    else:
+        pkg.constructor.prepare(relreset=False)
+
     pkg.constructor.build()
     pkg.constructor.export()
     pkg.constructor.clean()
 
-    if pkg.builder.build():
+    local_success = pkg.builder.build()
+
+    if local_success:
         pkg.uploader.upload()
 
 print()

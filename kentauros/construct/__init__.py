@@ -33,7 +33,7 @@ class Constructor:
         """
         pass
 
-    def prepare(self):
+    def prepare(self, relreset=False):
         """
         kentauros.construct.Constructor.prepare()
         method that copies files needed for source package building
@@ -100,7 +100,7 @@ class SrpmConstructor(Constructor):
         log(LOGPREFIX1 + "Temporary SOURCES, SPECS, SRPMS directory created.", 1)
 
 
-    def prepare(self):
+    def prepare(self, relreset=False):
         if not os.path.exists(self.rpmbdir):
             self.init()
 
@@ -127,7 +127,7 @@ class SrpmConstructor(Constructor):
         old_specfile = open(pkg_spec_file, "r")
         new_specfile = open(new_spec_file, "x")
 
-        # TODO: use dict of functions for different enum members of SourceType
+        # TODO: use dict of functions for different enum members of SourceType (bzr, git)
         if self.package.source.type == SourceType.GIT:
             date_define = "%define date " + \
                           self.package.source.date() + "\n"
@@ -144,7 +144,7 @@ class SrpmConstructor(Constructor):
             new_specfile.write("\n")
 
         for line in old_specfile:
-            new_specfile.write(munge_line(line, self.package))
+            new_specfile.write(munge_line(line, self.package, relreset=relreset))
 
         old_specfile.close()
         new_specfile.close()

@@ -31,6 +31,7 @@ class GitSource(Source):
     def __init__(self, pkgconfig):
         super().__init__(pkgconfig)
         self.config = pkgconfig
+        self.dest = os.path.join(self.sdir, self.name)
         self.type = SourceType.GIT
 
         # either branch or commit must be set. default to branch=master

@@ -15,10 +15,10 @@ LOGPREFIX1 = "ktr/construct/rpm_spec: "
 def if_version(line):
     """
     kentauros.construct.rpm_spec.if_version()
-    function returns True if "Version: " is found on spec file line
+    function returns version string if "Version: " is found on spec file line
     """
     if line[0:8] == "Version:":
-        return True
+        return line.lstrip("Version:").lstrip(" ").rstrip("\n")
     else:
         return False
 
@@ -33,6 +33,8 @@ def of_version(package):
         verstr = "Version:" + 8 * " " + package.source.get_version() + "~git%{date}~%{rev}" + "\n"
     elif package.source.type == SourceType.BZR:
         verstr = "Version:" + 8 * " " + package.source.get_version() + "~rev%{rev}" + "\n"
+    elif package.source.type == SourceType.URL:
+        verstr = "Version:" + 8 * " " + package.source.get_version() + "\n"
     else:
         verstr = "Version:" + 8 * " " + package.source.get_version() + "\n"
     return verstr
@@ -41,28 +43,39 @@ def of_version(package):
 def if_release(line):
     """
     kentauros.construct.rpm_spec.if_release()
-    function returns True if "Release: " is found on spec file line
+    function returns release string if "Release: " is found on spec file line
     """
     if line[0:8] == "Release:":
-        return True
+        return line.lstrip("Release:").lstrip(" ").rstrip("\n")
     else:
         return False
 
 
-def of_release(num=0, dist=True):
+def bump_release(relstr_old):
+    """
+    kentauros.construct.rpm_spec.bump_release()
+    returns release string bumped by 1 (hopefully intelligently)
+    """
+    rnum = int(relstr_old[0])
+    rest = relstr_old[1:]
+
+    relstr_new = str(rnum + 1) + rest
+    return relstr_new
+
+
+def of_release(relstr, reset=False):
     """
     kentauros.construct.rpm_spec.of_release()
     function returns a line with the release tag and 0%{?dist} if dist is True
     """
-    assert isinstance(num, int)
-
-    if dist:
-        return "Release:" + 8 * " " + str(num) + "%{dist}" + "\n"
+    assert isinstance(reset, bool)
+    if not reset:
+        return "Release:" + 8 * " " + relstr + "\n"
     else:
-        return "Release:" + 8 * " " + str(num) + "\n"
+        return "Release:" + 8 * " " + "0" + relstr[1:] + "\n"
 
 
-def munge_line(line, package):
+def munge_line(line, package, relreset=False):
     """
     kentauros.construct.rpm_spec.munge_line()
     function returns a munged line if given a line
@@ -70,8 +83,11 @@ def munge_line(line, package):
 
     if if_version(line):
         return of_version(package)
-    if if_release(line):
-        return of_release()
+
+    release = if_release(line)
+    if release:
+        return of_release(release, reset=relreset)
+
     return line
 
 

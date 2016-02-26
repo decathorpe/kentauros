@@ -25,6 +25,7 @@ class BzrSource(Source):
     def __init__(self, pkgconfig):
         super().__init__(pkgconfig)
         self.config = pkgconfig
+        self.dest = os.path.join(self.sdir, self.name)
         self.type = SourceType.BZR
 
 

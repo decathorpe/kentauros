@@ -40,11 +40,8 @@ class Source():
     """
     def __init__(self, pkgconfig):
         self.conf = pkgconfig
-
         self.name = pkgconfig['package']['name']
         self.sdir = os.path.join(KTR_CONF['main']['datadir'], self.name)
-        self.dest = os.path.join(self.sdir, self.name)
-
         self.type = None
 
     def get_keep(self):
