@@ -33,9 +33,6 @@ class SrcType(enum.Enum):
     bzr = 4
 
 
-SUPPORTED_ARCHIVE_TYPES = ["*.tar.gz", "*.tar.xz"]
-
-
 def dbg(msg):
     """
     kentauros.init.dbg()
@@ -83,4 +80,8 @@ def log_command(prefix1, basename, cmdlist, pri=2):
 
     log(prefix1 + basename + " command:", pri)
     log(prefix2 + cmdstr, pri)
+
+
+log("ktr: DEBUG set: " + str(DEBUG), 0)
+log("ktr: VERBOSITY: " + str(VERBY) + "/2", 1)
 

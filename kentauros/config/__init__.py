@@ -12,7 +12,7 @@ import os
 
 from kentauros import KTR_SYSTEM_DATADIR
 
-from kentauros.init import dbg, err
+from kentauros.init import dbg, err, log
 from kentauros.init.cli import CLI_PREF_CONF
 from kentauros.init.env import HOME
 
@@ -102,4 +102,10 @@ def ktr_get_conf():
 
 
 KTR_CONF = ktr_get_conf()
+
+log("ktr: BASEDIR: " + KTR_CONF['main']['basedir'], 0)
+log("ktr: CONFDIR: " + KTR_CONF['main']['confdir'], 0)
+log("ktr: DATADIR: " + KTR_CONF['main']['datadir'], 0)
+log("ktr: PACKDIR: " + KTR_CONF['main']['packdir'], 0)
+log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 0)
 

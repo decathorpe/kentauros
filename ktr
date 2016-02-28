@@ -4,20 +4,18 @@
 ktr is kentauros.py
 """
 
-# this script is here for testing purposes
-# it can only be executed if:
-# - data/default.conf is present in an expected location
-# - $HOME/.local/share/kentauros/configs/mesa.conf exists
-# - $HOME/.local/share/kentauros/specs/mesa.specs exists
-
 import glob
 import os
 
-from kentauros.init import DEBUG, VERBY, log
+from kentauros import ActionType
+from kentauros.actions import ACTION_DICT
+
+from kentauros.init import log
+from kentauros.init.cli import CLI_ACTION, CLI_PACKAGES, CLI_PACKAGES_ALL, CLI_FORCE
+from kentauros.init.cli import CLI_CONFIG_SECTION, CLI_CONFIG_KEY, CLI_CONFIG_VALUE
+
 from kentauros.config import KTR_CONF
 from kentauros.bootstrap import ktr_bootstrap
-from kentauros.source.common import SourceType
-from kentauros.package import Package
 
 
 LOGPREFIX1 = "ktr: "
@@ -26,62 +24,45 @@ LOGPREFIX2 = "     - "
 
 print()
 
-log("ktr: DEBUG set: " + str(DEBUG), 0)
-log("ktr: VERBOSITY: " + str(VERBY) + "/2", 1)
-
-log("ktr: BASEDIR: " + KTR_CONF['main']['basedir'], 0)
-log("ktr: CONFDIR: " + KTR_CONF['main']['confdir'], 0)
-log("ktr: DATADIR: " + KTR_CONF['main']['datadir'], 0)
-log("ktr: PACKDIR: " + KTR_CONF['main']['packdir'], 0)
-log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 0)
-
+# if no action is specified: exit
+if CLI_ACTION == None:
+    log(LOGPREFIX1 + "No action specified. Exiting.", 2)
+    raise SystemExit
 
 ktr_bootstrap()
 
-
-# get package configs present in CONFDIR
-PKG_CONF_PATHS = glob.glob(os.path.join(KTR_CONF['main']['confdir'], "*.conf"))
-
 PKGS = []
 
-for pkg_conf_path in PKG_CONF_PATHS:
-    PKGS.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
+# if only specified packages are to be processed:
+# process packages only
+if not CLI_PACKAGES_ALL:
+    for name in CLI_PACKAGES:
+        PKGS.append(name)
+
+# if all package are to be processed:
+# get package configs present in CONFDIR
+else:
+    PKG_CONF_PATHS = glob.glob(os.path.join(KTR_CONF['main']['confdir'], "*.conf"))
+
+    for pkg_conf_path in PKG_CONF_PATHS:
+        PKGS.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
 
 # log list of found packages
-log(LOGPREFIX1 + "list of found packages:", 2)
+log(LOGPREFIX1 + "Packages:", 2)
 for package in PKGS:
     log(LOGPREFIX2 + package, 2)
 
+# process config changes seperately
+if CLI_ACTION == ActionType.CONFIG:
+    for name in PKGS:
+        action = ACTION_DICT[CLI_ACTION](name, CLI_CONFIG_SECTION, CLI_CONFIG_KEY, CLI_CONFIG_VALUE)
+        action.execute()
 
-# process found packages
-for package in PKGS:
-    pkg = Package(package)
-
-    pkg.source.get()
-    update = pkg.source.update()
-
-    # break if no update is found, but continue if source type is URL
-    if (not update) and (pkg.source.type != SourceType.URL):
-        log(LOGPREFIX1 + "No updates for " + package + ".", 2)
-        break
-
-    pkg.source.export()
-    pkg.constructor.init()
-
-    # reset release to 0 if update is found (version is incremented)
-    if update:
-        pkg.constructor.prepare(relreset=True)
-    else:
-        pkg.constructor.prepare(relreset=False)
-
-    pkg.constructor.build()
-    pkg.constructor.export()
-    pkg.constructor.clean()
-
-    local_success = pkg.builder.build()
-
-    if local_success:
-        pkg.uploader.upload()
+# process found packages, if the requested action is not a configuration change
+else:
+    for name in PKGS:
+        action = ACTION_DICT[CLI_ACTION](name, CLI_FORCE)
+        action.execute()
 
 print()
 
