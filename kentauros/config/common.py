@@ -5,8 +5,8 @@ all configuration methods.
 """
 
 import configparser
-from enum import Enum
 
+from kentauros.definitions import KtrConfType
 from kentauros.init import dbg, log
 from kentauros.init.env import HOME
 
@@ -21,20 +21,6 @@ def __replace_home__(string):
     elif "~" in string:
         newstring = string.replace("~", HOME)
     return newstring
-
-
-class KtrConfType(Enum):
-    """
-    kentauros.config.base.KtrConfType
-    enum that defines all possible configuration sources.
-    """
-    CLI = 1
-    ENV = 2
-    PROJECT = 3
-    USER = 4
-    SYSTEM = 5
-    DEFAULT = 6
-    FALLBACK = 7
 
 
 class KtrConf(configparser.ConfigParser): # pylint: disable=too-many-ancestors

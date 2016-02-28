@@ -7,8 +7,9 @@ this class is for handling sources that are specified by URL pointing to a tarba
 import os
 import subprocess
 
+from kentauros.definitions import SourceType
 from kentauros.init import DEBUG, VERBY, log, log_command
-from kentauros.source.common import Source, SourceType
+from kentauros.source.common import Source
 
 
 LOGPREFIX1 = "ktr/source/url: "

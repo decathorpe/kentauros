@@ -4,7 +4,8 @@ this KtrConf is used if looking in all other places yields no (usable) results.
 it defaults to using "./" as default directory for confdir, datadir, specdir.
 """
 
-from kentauros.config.common import KtrConf, KtrConfType
+from kentauros.config.common import KtrConf
+from kentauros.definitions import KtrConfType
 
 
 def get_fallback_config():

@@ -4,232 +4,238 @@ kentauros.init.cli
 
 import argparse
 
-from kentauros import ActionType
+from kentauros.definitions import ActionType
 
 
-CLIPARSER = argparse.ArgumentParser(
-    description="Update, build, upload packages. All from source.",
-    prog="kentauros")
+def cli_parse():
+    """
+    kentauros.init.cli.cli_parse():
+    function that builds the kentauros CLI parser and returns the parsed values
+    """
+    cliparser = argparse.ArgumentParser(
+        description="Update, build, upload packages. All from source.",
+        prog="kentauros")
+
+    # --debug, -d switch
+    cliparser.add_argument(
+        "-d",
+        "--debug",
+        action="store_const",
+        const=True,
+        default=False,
+        help="enable debug output")
+
+    # --verbose, -v, -vv switches
+    cliparser.add_argument(
+        "-v",
+        "--verbose",
+        action="count",
+        default=0,
+        dest="verby",
+        help="enable verbose output. use twice for extra verbosity")
+
+    # --basedir switch
+    cliparser.add_argument(
+        "--basedir",
+        action="store",
+        default=None,
+        help="specify base directory for kentauros data")
+
+    # --confdir switch
+    cliparser.add_argument(
+        "--confdir",
+        action="store",
+        default=None,
+        help="specify configuration directory to be used")
+
+    # --datadir switch
+    cliparser.add_argument(
+        "--datadir",
+        action="store",
+        default=None,
+        help="specify source directory to be used")
+
+    # --packdir switch
+    cliparser.add_argument(
+        "--packdir",
+        action="store",
+        default=None,
+        help="specify .src.rpm directory to be used")
+
+    # --specdir switch
+    cliparser.add_argument(
+        "--specdir",
+        action="store",
+        default=None,
+        help="specify rpm .spec directory to be used")
+
+    # --priconf switch
+    cliparser.add_argument(
+        "--priconf",
+        action="store",
+        default=None,
+        help="specify preferred configuration to be used " +\
+             "(cli, env, project, user, system, default, fallback)")
+
+    # sub-commands for ktr
+    parsers = cliparser.add_subparsers(
+        title="commands",
+        description="kentauros accepts the sub-commands given below")
+
+    package_parser = argparse.ArgumentParser(add_help=False)
+    package_parser.add_argument(
+        "package",
+        action="store",
+        nargs="*",
+        help="package name")
+    package_parser.add_argument(
+        "-a", "--all",
+        action="store_const",
+        const=True,
+        default=False,
+        help="build all packages for which a valid configuration is found")
+    package_parser.add_argument(
+        "-f", "--force",
+        action="store_const",
+        const=True,
+        default=False,
+        help="force actions, even if no updates were available")
+
+    build_parser = parsers.add_parser(
+        "build",
+        description="build source package locally as specified by package configuration",
+        help="build package locally",
+        parents=[package_parser])
+
+    chain_parser = parsers.add_parser(
+        "chain",
+        description="run chain reaction (get, update, construct, build, upload)",
+        help="comlete source to upload toolchain",
+        parents=[package_parser])
+
+    config_parser = parsers.add_parser(
+        "config",
+        description="change package configuration stored in package.conf file",
+        help="change configuration values",
+        parents=[package_parser])
+    config_parser.add_argument(
+        "-s", "--section",
+        action="store",
+        default=None,
+        help="specify section of config file")
+    config_parser.add_argument(
+        "-k", "--key",
+        action="store",
+        default=None,
+        help="specify key of config file in section specified by --section")
+    config_parser.add_argument(
+        "-V", "--value",
+        action="store",
+        default=None,
+        help="specify value to be written to --section/--key")
+
+    construct_parser = parsers.add_parser(
+        "construct",
+        description="construct source package as specified by package configuration",
+        help="construct source package",
+        parents=[package_parser])
+
+    create_parser = parsers.add_parser(
+        "create",
+        description="create new package and provide templates for conf and spec",
+        help="create package from template",
+        parents=[package_parser])
+
+    export_parser = parsers.add_parser(
+        "export",
+        description="export sources from repository to tarball",
+        help="export package sources",
+        parents=[package_parser])
+
+    get_parser = parsers.add_parser(
+        "get",
+        description="get sources specified in package configuration",
+        help="get package sources",
+        parents=[package_parser])
+
+    update_parser = parsers.add_parser(
+        "update",
+        description="update sources specified in package configuration",
+        help="update package sources",
+        parents=[package_parser])
+
+    upload_parser = parsers.add_parser(
+        "upload",
+        description="upload source package to cloud build service or similar",
+        help="upload source package",
+        parents=[package_parser])
+
+    verify_parser = parsers.add_parser(
+        "verify",
+        description="verify that package configuration and specification " + \
+                    "are present and valid",
+        help="verify package conf and spec",
+        parents=[package_parser])
+
+    build_parser.set_defaults(action=ActionType.BUILD)
+    chain_parser.set_defaults(action=ActionType.CHAIN)
+    config_parser.set_defaults(action=ActionType.CONFIG)
+    construct_parser.set_defaults(action=ActionType.CONSTRUCT)
+    create_parser.set_defaults(action=ActionType.CREATE)
+    export_parser.set_defaults(action=ActionType.EXPORT)
+    get_parser.set_defaults(action=ActionType.GET)
+    update_parser.set_defaults(action=ActionType.UPDATE)
+    upload_parser.set_defaults(action=ActionType.UPLOAD)
+    verify_parser.set_defaults(action=ActionType.VERIFY)
+
+    cli_args = cliparser.parse_args()
+
+    return cli_args
 
 
-# --debug, -d switch
-CLIPARSER.add_argument(
-    "-d",
-    "--debug",
-    action="store_const",
-    const=True,
-    default=False,
-    help="enable debug output")
+class CLIArgs(dict):
+    """
+    kentauros.init.cli.CLIArgs:
+    class that initialises CLI argument parsing and prepares them for reading
+    """
+    def __init__(self, cli_args):
+        super().__init__()
+        # set values according to CLI arguments
+        self['debug'] = cli_args.debug
 
-# --verbose, -v, -vv switches
-CLIPARSER.add_argument(
-    "-v",
-    "--verbose",
-    action="count",
-    default=0,
-    dest="verby",
-    help="enable verbose output. use twice for extra verbosity")
+        if (2 - cli_args.verby) >= 0:
+            self['verby'] = 2 - cli_args.verby
+        else:
+            self['verby'] = 0
+            print("DEBUG: Verbosity levels only range from 0 to 2.")
 
-# --basedir switch
-CLIPARSER.add_argument(
-    "--basedir",
-    action="store",
-    default=None,
-    help="specify base directory for kentauros data")
+        self.basedir = cli_args.basedir
+        self.confdir = cli_args.confdir
+        self.datadir = cli_args.datadir
+        self.packdir = cli_args.packdir
+        self.specdir = cli_args.specdir
 
-# --confdir switch
-CLIPARSER.add_argument(
-    "--confdir",
-    action="store",
-    default=None,
-    help="specify configuration directory to be used")
+        self['priconf'] = cli_args.priconf
 
-# --datadir switch
-CLIPARSER.add_argument(
-    "--datadir",
-    action="store",
-    default=None,
-    help="specify source directory to be used")
+        if "action" in cli_args:
+            self['action'] = cli_args.action
+        else:
+            self['action'] = None
 
-# --packdir switch
-CLIPARSER.add_argument(
-    "--packdir",
-    action="store",
-    default=None,
-    help="specify .src.rpm directory to be used")
+        self['packages'] = cli_args.package
+        self['packages_all'] = cli_args.all
+        self['force'] = cli_args.force
 
-# --specdir switch
-CLIPARSER.add_argument(
-    "--specdir",
-    action="store",
-    default=None,
-    help="specify rpm .spec directory to be used")
+        if ("section" in cli_args) and \
+           ("key" in cli_args) and \
+           ("value" in cli_args):
+            self['confedit'] = True
+            self['config_section'] = cli_args.section
+            self['config_key'] = cli_args.key
+            self['config_value'] = cli_args.value
+        else:
+            self['confedit'] = False
 
 
-# --priconf switch
-CLIPARSER.add_argument(
-    "--priconf",
-    action="store",
-    default=None,
-    help="specify preferred configuration to be used " +\
-         "(cli, env, project, user, system, default, fallback)")
-
-
-# sub-commands for ktr
-PARSERS = CLIPARSER.add_subparsers(
-    title="commands",
-    description="kentauros accepts the sub-commands given below")
-
-
-PACKAGEPARSER = argparse.ArgumentParser(add_help=False)
-PACKAGEPARSER.add_argument(
-    "package",
-    action="store",
-    nargs="*",
-    help="package name")
-PACKAGEPARSER.add_argument(
-    "-a", "--all",
-    action="store_const",
-    const=True,
-    default=False,
-    help="build all packages for which a valid configuration is found")
-PACKAGEPARSER.add_argument(
-    "-f", "--force",
-    action="store_const",
-    const=True,
-    default=False,
-    help="force actions, even if no updates were available")
-
-
-VERIFYPARSER = PARSERS.add_parser(
-    "verify",
-    description="verify that package configuration and specification " + \
-                "are present and valid",
-    help="verify package conf and spec",
-    parents=[PACKAGEPARSER])
-
-GETPARSER = PARSERS.add_parser(
-    "get",
-    description="get sources specified in package configuration",
-    help="get package sources",
-    parents=[PACKAGEPARSER])
-
-UPDATEPARSER = PARSERS.add_parser(
-    "update",
-    description="update sources specified in package configuration",
-    help="update package sources",
-    parents=[PACKAGEPARSER])
-
-EXPORTPARSER = PARSERS.add_parser(
-    "export",
-    description="export sources from repository to tarball",
-    help="export package sources",
-    parents=[PACKAGEPARSER])
-
-CONSTRUCTPARSER = PARSERS.add_parser(
-    "construct",
-    description="construct source package as specified by package configuration",
-    help="construct source package",
-    parents=[PACKAGEPARSER])
-
-BUILDPARSER = PARSERS.add_parser(
-    "build",
-    description="build source package locally as specified by package configuration",
-    help="build package locally",
-    parents=[PACKAGEPARSER])
-
-UPLOADPARSER = PARSERS.add_parser(
-    "upload",
-    description="upload source package to cloud build service or similar",
-    help="upload source package",
-    parents=[PACKAGEPARSER])
-
-CHAINPARSER = PARSERS.add_parser(
-    "chain",
-    description="run chain reaction (get, update, construct, build, upload)",
-    help="comlete source to upload toolchain",
-    parents=[PACKAGEPARSER])
-
-CONFIGPARSER = PARSERS.add_parser(
-    "config",
-    description="change package configuration stored in package.conf file",
-    help="change configuration values",
-    parents=[PACKAGEPARSER])
-CONFIGPARSER.add_argument(
-    "-s", "--section",
-    action="store",
-    default=None,
-    help="specify section of config file")
-CONFIGPARSER.add_argument(
-    "-k", "--key",
-    action="store",
-    default=None,
-    help="specify key of config file in section specified by --section")
-CONFIGPARSER.add_argument(
-    "-V", "--value",
-    action="store",
-    default=None,
-    help="specify value to be written to --section/--key")
-
-CREATEPARSER = PARSERS.add_parser(
-    "create",
-    description="create new package and provide templates for conf and spec",
-    help="create package from template",
-    parents=[PACKAGEPARSER])
-
-
-VERIFYPARSER.set_defaults(action=ActionType.VERIFY)
-GETPARSER.set_defaults(action=ActionType.GET)
-UPDATEPARSER.set_defaults(action=ActionType.UPDATE)
-EXPORTPARSER.set_defaults(action=ActionType.EXPORT)
-CONSTRUCTPARSER.set_defaults(action=ActionType.CONSTRUCT)
-BUILDPARSER.set_defaults(action=ActionType.BUILD)
-UPLOADPARSER.set_defaults(action=ActionType.UPLOAD)
-CHAINPARSER.set_defaults(action=ActionType.CHAIN)
-CONFIGPARSER.set_defaults(action=ActionType.CONFIG)
-CREATEPARSER.set_defaults(action=ActionType.CREATE)
-
-
-CLI_ARGS = CLIPARSER.parse_args()
-
-CLIDEBUG = CLI_ARGS.debug
-
-CLIVERBY = 2 - CLI_ARGS.verby
-if CLIVERBY < 0:
-    print("DEBUG: Verbosity levels only range from 0 to 2.")
-    CLIVERBY = 0
-
-CLI_BASEDIR = CLI_ARGS.basedir
-CLI_CONFDIR = CLI_ARGS.confdir
-CLI_DATADIR = CLI_ARGS.datadir
-CLI_PACKDIR = CLI_ARGS.packdir
-CLI_SPECDIR = CLI_ARGS.specdir
-
-CLI_PREF_CONF = None
-if CLI_ARGS.priconf != None:
-    CLI_PREF_CONF = CLI_ARGS.priconf.upper()
-
-if "action" in CLI_ARGS:
-    CLI_ACTION = CLI_ARGS.action
-else:
-    CLI_ACTION = None
-
-CLI_PACKAGES = CLI_ARGS.package
-CLI_PACKAGES_ALL = CLI_ARGS.all
-CLI_FORCE = CLI_ARGS.force
-
-if "section" not in CLI_ARGS:
-    CLI_CONFIG_SECTION = None
-else:
-    CLI_CONFIG_SECTION = CLI_ARGS.section
-
-if "key" not in CLI_ARGS:
-    CLI_CONFIG_KEY = None
-else:
-    CLI_CONFIG_KEY = CLI_ARGS.key
-
-if "value" not in CLI_ARGS:
-    CLI_CONFIG_VALUE = None
-else:
-    CLI_CONFIG_VALUE = CLI_ARGS.value
+CLI_ARGS = CLIArgs(cli_parse())
 

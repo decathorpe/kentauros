@@ -4,7 +4,8 @@ contains LocalSource class and methods
 this class is for handling sources that are specified by file path pointing to a tarball
 """
 
-from kentauros.source.common import Source, SourceType
+from kentauros.definitions import SourceType
+from kentauros.source.common import Source
 
 
 class LocalSource(Source):

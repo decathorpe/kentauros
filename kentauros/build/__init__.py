@@ -9,8 +9,8 @@ import os
 import subprocess
 
 from kentauros.config import KTR_CONF
+from kentauros.definitions import SourceType
 from kentauros.init import DEBUG, VERBY, err, log, log_command
-from kentauros.source.common import SourceType
 
 
 LOGPREFIX1 = "ktr/build: "

@@ -8,7 +8,7 @@ import enum
 import sys
 
 from kentauros.init.env import ENVDEBUG, ENVVERBY
-from kentauros.init.cli import CLIDEBUG, CLIVERBY
+from kentauros.init.cli import CLI_ARGS
 
 
 def __smaller_int__(int1, int2):
@@ -18,19 +18,8 @@ def __smaller_int__(int1, int2):
         return int2
 
 
-DEBUG = ENVDEBUG or CLIDEBUG
-VERBY = __smaller_int__(ENVVERBY, CLIVERBY)
-
-
-class SrcType(enum.Enum):
-    """
-    kentauros.pkgconf.SrcType
-    class (Enum) that contains all supported source types
-    """
-    local = 1
-    url = 2
-    git = 3
-    bzr = 4
+DEBUG = ENVDEBUG or CLI_ARGS['debug']
+VERBY = __smaller_int__(ENVVERBY, CLI_ARGS['verby'])
 
 
 def dbg(msg):

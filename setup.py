@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-from kentauros import KTR_SYSTEM_DATADIR
+from kentauros.definitions import KTR_SYSTEM_DATADIR
 
 
 setup(

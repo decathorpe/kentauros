@@ -11,8 +11,8 @@ import tempfile
 
 from kentauros.config import KTR_CONF
 from kentauros.construct.rpm_spec import munge_line, spec_bump
+from kentauros.definitions import SourceType
 from kentauros.init import VERBY, DEBUG, log, log_command
-from kentauros.source.common import SourceType
 
 
 LOGPREFIX1 = "ktr/construct: "

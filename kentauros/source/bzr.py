@@ -9,9 +9,10 @@ import os
 import shutil
 import subprocess
 
-from kentauros.init import DEBUG, VERBY, err, log, log_command
 from kentauros.config import KTR_CONF
-from kentauros.source.common import Source, SourceType
+from kentauros.definitions import SourceType
+from kentauros.init import DEBUG, VERBY, err, log, log_command
+from kentauros.source.common import Source
 
 
 LOGPREFIX1 = "ktr/source/bzr: "

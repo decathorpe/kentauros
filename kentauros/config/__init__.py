@@ -10,14 +10,15 @@ import configparser
 from enum import Enum
 import os
 
-from kentauros import KTR_SYSTEM_DATADIR
-
-from kentauros.init import dbg, err, log
-from kentauros.init.cli import CLI_PREF_CONF
-from kentauros.init.env import HOME
+from kentauros.definitions import KTR_SYSTEM_DATADIR
 
 from kentauros.config import cli, envvar, fallback
-from kentauros.config.common import KtrConf, KtrConfType, get_config_from_file
+from kentauros.config.common import KtrConf, get_config_from_file
+from kentauros.definitions import KtrConfType
+
+from kentauros.init import dbg, err, log
+from kentauros.init.cli import CLI_ARGS
+from kentauros.init.env import HOME
 
 
 __all__ = []
@@ -85,8 +86,8 @@ def ktr_get_conf():
     get and return highest-priority configuration for every config value
     """
 
-    if CLI_PREF_CONF:
-        return get_pref_conf(CLI_PREF_CONF)
+    if CLI_ARGS['priconf']:
+        return get_pref_conf(CLI_ARGS['priconf'])
 
     # KTR_CONF should contain the highest-priority,
     # non-None configuration for every value

@@ -6,13 +6,12 @@ base data structures containing information about and methods for packages
 from configparser import ConfigParser
 import os
 
-from kentauros import KTR_SYSTEM_DATADIR
-
 from kentauros.build import MockBuilder
 from kentauros.config import KTR_CONF
 from kentauros.construct import SrpmConstructor
+from kentauros.definitions import KTR_SYSTEM_DATADIR, SourceType
 from kentauros.init import err, log
-from kentauros.source import SourceType, SOURCE_TYPE_DICT
+from kentauros.source import SOURCE_TYPE_DICT
 from kentauros.upload import CoprUploader
 
 
@@ -51,7 +50,9 @@ class Package:
         """
 
         try:
-            self.conf.write(self.file)
+            conf_file = open(self.file, "w")
+            self.conf.write(conf_file)
+            conf_file.close()
         except OSError:
             err("Package configuration file could not be written.")
             err("Path: " + self.file)

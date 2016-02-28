@@ -4,15 +4,13 @@ classes, methods, functions, definitions for actions executable by CLI arguments
 """
 
 from configparser import ConfigParser
-from enum import Enum
 import os
 import shutil
 
-from kentauros import KTR_SYSTEM_DATADIR, ActionType
 from kentauros.config import KTR_CONF
+from kentauros.definitions import KTR_SYSTEM_DATADIR, ActionType, SourceType
 from kentauros.init import log
 from kentauros.package import Package
-from kentauros.source.common import SourceType
 
 
 LOGPREFIX1 = "ktr/actions: "
@@ -37,77 +35,6 @@ class Action:
         pass
 
 
-class VerifyAction(Action):
-    """
-    kentauros.actions.VerifyAction:
-    action for verifying that everything is in place
-    """
-    def __init__(self, name, force):
-        super().__init__(name, force)
-        self.type = ActionType.VERIFY
-
-    def execute(self):
-        # TODO
-        return True
-
-
-class GetAction(Action):
-    """
-    kentauros.actions.GetAction:
-    action for getting sources
-    """
-    def __init__(self, name, force):
-        super().__init__(name, force)
-        self.type = ActionType.GET
-
-    def execute(self):
-        self.package.source.get()
-
-
-class UpdateAction(Action):
-    """
-    kentauros.actions.UpdateAction:
-    action for updating sources
-    """
-    def __init__(self, name, force):
-        super().__init__(name, force)
-        self.type = ActionType.UPDATE
-
-    def execute(self):
-        update = self.package.source.update()
-        return update
-
-
-class ExportAction(Action):
-    """
-    kentauros.actions.ExportAction:
-    action for exporting sources from repository
-    """
-    def __init__(self, name, force):
-        super().__init__(name, force)
-        self.type = ActionType.EXPORT
-
-    def execute(self):
-        self.package.source.export()
-
-
-class ConstructAction(Action):
-    """
-    kentauros.actions.Construct:
-    action for building source package
-    """
-    def __init__(self, name, force):
-        super().__init__(name, force)
-        self.type = ActionType.CONSTRUCT
-
-    def execute(self):
-        self.package.constructor.init()
-        self.package.constructor.prepare(relreset=(not self.force))
-        self.package.constructor.build()
-        self.package.constructor.export()
-        self.package.constructor.clean()
-
-
 class BuildAction(Action):
     """
     kentauros.actions.BuildAction:
@@ -120,19 +47,6 @@ class BuildAction(Action):
     def execute(self):
         success = self.package.builder.build()
         return success
-
-
-class UploadAction(Action):
-    """
-    kentauros.actions.UploadAction:
-    action for uploading source package
-    """
-    def __init__(self, name, force):
-        super().__init__(name, force)
-        self.type = ActionType.UPLOAD
-
-    def execute(self):
-        self.package.uploader.upload()
 
 
 class ChainAction(Action):
@@ -165,6 +79,20 @@ class ChainAction(Action):
             return False
 
         UploadAction(self.name, self.force).execute()
+        return True
+
+
+class CleanAction(Action):
+    """
+    kentauros.actions.Clean:
+    action for cleaning sources
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.CLEAN
+
+    def execute(self):
+        self.package.source.clean()
 
 
 class ConfigAction(Action):
@@ -173,7 +101,7 @@ class ConfigAction(Action):
     action for setting config values
     """
     def __init__(self, name, section, key, value):
-        super().__init__(name)
+        super().__init__(name, force=False)
         self.type = ActionType.CONFIG
 
         self.section = section
@@ -186,11 +114,28 @@ class ConfigAction(Action):
         if self.key not in self.package.conf[self.section]:
             return False
         self.package.conf[self.section][self.key] = str(self.value)
-        self.package.conf.write(self.package.file)
+        self.package.update_config()
         log(LOGPREFIX1 + "Configuration value changed: ", 2)
         log(LOGPREFIX1 + self.name + ".conf: " + \
             self.section + "/" + self.key + ": " + self.value, 2)
         return True
+
+
+class ConstructAction(Action):
+    """
+    kentauros.actions.Construct:
+    action for building source package
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.CONSTRUCT
+
+    def execute(self):
+        self.package.constructor.init()
+        self.package.constructor.prepare(relreset=(not self.force))
+        self.package.constructor.build()
+        self.package.constructor.export()
+        self.package.constructor.clean()
 
 
 class CreateAction(Action):
@@ -223,15 +168,97 @@ class CreateAction(Action):
         pass
 
 
+class ExportAction(Action):
+    """
+    kentauros.actions.ExportAction:
+    action for exporting sources from repository
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.EXPORT
+
+    def execute(self):
+        self.package.source.export()
+
+
+class GetAction(Action):
+    """
+    kentauros.actions.GetAction:
+    action for getting sources
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.GET
+
+    def execute(self):
+        self.package.source.get()
+
+
+class RefreshAction(Action):
+    """
+    kentauros.actions.RefreshAction:
+    action for refreshing sources (clean + get)
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.REFRESH
+
+    def execute(self):
+        self.package.source.refresh()
+
+
+class UpdateAction(Action):
+    """
+    kentauros.actions.UpdateAction:
+    action for updating sources
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.UPDATE
+
+    def execute(self):
+        update = self.package.source.update()
+        return update
+
+
+class UploadAction(Action):
+    """
+    kentauros.actions.UploadAction:
+    action for uploading source package
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.UPLOAD
+
+    def execute(self):
+        self.package.uploader.upload()
+
+
+class VerifyAction(Action):
+    """
+    kentauros.actions.VerifyAction:
+    action for verifying that everything is in place
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.VERIFY
+
+    def execute(self):
+        # TODO
+        return True
+
+
 ACTION_DICT = dict()
-ACTION_DICT[ActionType.VERIFY] = VerifyAction
-ACTION_DICT[ActionType.GET] = GetAction
-ACTION_DICT[ActionType.UPDATE] = UpdateAction
-ACTION_DICT[ActionType.EXPORT] = ExportAction
-ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
 ACTION_DICT[ActionType.BUILD] = BuildAction
-ACTION_DICT[ActionType.UPLOAD] = UploadAction
 ACTION_DICT[ActionType.CHAIN] = ChainAction
+ACTION_DICT[ActionType.CLEAN] = CleanAction
 ACTION_DICT[ActionType.CONFIG] = ConfigAction
+ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
 ACTION_DICT[ActionType.CREATE] = CreateAction
+ACTION_DICT[ActionType.EXPORT] = ExportAction
+ACTION_DICT[ActionType.GET] = GetAction
+ACTION_DICT[ActionType.REFRESH] = RefreshAction
+ACTION_DICT[ActionType.UPDATE] = UpdateAction
+ACTION_DICT[ActionType.UPLOAD] = UploadAction
+ACTION_DICT[ActionType.VERIFY] = VerifyAction
 

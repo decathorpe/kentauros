@@ -5,8 +5,8 @@ contains helper functions for building rpm source packages
 
 import subprocess
 
+from kentauros.definitions import SourceType
 from kentauros.init import DEBUG, VERBY, log_command
-from kentauros.source.common import SourceType
 
 
 LOGPREFIX1 = "ktr/construct/rpm_spec: "

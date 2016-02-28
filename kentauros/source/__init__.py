@@ -5,8 +5,8 @@ Source class contains information about package upstream source and methods to
 manipulate them.
 """
 
+from kentauros.definitions import SourceType
 from kentauros.source.bzr import BzrSource
-from kentauros.source.common import SourceType
 from kentauros.source.git import GitSource
 from kentauros.source.local import LocalSource
 from kentauros.source.url import UrlSource

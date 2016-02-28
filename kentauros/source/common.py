@@ -4,7 +4,6 @@ contains Source class definition that is inherited by other classes
 """
 
 from distutils.util import strtobool
-from enum import Enum
 import os
 import shutil
 
@@ -13,17 +12,6 @@ from kentauros.config import KTR_CONF
 
 
 LOGPREFIX1 = "ktr/source: "
-
-
-class SourceType(Enum):
-    """
-    kentauros.source.common.SourceType
-    enum that describes the kind of package sources supported
-    """
-    LOCAL = 1
-    URL = 2
-    GIT = 3
-    BZR = 4
 
 
 class Source():
