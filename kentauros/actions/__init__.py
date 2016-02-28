@@ -78,6 +78,19 @@ class UpdateAction(Action):
         return update
 
 
+class ExportAction(Action):
+    """
+    kentauros.actions.ExportAction:
+    action for exporting sources from repository
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.EXPORT
+
+    def execute(self):
+        self.package.source.export()
+
+
 class ConstructAction(Action):
     """
     kentauros.actions.Construct:
@@ -129,7 +142,7 @@ class ChainAction(Action):
       constructing, building and uploading source package
     """
     def __init__(self, name, force):
-        super().__init__(name)
+        super().__init__(name, force)
         self.type = ActionType.CHAIN
 
     def execute(self):
@@ -144,6 +157,7 @@ class ChainAction(Action):
         if not (update or self.force):
             return False
 
+        ExportAction(self.name, self.force).execute()
         ConstructAction(self.name, self.force).execute()
         success = BuildAction(self.name, self.force).execute()
 
@@ -213,9 +227,11 @@ ACTION_DICT = dict()
 ACTION_DICT[ActionType.VERIFY] = VerifyAction
 ACTION_DICT[ActionType.GET] = GetAction
 ACTION_DICT[ActionType.UPDATE] = UpdateAction
+ACTION_DICT[ActionType.EXPORT] = ExportAction
 ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
 ACTION_DICT[ActionType.BUILD] = BuildAction
 ACTION_DICT[ActionType.UPLOAD] = UploadAction
+ACTION_DICT[ActionType.CHAIN] = ChainAction
 ACTION_DICT[ActionType.CONFIG] = ConfigAction
 ACTION_DICT[ActionType.CREATE] = CreateAction
 

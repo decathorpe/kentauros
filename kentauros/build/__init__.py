@@ -53,7 +53,7 @@ class MockBuilder(Builder):
             subprocess.check_output(["which", "mock"])
         except subprocess.CalledProcessError:
             self.package.conf['mock']['active'] = False
-            self.package.conf.update_conf()
+            self.package.update_config()
 
 
     def get_active(self):
@@ -101,6 +101,10 @@ class MockBuilder(Builder):
         # WARNING: MockBuilder.build() builds all name*.src.rpm packages found in PACKDIR
         srpms = glob.glob(os.path.join(KTR_CONF['main']['packdir'],
                                        self.package.name + "*.src.rpm"))
+
+        if srpms == []:
+            log(LOGPREFIX1 + "No source packages were found. Construct them first.", 2)
+            return False
 
         log(LOGPREFIX1 + "list of found source packages:", 2)
         for srpm in srpms:

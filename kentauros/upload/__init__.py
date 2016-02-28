@@ -45,6 +45,13 @@ class CoprUploader(Uploader):
         if 'active' not in self.package.conf['copr']:
             raise KeyError(self.package.name + ".conf does not have an copr/active key.")
 
+        # if copr-cli is not installed: decativate copr uploader in conf file
+        try:
+            subprocess.check_output(["which", "copr-cli"])
+        except subprocess.CalledProcessError:
+            self.package.conf['copr']['active'] = False
+            self.package.update_config()
+
 
     def get_active(self):
         """
@@ -98,6 +105,10 @@ class CoprUploader(Uploader):
         # get all srpms in the package directory
         srpms = glob.glob(os.path.join(KTR_CONF['main']['packdir'],
                                        self.package.name + "*.src.rpm"))
+
+        if srpms == []:
+            log(LOGPREFIX1 + "No source packages were found. Construct them first.", 2)
+            return False
 
         # figure out which srpm to build
         srpms.sort(reverse=True)

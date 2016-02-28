@@ -120,6 +120,12 @@ UPDATEPARSER = PARSERS.add_parser(
     help="update package sources",
     parents=[PACKAGEPARSER])
 
+EXPORTPARSER = PARSERS.add_parser(
+    "export",
+    description="export sources from repository to tarball",
+    help="export package sources",
+    parents=[PACKAGEPARSER])
+
 CONSTRUCTPARSER = PARSERS.add_parser(
     "construct",
     description="construct source package as specified by package configuration",
@@ -138,6 +144,12 @@ UPLOADPARSER = PARSERS.add_parser(
     help="upload source package",
     parents=[PACKAGEPARSER])
 
+CHAINPARSER = PARSERS.add_parser(
+    "chain",
+    description="run chain reaction (get, update, construct, build, upload)",
+    help="comlete source to upload toolchain",
+    parents=[PACKAGEPARSER])
+
 CONFIGPARSER = PARSERS.add_parser(
     "config",
     description="change package configuration stored in package.conf file",
@@ -146,14 +158,17 @@ CONFIGPARSER = PARSERS.add_parser(
 CONFIGPARSER.add_argument(
     "-s", "--section",
     action="store",
+    default=None,
     help="specify section of config file")
 CONFIGPARSER.add_argument(
     "-k", "--key",
     action="store",
+    default=None,
     help="specify key of config file in section specified by --section")
 CONFIGPARSER.add_argument(
     "-V", "--value",
     action="store",
+    default=None,
     help="specify value to be written to --section/--key")
 
 CREATEPARSER = PARSERS.add_parser(
@@ -166,9 +181,11 @@ CREATEPARSER = PARSERS.add_parser(
 VERIFYPARSER.set_defaults(action=ActionType.VERIFY)
 GETPARSER.set_defaults(action=ActionType.GET)
 UPDATEPARSER.set_defaults(action=ActionType.UPDATE)
+EXPORTPARSER.set_defaults(action=ActionType.EXPORT)
 CONSTRUCTPARSER.set_defaults(action=ActionType.CONSTRUCT)
 BUILDPARSER.set_defaults(action=ActionType.BUILD)
 UPLOADPARSER.set_defaults(action=ActionType.UPLOAD)
+CHAINPARSER.set_defaults(action=ActionType.CHAIN)
 CONFIGPARSER.set_defaults(action=ActionType.CONFIG)
 CREATEPARSER.set_defaults(action=ActionType.CREATE)
 
@@ -201,7 +218,18 @@ CLI_PACKAGES = CLI_ARGS.package
 CLI_PACKAGES_ALL = CLI_ARGS.all
 CLI_FORCE = CLI_ARGS.force
 
-CLI_CONFIG_SECTION = CLI_ARGS.section
-CLI_CONFIG_KEY = CLI_ARGS.key
-CLI_CONFIG_VALUE = CLI_ARGS.value
+if "section" not in CLI_ARGS:
+    CLI_CONFIG_SECTION = None
+else:
+    CLI_CONFIG_SECTION = CLI_ARGS.section
+
+if "key" not in CLI_ARGS:
+    CLI_CONFIG_KEY = None
+else:
+    CLI_CONFIG_KEY = CLI_ARGS.key
+
+if "value" not in CLI_ARGS:
+    CLI_CONFIG_VALUE = None
+else:
+    CLI_CONFIG_VALUE = CLI_ARGS.value
 

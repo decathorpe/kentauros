@@ -27,10 +27,11 @@ class ActionType(Enum):
     VERIFY = 0
     GET = 1
     UPDATE = 2
-    CONSTRUCT = 3
-    BUILD = 4
-    UPLOAD = 5
-    CHAIN = 6
-    CONFIG = 7
-    CREATE = 8
+    EXPORT = 3
+    CONSTRUCT = 4
+    BUILD = 5
+    UPLOAD = 6
+    CHAIN = 7
+    CONFIG = 8
+    CREATE = 9
 

@@ -175,8 +175,8 @@ class GitSource(Source):
         # if source directory seems to already exist, quit and return commit id
         if os.access(self.dest, os.R_OK):
             rev = self.rev()
-            log(LOGPREFIX1 + "Sources already downloaded. Latest commit id:", 1)
-            log(LOGPREFIX1 + rev, 1)
+            log(LOGPREFIX1 + "Sources already downloaded. Latest commit id:", 2)
+            log(LOGPREFIX1 + rev, 2)
             return rev
 
         # construct git commands
@@ -265,7 +265,7 @@ class GitSource(Source):
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
             err(LOGPREFIX1 + "Sources need to be .get() before .update() can be run.")
-            return None
+            return False
 
         # get old commit ID
         rev_old = self.rev()
