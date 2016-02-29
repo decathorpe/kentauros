@@ -19,25 +19,25 @@ def ktr_create_dirs():
     create confdir, datadir, specdir specified by ENV, CLI, configuration files
     """
 
-    if not os.access(KTR_CONF['main']['basedir'], os.W_OK):
+    if not os.access(KTR_CONF.get("main", "basedir"), os.W_OK):
         log(LOGPREFIX + "kentauros basedir does not exist and will be created.", 1)
-        os.makedirs(KTR_CONF['main']['basedir'])
+        os.makedirs(KTR_CONF.get("main", "basedir"))
 
-    if not os.access(KTR_CONF['main']['confdir'], os.W_OK):
+    if not os.access(KTR_CONF.get("main", "confdir"), os.W_OK):
         log(LOGPREFIX + "kentauros confdir does not exist and will be created.", 1)
-        os.makedirs(KTR_CONF['main']['confdir'])
+        os.makedirs(KTR_CONF.get("main", "confdir"))
 
-    if not os.access(KTR_CONF['main']['datadir'], os.W_OK):
+    if not os.access(KTR_CONF.get("main", "datadir"), os.W_OK):
         log(LOGPREFIX + "kentauros datadir does not exist and will be created.", 1)
-        os.makedirs(KTR_CONF['main']['datadir'])
+        os.makedirs(KTR_CONF.get("main", "datadir"))
 
-    if not os.access(KTR_CONF['main']['packdir'], os.W_OK):
+    if not os.access(KTR_CONF.get("main", "packdir"), os.W_OK):
         log(LOGPREFIX + "kentauros packdir does not exist and will be created.", 1)
-        os.makedirs(KTR_CONF['main']['packdir'])
+        os.makedirs(KTR_CONF.get("main", "packdir"))
 
-    if not os.access(KTR_CONF['main']['specdir'], os.W_OK):
+    if not os.access(KTR_CONF.get("main", "specdir"), os.W_OK):
         log(LOGPREFIX + "kentauros specdir does not exist and will be created.", 1)
-        os.makedirs(KTR_CONF['main']['specdir'])
+        os.makedirs(KTR_CONF.get("main", "specdir"))
 
 
 def ktr_bootstrap():
