@@ -217,11 +217,7 @@ class CLIArgs(dict):
 
         self['priconf'] = cli_args.priconf
 
-        if "action" in cli_args:
-            self['action'] = cli_args.action
-        else:
-            self['action'] = None
-
+        self['action'] = cli_args.action
         self['packages'] = cli_args.package
         self['packages_all'] = cli_args.all
         self['force'] = cli_args.force

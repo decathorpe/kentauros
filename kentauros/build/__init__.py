@@ -49,10 +49,11 @@ class MockBuilder(Builder):
         super().__init__(package)
 
         # deactivate mock if section is not present in config file
-        if "mock" not in self.package.conf:
+        if "mock" not in self.package.conf.sections():
+            self.package.conf.add_section("mock")
             self.package.conf.set("mock", "active", "false")
             self.package.update_config()
-        if "active" not in self.package.conf.get("mock"):
+        if "active" not in self.package.conf.options("mock"):
             self.package.conf.set("mock", "active", "false")
             self.package.update_config()
 
@@ -65,7 +66,7 @@ class MockBuilder(Builder):
 
 
     def build(self): # pylint: disable=too-many-branches
-        if not self.package.conf.get("mock", "active"):
+        if not self.package.conf.getboolean("mock", "active"):
             return True
 
         # WARNING: MockBuilder.build() builds all name*.src.rpm packages found in PACKDIR

@@ -3,7 +3,7 @@ kentauros.actions module
 classes, methods, functions, definitions for actions executable by CLI arguments
 """
 
-from configparser import ConfigParser
+from configparser import ConfigParser, NoSectionError
 import os
 import shutil
 

@@ -30,13 +30,15 @@ def of_version(package):
     """
     # TODO: use dict of functions for different enum members of SourceType
     if package.source.type == SourceType.GIT:
-        verstr = "Version:" + 8 * " " + package.source.get_version() + "~git%{date}~%{rev}" + "\n"
+        verstr = "Version:" + 8 * " " + package.conf.get("source", "version") + \
+                 "~git%{date}~%{rev}" + "\n"
     elif package.source.type == SourceType.BZR:
-        verstr = "Version:" + 8 * " " + package.source.get_version() + "~rev%{rev}" + "\n"
+        verstr = "Version:" + 8 * " " + package.conf.get("source", "version") + \
+                 "~rev%{rev}" + "\n"
     elif package.source.type == SourceType.URL:
-        verstr = "Version:" + 8 * " " + package.source.get_version() + "\n"
+        verstr = "Version:" + 8 * " " + package.conf.get("source", "version") + "\n"
     else:
-        verstr = "Version:" + 8 * " " + package.source.get_version() + "\n"
+        verstr = "Version:" + 8 * " " + package.conf.get("source", "version") + "\n"
     return verstr
 
 
