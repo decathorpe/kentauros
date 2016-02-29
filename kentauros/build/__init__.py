@@ -48,58 +48,28 @@ class MockBuilder(Builder):
     def __init__(self, package):
         super().__init__(package)
 
+        # deactivate mock if section is not present in config file
+        if "mock" not in self.package.conf:
+            self.package.conf.set("mock", "active", "false")
+            self.package.update_config()
+        if "active" not in self.package.conf.get("mock"):
+            self.package.conf.set("mock", "active", "false")
+            self.package.update_config()
+
         # if mock is not installed: decativate mock builder in conf file
         try:
             subprocess.check_output(["which", "mock"])
         except subprocess.CalledProcessError:
-            self.package.conf['mock']['active'] = False
+            self.package.conf.set("mock", "active", "false")
             self.package.update_config()
 
 
-    def get_active(self):
-        """
-        kentauros.build.MockBuilder.get_active():
-        check if mock building is active
-        """
-        return bool(strtobool(self.package.conf['mock']['active']))
-
-
-    def set_active(self, active):
-        """
-        kentauros.build.MockBuilder.set_active():
-        set mock builder to active or inactive
-        """
-        assert isinstance(active, bool)
-        self.package.conf['mock']['active'] = str(active)
-
-
-    def get_dists(self):
-        """
-        kentauros.build.MockBuilder.get_dists():
-        returns list of dists
-        """
-        dists = self.package.conf['mock']['dist'].split(",")
-
-        if dists == [""]:
-            dists = []
-
-        return dists
-
-
-    def get_keep(self):
-        """
-        kentauros.build.MockBuilder.get_keep():
-        check if srpm should be kept after building
-        """
-        return bool(strtobool(self.package.conf['mock']['keep']))
-
-
     def build(self): # pylint: disable=too-many-branches
-        if not self.get_active():
+        if not self.package.conf.get("mock", "active"):
             return True
 
         # WARNING: MockBuilder.build() builds all name*.src.rpm packages found in PACKDIR
-        srpms = glob.glob(os.path.join(KTR_CONF['main']['packdir'],
+        srpms = glob.glob(os.path.join(KTR_CONF.get("main", "packdir"),
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:
@@ -110,7 +80,7 @@ class MockBuilder(Builder):
         for srpm in srpms:
             log(LOGPREFIX2 + srpm)
 
-        dists = self.get_dists()
+        dists = self.package.conf.get("mock", "dist").split(",")
 
         if dists != []:
             log(LOGPREFIX1 + "list of specified chroots:", 2)
@@ -156,7 +126,7 @@ class MockBuilder(Builder):
                 build_succ.append(mock_cmd)
 
         # remove source package if keep=False is specified
-        if not self.get_keep():
+        if not bool(strtobool(self.package.conf.get("mock", "keep"))):
             for srpm in srpms:
                 os.remove(srpm)
 
