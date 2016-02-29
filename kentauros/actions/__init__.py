@@ -109,15 +109,17 @@ class ConfigAction(Action):
         self.value = value
 
     def execute(self):
-        if self.section not in self.package.conf:
+        try:
+            self.package.conf.set(self.section, self.key, self.value)
+        except NoSectionError:
             return False
-        if self.key not in self.package.conf[self.section]:
-            return False
-        self.package.conf[self.section][self.key] = str(self.value)
+
         self.package.update_config()
+
         log(LOGPREFIX1 + "Configuration value changed: ", 2)
         log(LOGPREFIX1 + self.name + ".conf: " + \
             self.section + "/" + self.key + ": " + self.value, 2)
+
         return True
 
 
@@ -148,8 +150,8 @@ class CreateAction(Action):
         conf_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "package.conf")
         spec_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "template.spec")
 
-        conf_template_dest = os.path.join(KTR_CONF['main']['confdir'], name + ".conf")
-        spec_template_dest = os.path.join(KTR_CONF['main']['specdir'], name + ".spec")
+        conf_template_dest = os.path.join(KTR_CONF.get("main", "confdir"), name + ".conf")
+        spec_template_dest = os.path.join(KTR_CONF.get("main", "specdir"), name + ".spec")
 
         shutil.copy2(conf_template_orig, conf_template_dest)
         shutil.copy2(spec_template_orig, spec_template_dest)
@@ -158,7 +160,7 @@ class CreateAction(Action):
         conf_template = ConfigParser()
         conf_template.read(conf_template_dest)
 
-        conf_template['package']['name'] = name
+        conf_template.set("package", "name", name)
         conf_template.write(conf_template_dest)
 
         # initialise package
