@@ -44,9 +44,9 @@ class KtrConf(configparser.ConfigParser): # pylint: disable=too-many-ancestors
         """
         assert isinstance(other, KtrConf)
 
-        for section in other:
-            for key in other[section]:
-                self[section][key] = other[section][key]
+        for section in other.sections():
+            for key in other.options(section):
+                self.set(section, key, other.get(section, key))
                 dbg(LOGPREFIX1 + section + "/" + key + ":" + \
                     " overridden by " + other.type.name + " config")
 
@@ -55,9 +55,21 @@ class KtrConf(configparser.ConfigParser): # pylint: disable=too-many-ancestors
         kentauros.config.base.KtrConf.verify()
         method for verifying valid configuration content.
         """
-        print(self)
-        # pass
-        # check for directory r/w access
+        # make sure config has "main" section
+        if not self.has_section("main"):
+            return False
+
+        # make sure main section has either basedir or all other dirs set
+        if not self.has_option("main", "basedir"):
+            if self.has_option("main", "confdir") and \
+               self.has_option("main", "datadir") and \
+               self.has_option("main", "packdir") and \
+               self.has_option("main", "specdir"):
+                return True
+            else:
+                return False
+        else:
+            return True
 
 
 def get_config_from_file(filepath, errmsg, conftype):
@@ -81,9 +93,9 @@ def get_config_from_file(filepath, errmsg, conftype):
     else:
         config.type = conftype
 
-        for section in config:
-            for key in config[section]:
-                config[section][key] = __replace_home__(config[section][key])
+        for section in config.sections():
+            for key in config.options(section):
+                config.set(section, key, __replace_home__(config.get(section, key)))
 
         return config
 

@@ -14,12 +14,12 @@ def get_fallback_config():
     function that returns fallback values for kentauros configuration
     """
     result = KtrConf()
-    result['main'] = {}
-    result['main']['basedir'] = "./"
-    result['main']['confdir'] = "./"
-    result['main']['datadir'] = "./"
-    result['main']['packdir'] = "./"
-    result['main']['specdir'] = "./"
+    result.add_section("main")
+    result.set("main", "basedir", "./")
+    result.set("main", "confdir", "./")
+    result.set("main", "datadir", "./")
+    result.set("main", "packdir", "./")
+    result.set("main", "specdir", "./")
     result.type = KtrConfType.FALLBACK
     return result
 

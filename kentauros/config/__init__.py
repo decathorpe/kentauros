@@ -104,9 +104,9 @@ def ktr_get_conf():
 
 KTR_CONF = ktr_get_conf()
 
-log("ktr: BASEDIR: " + KTR_CONF['main']['basedir'], 0)
-log("ktr: CONFDIR: " + KTR_CONF['main']['confdir'], 0)
-log("ktr: DATADIR: " + KTR_CONF['main']['datadir'], 0)
-log("ktr: PACKDIR: " + KTR_CONF['main']['packdir'], 0)
-log("ktr: SPECDIR: " + KTR_CONF['main']['specdir'], 0)
+log("ktr: BASEDIR: " + KTR_CONF.get("main", "basedir"), 0)
+log("ktr: CONFDIR: " + KTR_CONF.get("main", "confdir"), 0)
+log("ktr: DATADIR: " + KTR_CONF.get("main", "datadir"), 0)
+log("ktr: PACKDIR: " + KTR_CONF.get("main", "packdir"), 0)
+log("ktr: SPECDIR: " + KTR_CONF.get("main", "specdir"), 0)
 

@@ -29,28 +29,28 @@ def get_cli_config():
     # if at least basedir has been set, construct KtrConf from CLI switches
     if CLI_ARGS.basedir != None:
         result = KtrConf()
-        result['main'] = {}
-        result['main']['basedir'] = os.path.abspath(CLI_ARGS.basedir)
+        result.add_section("main")
+        result.set("main", "basedir", os.path.abspath(CLI_ARGS.basedir))
 
         if CLI_ARGS.confdir == None:
-            result['main']['confdir'] = os.path.join(result['main']['basedir'], "configs")
+            result.set("main", "confdir", os.path.join(result['main']['basedir'], "configs"))
         else:
-            result['main']['confdir'] = CLI_ARGS.confdir
+            result.set("main", "confdir", CLI_ARGS.confdir)
 
         if CLI_ARGS.datadir == None:
-            result['main']['datadir'] = os.path.join(result['main']['basedir'], "sources")
+            result.set("main", "datadir", os.path.join(result['main']['basedir'], "sources"))
         else:
-            result['main']['datadir'] = CLI_ARGS.datadir
+            result.set("main", "datadir", CLI_ARGS.datadir)
 
         if CLI_ARGS.packdir == None:
-            result['main']['packdir'] = os.path.join(result['main']['basedir'], "packages")
+            result.set("main", "packdir", os.path.join(result['main']['basedir'], "packages"))
         else:
-            result['main']['packdir'] = CLI_ARGS.packdir
+            result.set("main", "packdir", CLI_ARGS.packdir)
 
         if CLI_ARGS.specdir == None:
-            result['main']['specdir'] = os.path.join(result['main']['basedir'], "specs")
+            result.set("main", "specdir", os.path.join(result['main']['basedir'], "specs"))
         else:
-            result['main']['specdir'] = CLI_ARGS.specdir
+            result.set("main", "specdir", CLI_ARGS.specdir)
 
         result.type = KtrConfType.CLI
         return result
@@ -58,12 +58,12 @@ def get_cli_config():
     # default case: mix-and-match of set and not set config values
     else:
         result = KtrConf()
-        result['main'] = {}
-        result['main']['basedir'] = CLI_ARGS.basedir
-        result['main']['confdir'] = CLI_ARGS.confdir
-        result['main']['datadir'] = CLI_ARGS.datadir
-        result['main']['packdir'] = CLI_ARGS.packdir
-        result['main']['specdir'] = CLI_ARGS.specdir
+        result.add_section("main")
+        result.set("main", "basedir", CLI_ARGS.basedir)
+        result.set("main", "confdir", CLI_ARGS.confdir)
+        result.set("main", "datadir", CLI_ARGS.datadir)
+        result.set("main", "packdir", CLI_ARGS.packdir)
+        result.set("main", "specdir", CLI_ARGS.specdir)
         result.type = KtrConfType.CLI
         return result
 

@@ -34,28 +34,28 @@ def get_env_config():
     # if at least basedir has been set, construct KtrConf from CLI switches
     if ENV_BASEDIR != None:
         result = KtrConf()
-        result['main'] = {}
-        result['main']['basedir'] = os.path.abspath(ENV_BASEDIR)
+        result.add_section("main")
+        result.set("main", "basedir", os.path.abspath(ENV_BASEDIR))
 
         if ENV_CONFDIR == None:
-            result['main']['confdir'] = os.path.join(result['main']['basedir'], "configs")
+            result.set("main", "confdir", os.path.join(result['main']['basedir'], "configs"))
         else:
-            result['main']['confdir'] = ENV_CONFDIR
+            result.set("main", "confdir", ENV_CONFDIR)
 
         if ENV_DATADIR == None:
-            result['main']['datadir'] = os.path.join(result['main']['basedir'], "sources")
+            result.set("main", "datadir", os.path.join(result['main']['basedir'], "sources"))
         else:
-            result['main']['datadir'] = ENV_DATADIR
+            result.set("main", "datadir", ENV_DATADIR)
 
         if ENV_PACKDIR == None:
-            result['main']['packdir'] = os.path.join(result['main']['basedir'], "packages")
+            result.set("main", "packdir", os.path.join(result['main']['basedir'], "packages"))
         else:
-            result['main']['packdir'] = ENV_PACKDIR
+            result.set("main", "packdir", ENV_PACKDIR)
 
         if ENV_SPECDIR == None:
-            result['main']['specdir'] = os.path.join(result['main']['basedir'], "specs")
+            result.set("main", "specdir", os.path.join(result['main']['basedir'], "specs"))
         else:
-            result['main']['specdir'] = ENV_SPECDIR
+            result.set("main", "specdir", ENV_SPECDIR)
 
         result.type = KtrConfType.ENV
         return result
@@ -64,11 +64,11 @@ def get_env_config():
     else:
         result = KtrConf()
         result['main'] = {}
-        result['main']['basedir'] = ENV_BASEDIR
-        result['main']['confdir'] = ENV_CONFDIR
-        result['main']['datadir'] = ENV_DATADIR
-        result['main']['packdir'] = ENV_PACKDIR
-        result['main']['specdir'] = ENV_SPECDIR
+        result.set("main", "basedir", ENV_BASEDIR)
+        result.set("main", "confdir", ENV_CONFDIR)
+        result.set("main", "datadir", ENV_DATADIR)
+        result.set("main", "packdir", ENV_PACKDIR)
+        result.set("main", "specdir", ENV_SPECDIR)
         result.type = KtrConfType.ENV
         return result
 
