@@ -22,12 +22,12 @@ class UrlSource(Source):
     """
     def __init__(self, pkgconfig):
         super().__init__(pkgconfig)
-        self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
+        self.dest = os.path.join(self.sdir, os.path.basename(self.conf.get("source", "orig")))
         self.type = SourceType.URL
 
 
     def formatver(self):
-        ver = self.get_version()    # base version
+        ver = self.conf.get("source", "version")
         return ver
 
 
@@ -56,7 +56,7 @@ class UrlSource(Source):
             cmd.append("--verbose")
 
         # set origin and destination
-        cmd.append(self.get_orig())
+        cmd.append(self.conf.get("source", "orig"))
         cmd.append("-O")
         cmd.append(self.dest)
 
