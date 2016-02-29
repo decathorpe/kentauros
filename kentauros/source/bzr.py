@@ -28,39 +28,7 @@ class BzrSource(Source):
         self.config = pkgconfig
         self.dest = os.path.join(self.sdir, self.name)
         self.type = SourceType.BZR
-
-
-    def get_branch(self):
-        """
-        kentauros.source.bzr.BzrSource.get_branch():
-        get from config which branch should be used
-        """
-        return self.conf['bzr']['branch']
-
-
-    def get_bzrkeep(self):
-        """
-        kentauros.source.bzr.BzrSource.get_bzrkeep():
-        get value from config if bzr repo should be kept after export to tarball
-        """
-        return bool(strtobool(self.conf['bzr']['keep']))
-
-
-    def set_bzrkeep(self, keep):
-        """
-        kentauros.source.bzr.BzrSource.set_bzrkeep():
-        set config value that determines whether bzr repo is kept after export to tarball
-        """
-        assert isinstance(keep, bool)
-        self.conf['bzr']['keep'] = str(keep)
-
-
-    def get_rev(self):
-        """
-        kentauros.source.bzr.BzrSource.get_rev():
-        get value from config if bzr repo should be kept after export to tarball
-        """
-        return self.conf['bzr']['rev']
+        self.saved_rev = None
 
 
     def rev(self):
@@ -73,15 +41,20 @@ class BzrSource(Source):
 
         prevdir = os.getcwd()
 
+        # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
-            err("Sources need to be .get() before .rev() can be determined.")
-            return None
+            if self.saved_rev == None:
+                err("Sources need to be .get() before .rev() can be determined.")
+                return None
+            else:
+                return self.saved_rev
 
         os.chdir(self.dest)
         log_command(LOGPREFIX1, "bzr", cmd, 0)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
         os.chdir(prevdir)
 
+        self.saved_rev = rev
         return rev
 
 
@@ -120,15 +93,15 @@ class BzrSource(Source):
             cmd.append("--verbose")
 
         # set origin
-        if not self.get_branch():
-            cmd.append(self.get_orig())
+        if not self.get("bzr", "branch"):
+            cmd.append(self.conf.get("source", "orig"))
         else:
-            cmd.append(self.get_orig() + "/" + self.get_branch())
+            cmd.append(self.conf.get("source", "orig") + "/" + self.conf.get("bzr", "branch"))
 
         # set revision is specified
-        if self.get_rev():
+        if self.conf.get("bzr", "rev"):
             cmd.append("--revision")
-            cmd.append(self.get_rev())
+            cmd.append(self.conf.get("bzr", "rev"))
 
         # set destination
         cmd.append(self.dest)
@@ -141,8 +114,8 @@ class BzrSource(Source):
         rev = self.rev()
 
         # check if checkout worked
-        if self.get_rev():
-            if self.get_rev() != rev:
+        if self.conf.get("bzr", "rev"):
+            if self.conf.get("bzr", "rev") != rev:
                 err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
 
         # return commit ID
@@ -157,7 +130,7 @@ class BzrSource(Source):
         """
 
         # if specific revision is requested, do not pull updates (obviously)
-        if self.get_rev():
+        if self.conf.get("bzr", "rev"):
             return False
 
         # construct bzr command
@@ -214,9 +187,9 @@ class BzrSource(Source):
             cmd.append("--verbose")
 
         # export HEAD or specified commit
-        if self.get_rev():
+        if self.conf.get("bzr", "rev"):
             cmd.append("--revision")
-            cmd.append(self.get_rev())
+            cmd.append(self.conf.get("bzr", "rev"))
 
         # check if bzr repo exists
         if not os.access(self.dest, os.R_OK):
@@ -248,8 +221,7 @@ class BzrSource(Source):
         subprocess.call(cmd)
 
         # remove bzr repo if keep is False
-        print(self.get_bzrkeep())
-        if not self.get_bzrkeep():
+        if not strtobool(self.conf.get("bzr", "keep")):
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
             assert KTR_CONF['main']['datadir'] in self.dest
@@ -258,14 +230,4 @@ class BzrSource(Source):
 
         os.chdir(prevdir)
         return True
-
-
-    def clean(self):
-        if not os.access(self.sdir, os.R_OK):
-            log(LOGPREFIX1 + "Nothing here to be cleaned.", 0)
-        else:
-            # try to be careful with "rm -r"
-            assert os.path.isabs(self.sdir)
-            assert KTR_CONF['main']['datadir'] in self.sdir
-            shutil.rmtree(self.sdir)
 
