@@ -17,7 +17,7 @@ setup(
     packages=['kentauros'],
     scripts=['ktr'],
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
-                (KTR_SYSTEM_DATADIR, ['data/package.conf']),
+                (KTR_SYSTEM_DATADIR, ['data/template.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.spec'])],
     classifiers=[
         'Development Status :: 3 - Alpha',
