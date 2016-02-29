@@ -9,6 +9,7 @@ import os
 import subprocess
 
 from kentauros.config import KTR_CONF
+from kentauros.definitions import UploaderType
 from kentauros.init import DEBUG, err, log, log_command
 
 
@@ -39,17 +40,20 @@ class CoprUploader(Uploader):
     def __init__(self, package):
         super().__init__(package)
 
-        if 'copr' not in self.package.conf:
-            raise KeyError(self.package.name + ".conf does not have a 'copr' section.")
+        if "copr" not in self.package.conf.sections():
+            self.package.conf.add_section("copr")
+            self.package.conf.set("copr", "active", "false")
+            self.package.update_config()
 
-        if 'active' not in self.package.conf['copr']:
-            raise KeyError(self.package.name + ".conf does not have an copr/active key.")
+        if "active" not in self.package.conf.options("copr"):
+            self.package.conf.set("copr", "active", "false")
+            self.package.update_config()
 
         # if copr-cli is not installed: decativate copr uploader in conf file
         try:
             subprocess.check_output(["which", "copr-cli"])
         except subprocess.CalledProcessError:
-            self.package.conf['copr']['active'] = False
+            self.package.conf.set("copr", "active", "false")
             self.package.update_config()
 
 
@@ -146,4 +150,8 @@ class CoprUploader(Uploader):
         # remove source package if keep=False is specified
         if not self.get_keep():
             os.remove(srpm)
+
+
+UPLOADER_TYPE_DICT = dict()
+UPLOADER_TYPE_DICT[UploaderType.COPR] = CoprUploader
 

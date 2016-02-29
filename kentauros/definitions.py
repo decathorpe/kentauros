@@ -13,24 +13,13 @@ class KtrConfType(Enum):
     kentauros.definitions.KtrConfType
     enum that defines all possible configuration sources.
     """
-    CLI = 1
-    ENV = 2
-    PROJECT = 3
-    USER = 4
-    SYSTEM = 5
-    DEFAULT = 6
-    FALLBACK = 7
-
-
-class SourceType(Enum):
-    """
-    kentauros.source.common.SourceType
-    enum that describes the kind of package sources supported
-    """
-    LOCAL = 1
-    URL = 2
-    GIT = 3
-    BZR = 4
+    CLI = 0
+    ENV = 1
+    PROJECT = 2
+    USER = 3
+    SYSTEM = 4
+    DEFAULT = 5
+    FALLBACK = 6
 
 
 class ActionType(Enum):
@@ -50,4 +39,39 @@ class ActionType(Enum):
     UPDATE = 9
     UPLOAD = 10
     VERIFY = 11
+
+
+class BuilderType(Enum):
+    """
+    kentauros.definitons.BuilderType:
+    enum that describes the kind of constructors supported
+    """
+    MOCK = 0
+
+
+class ConstructorType(Enum):
+    """
+    kentauros.definitons.ConstructorType:
+    enum that describes the kind of constructors supported
+    """
+    SRPM = 0
+
+
+class UploaderType(Enum):
+    """
+    kentauros.definitons.UploaderType:
+    enum that describes the kind of uploaders supported
+    """
+    COPR = 0
+
+
+class SourceType(Enum):
+    """
+    kentauros.definitons.SourceType:
+    enum that describes the kind of package sources supported
+    """
+    LOCAL = 0
+    URL = 1
+    GIT = 2
+    BZR = 3
 

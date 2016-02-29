@@ -9,7 +9,7 @@ import os
 import subprocess
 
 from kentauros.config import KTR_CONF
-from kentauros.definitions import SourceType
+from kentauros.definitions import SourceType, BuilderType
 from kentauros.init import DEBUG, VERBY, err, log, log_command
 
 
@@ -53,6 +53,7 @@ class MockBuilder(Builder):
             self.package.conf.add_section("mock")
             self.package.conf.set("mock", "active", "false")
             self.package.update_config()
+
         if "active" not in self.package.conf.options("mock"):
             self.package.conf.set("mock", "active", "false")
             self.package.update_config()
@@ -138,4 +139,8 @@ class MockBuilder(Builder):
             for fail in build_fail:
                 err(LOGPREFIX2 + str(fail))
             return False
+
+
+BUILDER_TYPE_DICT = dict()
+BUILDER_TYPE_DICT[BuilderType.MOCK] = MockBuilder
 

@@ -11,7 +11,7 @@ import tempfile
 
 from kentauros.config import KTR_CONF
 from kentauros.construct.rpm_spec import munge_line, spec_bump
-from kentauros.definitions import SourceType
+from kentauros.definitions import SourceType, ConstructorType
 from kentauros.init import VERBY, DEBUG, log, log_command
 
 
@@ -185,4 +185,8 @@ class SrpmConstructor(Constructor):
 
     def clean(self):
         shutil.rmtree(self.tempdir)
+
+
+CONSTRUCTOR_TYPE_DICT = dict()
+CONSTRUCTOR_TYPE_DICT[ConstructorType.SRPM] = SrpmConstructor
 

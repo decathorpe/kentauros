@@ -6,13 +6,16 @@ base data structures containing information about and methods for packages
 from configparser import ConfigParser
 import os
 
-from kentauros.build import MockBuilder
-from kentauros.config import KTR_CONF
-from kentauros.construct import SrpmConstructor
-from kentauros.definitions import KTR_SYSTEM_DATADIR, SourceType
 from kentauros.init import err, log
+from kentauros.config import KTR_CONF
+from kentauros.definitions import KTR_SYSTEM_DATADIR
+
+from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
+
+from kentauros.build import BUILDER_TYPE_DICT
+from kentauros.construct import CONSTRUCTOR_TYPE_DICT
 from kentauros.source import SOURCE_TYPE_DICT
-from kentauros.upload import CoprUploader
+from kentauros.upload import UPLOADER_TYPE_DICT
 
 
 class Package:
@@ -35,12 +38,15 @@ class Package:
 
         else:
             # set source to Source subclass corresponding to setting in source/type
-            src_type = self.conf['source']['type'].upper()
+            bld_type = str("mock").upper()
+            con_type = str("srpm").upper()
+            src_type = str(self.conf.get("source", "type")).upper()
+            upl_type = str("copr").upper()
 
             self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self)
-            self.constructor = SrpmConstructor(self)
-            self.builder = MockBuilder(self)
-            self.uploader = CoprUploader(self)
+            self.constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self)
+            self.builder = BUILDER_TYPE_DICT[BuilderType[bld_type]](self)
+            self.uploader = UPLOADER_TYPE_DICT[UploaderType[upl_type]](self)
 
 
     def update_config(self):
