@@ -24,7 +24,7 @@ LOGPREFIX2 = "     - "
 print()
 
 # if no action is specified: exit
-if CLI_ARGS['action'] == None:
+if CLI_ARGS.get("action") == None:
     log(LOGPREFIX1 + "No action specified. Exiting.", 2)
     raise SystemExit
 
@@ -34,14 +34,14 @@ PKGS = []
 
 # if only specified packages are to be processed:
 # process packages only
-if not CLI_ARGS['packages_all']:
-    for name in CLI_ARGS['packages']:
+if not CLI_ARGS.get("packages_all"):
+    for name in CLI_ARGS.get("packages"):
         PKGS.append(name)
 
 # if all package are to be processed:
 # get package configs present in CONFDIR
 else:
-    PKG_CONF_PATHS = glob.glob(os.path.join(KTR_CONF['main']['confdir'], "*.conf"))
+    PKG_CONF_PATHS = glob.glob(os.path.join(KTR_CONF.get("main", "confdir"), "*.conf"))
 
     for pkg_conf_path in PKG_CONF_PATHS:
         PKGS.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
@@ -52,22 +52,22 @@ for package in PKGS:
     log(LOGPREFIX2 + package, 2)
 
 # process config changes seperately
-if CLI_ARGS['action'] == ActionType.CONFIG:
-    if not CLI_ARGS['confedit']:
+if CLI_ARGS.get("action") == ActionType.CONFIG:
+    if not CLI_ARGS.get("confedit"):
         log(LOGPREFIX1 + "Configuration attempted to be edited, but insufficient arguments.", 2)
         print()
         raise SystemExit
     for name in PKGS:
-        action = ACTION_DICT[CLI_ARGS['action']](name,
-                                                 CLI_ARGS['config_section'],
-                                                 CLI_ARGS['config_key'],
-                                                 CLI_ARGS['config_value'])
+        action = ACTION_DICT[CLI_ARGS.get("action")](name,
+                                                     CLI_ARGS.get("config_section"),
+                                                     CLI_ARGS.get("config_key"),
+                                                     CLI_ARGS.get("config_value"))
         action.execute()
 
 # process found packages, if the requested action is not a configuration change
 else:
     for name in PKGS:
-        action = ACTION_DICT[CLI_ARGS['action']](name, CLI_ARGS['force'])
+        action = ACTION_DICT[CLI_ARGS.get("action")](name, CLI_ARGS.get("force"))
         action.execute()
 
 print()
