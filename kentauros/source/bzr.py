@@ -59,9 +59,9 @@ class BzrSource(Source):
 
 
     def formatver(self):
-        ver = self.get_version()    # base version
-        ver += "~rev"               # bzr prefix
-        ver += self.rev()           # revision number as string
+        ver = self.conf.get("source", "version")    # base version
+        ver += "~rev"                               # bzr prefix
+        ver += self.rev()                           # revision number as string
         return ver
 
 

@@ -37,7 +37,7 @@ class Package:
             # set source to Source subclass corresponding to setting in source/type
             src_type = self.conf['source']['type'].upper()
 
-            self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self.conf)
+            self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self)
             self.constructor = SrpmConstructor(self)
             self.builder = MockBuilder(self)
             self.uploader = CoprUploader(self)

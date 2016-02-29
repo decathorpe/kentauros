@@ -3,7 +3,6 @@ kentauros.source.common
 contains Source class definition that is inherited by other classes
 """
 
-from distutils.util import strtobool
 import os
 import shutil
 
@@ -26,54 +25,12 @@ class Source():
     - type: determines type of upstream source
     - keep: determines if sources are kept between builds
     """
-    def __init__(self, pkgconfig):
-        self.conf = pkgconfig
-        self.name = pkgconfig['package']['name']
+    def __init__(self, package):
+        self.package = package
+        self.conf = package.conf
+        self.name = self.conf['package']['name']
         self.sdir = os.path.join(KTR_CONF['main']['datadir'], self.name)
         self.type = None
-
-    def get_keep(self):
-        """
-        kentauros.source.Source.get_keep():
-        get from config if source tarball shall be kept
-        """
-        return bool(strtobool(self.conf['source']['keep']))
-
-    def get_orig(self):
-        """
-        kentauros.source.Source.get_orig():
-        get upstream source location from config
-        """
-        return self.conf['source']['orig']
-
-    def get_version(self):
-        """
-        kentauros.source.Source.get_version():
-        get upstream source version from config
-        """
-        return self.conf['source']['version']
-
-    def set_keep(self, keep):
-        """
-        kentauros.source.Source.set_keep():
-        set config value that determines if source tarball is kept
-        """
-        assert isinstance(keep, bool)
-        self.conf['source']['keep'] = str(keep)
-
-    def set_orig(self, orig):
-        """
-        kentauros.source.Source.set_orig():
-        set config value that determines upstream source location
-        """
-        self.conf['source']['orig'] = orig
-
-    def set_version(self, version):
-        """
-        kentauros.source.Source.set_version():
-        set config value that determines upstream source version
-        """
-        self.conf['source']['version'] = version
 
     def clean(self):
         "remove downloaded files in datadir (respect keep and force!)"

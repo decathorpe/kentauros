@@ -36,71 +36,19 @@ class GitSource(Source):
         self.type = SourceType.GIT
 
         # either branch or commit must be set. default to branch=master
-        if self.get_branch() == "" and self.get_commit() == "":
-            self.set_branch("master")
+        if self.conf.get("git", "branch") == "" and self.conf.get("git", "commit") == "":
+            self.conf.set("git", "branch", "master")
+            self.package.update_config()
 
         # shallow clones and checking out a specific commit is not supported
-        if self.get_commit() != "":
-            self.set_shallow("false")
+        if self.conf.get("git", "commit") != "" and \
+            bool(strtobool(self.conf.get("git", "shallow"))):
 
+            self.conf.set("git", "shallow", "false")
+            self.package.update_config()
 
-    def get_branch(self):
-        """
-        kentauros.source.git.GitSource.get_branch():
-        get upstream git repo branch from config
-        """
-        return self.conf['git']['branch']
-
-    def get_commit(self):
-        """
-        kentauros.source.git.GitSource.get_commit():
-        get upstream git repo commit ID from config
-        """
-        return self.conf['git']['commit']
-
-    def get_gitkeep(self):
-        """
-        kentauros.source.git.GitSource.get_gitkeep():
-        get value from config if git repo should be kept after export to tarball
-        """
-        return bool(strtobool(self.conf['git']['keep']))
-
-    def get_shallow(self):
-        """
-        kentauros.source.git.GitSource.get_shallow():
-        get value from config if git repo should be a shallow checkout
-        """
-        return bool(strtobool(self.conf['git']['shallow']))
-
-    def set_branch(self, branch):
-        """
-        kentauros.source.git.GitSource.set_branch():
-        set config value that determines which branch of upstream git repo to use
-        """
-        self.conf['git']['branch'] = branch
-
-    def set_commit(self, commit):
-        """
-        kentauros.source.git.GitSource.set_commit():
-        set config value that determines which commit of upstream git repo to use
-        """
-        self.conf['git']['commit'] = commit
-
-    def set_gitkeep(self, keep):
-        """
-        kentauros.source.git.GitSource.set_gitkeep():
-        set config value that determines whether git repo is kept after export to tarball
-        """
-        assert isinstance(keep, bool)
-        self.conf['git']['keep'] = str(keep)
-
-    def set_shallow(self, shallow):
-        """
-        kentauros.source.git.GitSource.set_shallow():
-        set config value that determines whether shallow clone or full clone is done
-        """
-        assert isinstance(shallow, bool)
-        self.conf['git']['shallow'] = str(shallow)
+        self.saved_rev = None
+        self.saved_date = None
 
 
     def date(self):
@@ -113,9 +61,13 @@ class GitSource(Source):
 
         prevdir = os.getcwd()
 
+        # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
-            err(LOGPREFIX1 + "Sources need to be .get() before .date() can be determined.")
-            return None
+            if self.saved_date == None:
+                err("Sources need to be .get() before .date() can be determined.")
+                return None
+            else:
+                return self.saved_date
 
         os.chdir(self.dest)
         log_command(LOGPREFIX1, "git", cmd, 0)
@@ -128,6 +80,7 @@ class GitSource(Source):
                "." + \
                str(dateobj.hour) + str(dateobj.minute) + str(dateobj.second)
 
+        self.saved_date = date
         return date
 
 
@@ -141,24 +94,29 @@ class GitSource(Source):
 
         prevdir = os.getcwd()
 
+        # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
-            err("Sources need to be .get() before .rev() can be determined.")
-            return None
+            if self.saved_rev == None:
+                err("Sources need to be .get() before .rev() can be determined.")
+                return None
+            else:
+                return self.saved_rev
 
         os.chdir(self.dest)
         log_command(LOGPREFIX1, "git", cmd, 0)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
         os.chdir(prevdir)
 
+        self.saved_rev = rev
         return rev
 
 
     def formatver(self):
-        ver = self.get_version()    # base version
-        ver += "~git"               # git prefix
-        ver += self.date()          # date and time of commit
+        ver = self.conf.get("source", "version")    # base version
+        ver += "~git"
+        ver += self.date()                          # date and time of commit
         ver += "~"
-        ver += self.rev()[0:8]      # first 8 chars of git commit ID
+        ver += self.rev()[0:8]                      # first 8 chars of git commit ID
         return ver
 
 
@@ -193,17 +151,17 @@ class GitSource(Source):
         if (VERBY == 0) or DEBUG:
             cmd1.append("--verbose")
 
-        # set --depth==1 if shallow and no commit is specified
-        if self.get_shallow() and not self.get_commit():
+        # set --depth==1 if shallow is specified
+        if bool(strtobool(self.conf.get("git", "shallow"))):
             cmd1.append("--depth=1")
 
         # set branch if specified
-        if self.get_branch():
+        if self.conf.get("git", "branch"):
             cmd1.append("--branch")
-            cmd1.append(self.get_branch())
+            cmd1.append(self.conf.get("git", "branch"))
 
         # set origin and destination
-        cmd1.append(self.get_orig())
+        cmd1.append(self.conf.get("source", "orig"))
         cmd1.append(self.dest)
 
         # clone git repo from orig to dest
@@ -211,11 +169,11 @@ class GitSource(Source):
         subprocess.call(cmd1)
 
         # if commit is specified: checkout commit
-        if self.get_commit():
+        if self.conf.get("git", "commit"):
             # construct checkout command
             cmd2 = cmd
             cmd2.append("checkout")
-            cmd2.append(self.get_commit())
+            cmd2.append(self.conf.get("git", "commit"))
 
             # go to git repo and remember old cwd
             prevdir = os.getcwd()
@@ -232,8 +190,8 @@ class GitSource(Source):
         rev = self.rev()
 
         # check if checkout worked
-        if self.get_commit():
-            if self.get_commit() != rev:
+        if self.conf.get("git", "commit"):
+            if self.conf.get("git", "commit") != rev:
                 err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
 
         # return commit ID
@@ -248,7 +206,7 @@ class GitSource(Source):
         """
 
         # if specific commit is requested, do not pull updates (obviously)
-        if self.get_commit():
+        if self.conf.get("git", "commit"):
             return False
 
         # construct git command
@@ -310,10 +268,10 @@ class GitSource(Source):
             cmd.append("--verbose")
 
         # export HEAD or specified commit
-        if self.get_commit() == "":
+        if self.conf.get("git", "commit") == "":
             cmd.append("HEAD")
         else:
-            cmd.append(self.get_commit())
+            cmd.append(self.conf.get("git", "commit"))
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
@@ -349,7 +307,7 @@ class GitSource(Source):
         subprocess.call(cmd)
 
         # remove git repo if keep is False
-        if not self.get_gitkeep():
+        if not bool(strtobool(self.conf.get("git", "keep"))):
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
             assert KTR_CONF['main']['datadir'] in self.dest
