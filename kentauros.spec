@@ -18,6 +18,7 @@ Requires:       bzr
 Requires:       copr-cli
 Requires:       git
 Requires:       mock
+Requires:       python3-dateutil
 Requires:       rpmdevtools
 Requires:       wget
 
