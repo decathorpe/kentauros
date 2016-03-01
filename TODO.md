@@ -8,5 +8,4 @@
  - ```$(VERSION)```, ```$(NAME)```, etc.
 
 - bzr: allow lightweight checkouts (conf/bzr/shallow=true)
-- construct: sources do not neccessarily exist, calling source.rev() doesn't work then
 
