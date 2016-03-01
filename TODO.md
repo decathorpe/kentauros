@@ -9,3 +9,5 @@
 
 - bzr: allow lightweight checkouts (conf/bzr/shallow=true)
 
+- verify that every needed bit of information is in the config file: ```verify``` action (only skeleton implementation present)
+

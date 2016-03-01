@@ -22,7 +22,3 @@ To test out ktr with the provided examples, run in the project base directory:
 ./ktr --basedir=./examples config --section=mock --key=active --value=True
 ```
 
-## on my TODO-list:
-
-- verify that every needed bit of information is in the config file: ```verify``` action (only skeleton implementation present)
-
