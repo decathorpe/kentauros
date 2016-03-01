@@ -9,6 +9,7 @@ import os
 import subprocess
 
 from kentauros.config import KTR_CONF
+from kentauros.conntest import is_connected
 from kentauros.definitions import UploaderType
 from kentauros.init import DEBUG, err, log, log_command
 
@@ -56,69 +57,34 @@ class CoprUploader(Uploader):
             self.package.conf.set("copr", "active", "false")
             self.package.update_config()
 
-
-    def get_active(self):
-        """
-        kentauros.upload.CoprUploader.get_active():
-        check if copr uploading is active
-        """
-        return bool(strtobool(self.package.conf['copr']['active']))
-
-
-    def get_dists(self):
-        """
-        kentauros.upload.CoprUploader.get_dists():
-        returns list of dists
-        """
-        dists = self.package.conf['copr']['dist'].split(",")
-
-        if dists == [""]:
-            dists = []
-
-        return dists
-
-
-    def get_keep(self):
-        """
-        kentauros.upload.CoprUploader.get_keep():
-        check if srpm should be kept after uploading
-        """
-        return bool(strtobool(self.package.conf['copr']['keep']))
-
-
-    def get_repo(self):
-        """
-        kentauros.upload.CoprUploader.get_repo():
-        returns copr repo specified in .conf
-        """
-        return self.package.conf['copr']['repo']
-
-
-    def get_wait(self):
-        """
-        kentauros.upload.CoprUploader.get_wait():
-        check if copr-cli should wait for build success or failure
-        """
-        return bool(strtobool(self.package.conf['copr']['wait']))
+        self.remote = "https://copr.fedorainfracloud.org"
 
 
     def upload(self):
-        if not self.get_active():
+        if not self.package.conf.getboolean("copr", "active"):
             return None
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(KTR_CONF['main']['packdir'],
+        srpms = glob.glob(os.path.join(KTR_CONF.get("main", "packdir"),
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:
             log(LOGPREFIX1 + "No source packages were found. Construct them first.", 2)
-            return False
+            return None
 
         # figure out which srpm to build
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        dists = self.get_dists()
+        # get dists to build for
+        dists = self.package.conf.get("copr", "dist").split(",")
+        if dists == "":
+            dists = []
+
+        # check for connectivity to server
+        if not is_connected(self.remote):
+            log("No connection to remote host detected. Cancelling upload.", 2)
+            return None
 
         # construct copr-cli command
         cmd = ["copr-cli"]
@@ -130,7 +96,7 @@ class CoprUploader(Uploader):
         cmd.append("build")
 
         # append copr repo
-        cmd.append(self.get_repo())
+        cmd.append(self.package.conf.get("copr", "repo"))
 
         # append chroots (dists)
         for dist in dists:
@@ -138,7 +104,7 @@ class CoprUploader(Uploader):
             cmd.append(dist)
 
         # append --nowait if wait=False
-        if self.get_wait():
+        if self.package.conf.getboolean("copr", "wait"):
             cmd.append("--nowait")
 
         # append package
@@ -148,7 +114,7 @@ class CoprUploader(Uploader):
         subprocess.call(cmd)
 
         # remove source package if keep=False is specified
-        if not self.get_keep():
+        if not self.package.conf.getboolean("copr", "keep"):
             os.remove(srpm)
 
 

@@ -1,5 +1,13 @@
 """
 kentauros.definitions module
+- definition of ktr system datadir used everywhere
+- enum definitions for
+  - ktr configuration types
+  - ktr action types
+  - builder types
+  - constructor types
+  - source types
+  - uploader types
 """
 
 from enum import Enum
@@ -57,14 +65,6 @@ class ConstructorType(Enum):
     SRPM = 0
 
 
-class UploaderType(Enum):
-    """
-    kentauros.definitons.UploaderType:
-    enum that describes the kind of uploaders supported
-    """
-    COPR = 0
-
-
 class SourceType(Enum):
     """
     kentauros.definitons.SourceType:
@@ -74,4 +74,12 @@ class SourceType(Enum):
     URL = 1
     GIT = 2
     BZR = 3
+
+
+class UploaderType(Enum):
+    """
+    kentauros.definitons.UploaderType:
+    enum that describes the kind of uploaders supported
+    """
+    COPR = 0
 

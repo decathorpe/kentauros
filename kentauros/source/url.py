@@ -7,6 +7,7 @@ this class is for handling sources that are specified by URL pointing to a tarba
 import os
 import subprocess
 
+from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.init import DEBUG, VERBY, log, log_command
 from kentauros.source.common import Source
@@ -46,6 +47,11 @@ class UrlSource(Source):
             log(LOGPREFIX1 + "Sources already downloaded.", 1)
             return None
 
+        # check for connectivity to server
+        if not is_connected(self.package.conf.get("source", "orig")):
+            log("No connection to remote host detected. Cancelling source checkout.", 2)
+            return None
+
         # construct wget commands
         cmd = ["wget"]
 
@@ -56,7 +62,7 @@ class UrlSource(Source):
             cmd.append("--verbose")
 
         # set origin and destination
-        cmd.append(self.conf.get("source", "orig"))
+        cmd.append(self.package.conf.get("source", "orig"))
         cmd.append("-O")
         cmd.append(self.dest)
 

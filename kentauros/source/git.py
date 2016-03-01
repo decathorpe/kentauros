@@ -11,6 +11,7 @@ import shutil
 import subprocess
 
 from kentauros.config import KTR_CONF
+from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.init import DEBUG, VERBY, err, log, log_command
 from kentauros.source.common import Source
@@ -138,6 +139,11 @@ class GitSource(Source):
             log(LOGPREFIX1 + rev, 2)
             return rev
 
+        # check for connectivity to server
+        if not is_connected(self.config.get("source", "orig")):
+            log("No connection to remote host detected. Cancelling source checkout.", 2)
+            return None
+
         # construct git commands
         cmd = ["git"]
 
@@ -207,6 +213,11 @@ class GitSource(Source):
 
         # if specific commit is requested, do not pull updates (obviously)
         if self.conf.get("git", "commit"):
+            return False
+
+        # check for connectivity to server
+        if not is_connected(self.config.get("source", "orig")):
+            log("No connection to remote host detected. Cancelling source update.", 2)
             return False
 
         # construct git command

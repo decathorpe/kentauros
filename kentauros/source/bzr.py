@@ -10,6 +10,7 @@ import shutil
 import subprocess
 
 from kentauros.config import KTR_CONF
+from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.init import DEBUG, VERBY, err, log, log_command
 from kentauros.source.common import Source
@@ -29,6 +30,11 @@ class BzrSource(Source):
         self.dest = os.path.join(self.sdir, self.name)
         self.type = SourceType.BZR
         self.saved_rev = None
+
+        if self.config.get("source", "orig")[0:3] == "lp:":
+            self.remote = "https://launchpad.net"
+        else:
+            self.remote = self.config.get("source", "orig")
 
 
     def rev(self):
@@ -83,6 +89,11 @@ class BzrSource(Source):
             log(LOGPREFIX1 + rev, 1)
             return rev
 
+        # check for connectivity to server
+        if not is_connected(self.remote):
+            log("No connection to remote host detected. Cancelling source checkout.", 2)
+            return None
+
         # construct bzr command
         cmd = ["bzr", "branch"]
 
@@ -131,6 +142,11 @@ class BzrSource(Source):
 
         # if specific revision is requested, do not pull updates (obviously)
         if self.conf.get("bzr", "rev"):
+            return False
+
+        # check for connectivity to server
+        if not is_connected(self.remote):
+            log("No connection to remote host detected. Cancelling source checkout.", 2)
             return False
 
         # construct bzr command
