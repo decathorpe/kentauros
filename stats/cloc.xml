@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cloc.xsl"?><results>
+<header>
+  <cloc_url>http://cloc.sourceforge.net</cloc_url>
+  <cloc_version>1.64</cloc_version>
+  <elapsed_seconds>0.0850489139556885</elapsed_seconds>
+  <n_files>28</n_files>
+  <n_lines>2728</n_lines>
+  <files_per_second>329.222310993746</files_per_second>
+  <lines_per_second>32075.6594425335</lines_per_second>
+  <report_file>./cloc.xml</report_file>
+</header>
+<languages>
+  <language name="Python" files_count="26" blank="613" comment="614" code="1471" />
+  <language name="Bourne Shell" files_count="2" blank="11" comment="2" code="17" />
+  <total sum_files="28" blank="624" comment="616" code="1488" />
+</languages>
+</results>
