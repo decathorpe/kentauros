@@ -4,7 +4,6 @@ contains GitSource class and methods
 this class is for handling sources that are specified by bzr repo URL
 """
 
-from distutils.util import strtobool
 import os
 import shutil
 import subprocess
@@ -192,6 +191,15 @@ class BzrSource(Source):
         exports current bzr revision to tarball (.tar.gz)
         """
 
+        def remove_notkeep():
+            "local function definition for removing bzr repo after export if not keep"
+            if not self.conf.getboolean("bzr", "keep"):
+                # try to be careful with "rm -r"
+                assert os.path.isabs(self.dest)
+                assert KTR_CONF.datadir in self.dest
+                shutil.rmtree(self.dest)
+                log(LOGPREFIX1 + "bzr repo deleted after export to tarball", 1)
+
         # construct bzr command
         cmd = ["bzr", "export"]
 
@@ -223,6 +231,8 @@ class BzrSource(Source):
         # check if file has already been exported
         if os.path.exists(file_name):
             log(LOGPREFIX1 + "Tarball has already been exported.", 1)
+            # remove bzr repo if keep is False
+            remove_notkeep()
             return False
 
         # remember previous directory
@@ -239,12 +249,7 @@ class BzrSource(Source):
         self.rev()
 
         # remove bzr repo if keep is False
-        if not strtobool(self.conf.get("bzr", "keep")):
-            # try to be careful with "rm -r"
-            assert os.path.isabs(self.dest)
-            assert KTR_CONF.datadir in self.dest
-            shutil.rmtree(self.dest)
-            log(LOGPREFIX1 + "bzr repo deleted after export to tarball", 1)
+        remove_notkeep()
 
         os.chdir(prevdir)
         return True

@@ -76,7 +76,7 @@ class GitSource(Source):
 
         # pylint: disable=no-member
         dateobj = dateutil.parser.parse(date_raw)
-        date = str(dateobj.year) + str(dateobj.month) + str(dateobj.day) + \
+        date = str(dateobj.year)[0:2] + str(dateobj.month) + str(dateobj.day) + \
                "." + \
                str(dateobj.hour) + str(dateobj.minute) + str(dateobj.second)
 
@@ -268,6 +268,15 @@ class GitSource(Source):
         exports current git commit to tarball (.tar.gz)
         """
 
+        def remove_notkeep():
+            "local function definition for removing git repo after export if not keep"
+            if not self.conf.getboolean("git", "keep"):
+                # try to be careful with "rm -r"
+                assert os.path.isabs(self.dest)
+                assert KTR_CONF.datadir in self.dest
+                shutil.rmtree(self.dest)
+                log(LOGPREFIX1 + "git repo deleted after export to tarball", 1)
+
         # construct git command
         cmd = ["git"]
 
@@ -306,6 +315,8 @@ class GitSource(Source):
         # check if file has already been exported
         if os.path.exists(file_name):
             log(LOGPREFIX1 + "Tarball has already been exported.", 1)
+            # remove git repo if keep is False
+            remove_notkeep()
             return False
 
         # remember previous directory
@@ -323,12 +334,7 @@ class GitSource(Source):
         self.date()
 
         # remove git repo if keep is False
-        if not bool(strtobool(self.conf.get("git", "keep"))):
-            # try to be careful with "rm -r"
-            assert os.path.isabs(self.dest)
-            assert KTR_CONF.datadir in self.dest
-            shutil.rmtree(self.dest)
-            log(LOGPREFIX1 + "git repo deleted after export to tarball", 1)
+        remove_notkeep()
 
         os.chdir(prevdir)
         return True
