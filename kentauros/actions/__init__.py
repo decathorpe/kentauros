@@ -21,9 +21,15 @@ class Action:
     kentauros.actions.Action:
     base class for Actions that are chosen by CLI
     """
-    def __init__(self, name, force):
+    def __init__(self, name, force, package=None):
         self.name = name
-        self.package = Package(name)
+
+        if package != None:
+            assert isinstance(package, Package)
+            self.package = package
+        else:
+            self.package = Package(name)
+
         self.force = force
         self.type = None
 
@@ -40,8 +46,8 @@ class BuildAction(Action):
     kentauros.actions.BuildAction:
     action for building source package locally
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.BUILD
 
     def execute(self):
@@ -55,33 +61,48 @@ class ChainAction(Action):
     action for getting (if neccessary), updating,
       constructing, building and uploading source package
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.CHAIN
 
     def execute(self):
-        veryfied = VerifyAction(self.name, self.force).execute()
+        veryfied = VerifyAction(self.name,
+                                self.force,
+                                self.package).execute()
 
         if not veryfied:
             return False
 
-        get = GetAction(self.name, self.force).execute()
-        update = UpdateAction(self.name, self.force).execute()
+        get = GetAction(self.name,
+                        self.force,
+                        self.package).execute()
+
+        update = UpdateAction(self.name,
+                              self.force,
+                              self.package).execute()
 
         if not (get or update or self.force):
             return False
 
-        ExportAction(self.name, self.force).execute()
+        ExportAction(self.name,
+                     self.force,
+                     self.package).execute()
 
-        success = ConstructAction(self.name, self.force).execute()
+        success = ConstructAction(self.name,
+                                  self.force,
+                                  self.package).execute()
         if not success:
             return False
 
-        success = BuildAction(self.name, self.force).execute()
+        success = BuildAction(self.name,
+                              self.force,
+                              self.package).execute()
         if not success:
             return False
 
-        UploadAction(self.name, self.force).execute()
+        UploadAction(self.name,
+                     self.force,
+                     self.package).execute()
         return True
 
 
@@ -90,8 +111,8 @@ class CleanAction(Action):
     kentauros.actions.Clean:
     action for cleaning sources
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.CLEAN
 
     def execute(self):
@@ -131,8 +152,8 @@ class ConstructAction(Action):
     kentauros.actions.Construct:
     action for building source package
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.CONSTRUCT
 
     def execute(self):
@@ -184,8 +205,8 @@ class ExportAction(Action):
     kentauros.actions.ExportAction:
     action for exporting sources from repository
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.EXPORT
 
     def execute(self):
@@ -197,8 +218,8 @@ class GetAction(Action):
     kentauros.actions.GetAction:
     action for getting sources
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.GET
 
     def execute(self):
@@ -210,8 +231,8 @@ class RefreshAction(Action):
     kentauros.actions.RefreshAction:
     action for refreshing sources (clean + get)
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.REFRESH
 
     def execute(self):
@@ -223,8 +244,8 @@ class StatusAction(Action):
     kentauros.actions.StatusAction:
     action for displaying configuration values and available packages
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.STATUS
 
     def execute(self):
@@ -237,8 +258,8 @@ class UpdateAction(Action):
     kentauros.actions.UpdateAction:
     action for updating sources
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.UPDATE
 
     def execute(self):
@@ -251,8 +272,8 @@ class UploadAction(Action):
     kentauros.actions.UploadAction:
     action for uploading source package
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.UPLOAD
 
     def execute(self):
@@ -264,8 +285,8 @@ class VerifyAction(Action):
     kentauros.actions.VerifyAction:
     action for verifying that everything is in place
     """
-    def __init__(self, name, force):
-        super().__init__(name, force)
+    def __init__(self, name, force, package=None):
+        super().__init__(name, force, package)
         self.type = ActionType.VERIFY
 
     def execute(self):
