@@ -66,12 +66,12 @@ class MockBuilder(Builder):
             self.package.update_config()
 
 
-    def build(self): # pylint: disable=too-many-branches
+    def build(self):
         if not self.package.conf.getboolean("mock", "active"):
             return True
 
         # WARNING: MockBuilder.build() builds all name*.src.rpm packages found in PACKDIR
-        srpms = glob.glob(os.path.join(KTR_CONF.get("main", "packdir"),
+        srpms = glob.glob(os.path.join(KTR_CONF.packdir,
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:

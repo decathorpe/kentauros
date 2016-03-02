@@ -150,8 +150,8 @@ class CreateAction(Action):
         conf_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "package.conf")
         spec_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "template.spec")
 
-        conf_template_dest = os.path.join(KTR_CONF.get("main", "confdir"), name + ".conf")
-        spec_template_dest = os.path.join(KTR_CONF.get("main", "specdir"), name + ".spec")
+        conf_template_dest = os.path.join(KTR_CONF.confdir, name + ".conf")
+        spec_template_dest = os.path.join(KTR_CONF.specdir, name + ".spec")
 
         shutil.copy2(conf_template_orig, conf_template_dest)
         shutil.copy2(spec_template_orig, spec_template_dest)
@@ -209,6 +209,20 @@ class RefreshAction(Action):
         self.package.source.refresh()
 
 
+class StatusAction(Action):
+    """
+    kentauros.actions.StatusAction:
+    action for displaying configuration values and available packages
+    """
+    def __init__(self, name, force):
+        super().__init__(name, force)
+        self.type = ActionType.STATUS
+
+    def execute(self):
+        # TODO
+        pass
+
+
 class UpdateAction(Action):
     """
     kentauros.actions.UpdateAction:
@@ -260,6 +274,7 @@ ACTION_DICT[ActionType.CREATE] = CreateAction
 ACTION_DICT[ActionType.EXPORT] = ExportAction
 ACTION_DICT[ActionType.GET] = GetAction
 ACTION_DICT[ActionType.REFRESH] = RefreshAction
+ACTION_DICT[ActionType.STATUS] = StatusAction
 ACTION_DICT[ActionType.UPDATE] = UpdateAction
 ACTION_DICT[ActionType.UPLOAD] = UploadAction
 ACTION_DICT[ActionType.VERIFY] = VerifyAction

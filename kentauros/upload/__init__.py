@@ -65,7 +65,7 @@ class CoprUploader(Uploader):
             return None
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(KTR_CONF.get("main", "packdir"),
+        srpms = glob.glob(os.path.join(KTR_CONF.packdir,
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:

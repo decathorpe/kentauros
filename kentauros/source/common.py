@@ -29,7 +29,7 @@ class Source():
         self.package = package
         self.conf = package.conf
         self.name = self.conf['package']['name']
-        self.sdir = os.path.join(KTR_CONF['main']['datadir'], self.name)
+        self.sdir = os.path.join(KTR_CONF.datadir, self.name)
         self.type = None
 
     def clean(self):
@@ -39,7 +39,7 @@ class Source():
         else:
             # try to be careful with "rm -r"
             assert os.path.isabs(self.sdir)
-            assert KTR_CONF['main']['datadir'] in self.sdir
+            assert KTR_CONF.datadir in self.sdir
             shutil.rmtree(self.sdir)
 
     def export(self):

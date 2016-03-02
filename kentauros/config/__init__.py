@@ -13,7 +13,7 @@ import os
 from kentauros.definitions import KTR_SYSTEM_DATADIR
 
 from kentauros.config import cli, envvar, fallback
-from kentauros.config.common import KtrConf, get_config_from_file
+from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
 from kentauros.init import dbg, err, log
@@ -25,7 +25,7 @@ __all__ = []
 
 
 DEFAULT_FILE_PATH = os.path.join(KTR_SYSTEM_DATADIR, "default.conf")
-PROJECT_FILE_PATH = "./kentaurosrc"
+PROJECT_FILE_PATH = os.path.abspath("./kentaurosrc")
 SYSTEM_FILE_PATH = "/etc/kentaurosrc"
 USER_FILE_PATH = os.path.join(HOME, ".config/kentaurosrc")
 
@@ -43,18 +43,14 @@ LOGPREFIX2 = "            - "
 KTR_CONF_DICT = OrderedDict()
 
 KTR_CONF_DICT[KtrConfType.FALLBACK] = fallback.get_fallback_config()
-KTR_CONF_DICT[KtrConfType.DEFAULT] = get_config_from_file(DEFAULT_FILE_PATH,
-                                                          DEFAULT_ERR_MSG,
-                                                          KtrConfType.DEFAULT)
-KTR_CONF_DICT[KtrConfType.SYSTEM] = get_config_from_file(SYSTEM_FILE_PATH,
-                                                         SYSTEM_ERR_MSG,
-                                                         KtrConfType.SYSTEM)
-KTR_CONF_DICT[KtrConfType.USER] = get_config_from_file(USER_FILE_PATH,
-                                                       USER_ERR_MSG,
-                                                       KtrConfType.USER)
-KTR_CONF_DICT[KtrConfType.PROJECT] = get_config_from_file(PROJECT_FILE_PATH,
-                                                          PROJECT_ERR_MSG,
-                                                          KtrConfType.PROJECT)
+KTR_CONF_DICT[KtrConfType.DEFAULT] = KtrConf(KtrConfType.DEFAULT).from_file(DEFAULT_FILE_PATH,
+                                                                            DEFAULT_ERR_MSG)
+KTR_CONF_DICT[KtrConfType.SYSTEM] = KtrConf(KtrConfType.SYSTEM).from_file(SYSTEM_FILE_PATH,
+                                                                          SYSTEM_ERR_MSG)
+KTR_CONF_DICT[KtrConfType.USER] = KtrConf(KtrConfType.USER).from_file(USER_FILE_PATH,
+                                                                      USER_ERR_MSG)
+KTR_CONF_DICT[KtrConfType.PROJECT] = KtrConf(KtrConfType.PROJECT).from_file(PROJECT_FILE_PATH,
+                                                                            PROJECT_ERR_MSG)
 KTR_CONF_DICT[KtrConfType.ENV] = envvar.get_env_config()
 KTR_CONF_DICT[KtrConfType.CLI] = cli.get_cli_config()
 
@@ -72,12 +68,14 @@ def get_pref_conf(pref_conf):
         err(LOGPREFIX1 + "Configuration type not supported.")
         err(LOGPREFIX1 + "Supported: default, system, user, project, cli, env")
 
-    # getr requested config from Dict
-    ktr_conf_new = KTR_CONF_DICT[conf_type]
+    # get requested config from Dict
+    ktr_conf = KTR_CONF_DICT[conf_type]
 
     # apply it if it is not None
-    if ktr_conf_new:
-        return ktr_conf_new
+    if ktr_conf != None:
+        return ktr_conf
+    else:
+        return None
 
 
 def ktr_get_conf():
@@ -87,26 +85,32 @@ def ktr_get_conf():
     """
 
     if CLI_ARGS['priconf']:
-        return get_pref_conf(CLI_ARGS['priconf'])
+        ktr_conf = get_pref_conf(CLI_ARGS['priconf'])
+
+    if ktr_conf != None:
+        return ktr_conf
 
     # KTR_CONF should contain the highest-priority,
     # non-None configuration for every value
     ktr_conf = KTR_CONF_DICT[KtrConfType.FALLBACK]
+
     for conftype in KTR_CONF_DICT:
         # skip FALLBACK config
-        if conftype != KtrConfType.FALLBACK:
-            conf = KTR_CONF_DICT[conftype]
-            if conf != None:
-                ktr_conf.succby(conf)
+        if conftype == KtrConfType.FALLBACK:
+            continue
+
+        conf = KTR_CONF_DICT[conftype]
+        if conf != None:
+            ktr_conf.succby(conf)
 
     return ktr_conf
 
 
 KTR_CONF = ktr_get_conf()
 
-log("ktr: BASEDIR: " + KTR_CONF.get("main", "basedir"), 0)
-log("ktr: CONFDIR: " + KTR_CONF.get("main", "confdir"), 0)
-log("ktr: DATADIR: " + KTR_CONF.get("main", "datadir"), 0)
-log("ktr: PACKDIR: " + KTR_CONF.get("main", "packdir"), 0)
-log("ktr: SPECDIR: " + KTR_CONF.get("main", "specdir"), 0)
+log("ktr: BASEDIR: " + KTR_CONF.basedir, 0)
+log("ktr: CONFDIR: " + KTR_CONF.confdir, 0)
+log("ktr: DATADIR: " + KTR_CONF.datadir, 0)
+log("ktr: PACKDIR: " + KTR_CONF.packdir, 0)
+log("ktr: SPECDIR: " + KTR_CONF.specdir, 0)
 

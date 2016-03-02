@@ -158,6 +158,12 @@ def cli_parse():
         help="get package sources",
         parents=[package_parser])
 
+    status_parser = parsers.add_parser(
+        "status",
+        description="display kentauros status (configuration, packages)",
+        help="display kentauros status",
+        parents=[package_parser])
+
     update_parser = parsers.add_parser(
         "update",
         description="update sources specified in package configuration",
@@ -184,6 +190,7 @@ def cli_parse():
     create_parser.set_defaults(action=ActionType.CREATE)
     export_parser.set_defaults(action=ActionType.EXPORT)
     get_parser.set_defaults(action=ActionType.GET)
+    status_parser.set_defaults(action=ActionType.STATUS)
     update_parser.set_defaults(action=ActionType.UPDATE)
     upload_parser.set_defaults(action=ActionType.UPLOAD)
     verify_parser.set_defaults(action=ActionType.VERIFY)

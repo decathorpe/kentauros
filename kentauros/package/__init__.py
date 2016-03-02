@@ -26,7 +26,7 @@ class Package:
     """
     def __init__(self, name):
         self.name = name
-        self.file = os.path.join(KTR_CONF['main']['confdir'], self.name + ".conf")
+        self.file = os.path.join(KTR_CONF.confdir, self.name + ".conf")
 
         self.conf = ConfigParser()
 

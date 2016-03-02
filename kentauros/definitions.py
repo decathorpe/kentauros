@@ -10,12 +10,13 @@ kentauros.definitions module
   - uploader types
 """
 
-from enum import Enum
+from enum import Enum, unique
 
 
 KTR_SYSTEM_DATADIR = "/usr/share/kentauros/"
 
 
+@unique
 class KtrConfType(Enum):
     """
     kentauros.definitions.KtrConfType
@@ -30,6 +31,7 @@ class KtrConfType(Enum):
     FALLBACK = 6
 
 
+@unique
 class ActionType(Enum):
     """
     kentauros.definitions.ActionType:
@@ -44,11 +46,13 @@ class ActionType(Enum):
     EXPORT = 6
     GET = 7
     REFRESH = 8
-    UPDATE = 9
-    UPLOAD = 10
-    VERIFY = 11
+    STATUS = 9
+    UPDATE = 10
+    UPLOAD = 11
+    VERIFY = 12
 
 
+@unique
 class BuilderType(Enum):
     """
     kentauros.definitons.BuilderType:
@@ -57,6 +61,7 @@ class BuilderType(Enum):
     MOCK = 0
 
 
+@unique
 class ConstructorType(Enum):
     """
     kentauros.definitons.ConstructorType:
@@ -65,6 +70,7 @@ class ConstructorType(Enum):
     SRPM = 0
 
 
+@unique
 class SourceType(Enum):
     """
     kentauros.definitons.SourceType:
@@ -76,6 +82,7 @@ class SourceType(Enum):
     BZR = 3
 
 
+@unique
 class UploaderType(Enum):
     """
     kentauros.definitons.UploaderType:

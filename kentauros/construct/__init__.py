@@ -104,13 +104,13 @@ class SrpmConstructor(Constructor):
         if not os.path.exists(self.rpmbdir):
             self.init()
 
-        pkg_data_dir = os.path.join(KTR_CONF.get("main", "datadir"),
+        pkg_data_dir = os.path.join(KTR_CONF.datadir,
                                     self.package.name)
 
-        pkg_conf_file = os.path.join(KTR_CONF.get("main", "confdir"),
+        pkg_conf_file = os.path.join(KTR_CONF.confdir,
                                      self.package.name + ".conf")
 
-        pkg_spec_file = os.path.join(KTR_CONF.get("main", "specdir"),
+        pkg_spec_file = os.path.join(KTR_CONF.specdir,
                                      self.package.name + ".spec")
 
         for entry in os.listdir(pkg_data_dir):
@@ -179,7 +179,7 @@ class SrpmConstructor(Constructor):
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
         for srpm in srpms:
-            shutil.copy2(srpm, KTR_CONF.get("main", "packdir"))
+            shutil.copy2(srpm, KTR_CONF.packdir)
             log(LOGPREFIX1 + "File copied: " + srpm, 0)
 
 

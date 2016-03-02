@@ -295,7 +295,7 @@ class GitSource(Source):
         # add prefix
         cmd.append("--prefix=" + name_version + "/")
 
-        file_name = os.path.join(KTR_CONF['main']['datadir'],
+        file_name = os.path.join(KTR_CONF.datadir,
                                  self.name,
                                  name_version + ".tar.gz")
 
@@ -321,7 +321,7 @@ class GitSource(Source):
         if not bool(strtobool(self.conf.get("git", "keep"))):
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
-            assert KTR_CONF['main']['datadir'] in self.dest
+            assert KTR_CONF.datadir in self.dest
             shutil.rmtree(self.dest)
             log(LOGPREFIX1 + "git repo deleted after export to tarball", 1)
 

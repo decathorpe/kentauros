@@ -41,7 +41,7 @@ if not CLI_ARGS.get("packages_all"):
 # if all package are to be processed:
 # get package configs present in CONFDIR
 else:
-    PKG_CONF_PATHS = glob.glob(os.path.join(KTR_CONF.get("main", "confdir"), "*.conf"))
+    PKG_CONF_PATHS = glob.glob(os.path.join(KTR_CONF.confdir, "*.conf"))
 
     for pkg_conf_path in PKG_CONF_PATHS:
         PKGS.append(os.path.basename(pkg_conf_path).rstrip(".conf"))

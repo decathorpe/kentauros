@@ -10,7 +10,12 @@ import os
 
 from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
+
+from kentauros.init import log
 from kentauros.init.cli import CLI_ARGS
+
+
+LOGPREFIX1 = "ktr/config/cli: "
 
 
 def get_cli_config():
@@ -28,42 +33,29 @@ def get_cli_config():
 
     # if at least basedir has been set, construct KtrConf from CLI switches
     if CLI_ARGS.basedir != None:
-        result = KtrConf()
-        result.add_section("main")
-        result.set("main", "basedir", os.path.abspath(CLI_ARGS.basedir))
+        result = KtrConf(KtrConfType.CLI,
+                         basedir=os.path.abspath(CLI_ARGS.basedir))
 
-        if CLI_ARGS.confdir == None:
-            result.set("main", "confdir", os.path.join(result['main']['basedir'], "configs"))
-        else:
-            result.set("main", "confdir", CLI_ARGS.confdir)
+        if CLI_ARGS.confdir != None:
+            result.confdir = CLI_ARGS.confdir
+        if CLI_ARGS.datadir != None:
+            result.datadir = CLI_ARGS.datadir
+        if CLI_ARGS.packdir != None:
+            result.packdir = CLI_ARGS.packdir
+        if CLI_ARGS.specdir != None:
+            result.specdir = CLI_ARGS.specdir
 
-        if CLI_ARGS.datadir == None:
-            result.set("main", "datadir", os.path.join(result['main']['basedir'], "sources"))
-        else:
-            result.set("main", "datadir", CLI_ARGS.datadir)
-
-        if CLI_ARGS.packdir == None:
-            result.set("main", "packdir", os.path.join(result['main']['basedir'], "packages"))
-        else:
-            result.set("main", "packdir", CLI_ARGS.packdir)
-
-        if CLI_ARGS.specdir == None:
-            result.set("main", "specdir", os.path.join(result['main']['basedir'], "specs"))
-        else:
-            result.set("main", "specdir", CLI_ARGS.specdir)
-
-        result.type = KtrConfType.CLI
-        return result
-
-    # default case: mix-and-match of set and not set config values
+    # basedir not set: all other dirs must be specified
     else:
-        result = KtrConf()
-        result.add_section("main")
-        result.set("main", "basedir", CLI_ARGS.basedir)
-        result.set("main", "confdir", CLI_ARGS.confdir)
-        result.set("main", "datadir", CLI_ARGS.datadir)
-        result.set("main", "packdir", CLI_ARGS.packdir)
-        result.set("main", "specdir", CLI_ARGS.specdir)
-        result.type = KtrConfType.CLI
+        result = KtrConf(KtrConfType.CLI)
+        result.confdir = CLI_ARGS.confdir
+        result.datadir = CLI_ARGS.datadir
+        result.packdir = CLI_ARGS.packdir
+        result.specdir = CLI_ARGS.specdir
+
+    if result.validate():
         return result
+    else:
+        log(LOGPREFIX1 + "Not all neccessary config values have been set at CLI.")
+        return None
 
