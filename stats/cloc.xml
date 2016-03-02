@@ -3,16 +3,31 @@
 <header>
   <cloc_url>http://cloc.sourceforge.net</cloc_url>
   <cloc_version>1.64</cloc_version>
-  <elapsed_seconds>0.0874948501586914</elapsed_seconds>
-  <n_files>28</n_files>
-  <n_lines>2833</n_lines>
-  <files_per_second>320.018834813886</files_per_second>
-  <lines_per_second>32379.048536705</lines_per_second>
+  <elapsed_seconds>9.86079096794128</elapsed_seconds>
+  <n_files>3906</n_files>
+  <n_lines>1569270</n_lines>
+  <files_per_second>396.114268388704</files_per_second>
+  <lines_per_second>159142.406030297</lines_per_second>
   <report_file>./cloc.xml</report_file>
 </header>
 <languages>
-  <language name="Python" files_count="26" blank="639" comment="630" code="1534" />
-  <language name="Bourne Shell" files_count="2" blank="11" comment="2" code="17" />
-  <total sum_files="28" blank="650" comment="632" code="1551" />
+  <language name="C" files_count="1815" blank="129569" comment="131908" code="658657" />
+  <language name="C/C++ Header" files_count="1477" blank="51545" comment="76897" code="247454" />
+  <language name="C++" files_count="290" blank="28671" comment="35973" code="150148" />
+  <language name="Python" files_count="92" blank="4529" comment="4995" code="17344" />
+  <language name="Assembly" files_count="24" blank="2417" comment="1453" code="7441" />
+  <language name="yacc" files_count="2" blank="758" comment="424" code="4020" />
+  <language name="make" files_count="92" blank="1054" comment="1345" code="3769" />
+  <language name="m4" files_count="9" blank="352" comment="138" code="3218" />
+  <language name="Windows Module Definition" files_count="5" blank="1" comment="19" code="1494" />
+  <language name="Bourne Shell" files_count="79" blank="352" comment="125" code="971" />
+  <language name="lex" files_count="2" blank="138" comment="201" code="723" />
+  <language name="Bourne Again Shell" files_count="6" blank="20" comment="10" code="548" />
+  <language name="DOS Batch" files_count="2" blank="17" comment="1" code="114" />
+  <language name="YAML" files_count="2" blank="26" comment="41" code="107" />
+  <language name="Lisp" files_count="7" blank="0" comment="0" code="76" />
+  <language name="DTD" files_count="1" blank="6" comment="63" code="75" />
+  <language name="CSS" files_count="1" blank="9" comment="3" code="51" />
+  <total sum_files="3906" blank="219464" comment="253596" code="1096210" />
 </languages>
 </results>
