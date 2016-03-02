@@ -5,7 +5,7 @@
 Summary:        Small build system, written in python
 Name:           kentauros
 Version:        0.9.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -14,13 +14,12 @@ Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
 BuildRequires:  python3-devel
 
-Requires:       bzr
-Requires:       copr-cli
-Requires:       git
-Requires:       mock
+Requires:       bzr, git, wget
 Requires:       python3-dateutil
 Requires:       rpmdevtools
-Requires:       wget
+
+Suggests:       copr-cli
+Suggests:       mock
 
 
 %description
@@ -54,6 +53,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 02 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.0-2
+- move copr-cli and mock from Requires: to Suggests:
+- copr-cli and mock command presence is checked at runtime
+
 * Sun Feb 28 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.0-1
 - Bump to version 0.9.0.
 
