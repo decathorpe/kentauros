@@ -4,8 +4,8 @@
 
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.9.0
-Release:        2%{?dist}
+Version:        0.9.1
+Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -53,6 +53,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 02 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.1-1
+- Bump to version 0.9.1.
+
 * Wed Mar 02 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.0-2
 - move copr-cli and mock from Requires: to Suggests:
 - copr-cli and mock command presence is checked at runtime
