@@ -37,7 +37,7 @@ class Package:
             err("Path: " + self.file)
 
         else:
-            # set source to Source subclass corresponding to setting in source/type
+            # TODO: package/builder, package/constructor, package/uploader config values
             bld_type = str("mock").upper()
             con_type = str("srpm").upper()
             src_type = str(self.conf.get("source", "type")).upper()
