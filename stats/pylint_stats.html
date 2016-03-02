@@ -2,7 +2,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1295 statements analysed.</p><div>
+<p>1296 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -16,8 +16,8 @@
 <tr class="even">
 <td>module</td>
 <td>25</td>
-<td>25</td>
-<td>=</td>
+<td>24</td>
+<td>+1.00</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -55,21 +55,21 @@ kentauros
   \-actions (ktr)
   \-bootstrap (ktr)
   \-build (kentauros.package)
-  \-config (kentauros.package,kentauros.actions,kentauros.source.common,kentauros.construct,kentauros.bootstrap,kentauros.source.bzr,kentauros.upload,kentauros.source.git,kentauros.build)
-  | \-common (kentauros.config.fallback,kentauros.config,kentauros.config.cli,kentauros.config.envvar)
+  \-config (kentauros.construct,kentauros.build,kentauros.actions,kentauros.upload,kentauros.source.git,kentauros.package,kentauros.source.bzr,kentauros.source.common,kentauros.bootstrap)
+  | \-common (kentauros.config,kentauros.config.envvar,kentauros.config.fallback,kentauros.config.cli)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
-  \-conntest (kentauros.source.git,kentauros.source.bzr,kentauros.upload,kentauros.source.url)
+  \-conntest (kentauros.source.bzr,kentauros.source.git,kentauros.source.url,kentauros.upload)
   \-construct (kentauros.package)
   | \-rpm_spec (kentauros.construct)
-  \-definitions (kentauros.config.common,kentauros.package,kentauros.config.fallback,kentauros.config.envvar,kentauros.actions,kentauros.construct,kentauros.source.bzr,kentauros.config,kentauros.config.cli,kentauros.construct.rpm_spec,kentauros.upload,kentauros.init.cli,kentauros.source.git,kentauros.source.local,kentauros.source.url,kentauros.build,kentauros.source)
-  \-init (kentauros.config.common,kentauros.package,kentauros.config.fallback,kentauros.config.envvar,kentauros.actions,kentauros.source.common,kentauros.construct,kentauros.bootstrap,kentauros.source.bzr,kentauros.config,kentauros.construct.rpm_spec,kentauros.upload,kentauros.source.url,kentauros.source.git,kentauros.config.cli,kentauros.build)
-  | \-cli (kentauros.init,kentauros.config,kentauros.config.cli)
-  | \-env (kentauros.init,kentauros.config,kentauros.config.common)
+  \-definitions (kentauros.config,kentauros.construct,kentauros.build,kentauros.config.cli,kentauros.init.cli,kentauros.source.url,kentauros.actions,kentauros.upload,kentauros.source,kentauros.config.envvar,kentauros.source.git,kentauros.package,kentauros.source.local,kentauros.config.common,kentauros.construct.rpm_spec,kentauros.source.bzr,kentauros.config.fallback)
+  \-init (kentauros.config,kentauros.construct,kentauros.build,kentauros.config.cli,kentauros.source.url,kentauros.actions,kentauros.upload,kentauros.config.envvar,kentauros.source.git,kentauros.package,kentauros.config.common,kentauros.construct.rpm_spec,kentauros.source.bzr,kentauros.source.common,kentauros.config.fallback,kentauros.bootstrap)
+  | \-cli (kentauros.config,kentauros.config.cli,kentauros.init)
+  | \-env (kentauros.config.common,kentauros.config,kentauros.init)
   \-package (kentauros.actions)
   \-source (kentauros.package)
   | \-bzr (kentauros.source)
-  | \-common (kentauros.source.git,kentauros.source.bzr,kentauros.source.local,kentauros.source.url)
+  | \-common (kentauros.source.local,kentauros.source.bzr,kentauros.source.git,kentauros.source.url)
   | \-git (kentauros.source)
   | \-local (kentauros.source)
   | \-url (kentauros.source)
@@ -86,31 +86,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>1491</td>
-<td>60.76</td>
-<td>1491</td>
-<td>=</td>
+<td>1493</td>
+<td>60.79</td>
+<td>1450</td>
+<td>+43.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>510</td>
-<td>20.78</td>
-<td>510</td>
-<td>=</td>
+<td>20.77</td>
+<td>507</td>
+<td>+3.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>152</td>
 <td>6.19</td>
-<td>152</td>
-<td>=</td>
+<td>143</td>
+<td>+9.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
 <td>301</td>
-<td>12.27</td>
-<td>301</td>
-<td>=</td>
+<td>12.26</td>
+<td>295</td>
+<td>+6.00</td>
 </tr>
 </table>
 </div>
