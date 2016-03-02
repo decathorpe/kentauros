@@ -33,10 +33,11 @@ def __replace_home__(string):
         return None
 
     if "$HOME" in string:
-        newstring = string.replace("$HOME", HOME)
+        return string.replace("$HOME", HOME)
     elif "~" in string:
-        newstring = string.replace("~", HOME)
-    return newstring
+        return string.replace("~", HOME)
+    else:
+        return string
 
 
 class KtrConf:
@@ -124,7 +125,7 @@ class KtrConf:
 
         if not os.path.exists(filepath):
             log(LOGPREFIX1 + errmsg, 0)
-            return False
+            return None
 
         self.file = filepath
         self.conf = ConfigParser()
@@ -133,13 +134,13 @@ class KtrConf:
         if not successful:
             if errmsg:
                 log(LOGPREFIX1 + errmsg, 0)
-            return False
+            return None
 
         if "main" not in self.conf.sections():
-            return False
+            return None
 
         try:
-            self.basedir = __replace_home__(self.conf.get("main", "basedir"))
+            self.basedir = os.path.abspath(__replace_home__(self.conf.get("main", "basedir")))
         except NoOptionError:
             self.basedir = None
         finally:
@@ -147,29 +148,29 @@ class KtrConf:
                 self.basedir = None
 
         if "confdir" in self.conf.options("main"):
-            self.confdir = __replace_home__(self.conf.get("main", "confdir"))
+            self.confdir = os.path.abspath(__replace_home__(self.conf.get("main", "confdir")))
         else:
-            self.confdir = os.path.join(self.basedir, "confdir")
+            self.confdir = os.path.join(self.basedir, "configs")
 
         if "datadir" in self.conf.options("main"):
-            self.datadir = __replace_home__(self.conf.get("main", "datadir"))
+            self.datadir = os.path.abspath(__replace_home__(self.conf.get("main", "datadir")))
         else:
-            self.datadir = os.path.join(self.basedir, "datadir")
+            self.datadir = os.path.join(self.basedir, "sources")
 
         if "packdir" in self.conf.options("main"):
-            self.packdir = __replace_home__(self.conf.get("main", "packdir"))
+            self.packdir = os.path.abspath(__replace_home__(self.conf.get("main", "packdir")))
         else:
-            self.packdir = os.path.join(self.basedir, "packdir")
+            self.packdir = os.path.join(self.basedir, "packages")
 
         if "specdir" in self.conf.options("main"):
-            self.specdir = __replace_home__(self.conf.get("main", "specdir"))
+            self.specdir = os.path.abspath(__replace_home__(self.conf.get("main", "specdir")))
         else:
-            self.specdir = os.path.join(self.basedir, "specdir")
+            self.specdir = os.path.join(self.basedir, "specs")
 
-        if self.validate():
-            return True
-        else:
+        if not self.validate():
             log(LOGPREFIX1 + "Not all neccessary configuration options have been set.", 1)
             log(LOGPREFIX2 + self.file, 1)
-            return False
+            return None
+        else:
+            return self
 

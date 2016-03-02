@@ -190,7 +190,7 @@ def cli_parse():
     create_parser.set_defaults(action=ActionType.CREATE)
     export_parser.set_defaults(action=ActionType.EXPORT)
     get_parser.set_defaults(action=ActionType.GET)
-    status_parser.set_defaults(action=ActionType.STATUS)
+    status_parser.set_defaults(action=ActionType.STATUS, all=True)
     update_parser.set_defaults(action=ActionType.UPDATE)
     upload_parser.set_defaults(action=ActionType.UPLOAD)
     verify_parser.set_defaults(action=ActionType.VERIFY)

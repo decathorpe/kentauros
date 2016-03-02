@@ -84,6 +84,8 @@ def ktr_get_conf():
     get and return highest-priority configuration for every config value
     """
 
+    ktr_conf = None
+
     if CLI_ARGS['priconf']:
         ktr_conf = get_pref_conf(CLI_ARGS['priconf'])
 
