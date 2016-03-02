@@ -65,16 +65,19 @@ class ChainAction(Action):
         if not veryfied:
             return False
 
-        GetAction(self.name, self.force).execute()
+        get = GetAction(self.name, self.force).execute()
         update = UpdateAction(self.name, self.force).execute()
 
-        if not (update or self.force):
+        if not (get or update or self.force):
             return False
 
         ExportAction(self.name, self.force).execute()
-        ConstructAction(self.name, self.force).execute()
-        success = BuildAction(self.name, self.force).execute()
 
+        success = ConstructAction(self.name, self.force).execute()
+        if not success:
+            return False
+
+        success = BuildAction(self.name, self.force).execute()
         if not success:
             return False
 
@@ -134,10 +137,16 @@ class ConstructAction(Action):
 
     def execute(self):
         self.package.constructor.init()
-        self.package.constructor.prepare(relreset=(not self.force))
+
+        success = self.package.constructor.prepare(relreset=(not self.force))
+        if not success:
+            return False
+
         self.package.constructor.build()
         self.package.constructor.export()
         self.package.constructor.clean()
+
+        return True
 
 
 class CreateAction(Action):
@@ -193,7 +202,7 @@ class GetAction(Action):
         self.type = ActionType.GET
 
     def execute(self):
-        self.package.source.get()
+        return self.package.source.get()
 
 
 class RefreshAction(Action):

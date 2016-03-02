@@ -3,13 +3,129 @@ kentauros.construct.rpm_spec
 contains helper functions for building rpm source packages
 """
 
+import io
 import subprocess
 
 from kentauros.definitions import SourceType
 from kentauros.init import DEBUG, VERBY, log_command
+from kentauros.source.common import Source
 
 
 LOGPREFIX1 = "ktr/construct/rpm_spec: "
+
+
+class RPMSpecError(Exception):
+    """
+    kentauros.construct.rpm_spec.RPMSpecError:
+    exception for rpm spec errors
+    """
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+
+def spec_preamble_bzr(source):
+    """
+    kentauros.construct.rpm_spec.spec_preamble_bzr():
+    returns rpm spec %defines lines formatted nicely for bzr sources
+    """
+    assert isinstance(source, Source)
+    rev_define = "%define rev " + source.rev() + "\n"
+    return rev_define + "\n"
+
+def spec_preamble_git(source):
+    """
+    kentauros.construct.rpm_spec.spec_preamble_git():
+    returns rpm spec %defines lines formatted nicely for git sources
+    """
+    assert isinstance(source, Source)
+    date_define = "%define date " + source.date() + "\n"
+    rev_define = "%define rev " + source.rev()[0:8] + "\n"
+    return date_define + rev_define + "\n"
+
+def spec_preamble_url(source):
+    """
+    kentauros.construct.rpm_spec.spec_preamble_url():
+    returns rpm spec %defines lines formatted nicely for url sources
+    """
+    assert isinstance(source, Source)
+    return ""
+
+
+SPEC_PREAMBLE_DICT = dict()
+SPEC_PREAMBLE_DICT[SourceType.BZR] = spec_preamble_bzr
+SPEC_PREAMBLE_DICT[SourceType.GIT] = spec_preamble_git
+SPEC_PREAMBLE_DICT[SourceType.URL] = spec_preamble_url
+
+
+def spec_version_bzr(source):
+    """
+    kentauros.construct.rpm_spec.spec_version_bzr():
+    returns rpm spec "Version:" tagline formatted nicely for bzr sources
+    """
+    assert isinstance(source, Source)
+    ver_str = source.conf.get("source", "version") + "~rev%{rev}"
+    return ver_str
+
+def spec_version_git(source):
+    """
+    kentauros.construct.rpm_spec.spec_version_git():
+    returns rpm spec "Version:" tagline formatted nicely for git sources
+    """
+    assert isinstance(source, Source)
+    ver_str = source.conf.get("source", "version") + "~git%{date}~%{rev}"
+    return ver_str
+
+def spec_version_url(source):
+    """
+    kentauros.construct.rpm_spec.spec_version_url():
+    returns rpm spec "Version:" tagline formatted nicely for url sources
+    """
+    assert isinstance(source, Source)
+    ver_str = source.conf.get("source", "version")
+    return ver_str
+
+
+SPEC_VERSION_DICT = dict()
+SPEC_VERSION_DICT[SourceType.BZR] = spec_version_bzr
+SPEC_VERSION_DICT[SourceType.GIT] = spec_version_git
+SPEC_VERSION_DICT[SourceType.URL] = spec_version_url
+
+
+def spec_version_read(file_obj):
+    """
+    kentauros.construct.rpm_spec.spec_version_read():
+    returns version string found on rpm spec "Version:" tagline
+    """
+    assert isinstance(file_obj, io.IOBase)
+
+    file_obj.seek(0)
+    for line in file_obj:
+        if line[0:8] == "Version:":
+            file_obj.seek(0)
+            return line.replace("Version:", "").lstrip(" ").rstrip("\n")
+
+    file_obj.seek(0)
+    raise RPMSpecError("No Version tag was found in the file.")
+
+
+def spec_release_read(file_obj):
+    """
+    kentauros.construct.rpm_spec.spec_release_read():
+    returns release string found on rpm spec "Release:" tagline
+    """
+    assert isinstance(file_obj, io.IOBase)
+
+    file_obj.seek(0)
+    for line in file_obj:
+        if line[0:8] == "Release:":
+            file_obj.seek(0)
+            return line.replace("Release:", "").lstrip(" ").rstrip("\n")
+
+    file_obj.seek(0)
+    raise RPMSpecError("No Release tag was found in the file.")
 
 
 def if_version(line):
@@ -18,28 +134,9 @@ def if_version(line):
     function returns version string if "Version: " is found on spec file line
     """
     if line[0:8] == "Version:":
-        return line.lstrip("Version:").lstrip(" ").rstrip("\n")
+        return True
     else:
         return False
-
-
-def of_version(package):
-    """
-    kentauros.construct.rpm_spec.of_version()
-    function returns a line with the version tag and the current version
-    """
-    # TODO: use dict of functions for different enum members of SourceType
-    if package.source.type == SourceType.GIT:
-        verstr = "Version:" + 8 * " " + package.conf.get("source", "version") + \
-                 "~git%{date}~%{rev}" + "\n"
-    elif package.source.type == SourceType.BZR:
-        verstr = "Version:" + 8 * " " + package.conf.get("source", "version") + \
-                 "~rev%{rev}" + "\n"
-    elif package.source.type == SourceType.URL:
-        verstr = "Version:" + 8 * " " + package.conf.get("source", "version") + "\n"
-    else:
-        verstr = "Version:" + 8 * " " + package.conf.get("source", "version") + "\n"
-    return verstr
 
 
 def if_release(line):
@@ -48,12 +145,12 @@ def if_release(line):
     function returns release string if "Release: " is found on spec file line
     """
     if line[0:8] == "Release:":
-        return line.lstrip("Release:").lstrip(" ").rstrip("\n")
+        return True
     else:
         return False
 
 
-def bump_release(relstr_old):
+def bump_release(relstr_old, reset=False):
     """
     kentauros.construct.rpm_spec.bump_release()
     returns release string bumped by 1 (hopefully intelligently)
@@ -61,36 +158,10 @@ def bump_release(relstr_old):
     rnum = int(relstr_old[0])
     rest = relstr_old[1:]
 
-    relstr_new = str(rnum + 1) + rest
-    return relstr_new
-
-
-def of_release(relstr, reset=False):
-    """
-    kentauros.construct.rpm_spec.of_release()
-    function returns a line with the release tag and 0%{?dist} if dist is True
-    """
-    assert isinstance(reset, bool)
     if not reset:
-        return "Release:" + 8 * " " + relstr + "\n"
+        return str(rnum + 1) + rest
     else:
-        return "Release:" + 8 * " " + "0" + relstr[1:] + "\n"
-
-
-def munge_line(line, package, relreset=False):
-    """
-    kentauros.construct.rpm_spec.munge_line()
-    function returns a munged line if given a line
-    """
-
-    if if_version(line):
-        return of_version(package)
-
-    release = if_release(line)
-    if release:
-        return of_release(release, reset=relreset)
-
-    return line
+        return str(0) + rest
 
 
 def spec_bump(specfile, comment=None):

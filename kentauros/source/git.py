@@ -30,9 +30,8 @@ class GitSource(Source):
     - checking out master branch
     """
 
-    def __init__(self, pkgconfig):
-        super().__init__(pkgconfig)
-        self.config = pkgconfig
+    def __init__(self, package):
+        super().__init__(package)
         self.dest = os.path.join(self.sdir, self.name)
         self.type = SourceType.GIT
 
@@ -132,17 +131,17 @@ class GitSource(Source):
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
-        # if source directory seems to already exist, quit and return commit id
+        # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             rev = self.rev()
             log(LOGPREFIX1 + "Sources already downloaded. Latest commit id:", 2)
             log(LOGPREFIX1 + rev, 2)
-            return rev
+            return False
 
         # check for connectivity to server
-        if not is_connected(self.config.get("source", "orig")):
+        if not is_connected(self.conf.get("source", "orig")):
             log("No connection to remote host detected. Cancelling source checkout.", 2)
-            return None
+            return False
 
         # construct git commands
         cmd = ["git"]
@@ -194,14 +193,15 @@ class GitSource(Source):
 
         # get commit ID
         rev = self.rev()
+        self.date()
 
         # check if checkout worked
         if self.conf.get("git", "commit"):
             if self.conf.get("git", "commit") != rev:
                 err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
 
-        # return commit ID
-        return rev
+        # return True if successful
+        return True
 
 
     def update(self):
@@ -216,7 +216,7 @@ class GitSource(Source):
             return False
 
         # check for connectivity to server
-        if not is_connected(self.config.get("source", "orig")):
+        if not is_connected(self.conf.get("source", "orig")):
             log("No connection to remote host detected. Cancelling source update.", 2)
             return False
 
@@ -253,6 +253,7 @@ class GitSource(Source):
 
         # get new commit ID
         rev_new = self.rev()
+        self.date()
 
         # return True if update found, False if not
         if rev_new != rev_old:
@@ -316,6 +317,10 @@ class GitSource(Source):
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
         log_command(LOGPREFIX1, "git", cmd, 0)
         subprocess.call(cmd)
+
+        # update saved rev and date
+        self.rev()
+        self.date()
 
         # remove git repo if keep is False
         if not bool(strtobool(self.conf.get("git", "keep"))):

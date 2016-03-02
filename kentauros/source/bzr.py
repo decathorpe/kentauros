@@ -24,17 +24,16 @@ class BzrSource(Source):
     kentauros.source.bzr.BzrSource
     information about and methods for bzr repositories available at specified URL
     """
-    def __init__(self, pkgconfig):
-        super().__init__(pkgconfig)
-        self.config = pkgconfig
+    def __init__(self, package):
+        super().__init__(package)
         self.dest = os.path.join(self.sdir, self.name)
         self.type = SourceType.BZR
         self.saved_rev = None
 
-        if self.config.get("source", "orig")[0:3] == "lp:":
+        if self.conf.get("source", "orig")[0:3] == "lp:":
             self.remote = "https://launchpad.net"
         else:
-            self.remote = self.config.get("source", "orig")
+            self.remote = self.conf.get("source", "orig")
 
 
     def rev(self):
@@ -82,17 +81,17 @@ class BzrSource(Source):
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
-        # if source directory seems to already exist, quit and return revision number
+        # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             rev = self.rev()
             log(LOGPREFIX1 + "Sources already downloaded. Latest commit id:", 1)
             log(LOGPREFIX1 + rev, 1)
-            return rev
+            return False
 
         # check for connectivity to server
         if not is_connected(self.remote):
             log("No connection to remote host detected. Cancelling source checkout.", 2)
-            return None
+            return False
 
         # construct bzr command
         cmd = ["bzr", "branch"]
@@ -129,8 +128,8 @@ class BzrSource(Source):
             if self.conf.get("bzr", "rev") != rev:
                 err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
 
-        # return commit ID
-        return rev
+        # return True if successful
+        return True
 
 
     def update(self):
@@ -235,6 +234,9 @@ class BzrSource(Source):
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
         log_command(LOGPREFIX1, "bzr", cmd, 0)
         subprocess.call(cmd)
+
+        # update saved rev
+        self.rev()
 
         # remove bzr repo if keep is False
         if not strtobool(self.conf.get("bzr", "keep")):

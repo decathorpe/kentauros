@@ -13,8 +13,8 @@ class LocalSource(Source):
     kentauros.source.LocalSource
     information about and methods for locally available source tarballs
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, package):
+        super().__init__(package)
         self.type = SourceType.LOCAL
         self.keep = True
 

@@ -21,8 +21,8 @@ class UrlSource(Source):
     kentauros.source.UrlSource
     information about and methods for tarballs available at specified URL
     """
-    def __init__(self, pkgconfig):
-        super().__init__(pkgconfig)
+    def __init__(self, package):
+        super().__init__(package)
         self.dest = os.path.join(self.sdir, os.path.basename(self.conf.get("source", "orig")))
         self.type = SourceType.URL
 
@@ -42,10 +42,10 @@ class UrlSource(Source):
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
-        # if source seems to already exist, quit
+        # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             log(LOGPREFIX1 + "Sources already downloaded.", 1)
-            return None
+            return False
 
         # check for connectivity to server
         if not is_connected(self.package.conf.get("source", "orig")):
@@ -69,6 +69,8 @@ class UrlSource(Source):
         # wget source from orig to dest
         log_command(LOGPREFIX1, "wget", cmd, 0)
         subprocess.call(cmd)
+
+        return True
 
 
     def update(self):

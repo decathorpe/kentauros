@@ -10,7 +10,11 @@ import subprocess
 import tempfile
 
 from kentauros.config import KTR_CONF
-from kentauros.construct.rpm_spec import munge_line, spec_bump
+
+from kentauros.construct.rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT, RPMSpecError
+from kentauros.construct.rpm_spec import spec_version_read, spec_release_read, bump_release
+from kentauros.construct.rpm_spec import if_version, if_release, spec_bump
+
 from kentauros.definitions import SourceType, ConstructorType
 from kentauros.init import VERBY, DEBUG, log, log_command
 
@@ -104,52 +108,105 @@ class SrpmConstructor(Constructor):
         if not os.path.exists(self.rpmbdir):
             self.init()
 
-        pkg_data_dir = os.path.join(KTR_CONF.datadir,
-                                    self.package.name)
+        # calculate absolute paths of files
+        pkg_data_dir = os.path.join(KTR_CONF.datadir, self.package.name)
+        pkg_conf_file = os.path.join(KTR_CONF.confdir, self.package.name + ".conf")
+        pkg_spec_file = os.path.join(KTR_CONF.specdir, self.package.name + ".spec")
 
-        pkg_conf_file = os.path.join(KTR_CONF.confdir,
-                                     self.package.name + ".conf")
-
-        pkg_spec_file = os.path.join(KTR_CONF.specdir,
-                                     self.package.name + ".spec")
-
+        # copy sources to rpmbuild/SOURCES
         for entry in os.listdir(pkg_data_dir):
             entry_path = os.path.join(pkg_data_dir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.srcsdir)
                 log(LOGPREFIX1 + "File copied: " + entry_path, 0)
 
+        # copy package.conf to rpmbuild/SOURCES
         shutil.copy2(pkg_conf_file, self.srcsdir)
         log(LOGPREFIX1 + "File copied: " + pkg_conf_file, 0)
 
+        # calculate absolute path of new spec file
         new_spec_file = os.path.join(self.specdir, self.package.name + ".spec")
 
+        # open old and create new spec file
         old_specfile = open(pkg_spec_file, "r")
         new_specfile = open(new_spec_file, "x")
 
-        # TODO: use dict of functions for different enum members of SourceType (bzr, git)
-        if self.package.source.type == SourceType.GIT:
-            date_define = "%define date " + \
-                          self.package.source.date() + "\n"
-            rev_define = "%define rev " + \
-                         self.package.source.rev()[0:8] + "\n"
+        # try to read old Version string from old specfile (resets seek=0)
+        try:
+            old_version = spec_version_read(old_specfile)
+        except RPMSpecError:
+            log(LOGPREFIX1 + "RPM spec file not valid. Version tag line not found.", 2)
+            old_specfile.close()
+            new_specfile.close()
+            return False
 
-            new_specfile.write(date_define)
-            new_specfile.write(rev_define)
-            new_specfile.write("\n")
+        # try to read old Release string from old specfile (resets seek=0)
+        try:
+            old_release = spec_release_read(old_specfile)
+        except RPMSpecError:
+            log(LOGPREFIX1 + "RPM spec file not valid. Version tag line not found.", 2)
+            old_specfile.close()
+            new_specfile.close()
+            return False
 
-        if self.package.source.type == SourceType.BZR:
-            rev_define = "%define rev " + self.package.source.rev() + "\n"
-            new_specfile.write(rev_define)
-            new_specfile.write("\n")
+        # construct preamble and new version string
+        preamble = SPEC_PREAMBLE_DICT[self.package.source.type](self.package.source)
+        new_version = SPEC_VERSION_DICT[self.package.source.type](self.package.source)
 
+        # if old version and new version are different, force release reset to 0
+        if new_version != old_version:
+            relreset = True
+
+        # construct new release string
+        new_release = bump_release(old_release, relreset)
+
+        # write preamble to new spec file
+        new_specfile.write(preamble)
+
+        # write rest of file and change Version and Release tags accordingly
         for line in old_specfile:
-            new_specfile.write(munge_line(line, self.package, relreset=relreset))
+            if if_version(line):
+                new_specfile.write("Version:" + 8 * " " + new_version + "\n")
+            elif if_release(line):
+                new_specfile.write("Release:" + 8 * " " + new_release + "\n")
+            else:
+                new_specfile.write(line)
 
+        # close files
         old_specfile.close()
         new_specfile.close()
 
-        spec_bump(new_spec_file)
+        # if version has changed, put it into the changelog
+        if new_version != old_version:
+            spec_bump(new_spec_file,
+                      comment="update to version " + \
+                              self.package.conf.get("source", "version"))
+        else:
+            spec_bump(new_spec_file)
+
+        # copy new specfile back to ktr/specdir to preserve version tracking,
+        # release number and changelog consistency (keep old version once as backup)
+        # BUT: remove preamble again, it would break things for the next build
+        shutil.move(pkg_spec_file, pkg_spec_file + ".old")
+
+        # open new and create old spec file
+        old_specfile = open(new_spec_file, "r")
+        new_specfile = open(pkg_spec_file, "x")
+
+        # read all text from new spec in one go
+        spec_text = old_specfile.read()
+
+        # replace preamble with nothing
+        spec_text = spec_text.replace(preamble, "", 1)
+
+        # write everything but the preamble to "old" spec location
+        new_specfile.write(spec_text)
+
+        # close files
+        old_specfile.close()
+        new_specfile.close()
+
+        return True
 
 
     def build(self):
