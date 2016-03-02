@@ -261,8 +261,7 @@ callbacks=cb_,_cb
 [MISCELLANEOUS]
 
 # List of note tags to take in consideration, separated by a comma.
-# notes=FIXME,XXX,TODO
-notes=FIXME,XXX
+notes=FIXME,XXX,TODO
 
 
 [SPELLING]
