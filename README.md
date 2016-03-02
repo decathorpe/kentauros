@@ -15,10 +15,11 @@ kentauros is a small, automatable (e.g. systemd timers) build script.
 - execute them consecutively, depending on present updates: ```chain``` action
 - change package configuration values by command line: ```config``` action
 
-To test out ktr with the provided examples, run in the project base directory:
+To test out ktr with the provided examples, run in the project base directory
+(kentaurosrc in project directory sets basedir to ./examples automatically):
 
 ```sh
-./ktr --basedir=./examples $ACTION --all
-./ktr --basedir=./examples config --section=mock --key=active --value=True
+./ktr $ACTION --all
+./ktr config --section=mock --key=active --value=True
 ```
 
