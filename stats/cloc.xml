@@ -3,16 +3,16 @@
 <header>
   <cloc_url>http://cloc.sourceforge.net</cloc_url>
   <cloc_version>1.64</cloc_version>
-  <elapsed_seconds>0.0914409160614014</elapsed_seconds>
+  <elapsed_seconds>0.0911760330200195</elapsed_seconds>
   <n_files>28</n_files>
-  <n_lines>3011</n_lines>
-  <files_per_second>306.2086558844</files_per_second>
-  <lines_per_second>32928.3665309975</lines_per_second>
+  <n_lines>3023</n_lines>
+  <files_per_second>307.098247999582</files_per_second>
+  <lines_per_second>33155.6429893834</lines_per_second>
   <report_file>./cloc.xml</report_file>
 </header>
 <languages>
-  <language name="Python" files_count="26" blank="674" comment="678" code="1629" />
-  <language name="Bourne Shell" files_count="2" blank="11" comment="2" code="17" />
-  <total sum_files="28" blank="685" comment="680" code="1646" />
+  <language name="Python" files_count="26" blank="680" comment="675" code="1636" />
+  <language name="Bourne Shell" files_count="2" blank="12" comment="2" code="18" />
+  <total sum_files="28" blank="692" comment="677" code="1654" />
 </languages>
 </results>

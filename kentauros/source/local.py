@@ -4,8 +4,15 @@ contains LocalSource class and methods
 this class is for handling sources that are specified by file path pointing to a tarball
 """
 
+import os
+import shutil
+
 from kentauros.definitions import SourceType
 from kentauros.source.common import Source
+from kentauros.init import log
+
+
+LOGPREFIX1 = "ktr/source/local: "
 
 
 class LocalSource(Source):
@@ -15,28 +22,32 @@ class LocalSource(Source):
     """
     def __init__(self, package):
         super().__init__(package)
+        self.dest = os.path.join(self.sdir, os.path.basename(self.conf.get("source", "orig")))
         self.type = SourceType.LOCAL
-        self.keep = True
+
+
+    def formatver(self):
+        ver = self.conf.get("source", "version")
+        return ver
+
 
     def get(self):
-        # TODO: copy source from orig to datadir
-        # don't do anything if orig is inside datadir
-        pass
+        # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
+        if not os.access(self.sdir, os.W_OK):
+            os.makedirs(self.sdir)
+
+        # if source seems to already exist, return False
+        if os.access(self.dest, os.R_OK):
+            log(LOGPREFIX1 + "Sources already present.", 1)
+            return False
+
+        # copy file from orig to dest
+        shutil.copy2(self.conf.get("source", "orig"), self.dest)
+
+        return True
+
 
     def update(self):
         # local tarball does not need updating
-        pass
-
-    def refresh(self):
-        # TODO: delete and re-copy source from orig to datadir
-        # don't do anything if orig is inside datadir
-        pass
-
-    def export(self):
-        # local tarballs do not need to be exported
-        pass
-
-    def clean(self):
-        # TODO: clean local files from datadir (only if orig is not in datadir)
         pass
 

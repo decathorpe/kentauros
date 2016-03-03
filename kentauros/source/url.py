@@ -37,7 +37,6 @@ class UrlSource(Source):
         kentauros.source.url.UrlSource.get()
         get sources from specified URL
         """
-
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
