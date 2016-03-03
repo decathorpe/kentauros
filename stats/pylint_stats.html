@@ -1,8 +1,51 @@
 <html>
 <body>
 <div>
+<div>
+<h2>Messages</h2>
+<table>
+<tr class="header">
+<th>category</th>
+<th>module</th>
+<th>obj</th>
+<th>line</th>
+<th>column</th>
+<th>msg</th>
+</tr>
+<tr class="even">
+<td>info</td>
+<td>kentauros.conntest</td>
+<td>&#160;</td>
+<td>17</td>
+<td>0</td>
+<td>Locally disabling bare-except (W0702)</td>
+</tr>
+<tr class="odd">
+<td>info</td>
+<td>kentauros.package.__init__</td>
+<td>&#160;</td>
+<td>98</td>
+<td>0</td>
+<td>Locally disabling unsubscriptable-object (E1136)</td>
+</tr>
+<tr class="even">
+<td>info</td>
+<td>kentauros.config.__init__</td>
+<td>&#160;</td>
+<td>65</td>
+<td>0</td>
+<td>Locally disabling unsubscriptable-object (E1136)</td>
+</tr>
+</table>
+</div>
+</div>
+</body>
+</html>
+<html>
+<body>
+<div>
 <h1>Report</h1>
-<p>1445 statements analysed.</p><div>
+<p>1434 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -16,8 +59,8 @@
 <tr class="even">
 <td>module</td>
 <td>25</td>
-<td>24</td>
-<td>+1.00</td>
+<td>25</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -55,21 +98,22 @@ kentauros
   \-actions (ktr)
   \-bootstrap (ktr)
   \-build (kentauros.package)
-  \-config (kentauros.package,kentauros.source.common,kentauros.construct,kentauros.bootstrap,kentauros.build,kentauros.source.bzr,kentauros.actions,kentauros.upload,kentauros.source.git)
-  | \-common (kentauros.config,kentauros.config.fallback,kentauros.config.cli,kentauros.config.envvar)
+  \-config (kentauros.build)
+  | \-common (kentauros.config.cli)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
-  \-conntest (kentauros.source.url,kentauros.upload,kentauros.source.bzr,kentauros.source.git)
+  \-conntest (kentauros.source.git)
   \-construct (kentauros.package)
   | \-rpm_spec (kentauros.construct)
-  \-definitions (kentauros.package,kentauros.construct,kentauros.construct.rpm_spec,kentauros.build,kentauros.source.bzr,kentauros.source.local,kentauros.source,kentauros.config.fallback,kentauros.init.cli,kentauros.config.envvar,kentauros.config,kentauros.actions,kentauros.source.url,kentauros.config.common,kentauros.upload,kentauros.config.cli,kentauros.source.git)
-  \-init (kentauros.package,kentauros.source.common,kentauros.construct,kentauros.construct.rpm_spec,kentauros.bootstrap,kentauros.build,kentauros.source.bzr,kentauros.source.local,kentauros.config.fallback,kentauros.config.envvar,kentauros.config,kentauros.actions,kentauros.source.url,kentauros.config.common,kentauros.upload,kentauros.config.cli,kentauros.source.git)
-  | \-cli (kentauros.config,kentauros.init,kentauros.config.cli)
-  | \-env (kentauros.config,kentauros.config.common,kentauros.init)
+  \-definitions (kentauros.config.cli)
+  \-init (kentauros.config.cli)
+  | \-cli (kentauros.config.cli)
+  | \-env (kentauros.config)
+  | \-log (ktr)
   \-package (kentauros.actions)
   \-source (kentauros.package)
   | \-bzr (kentauros.source)
-  | \-common (kentauros.package,kentauros.construct.rpm_spec,kentauros.source,kentauros.source.local,kentauros.source.bzr,kentauros.source.url,kentauros.source.git)
+  | \-common (kentauros.source.git)
   | \-git (kentauros.source)
   | \-local (kentauros.source)
   | \-url (kentauros.source)
@@ -86,31 +130,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>1653</td>
-<td>61.70</td>
-<td>1608</td>
-<td>+45.00</td>
+<td>1645</td>
+<td>53.51</td>
+<td>1645</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>539</td>
-<td>20.12</td>
-<td>536</td>
-<td>+3.00</td>
+<td>538</td>
+<td>17.50</td>
+<td>538</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>174</td>
-<td>6.49</td>
-<td>165</td>
-<td>+9.00</td>
+<td>189</td>
+<td>6.15</td>
+<td>189</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>313</td>
-<td>11.68</td>
-<td>307</td>
-<td>+6.00</td>
+<td>702</td>
+<td>22.84</td>
+<td>702</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -181,42 +225,13 @@ kentauros
 </tr>
 <tr class="even">
 <td>locally-disabled</td>
-<td>2</td>
+<td>3</td>
 </tr>
 </table>
 </div>
 <div>
 <h2>Global evaluation</h2>
 Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)</div>
-<div>
-<h2>Messages</h2>
-<table>
-<tr class="header">
-<th>category</th>
-<th>module</th>
-<th>obj</th>
-<th>line</th>
-<th>column</th>
-<th>msg</th>
-</tr>
-<tr class="even">
-<td>info</td>
-<td>kentauros.conntest</td>
-<td>&#160;</td>
-<td>17</td>
-<td>0</td>
-<td>Locally disabling bare-except (W0702)</td>
-</tr>
-<tr class="odd">
-<td>info</td>
-<td>kentauros.source.git</td>
-<td>&#160;</td>
-<td>84</td>
-<td>0</td>
-<td>Locally disabling no-member (E1101)</td>
-</tr>
-</table>
-</div>
 </div>
 </body>
 </html>
