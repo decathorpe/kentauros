@@ -24,7 +24,7 @@ LOGPREFIX2 = "     - "
 print()
 
 # if no action is specified: exit
-if CLI_ARGS.get("action") == None:
+if CLI_ARGS.get("action") is None:
     log(LOGPREFIX1 + "No action specified. Exiting.", 2)
     raise SystemExit
 

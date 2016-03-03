@@ -62,6 +62,7 @@ def get_pref_conf(pref_conf):
     """
 
     # check if requirested config type is in Enum
+    # pylint: disable=unsubscriptable-object
     try:
         conf_type = KtrConfType[pref_conf]
     except KeyError:
@@ -72,7 +73,7 @@ def get_pref_conf(pref_conf):
     ktr_conf = KTR_CONF_DICT[conf_type]
 
     # apply it if it is not None
-    if ktr_conf != None:
+    if ktr_conf is not None:
         return ktr_conf
     else:
         return None
@@ -89,7 +90,7 @@ def ktr_get_conf():
     if CLI_ARGS['priconf']:
         ktr_conf = get_pref_conf(CLI_ARGS['priconf'])
 
-    if ktr_conf != None:
+    if ktr_conf is not None:
         return ktr_conf
 
     # KTR_CONF should contain the highest-priority,
@@ -102,7 +103,7 @@ def ktr_get_conf():
             continue
 
         conf = KTR_CONF_DICT[conftype]
-        if conf != None:
+        if conf is not None:
             ktr_conf.succby(conf)
 
     return ktr_conf

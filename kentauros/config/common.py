@@ -29,7 +29,7 @@ class ConfigException(Exception):
 
 
 def __replace_home__(string):
-    if string == None:
+    if string is None:
         return None
 
     if "$HOME" in string:
@@ -55,7 +55,7 @@ class KtrConf:
     def __init__(self, conftype, basedir=None):
         assert isinstance(conftype, KtrConfType)
 
-        if basedir == None:
+        if basedir is None:
             self.basedir = None
             self.confdir = None
             self.datadir = None
@@ -86,10 +86,10 @@ class KtrConf:
         #   defines all other values, or
         # - it is not set at initialisation and
         #   all other values have been defined manually
-        if (self.confdir == None) or \
-           (self.datadir == None) or \
-           (self.packdir == None) or \
-           (self.specdir == None):
+        if (self.confdir is None) or \
+           (self.datadir is None) or \
+           (self.packdir is None) or \
+           (self.specdir is None):
             return False
         else:
             return True

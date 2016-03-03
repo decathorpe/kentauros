@@ -28,11 +28,11 @@ def get_env_config():
     function that returns a KtrConf object containing ENV_????_DIR settings
     """
     # if no settings were set by env variables, return None
-    if (ENV_BASEDIR == None) and \
-       (ENV_CONFDIR == None) and \
-       (ENV_DATADIR == None) and \
-       (ENV_PACKDIR == None) and \
-       (ENV_SPECDIR == None):
+    if (ENV_BASEDIR is None) and \
+       (ENV_CONFDIR is None) and \
+       (ENV_DATADIR is None) and \
+       (ENV_PACKDIR is None) and \
+       (ENV_SPECDIR is None):
         return None
 
     # if at least basedir has been set, construct KtrConf from CLI switches
@@ -40,13 +40,13 @@ def get_env_config():
         result = KtrConf(KtrConfType.ENV,
                          basedir=os.path.abspath(ENV_BASEDIR))
 
-        if ENV_CONFDIR != None:
+        if ENV_CONFDIR is not None:
             result.confdir = ENV_CONFDIR
-        if ENV_DATADIR != None:
+        if ENV_DATADIR is not None:
             result.datadir = ENV_DATADIR
-        if ENV_PACKDIR != None:
+        if ENV_PACKDIR is not None:
             result.packdir = ENV_PACKDIR
-        if ENV_SPECDIR != None:
+        if ENV_SPECDIR is not None:
             result.specdir = ENV_SPECDIR
 
     # basedir not set: all other dirs must be specified

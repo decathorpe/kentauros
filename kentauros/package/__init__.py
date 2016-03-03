@@ -95,6 +95,8 @@ class Package:
             if upl_type == "":
                 upl_type = "NONE"
 
+        # pylint: disable=unsubscriptable-object
+
         self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self)
         self.constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self)
         self.builder = BUILDER_TYPE_DICT[BuilderType[bld_type]](self)

@@ -2,13 +2,14 @@
 kentauros.init module
 """
 
-__all__ = []
-
 import enum
 import sys
 
 from kentauros.init.env import ENVDEBUG, ENVVERBY
 from kentauros.init.cli import CLI_ARGS
+
+
+__all__ = []
 
 
 def __smaller_int__(int1, int2):

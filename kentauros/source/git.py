@@ -4,11 +4,13 @@ contains GitSource class and methods
 this class is for handling sources that are specified by git repo URL
 """
 
-import dateutil.parser
-from distutils.util import strtobool
 import os
 import shutil
 import subprocess
+
+from distutils.util import strtobool
+
+import dateutil.parser
 
 from kentauros.config import KTR_CONF
 from kentauros.conntest import is_connected
@@ -70,7 +72,7 @@ class GitSource(Source):
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
-            if self.saved_date == None:
+            if self.saved_date is None:
                 err("Sources need to be .get() before .date() can be determined.")
                 return None
             else:
@@ -81,7 +83,6 @@ class GitSource(Source):
         date_raw = subprocess.check_output(cmd).decode().rstrip('\r\n')
         os.chdir(prevdir)
 
-        # pylint: disable=no-member
         dateobj = dateutil.parser.parse(date_raw)
 
         year_str = str(dateobj.year)[2:]
@@ -110,7 +111,7 @@ class GitSource(Source):
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
-            if self.saved_rev == None:
+            if self.saved_rev is None:
                 err("Sources need to be .get() before .rev() can be determined.")
                 return None
             else:
@@ -270,10 +271,7 @@ class GitSource(Source):
         self.date()
 
         # return True if update found, False if not
-        if rev_new != rev_old:
-            return True
-        else:
-            return False
+        return rev_new != rev_old
 
 
     def export(self):

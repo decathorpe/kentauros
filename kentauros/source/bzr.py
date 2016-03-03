@@ -47,7 +47,7 @@ class BzrSource(Source):
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
-            if self.saved_rev == None:
+            if self.saved_rev is None:
                 err("Sources need to be .get() before .rev() can be determined.")
                 return None
             else:
@@ -179,10 +179,7 @@ class BzrSource(Source):
         rev_new = self.rev()
 
         # return True if update found, False if not
-        if rev_new != rev_old:
-            return True
-        else:
-            return False
+        return rev_new != rev_old
 
 
     def export(self):

@@ -133,10 +133,7 @@ def if_version(line):
     kentauros.construct.rpm_spec.if_version()
     function returns version string if "Version: " is found on spec file line
     """
-    if line[0:8] == "Version:":
-        return True
-    else:
-        return False
+    return line[0:8] == "Version:"
 
 
 def if_release(line):
@@ -144,10 +141,7 @@ def if_release(line):
     kentauros.construct.rpm_spec.if_release()
     function returns release string if "Release: " is found on spec file line
     """
-    if line[0:8] == "Release:":
-        return True
-    else:
-        return False
+    return line[0:8] == "Release:"
 
 
 def bump_release(relstr_old, reset=False):
@@ -170,7 +164,7 @@ def spec_bump(specfile, comment=None):
     function bumps the spec file for new release (via rpmdev-bumpspec)
     """
 
-    if comment == None:
+    if comment is None:
         comment = "automatic build by kentauros"
 
     # construct rpmdev-bumpspec command
