@@ -245,5 +245,6 @@ class SrpmConstructor(Constructor):
 
 
 CONSTRUCTOR_TYPE_DICT = dict()
+CONSTRUCTOR_TYPE_DICT[ConstructorType.NONE] = Constructor
 CONSTRUCTOR_TYPE_DICT[ConstructorType.SRPM] = SrpmConstructor
 

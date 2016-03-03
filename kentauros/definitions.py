@@ -58,7 +58,8 @@ class BuilderType(Enum):
     kentauros.definitons.BuilderType:
     enum that describes the kind of constructors supported
     """
-    MOCK = 0
+    NONE = 0
+    MOCK = 1
 
 
 @unique
@@ -67,7 +68,8 @@ class ConstructorType(Enum):
     kentauros.definitons.ConstructorType:
     enum that describes the kind of constructors supported
     """
-    SRPM = 0
+    NONE = 0
+    SRPM = 1
 
 
 @unique
@@ -76,10 +78,11 @@ class SourceType(Enum):
     kentauros.definitons.SourceType:
     enum that describes the kind of package sources supported
     """
-    LOCAL = 0
+    NONE = 0
     URL = 1
     GIT = 2
     BZR = 3
+    LOCAL = 4
 
 
 @unique
@@ -88,5 +91,6 @@ class UploaderType(Enum):
     kentauros.definitons.UploaderType:
     enum that describes the kind of uploaders supported
     """
-    COPR = 0
+    NONE = 0
+    COPR = 1
 

@@ -2,7 +2,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1385 statements analysed.</p><div>
+<p>1435 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -23,16 +23,16 @@
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>36</td>
-<td>36</td>
+<td>37</td>
+<td>37</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>88</td>
-<td>88</td>
+<td>90</td>
+<td>90</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -55,21 +55,21 @@ kentauros
   \-actions (ktr)
   \-bootstrap (ktr)
   \-build (kentauros.package)
-  \-config (kentauros.source.common,kentauros.source.bzr,kentauros.build,kentauros.source.git,kentauros.actions,kentauros.bootstrap,kentauros.construct,kentauros.upload,kentauros.package)
-  | \-common (kentauros.config.envvar,kentauros.config.cli,kentauros.config.fallback,kentauros.config)
+  \-config (kentauros.source.bzr,kentauros.source.common,kentauros.upload,kentauros.package,kentauros.construct,kentauros.source.git,kentauros.bootstrap,kentauros.build,kentauros.actions)
+  | \-common (kentauros.config.envvar,kentauros.config,kentauros.config.fallback,kentauros.config.cli)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
-  \-conntest (kentauros.source.bzr,kentauros.upload,kentauros.source.url,kentauros.source.git)
+  \-conntest (kentauros.source.bzr,kentauros.upload,kentauros.source.git,kentauros.source.url)
   \-construct (kentauros.package)
   | \-rpm_spec (kentauros.construct)
-  \-definitions (kentauros.construct.rpm_spec,kentauros.source.bzr,kentauros.build,kentauros.source.local,kentauros.source.url,kentauros.config,kentauros.init.cli,kentauros.actions,kentauros.source.git,kentauros.config.envvar,kentauros.config.cli,kentauros.construct,kentauros.upload,kentauros.package,kentauros.config.fallback,kentauros.config.common,kentauros.source)
-  \-init (kentauros.source.common,kentauros.construct.rpm_spec,kentauros.source.bzr,kentauros.build,kentauros.source.local,kentauros.source.url,kentauros.config,kentauros.source.git,kentauros.actions,kentauros.config.envvar,kentauros.config.cli,kentauros.bootstrap,kentauros.construct,kentauros.upload,kentauros.package,kentauros.config.fallback,kentauros.config.common)
-  | \-cli (kentauros.init,kentauros.config.cli,kentauros.config)
-  | \-env (kentauros.init,kentauros.config.common,kentauros.config)
+  \-definitions (kentauros.source.bzr,kentauros.config,kentauros.source.url,kentauros.upload,kentauros.config.common,kentauros.package,kentauros.construct,kentauros.config.envvar,kentauros.config.fallback,kentauros.config.cli,kentauros.source.git,kentauros.source.local,kentauros.source,kentauros.init.cli,kentauros.construct.rpm_spec,kentauros.build,kentauros.actions)
+  \-init (kentauros.source.bzr,kentauros.source.common,kentauros.config,kentauros.source.url,kentauros.upload,kentauros.config.common,kentauros.package,kentauros.construct,kentauros.config.envvar,kentauros.config.fallback,kentauros.config.cli,kentauros.source.git,kentauros.bootstrap,kentauros.source.local,kentauros.construct.rpm_spec,kentauros.build,kentauros.actions)
+  | \-cli (kentauros.config.cli,kentauros.config,kentauros.init)
+  | \-env (kentauros.config.common,kentauros.config,kentauros.init)
   \-package (kentauros.actions)
   \-source (kentauros.package)
   | \-bzr (kentauros.source)
-  | \-common (kentauros.construct.rpm_spec,kentauros.source.bzr,kentauros.source.local,kentauros.source.url,kentauros.source.git)
+  | \-common (kentauros.source.bzr,kentauros.source.url,kentauros.package,kentauros.source.git,kentauros.source.local,kentauros.source,kentauros.construct.rpm_spec)
   | \-git (kentauros.source)
   | \-local (kentauros.source)
   | \-url (kentauros.source)
@@ -86,30 +86,30 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>1594</td>
-<td>60.96</td>
-<td>1551</td>
+<td>1643</td>
+<td>61.56</td>
+<td>1600</td>
 <td>+43.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>535</td>
-<td>20.46</td>
-<td>532</td>
+<td>539</td>
+<td>20.19</td>
+<td>536</td>
 <td>+3.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>174</td>
-<td>6.65</td>
+<td>6.52</td>
 <td>165</td>
 <td>+9.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>312</td>
-<td>11.93</td>
-<td>306</td>
+<td>313</td>
+<td>11.73</td>
+<td>307</td>
 <td>+6.00</td>
 </tr>
 </table>
@@ -160,8 +160,8 @@ kentauros
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>1</td>
-<td>1</td>
+<td>0</td>
+<td>0</td>
 <td>=</td>
 </tr>
 <tr class="odd">
@@ -169,25 +169,6 @@ kentauros
 <td>0</td>
 <td>0</td>
 <td>=</td>
-</tr>
-</table>
-</div>
-<div>
-<h2>% errors / warnings by module</h2>
-<table>
-<tr class="header">
-<th>module</th>
-<th>error</th>
-<th>warning</th>
-<th>refactor</th>
-<th>convention</th>
-</tr>
-<tr class="even">
-<td>kentauros.package.__init__</td>
-<td>0.00</td>
-<td>100.00</td>
-<td>0.00</td>
-<td>0.00</td>
 </tr>
 </table>
 </div>
@@ -202,15 +183,11 @@ kentauros
 <td>locally-disabled</td>
 <td>2</td>
 </tr>
-<tr class="odd">
-<td>fixme</td>
-<td>1</td>
-</tr>
 </table>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.99/10 (previous run: 9.99/10, +0.00)</div>
+Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)</div>
 <div>
 <h2>Messages</h2>
 <table>
@@ -231,14 +208,6 @@ Your code has been rated at 9.99/10 (previous run: 9.99/10, +0.00)</div>
 <td>Locally disabling bare-except (W0702)</td>
 </tr>
 <tr class="odd">
-<td>warning</td>
-<td>kentauros.package.__init__</td>
-<td>&#160;</td>
-<td>40</td>
-<td>0</td>
-<td>TODO: package/builder, package/constructor, package/uploader config values</td>
-</tr>
-<tr class="even">
 <td>info</td>
 <td>kentauros.source.git</td>
 <td>&#160;</td>

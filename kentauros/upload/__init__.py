@@ -120,4 +120,5 @@ class CoprUploader(Uploader):
 
 UPLOADER_TYPE_DICT = dict()
 UPLOADER_TYPE_DICT[UploaderType.COPR] = CoprUploader
+UPLOADER_TYPE_DICT[UploaderType.NONE] = Uploader
 

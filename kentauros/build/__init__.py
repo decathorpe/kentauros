@@ -143,4 +143,5 @@ class MockBuilder(Builder):
 
 BUILDER_TYPE_DICT = dict()
 BUILDER_TYPE_DICT[BuilderType.MOCK] = MockBuilder
+BUILDER_TYPE_DICT[BuilderType.NONE] = Builder
 
