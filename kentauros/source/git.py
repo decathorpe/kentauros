@@ -57,6 +57,13 @@ class GitSource(Source):
         returns date of HEAD commit
         """
 
+        def prepend_zero(string):
+            "local function for prepending '0' to one-digit time value strings"
+            if len(string) == 1:
+                return "0" + string
+            else:
+                return string
+
         cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
 
         prevdir = os.getcwd()
@@ -76,9 +83,16 @@ class GitSource(Source):
 
         # pylint: disable=no-member
         dateobj = dateutil.parser.parse(date_raw)
-        date = str(dateobj.year)[0:2] + str(dateobj.month) + str(dateobj.day) + \
-               "." + \
-               str(dateobj.hour) + str(dateobj.minute) + str(dateobj.second)
+
+        year_str = str(dateobj.year)[2:]
+        month_str = prepend_zero(str(dateobj.month))
+        day_str = prepend_zero(str(dateobj.day))
+
+        hour_str = prepend_zero(str(dateobj.hour))
+        minute_str = prepend_zero(str(dateobj.minute))
+        second_str = prepend_zero(str(dateobj.second))
+
+        date = year_str + month_str + day_str + "." + hour_str + minute_str + second_str
 
         self.saved_date = date
         return date
