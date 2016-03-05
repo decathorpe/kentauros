@@ -28,6 +28,8 @@ print()
 # if no action is specified: exit
 if CLI_ARGS.get("action") is None:
     log(LOGPREFIX1 + "No action specified. Exiting.", 2)
+    log(LOGPREFIX1 + "Use 'ktr --help' for more information.")
+    print()
     raise SystemExit
 
 ktr_bootstrap()
