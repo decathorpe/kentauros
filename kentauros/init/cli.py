@@ -93,7 +93,7 @@ def cli_parse():
         action="store_const",
         const=True,
         default=False,
-        help="build all packages for which a valid configuration is found")
+        help="apply action to every package with valid configuration")
     package_parser.add_argument(
         "-f", "--force",
         action="store_const",
