@@ -16,6 +16,8 @@ from kentauros.init.cli import CLI_ARGS
 from kentauros.config import KTR_CONF
 from kentauros.bootstrap import ktr_bootstrap
 
+from kentauros.package import Package
+
 
 LOGPREFIX1 = "ktr: "
 LOGPREFIX2 = "     - "
@@ -51,24 +53,39 @@ log(LOGPREFIX1 + "Packages:", 2)
 for package in PKGS:
     log(LOGPREFIX2 + package, 2)
 
-# process config changes seperately
+
+# construct arguments for Action object creation
+ACTION_OPTS = tuple()
+
+# ConfigAction needs 5 arguments (incl. package)
 if CLI_ARGS.get("action") == ActionType.CONFIG:
     if not CLI_ARGS.get("confedit"):
         log(LOGPREFIX1 + "Configuration attempted to be edited, but insufficient arguments.", 2)
         print()
         raise SystemExit
-    for name in PKGS:
-        action = ACTION_DICT[CLI_ARGS.get("action")](name,
-                                                     CLI_ARGS.get("config_section"),
-                                                     CLI_ARGS.get("config_key"),
-                                                     CLI_ARGS.get("config_value"))
-        action.execute()
 
-# process found packages, if the requested action is not a configuration change
+    ACTION_OPTS = (CLI_ARGS.get("force"),
+                   CLI_ARGS.get("config_section"),
+                   CLI_ARGS.get("config_key"),
+                   CLI_ARGS.get("config_value"))
+
+# everything else gets only two (incl. package)
 else:
-    for name in PKGS:
-        action = ACTION_DICT[CLI_ARGS.get("action")](name, CLI_ARGS.get("force"))
-        action.execute()
+    ACTION_OPTS = (CLI_ARGS.get("force"),)
+
+# run actions for packages
+# CreateAction expects str(), everything else Package() as first argument
+for name in PKGS:
+    ACTION_ARGS = tuple()
+    if CLI_ARGS.get("action") == ActionType.CREATE:
+        ACTION_ARGS = (name,) + ACTION_OPTS
+    else:
+        ACTION_ARGS = (Package(name),) + ACTION_OPTS
+
+    action = ACTION_DICT[CLI_ARGS.get("action")](*ACTION_ARGS)
+    action.execute()
 
 print()
+
+raise SystemExit
 

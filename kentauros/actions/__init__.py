@@ -21,14 +21,9 @@ class Action:
     kentauros.actions.Action:
     base class for Actions that are chosen by CLI
     """
-    def __init__(self, name, force, package=None):
-        self.name = name
-
-        if package != None:
-            assert isinstance(package, Package)
-            self.package = package
-        else:
-            self.package = Package(name)
+    def __init__(self, package, force):
+        assert isinstance(package, Package)
+        self.package = package
 
         self.force = force
         self.type = None
@@ -46,9 +41,18 @@ class BuildAction(Action):
     kentauros.actions.BuildAction:
     action for building source package locally
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.BUILD
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to BuildAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to BuildAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to BuildAction. " + str(arg5), 2)
 
     def execute(self):
         success = self.package.builder.build()
@@ -61,48 +65,41 @@ class ChainAction(Action):
     action for getting (if neccessary), updating,
       constructing, building and uploading source package
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.CHAIN
 
-    def execute(self):
-        veryfied = VerifyAction(self.name,
-                                self.force,
-                                self.package).execute()
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ChainAction. " + str(arg3), 2)
 
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ChainAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ChainAction. " + str(arg5), 2)
+
+    def execute(self):
+        veryfied = VerifyAction(self.package, self.force).execute()
         if not veryfied:
             return False
 
-        get = GetAction(self.name,
-                        self.force,
-                        self.package).execute()
-
-        update = UpdateAction(self.name,
-                              self.force,
-                              self.package).execute()
-
+        get = GetAction(self.package, self.force).execute()
+        update = UpdateAction(self.package, self.force).execute()
         if not (get or update or self.force):
             return False
 
-        ExportAction(self.name,
-                     self.force,
-                     self.package).execute()
+        ExportAction(self.package, self.force).execute()
 
-        success = ConstructAction(self.name,
-                                  self.force,
-                                  self.package).execute()
+        success = ConstructAction(self.package, self.force).execute()
         if not success:
             return False
 
-        success = BuildAction(self.name,
-                              self.force,
-                              self.package).execute()
+        success = BuildAction(self.package, self.force).execute()
         if not success:
             return False
 
-        UploadAction(self.name,
-                     self.force,
-                     self.package).execute()
+        UploadAction(self.package, self.force).execute()
+
         return True
 
 
@@ -111,9 +108,18 @@ class CleanAction(Action):
     kentauros.actions.Clean:
     action for cleaning sources
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.CLEAN
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to CleanAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to CleanAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to CleanAction. " + str(arg5), 2)
 
     def execute(self):
         self.package.source.clean()
@@ -124,8 +130,8 @@ class ConfigAction(Action):
     kentauros.actions.ConfigAction:
     action for setting config values
     """
-    def __init__(self, name, section, key, value):
-        super().__init__(name, force=False)
+    def __init__(self, package, force, section, key, value):
+        super().__init__(package, force)
         self.type = ActionType.CONFIG
 
         self.section = section
@@ -141,7 +147,7 @@ class ConfigAction(Action):
         self.package.update_config()
 
         log(LOGPREFIX1 + "Configuration value changed: ", 2)
-        log(LOGPREFIX1 + self.name + ".conf: " + \
+        log(LOGPREFIX1 + self.package.name + ".conf: " + \
             self.section + "/" + self.key + ": " + self.value, 2)
 
         return True
@@ -152,9 +158,18 @@ class ConstructAction(Action):
     kentauros.actions.Construct:
     action for building source package
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.CONSTRUCT
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ConstructAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ConstructAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ConstructAction. " + str(arg5), 2)
 
     def execute(self):
         self.package.constructor.init()
@@ -175,7 +190,18 @@ class CreateAction(Action):
     kentauros.actions.CreateAction:
     action for initialising an empty package from templates
     """
-    def __init__(self, name, force):
+    def __init__(self, name, force=False, arg3=None, arg4=None, arg5=None):
+        assert isinstance(name, str)
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to CreateAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to CreateAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to CreateAction. " + str(arg5), 2)
+
         # copy templates from KTR_SYSTEM_DATADIR to confdir and specdir
         conf_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "package.conf")
         spec_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "template.spec")
@@ -194,7 +220,8 @@ class CreateAction(Action):
         conf_template.write(conf_template_dest)
 
         # initialise package
-        super().__init__(name, force)
+        package = Package(name)
+        super().__init__(package, force)
 
     def execute(self):
         pass
@@ -205,9 +232,18 @@ class ExportAction(Action):
     kentauros.actions.ExportAction:
     action for exporting sources from repository
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.EXPORT
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ExportAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ExportAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to ExportAction. " + str(arg5), 2)
 
     def execute(self):
         self.package.source.export()
@@ -218,9 +254,18 @@ class GetAction(Action):
     kentauros.actions.GetAction:
     action for getting sources
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.GET
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to GetAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to GetAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to GetAction. " + str(arg5), 2)
 
     def execute(self):
         return self.package.source.get()
@@ -231,9 +276,18 @@ class RefreshAction(Action):
     kentauros.actions.RefreshAction:
     action for refreshing sources (clean + get)
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.REFRESH
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to RefreshAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to RefreshAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to RefreshAction. " + str(arg5), 2)
 
     def execute(self):
         self.package.source.refresh()
@@ -244,9 +298,18 @@ class StatusAction(Action):
     kentauros.actions.StatusAction:
     action for displaying configuration values and available packages
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.STATUS
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to StatusAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to StatusAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to StatusAction. " + str(arg5), 2)
 
     def execute(self):
         # TODO
@@ -258,9 +321,18 @@ class UpdateAction(Action):
     kentauros.actions.UpdateAction:
     action for updating sources
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.UPDATE
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to UpdateAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to UpdateAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to UpdateAction. " + str(arg5), 2)
 
     def execute(self):
         update = self.package.source.update()
@@ -272,9 +344,18 @@ class UploadAction(Action):
     kentauros.actions.UploadAction:
     action for uploading source package
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.UPLOAD
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to UploadAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to UploadAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to UploadAction. " + str(arg5), 2)
 
     def execute(self):
         self.package.uploader.upload()
@@ -285,9 +366,18 @@ class VerifyAction(Action):
     kentauros.actions.VerifyAction:
     action for verifying that everything is in place
     """
-    def __init__(self, name, force, package=None):
-        super().__init__(name, force, package)
+    def __init__(self, package, force, arg3=None, arg4=None, arg5=None):
+        super().__init__(package, force)
         self.type = ActionType.VERIFY
+
+        if arg3 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to VerifyAction. " + str(arg3), 2)
+
+        if arg4 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to VerifyAction. " + str(arg4), 2)
+
+        if arg5 is not None:
+            log(LOGPREFIX1 + "Superfluous argument supplied to VerifyAction. " + str(arg5), 2)
 
     def execute(self):
         # TODO
