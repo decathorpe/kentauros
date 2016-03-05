@@ -224,10 +224,25 @@ class CLIArgs(dict):
 
         self['priconf'] = cli_args.priconf
 
-        self['action'] = cli_args.action
-        self['packages'] = cli_args.package
-        self['packages_all'] = cli_args.all
-        self['force'] = cli_args.force
+        if 'action' in cli_args:
+            self['action'] = cli_args.action
+        else:
+            self['action'] = None
+
+        if 'package' in cli_args:
+            self['packages'] = cli_args.package
+        else:
+            self['packages'] = list()
+
+        if 'all' in cli_args:
+            self['packages_all'] = cli_args.all
+        else:
+            self['packages_all'] = False
+
+        if 'force' in cli_args:
+            self['force'] = cli_args.force
+        else:
+            self['force'] = False
 
         if ("section" in cli_args) and \
            ("key" in cli_args) and \
