@@ -1,3 +1,5 @@
 examples/packages/*
 examples/sources/*
-examples/specs/*.old
+
+*.old
+*.tmp
