@@ -22,16 +22,16 @@ class BzrSource(Source):
     """
     kentauros.source.bzr.BzrSource:
     Source subclass holding information and methods for handling bzr sources
-    - if bzr command is not found on system, source is set to inactive
-    - remote is set for checking connection to server
+    - if bzr command is not found on system, self.active = False
+    - self.remote is set for checking connection to specified server
     """
+
     def __init__(self, package):
         super().__init__(package)
         self.dest = os.path.join(self.sdir, self.name)
         self.type = SourceType.BZR
         self.saved_rev = None
 
-        # if bzr is not installed: mark BzrSource instance as inactive
         try:
             self.active = True
             subprocess.check_output(["which", "bzr"])
