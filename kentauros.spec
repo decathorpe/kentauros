@@ -4,7 +4,7 @@
 
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.9.1
+Version:        0.9.2
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
@@ -14,12 +14,15 @@ Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
 BuildRequires:  python3-devel
 
-Requires:       bzr, git, wget
 Requires:       python3-dateutil
-Requires:       rpmdevtools
+
+Recommends:     bzr
+Recommends:     git
+Recommends:     wget
 
 Suggests:       copr-cli
 Suggests:       mock
+Suggests:       rpmdevtools
 
 
 %description
@@ -53,6 +56,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Mar 06 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.2-1
+- Bump to version 0.9.2.
+- Move bzr, git, wget from Requires: to Recommends:
+- Move rpmdevtools from Requires: to Suggests:
+- They all are now detected at runtime.
+
 * Wed Mar 02 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.1-1
 - Bump to version 0.9.1.
 
