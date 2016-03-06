@@ -80,8 +80,20 @@ class SrpmConstructor(Constructor):
         self.srpmdir = None
         self.srcsdir = None
 
+        # if bzr is not installed: mark BzrSource instance as inactive
+        try:
+            self.active = True
+            subprocess.check_output(["which", "rpmbuild"])
+            subprocess.check_output(["which", "rpmdev-bumpspec"])
+        except subprocess.CalledProcessError:
+            log(LOGPREFIX1 + "Install rpmdevtools to use the specified constructor.")
+            self.active = False
+
 
     def init(self):
+        if not self.active:
+            return None
+
         # make sure to finally call self.clean()
         self.tempdir = tempfile.mkdtemp()
 
@@ -105,6 +117,9 @@ class SrpmConstructor(Constructor):
 
 
     def prepare(self, relreset=False):
+        if not self.active:
+            return False
+
         if not os.path.exists(self.rpmbdir):
             self.init()
 
@@ -210,6 +225,9 @@ class SrpmConstructor(Constructor):
 
 
     def build(self):
+        if not self.active:
+            return None
+
         old_home = os.environ['HOME']
         os.environ['HOME'] = self.tempdir
 
@@ -233,6 +251,9 @@ class SrpmConstructor(Constructor):
 
 
     def export(self):
+        if not self.active:
+            return None
+
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
         for srpm in srpms:
@@ -241,6 +262,9 @@ class SrpmConstructor(Constructor):
 
 
     def clean(self):
+        if not self.active:
+            return None
+
         shutil.rmtree(self.tempdir)
 
 
