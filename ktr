@@ -25,6 +25,40 @@ LOGPREFIX2 = "     - "
 
 print()
 
+
+def get_action_args(pkgname, action_type_enum):
+    """
+    ktr.get_action_args():
+    is a function that returns arguments for Action() constructor as tuple.
+    It only constructs Package() objects as needed.
+    """
+    assert isinstance(action_type, ActionType)
+
+    action_args_dict = dict()
+    action_args_dict[ActionType.BUILD] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.CHAIN] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.CLEAN] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.CONSTRUCT] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.EXPORT] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.GET] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.REFRESH] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.STATUS] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.UPDATE] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.UPLOAD] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.VERIFY] = (CLI_ARGS.get("force"),)
+
+    action_args_dict[ActionType.CONFIG] = (CLI_ARGS.get("force"),
+                                           CLI_ARGS.get("config_section"),
+                                           CLI_ARGS.get("config_key"),
+                                           CLI_ARGS.get("config_value"))
+    action_args_dict[ActionType.CREATE] = (CLI_ARGS.get("force"),)
+
+    if action_type_enum == ActionType.CREATE:
+        return (pkgname,) + action_args_dict[ActionType.CREATE]
+    else:
+        return (Package(pkgname),) + action_args_dict[action_type_enum]
+
+
 # if no action is specified: exit
 if CLI_ARGS.get("action") is None:
     log(LOGPREFIX1 + "No action specified. Exiting.", 2)
@@ -34,7 +68,7 @@ if CLI_ARGS.get("action") is None:
 
 ktr_bootstrap()
 
-PKGS = []
+PKGS = list()
 
 # if only specified packages are to be processed:
 # process packages only
@@ -55,36 +89,10 @@ log(LOGPREFIX1 + "Packages:", 2)
 for package in PKGS:
     log(LOGPREFIX2 + package, 2)
 
-
-# construct arguments for Action object creation
-ACTION_OPTS = tuple()
-
-# ConfigAction needs 5 arguments (incl. package)
-if CLI_ARGS.get("action") == ActionType.CONFIG:
-    if not CLI_ARGS.get("confedit"):
-        log(LOGPREFIX1 + "Configuration attempted to be edited, but insufficient arguments.", 2)
-        print()
-        raise SystemExit
-
-    ACTION_OPTS = (CLI_ARGS.get("force"),
-                   CLI_ARGS.get("config_section"),
-                   CLI_ARGS.get("config_key"),
-                   CLI_ARGS.get("config_value"))
-
-# everything else gets only two (incl. package)
-else:
-    ACTION_OPTS = (CLI_ARGS.get("force"),)
-
-# run actions for packages
-# CreateAction expects str(), everything else Package() as first argument
+# run action for every specified package
 for name in PKGS:
-    ACTION_ARGS = tuple()
-    if CLI_ARGS.get("action") == ActionType.CREATE:
-        ACTION_ARGS = (name,) + ACTION_OPTS
-    else:
-        ACTION_ARGS = (Package(name),) + ACTION_OPTS
-
-    action = ACTION_DICT[CLI_ARGS.get("action")](*ACTION_ARGS)
+    action_type = CLI_ARGS.get("action")
+    action = ACTION_DICT[action_type](*get_action_args(name, action_type))
     action.execute()
 
 print()
