@@ -158,6 +158,18 @@ def cli_parse():
         help="get package sources",
         parents=[package_parser])
 
+    prepare_parser = parsers.add_parser(
+        "prepare",
+        description="prepare sources for further use (get/update, export)",
+        help="prepare source tarball for package",
+        parents=[package_parser])
+
+    refresh_parser = parsers.add_parser(
+        "refresh",
+        description="refresh package sources (clean, get)",
+        help="refresh package sources",
+        parents=[package_parser])
+
     status_parser = parsers.add_parser(
         "status",
         description="display kentauros status (configuration, packages)",
@@ -190,6 +202,8 @@ def cli_parse():
     create_parser.set_defaults(action=ActionType.CREATE)
     export_parser.set_defaults(action=ActionType.EXPORT)
     get_parser.set_defaults(action=ActionType.GET)
+    prepare_parser.set_defaults(action=ActionType.PREPARE)
+    refresh_parser.set_defaults(action=ActionType.REFRESH)
     status_parser.set_defaults(action=ActionType.STATUS)
     update_parser.set_defaults(action=ActionType.UPDATE)
     upload_parser.set_defaults(action=ActionType.UPLOAD)
