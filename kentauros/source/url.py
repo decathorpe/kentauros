@@ -26,6 +26,14 @@ class UrlSource(Source):
         self.dest = os.path.join(self.sdir, os.path.basename(self.conf.get("source", "orig")))
         self.type = SourceType.URL
 
+        # if wget is not installed: mark UrlSource instance as inactive
+        try:
+            self.active = True
+            subprocess.check_output(["which", "wget"])
+        except subprocess.CalledProcessError:
+            log(LOGPREFIX1 + "Install wget to use the specified source.")
+            self.active = False
+
 
     def formatver(self):
         ver = self.conf.get("source", "version")
@@ -37,6 +45,10 @@ class UrlSource(Source):
         kentauros.source.url.UrlSource.get()
         get sources from specified URL
         """
+
+        if not self.active:
+            return False
+
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)

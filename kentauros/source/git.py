@@ -37,6 +37,14 @@ class GitSource(Source):
         self.dest = os.path.join(self.sdir, self.name)
         self.type = SourceType.GIT
 
+        # if git is not installed: mark GitSource instance as inactive
+        try:
+            self.active = True
+            subprocess.check_output(["which", "git"])
+        except subprocess.CalledProcessError:
+            log(LOGPREFIX1 + "Install git to use the specified source.")
+            self.active = False
+
         # either branch or commit must be set. default to branch=master
         if self.conf.get("git", "branch") == "" and self.conf.get("git", "commit") == "":
             self.conf.set("git", "branch", "master")
@@ -58,6 +66,9 @@ class GitSource(Source):
         kentauros.source.git.GitSource.date()
         returns date of HEAD commit
         """
+
+        if not self.active:
+            return None
 
         def prepend_zero(string):
             "local function for prepending '0' to one-digit time value strings"
@@ -105,6 +116,9 @@ class GitSource(Source):
         returns commit id of repository
         """
 
+        if not self.active:
+            return None
+
         cmd = ["git", "rev-parse", "HEAD"]
 
         prevdir = os.getcwd()
@@ -127,6 +141,10 @@ class GitSource(Source):
 
 
     def formatver(self):
+
+        if not self.active:
+            return None
+
         ver = self.conf.get("source", "version")    # base version
         ver += "~git"
         ver += self.date()                          # date and time of commit
@@ -141,6 +159,9 @@ class GitSource(Source):
         get sources from specified branch at orig
         returns commit id of latest commit
         """
+
+        if not self.active:
+            return False
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -226,6 +247,9 @@ class GitSource(Source):
         returns True if update happened, False if not
         """
 
+        if not self.active:
+            return False
+
         # if specific commit is requested, do not pull updates (obviously)
         if self.conf.get("git", "commit"):
             return False
@@ -279,6 +303,9 @@ class GitSource(Source):
         kentauros.source.git.GitSource.export()
         exports current git commit to tarball (.tar.gz)
         """
+
+        if not self.active:
+            return False
 
         def remove_notkeep():
             "local function definition for removing git repo after export if not keep"

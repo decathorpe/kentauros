@@ -29,6 +29,14 @@ class BzrSource(Source):
         self.type = SourceType.BZR
         self.saved_rev = None
 
+        # if bzr is not installed: mark BzrSource instance as inactive
+        try:
+            self.active = True
+            subprocess.check_output(["which", "bzr"])
+        except subprocess.CalledProcessError:
+            log(LOGPREFIX1 + "Install bzr to use the specified source.")
+            self.active = False
+
         if self.conf.get("source", "orig")[0:3] == "lp:":
             self.remote = "https://launchpad.net"
         else:
@@ -40,6 +48,9 @@ class BzrSource(Source):
         kentauros.source.bzr.BzrSource.rev()
         returns revision of repository as string
         """
+
+        if not self.active:
+            return None
 
         cmd = ["bzr", "revno"]
 
@@ -63,6 +74,10 @@ class BzrSource(Source):
 
 
     def formatver(self):
+
+        if not self.active:
+            return None
+
         ver = self.conf.get("source", "version")    # base version
         ver += "~rev"                               # bzr prefix
         ver += self.rev()                           # revision number as string
@@ -75,6 +90,9 @@ class BzrSource(Source):
         get sources from specified branch at orig
         returns revision number of latest commit
         """
+
+        if not self.active:
+            return False
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -138,6 +156,9 @@ class BzrSource(Source):
         returns True if update happened, False if not
         """
 
+        if not self.active:
+            return False
+
         # if specific revision is requested, do not pull updates (obviously)
         if self.conf.get("bzr", "rev"):
             return False
@@ -187,6 +208,9 @@ class BzrSource(Source):
         kentauros.source.bzr.BzrSource.export()
         exports current bzr revision to tarball (.tar.gz)
         """
+
+        if not self.active:
+            return False
 
         def remove_notkeep():
             "local function definition for removing bzr repo after export if not keep"
