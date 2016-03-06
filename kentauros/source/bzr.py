@@ -20,8 +20,10 @@ LOGPREFIX1 = "ktr/source/bzr: "
 
 class BzrSource(Source):
     """
-    kentauros.source.bzr.BzrSource
-    information about and methods for bzr repositories available at specified URL
+    kentauros.source.bzr.BzrSource:
+    Source subclass holding information and methods for handling bzr sources
+    - if bzr command is not found on system, source is set to inactive
+    - remote is set for checking connection to server
     """
     def __init__(self, package):
         super().__init__(package)
@@ -46,7 +48,10 @@ class BzrSource(Source):
     def rev(self):
         """
         kentauros.source.bzr.BzrSource.rev()
-        returns revision of repository as string
+        method that returns the revision the bzr repository is at
+        - returns revision number as string if successful
+        - returns last saved revision number if sources are gone after export
+        - returns None if everything fails
         """
 
         if not self.active:
@@ -74,7 +79,6 @@ class BzrSource(Source):
 
 
     def formatver(self):
-
         if not self.active:
             return None
 
@@ -86,9 +90,10 @@ class BzrSource(Source):
 
     def get(self):
         """
-        kentauros.source.bzr.BzrSource.get()
-        get sources from specified branch at orig
-        returns revision number of latest commit
+        method that gets the correspondig bzr repository
+        - respects branch and rev settings in package.conf
+        - returns True if download is successful
+        - returns False if no connection or source already downloaded
         """
 
         if not self.active:
@@ -151,9 +156,11 @@ class BzrSource(Source):
 
     def update(self):
         """
-        kentauros.source.bzr.BzrSource.update()
-        update sources to latest commit in specified branch
-        returns True if update happened, False if not
+        method that updates the correspondig bzr repository
+        - returns True if update is available and successful
+        - returns False if bzr repository has not been downloaded yet
+        - returns False if a specific revision is requested in package.conf
+        - returns False if no connection or no updates available
         """
 
         if not self.active:
@@ -205,8 +212,12 @@ class BzrSource(Source):
 
     def export(self):
         """
-        kentauros.source.bzr.BzrSource.export()
-        exports current bzr revision to tarball (.tar.gz)
+        method that exports the correspondig bzr repository to tarball
+        - returns True if export is successful
+        - returns False if bzr repository has not been downloaded yet
+        - returns False if destination tarball already exists
+        - respects the bzr/keep setting in package.conf:
+            (deletes repo after export if set to true)
         """
 
         if not self.active:
@@ -238,7 +249,7 @@ class BzrSource(Source):
         # check if bzr repo exists
         if not os.access(self.dest, os.R_OK):
             err(LOGPREFIX1 + "Sources need to be .get() before they can be .export()ed.")
-            return None
+            return False
 
         version = self.formatver()
         name_version = self.name + "-" + version
