@@ -223,6 +223,19 @@ class GetAction(Action):
         return self.package.source.get()
 
 
+class PrepareAction(Action):
+    """
+    kentauros.actions.PrepareAction:
+    action for preparing sources (get/update, export)
+    """
+    def __init__(self, package, force):
+        super().__init__(package, force)
+        self.type = ActionType.PREPARE
+
+    def execute(self):
+        return self.package.source.prepare()
+
+
 class RefreshAction(Action):
     """
     kentauros.actions.RefreshAction:
@@ -304,6 +317,7 @@ ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
 ACTION_DICT[ActionType.CREATE] = CreateAction
 ACTION_DICT[ActionType.EXPORT] = ExportAction
 ACTION_DICT[ActionType.GET] = GetAction
+ACTION_DICT[ActionType.PREPARE] = PrepareAction
 ACTION_DICT[ActionType.REFRESH] = RefreshAction
 ACTION_DICT[ActionType.STATUS] = StatusAction
 ACTION_DICT[ActionType.UPDATE] = UpdateAction

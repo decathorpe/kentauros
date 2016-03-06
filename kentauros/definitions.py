@@ -37,19 +37,20 @@ class ActionType(Enum):
     kentauros.definitions.ActionType:
     enum containing all types of Action classes
     """
-    BUILD = 0
-    CHAIN = 1
-    CLEAN = 2
-    CONFIG = 3
-    CONSTRUCT = 4
-    CREATE = 5
-    EXPORT = 6
-    GET = 7
-    REFRESH = 8
-    STATUS = 9
-    UPDATE = 10
-    UPLOAD = 11
-    VERIFY = 12
+    CREATE = 10
+    STATUS = 11
+    CONFIG = 12
+    VERIFY = 13
+    GET = 20
+    UPDATE = 21
+    EXPORT = 22
+    CLEAN = 23
+    REFRESH = 24
+    PREPARE = 25
+    CONSTRUCT = 30
+    BUILD = 40
+    UPLOAD = 50
+    CHAIN = 60
 
 
 @unique
