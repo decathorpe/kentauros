@@ -24,12 +24,12 @@ LOGPREFIX1 = "ktr/source/git: "
 
 class GitSource(Source):
     """
-    kentauros.source.GitSource
-    information about and methods for git repositories available at specified URL
-    this defaults to:
-    - full checkout of source
-    - keeping sources between transactions
-    - checking out master branch
+    kentauros.source.git.GitSource:
+    Source subclass holding information and methods for handling git sources
+    - if git command is not found on system, self.active = False
+    - self.remove is set for checking connection to specified server
+    - if neither branch nor commit are set in package.conf: default to master branch
+    - if shallow clone and specific commit ID are requsted: default to normal clone
     """
 
     def __init__(self, package):
@@ -63,8 +63,11 @@ class GitSource(Source):
 
     def date(self):
         """
-        kentauros.source.git.GitSource.date()
-        returns date of HEAD commit
+        kentauros.source.git.GitSource.date():
+        method that returns the date and time string of last commit in repository
+        - returns datetime string if successful
+        - returns last saved datetime string if sources are gone after export
+        - returns None if everything fails
         """
 
         if not self.active:
@@ -112,8 +115,11 @@ class GitSource(Source):
 
     def rev(self):
         """
-        kentauros.source.git.GitSource.rev()
-        returns commit id of repository
+        kentauros.source.git.GitSource.rev():
+        method that returns the commit hash of last commit in repository
+        - returns commit hash as string if successful
+        - returns last saved commit hash if sources are gone after export
+        - returns None if everything fails
         """
 
         if not self.active:
@@ -141,7 +147,6 @@ class GitSource(Source):
 
 
     def formatver(self):
-
         if not self.active:
             return None
 
@@ -155,9 +160,11 @@ class GitSource(Source):
 
     def get(self):
         """
-        kentauros.source.git.GitSource.get()
-        get sources from specified branch at orig
-        returns commit id of latest commit
+        kentauros.source.git.GitSource.get():
+        method that gets the correspondig git repository
+        - respects branch and commit settings in package.conf
+        - returns True if download is successful
+        - returns False if no connection or source already downloaded
         """
 
         if not self.active:
@@ -183,7 +190,7 @@ class GitSource(Source):
         cmd = ["git"]
 
         # construct clone command
-        cmd1 = cmd
+        cmd1 = cmd.copy()
         cmd1.append("clone")
 
         # add --verbose or --quiet depending on settings
@@ -212,7 +219,7 @@ class GitSource(Source):
         # if commit is specified: checkout commit
         if self.conf.get("git", "commit"):
             # construct checkout command
-            cmd2 = cmd
+            cmd2 = cmd.copy()
             cmd2.append("checkout")
             cmd2.append(self.conf.get("git", "commit"))
 
@@ -235,6 +242,7 @@ class GitSource(Source):
         if self.conf.get("git", "commit"):
             if self.conf.get("git", "commit") != rev:
                 err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
+                return False
 
         # return True if successful
         return True
@@ -242,9 +250,12 @@ class GitSource(Source):
 
     def update(self):
         """
-        kentauros.source.git.GitSource.update()
-        update sources to latest commit in specified branch
-        returns True if update happened, False if not
+        kentauros.source.git.GitSource.update():
+        method that updates the correspondig git repository
+        - returns True if update is available and successful
+        - returns False if git repository has not been downloaded yet
+        - returns False if a specific commit is requested in package.conf
+        - returns False if no connection or no updates available
         """
 
         if not self.active:
@@ -300,8 +311,13 @@ class GitSource(Source):
 
     def export(self):
         """
-        kentauros.source.git.GitSource.export()
-        exports current git commit to tarball (.tar.gz)
+        kentauros.source.git.GitSource.export():
+        method that exports the correspondig git repository to tarball
+        - returns True if export is successful
+        - returns False if git repository has not been downloaded yet
+        - returns False if destination tarball already exists
+        - respects the git/keep setting in package.conf:
+            (deletes repo after export if set to true)
         """
 
         if not self.active:
@@ -336,7 +352,7 @@ class GitSource(Source):
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
             err(LOGPREFIX1 + "Sources need to be .get() before they can be .export()ed.")
-            return None
+            return False
 
         version = self.formatver()
         name_version = self.name + "-" + version

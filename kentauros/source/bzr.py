@@ -47,7 +47,7 @@ class BzrSource(Source):
 
     def rev(self):
         """
-        kentauros.source.bzr.BzrSource.rev()
+        kentauros.source.bzr.BzrSource.rev():
         method that returns the revision the bzr repository is at
         - returns revision number as string if successful
         - returns last saved revision number if sources are gone after export
@@ -90,6 +90,7 @@ class BzrSource(Source):
 
     def get(self):
         """
+        kentauros.source.bzr.BzrSource.get():
         method that gets the correspondig bzr repository
         - respects branch and rev settings in package.conf
         - returns True if download is successful
@@ -149,6 +150,7 @@ class BzrSource(Source):
         if self.conf.get("bzr", "rev"):
             if self.conf.get("bzr", "rev") != rev:
                 err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
+                return False
 
         # return True if successful
         return True
@@ -156,6 +158,7 @@ class BzrSource(Source):
 
     def update(self):
         """
+        kentauros.source.bzr.BzrSource.update():
         method that updates the correspondig bzr repository
         - returns True if update is available and successful
         - returns False if bzr repository has not been downloaded yet
@@ -212,6 +215,7 @@ class BzrSource(Source):
 
     def export(self):
         """
+        kentauros.source.bzr.BzrSource.export():
         method that exports the correspondig bzr repository to tarball
         - returns True if export is successful
         - returns False if bzr repository has not been downloaded yet
