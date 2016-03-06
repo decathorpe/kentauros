@@ -18,15 +18,17 @@ LOGPREFIX1 = "ktr/source/url: "
 
 class UrlSource(Source):
     """
-    kentauros.source.UrlSource
-    information about and methods for tarballs available at specified URL
+    kentauros.source.url.UrlSource:
+    Source subclass holding information and methods for handling URL sources
+    - if wget command is not found on system, self.active = False
+    - self.remote is set for checking connection to specified server
     """
+
     def __init__(self, package):
         super().__init__(package)
         self.dest = os.path.join(self.sdir, os.path.basename(self.conf.get("source", "orig")))
         self.type = SourceType.URL
 
-        # if wget is not installed: mark UrlSource instance as inactive
         try:
             self.active = True
             subprocess.check_output(["which", "wget"])
@@ -35,15 +37,12 @@ class UrlSource(Source):
             self.active = False
 
 
-    def formatver(self):
-        ver = self.conf.get("source", "version")
-        return ver
-
-
     def get(self):
         """
-        kentauros.source.url.UrlSource.get()
-        get sources from specified URL
+        kentauros.source.url.UrlSource.get():
+        method that gets the correspondig file from URL (usually tarball)
+        - returns True if download is successful
+        - returns False if destination already exists
         """
 
         if not self.active:
@@ -61,7 +60,7 @@ class UrlSource(Source):
         # check for connectivity to server
         if not is_connected(self.package.conf.get("source", "orig")):
             log("No connection to remote host detected. Cancelling source checkout.", 2)
-            return None
+            return False
 
         # construct wget commands
         cmd = ["wget"]
@@ -82,8 +81,4 @@ class UrlSource(Source):
         subprocess.call(cmd)
 
         return True
-
-
-    def update(self):
-        return False
 

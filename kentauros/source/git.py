@@ -27,7 +27,7 @@ class GitSource(Source):
     kentauros.source.git.GitSource:
     Source subclass holding information and methods for handling git sources
     - if git command is not found on system, self.active = False
-    - self.remove is set for checking connection to specified server
+    - self.remote is set for checking connection to specified server
     - if neither branch nor commit are set in package.conf: default to master branch
     - if shallow clone and specific commit ID are requsted: default to normal clone
     """
