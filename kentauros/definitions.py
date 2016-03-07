@@ -1,13 +1,13 @@
 """
 kentauros.definitions module
-- definition of ktr system datadir used everywhere
-- enum definitions for
-  - ktr configuration types
-  - ktr action types
-  - builder types
-  - constructor types
-  - source types
-  - uploader types
+contains definition of ktr system datadir used everywhere and
+enum definitions for:
+- ktr configuration types
+- ktr action types
+- builder types
+- constructor types
+- source types
+- uploader types
 """
 
 from enum import Enum, unique
