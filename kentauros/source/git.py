@@ -316,8 +316,7 @@ class GitSource(Source):
         - returns True if export is successful
         - returns False if git repository has not been downloaded yet
         - returns False if destination tarball already exists
-        - respects the git/keep setting in package.conf:
-            (deletes repo after export if set to true)
+        - respects the git/keep setting in package.conf (deletes repo after export if set to true)
         """
 
         if not self.active:

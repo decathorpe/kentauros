@@ -1,5 +1,5 @@
 """
-kentauros.init.env
+kentauros.init.env file
 """
 
 import os

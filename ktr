@@ -35,23 +35,23 @@ def get_action_args(pkgname, action_type_enum):
     assert isinstance(action_type, ActionType)
 
     action_args_dict = dict()
-    action_args_dict[ActionType.BUILD] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.CHAIN] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.CLEAN] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.CONSTRUCT] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.EXPORT] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.GET] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.REFRESH] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.STATUS] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.UPDATE] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.UPLOAD] = (CLI_ARGS.get("force"),)
-    action_args_dict[ActionType.VERIFY] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.BUILD] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.CHAIN] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.CLEAN] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.CONSTRUCT] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.EXPORT] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.GET] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.REFRESH] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.STATUS] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.UPDATE] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.UPLOAD] = (CLI_ARGS.force,)
+    action_args_dict[ActionType.VERIFY] = (CLI_ARGS.force,)
 
-    action_args_dict[ActionType.CONFIG] = (CLI_ARGS.get("force"),
-                                           CLI_ARGS.get("config_section"),
-                                           CLI_ARGS.get("config_key"),
-                                           CLI_ARGS.get("config_value"))
-    action_args_dict[ActionType.CREATE] = (CLI_ARGS.get("force"),)
+    action_args_dict[ActionType.CONFIG] = (CLI_ARGS.force,
+                                           CLI_ARGS.config_section,
+                                           CLI_ARGS.config_key,
+                                           CLI_ARGS.config_value)
+    action_args_dict[ActionType.CREATE] = (CLI_ARGS.force,)
 
     if action_type_enum == ActionType.CREATE:
         return (pkgname,) + action_args_dict[ActionType.CREATE]
@@ -60,7 +60,7 @@ def get_action_args(pkgname, action_type_enum):
 
 
 # if no action is specified: exit
-if CLI_ARGS.get("action") is None:
+if CLI_ARGS.action is None:
     log(LOGPREFIX1 + "No action specified. Exiting.", 2)
     log(LOGPREFIX1 + "Use 'ktr --help' for more information.")
     print()
@@ -72,8 +72,8 @@ PKGS = list()
 
 # if only specified packages are to be processed:
 # process packages only
-if not CLI_ARGS.get("packages_all"):
-    for name in CLI_ARGS.get("packages"):
+if not CLI_ARGS.packages_all:
+    for name in CLI_ARGS.packages:
         PKGS.append(name)
 
 # if all package are to be processed:
@@ -91,9 +91,14 @@ for package in PKGS:
 
 # run action for every specified package
 for name in PKGS:
-    action_type = CLI_ARGS.get("action")
+    action_type = CLI_ARGS.action
     action = ACTION_DICT[action_type](*get_action_args(name, action_type))
-    action.execute()
+    success = action.execute()
+
+    if success:
+        log(LOGPREFIX1 + "Success!")
+    else:
+        log(LOGPREFIX1 + "Not successful.")
 
 print()
 

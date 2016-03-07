@@ -1,9 +1,3 @@
-*.css
-*.eps
-*.html
-*.js
-*.pdf
-*.png
-*.sty
-*.tex
-latex/Makefile
+build
+source/apidoc
+

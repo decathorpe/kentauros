@@ -54,8 +54,8 @@ class BuildAction(Action):
 class ChainAction(Action):
     """
     kentauros.actions.ChainAction:
-    action for getting (if neccessary), updating,
-      constructing, building and uploading source package
+    action for getting (if neccessary), updating, constructing,
+    building and uploading source package
     """
     def __init__(self, package, force):
         super().__init__(package, force)

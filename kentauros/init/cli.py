@@ -1,5 +1,5 @@
 """
-kentauros.init.cli
+kentauros.init.cli file
 """
 
 import argparse
@@ -7,7 +7,7 @@ import argparse
 from kentauros.definitions import ActionType
 
 
-def cli_parse():
+def get_parsed_cli():
     """
     kentauros.init.cli.cli_parse():
     function that builds the kentauros CLI parser and returns the parsed values
@@ -214,20 +214,50 @@ def cli_parse():
     return cli_args
 
 
-class CLIArgs(dict):
+class CLIArgs:
     """
     kentauros.init.cli.CLIArgs:
     class that initialises CLI argument parsing and prepares them for reading
     """
-    def __init__(self, cli_args):
-        super().__init__()
-        # set values according to CLI arguments
-        self['debug'] = cli_args.debug
+
+    # pylint: disable=too-many-instance-attributes
+
+    def __init__(self):
+
+        self.debug = False
+        self.verby = 2
+
+        self.priconf = None
+
+        self.basedir = "./"
+        self.confdir = "./"
+        self.datadir = "./"
+        self.packdir = "./"
+        self.specdir = "./"
+
+        self.action = None
+        self.force = False
+        self.packages = []
+        self.packages_all = False
+
+        self.confedit = False
+        self.config_section = None
+        self.config_key = None
+        self.config_value = None
+
+
+    def parse_args(self, cli_args):
+        """
+        kentauros.init.cli.CLIArgs.parse_args():
+        method that overrides initialised default values with values from CLI parser
+        """
+
+        self.debug = cli_args.debug
 
         if (2 - cli_args.verby) >= 0:
-            self['verby'] = 2 - cli_args.verby
+            self.verby = 2 - cli_args.verby
         else:
-            self['verby'] = 0
+            self.verby = 0
             print("DEBUG: Verbosity levels only range from 0 to 2.")
 
         self.basedir = cli_args.basedir
@@ -236,38 +266,40 @@ class CLIArgs(dict):
         self.packdir = cli_args.packdir
         self.specdir = cli_args.specdir
 
-        self['priconf'] = cli_args.priconf
+        self.priconf = cli_args.priconf
 
         if 'action' in cli_args:
-            self['action'] = cli_args.action
+            self.action = cli_args.action
         else:
-            self['action'] = None
+            self.action = None
 
         if 'package' in cli_args:
-            self['packages'] = cli_args.package
+            self.packages = cli_args.package
         else:
-            self['packages'] = list()
+            self.packages = list()
 
         if 'all' in cli_args:
-            self['packages_all'] = cli_args.all
+            self.packages_all = cli_args.all
         else:
-            self['packages_all'] = False
+            self.packages_all = False
 
         if 'force' in cli_args:
-            self['force'] = cli_args.force
+            self.force = cli_args.force
         else:
-            self['force'] = False
+            self.force = False
 
         if ("section" in cli_args) and \
            ("key" in cli_args) and \
            ("value" in cli_args):
-            self['confedit'] = True
-            self['config_section'] = cli_args.section
-            self['config_key'] = cli_args.key
-            self['config_value'] = cli_args.value
+            self.confedit = True
+            self.config_section = cli_args.section
+            self.config_key = cli_args.key
+            self.config_value = cli_args.value
         else:
-            self['confedit'] = False
+            self.confedit = False
 
 
-CLI_ARGS = CLIArgs(cli_parse())
+CLI_ARGS = CLIArgs()
+if __name__ == '__main__':
+    CLI_ARGS.parse_args(get_parsed_cli())
 

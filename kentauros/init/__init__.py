@@ -19,8 +19,8 @@ def __smaller_int__(int1, int2):
         return int2
 
 
-DEBUG = ENVDEBUG or CLI_ARGS['debug']
-VERBY = __smaller_int__(ENVVERBY, CLI_ARGS['verby'])
+DEBUG = ENVDEBUG or CLI_ARGS.debug
+VERBY = __smaller_int__(ENVVERBY, CLI_ARGS.verby)
 
 
 def dbg(msg):

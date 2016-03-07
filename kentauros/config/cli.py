@@ -1,5 +1,5 @@
 """
-kentauros.config.cli
+kentauros.config.cli file
 processes given command line switches to eventually determine location of
 - configuration files (confdir)
 - source directories / tarballs (datadir)
@@ -21,7 +21,7 @@ LOGPREFIX1 = "ktr/config/cli: "
 def get_cli_config():
     """
     kentauros.config.cli.get_cli_config():
-    function that returns a KtrConf object containing CLI_????DIR settings
+    function that returns a KtrConf object containing CLI settings
     """
     # if no settings were set at command line, return None
     if (CLI_ARGS.basedir is None) and \

@@ -87,8 +87,8 @@ def ktr_get_conf():
 
     ktr_conf = None
 
-    if CLI_ARGS['priconf']:
-        ktr_conf = get_pref_conf(CLI_ARGS['priconf'])
+    if CLI_ARGS.priconf:
+        ktr_conf = get_pref_conf(CLI_ARGS.priconf)
 
     if ktr_conf is not None:
         return ktr_conf

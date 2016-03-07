@@ -1,5 +1,5 @@
 """
-kentauros.config.envvar
+kentauros.config.envvar file
 reads environment variables to eventually determine location of
 - configuration files (confdir)
 - source directories / tarballs (datadir)
@@ -24,8 +24,8 @@ LOGPREFIX1 = "ktr/config/envvar: "
 
 def get_env_config():
     """
-    kentauros.config.env.get_env_config():
-    function that returns a KtrConf object containing ENV_????_DIR settings
+    kentauros.config.envvar.get_env_config():
+    function that returns a KtrConf object containing ENV settings
     """
     # if no settings were set by env variables, return None
     if (ENV_BASEDIR is None) and \
