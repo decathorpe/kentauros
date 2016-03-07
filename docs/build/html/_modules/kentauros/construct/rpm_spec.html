@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kentauros.construct.rpm_spec &mdash; kentauros 0.9.2dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.9.2dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../../index.html" />
+    <link rel="up" title="kentauros.construct" href="../construct.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kentauros.construct.rpm_spec</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">kentauros.construct.rpm_spec</span>
+<span class="sd">contains helper functions for building rpm source packages</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">SourceType</span>
+<span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">VERBY</span><span class="p">,</span> <span class="n">log_command</span>
+<span class="kn">from</span> <span class="nn">kentauros.source.common</span> <span class="kn">import</span> <span class="n">Source</span>
+
+
+<span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/construct/rpm_spec: &quot;</span>
+
+
+<div class="viewcode-block" id="RPMSpecError"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.RPMSpecError">[docs]</a><span class="k">class</span> <span class="nc">RPMSpecError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.RPMSpecError:</span>
+<span class="sd">    exception for rpm spec errors</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="spec_preamble_bzr"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_bzr">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_bzr</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_preamble_bzr():</span>
+<span class="sd">    returns rpm spec %defines lines formatted nicely for bzr sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+    <span class="n">rev_define</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">efine rev &quot;</span> <span class="o">+</span> <span class="n">source</span><span class="o">.</span><span class="n">rev</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">rev_define</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="spec_preamble_git"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_git">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_git</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_preamble_git():</span>
+<span class="sd">    returns rpm spec %defines lines formatted nicely for git sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+    <span class="n">date_define</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">efine date &quot;</span> <span class="o">+</span> <span class="n">source</span><span class="o">.</span><span class="n">date</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">rev_define</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">efine rev &quot;</span> <span class="o">+</span> <span class="n">source</span><span class="o">.</span><span class="n">rev</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">date_define</span> <span class="o">+</span> <span class="n">rev_define</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="spec_preamble_url"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_url">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_url</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_preamble_url():</span>
+<span class="sd">    returns rpm spec %defines lines formatted nicely for url sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+
+
+<span class="n">SPEC_PREAMBLE_DICT</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">SPEC_PREAMBLE_DICT</span><span class="p">[</span><span class="n">SourceType</span><span class="o">.</span><span class="n">BZR</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec_preamble_bzr</span>
+<span class="n">SPEC_PREAMBLE_DICT</span><span class="p">[</span><span class="n">SourceType</span><span class="o">.</span><span class="n">GIT</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec_preamble_git</span>
+<span class="n">SPEC_PREAMBLE_DICT</span><span class="p">[</span><span class="n">SourceType</span><span class="o">.</span><span class="n">URL</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec_preamble_url</span>
+
+
+<div class="viewcode-block" id="spec_version_bzr"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_bzr">[docs]</a><span class="k">def</span> <span class="nf">spec_version_bzr</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_version_bzr():</span>
+<span class="sd">    returns rpm spec &quot;Version:&quot; tagline formatted nicely for bzr sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+    <span class="n">ver_str</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;~rev%{rev}&quot;</span>
+    <span class="k">return</span> <span class="n">ver_str</span></div>
+
+<div class="viewcode-block" id="spec_version_git"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_git">[docs]</a><span class="k">def</span> <span class="nf">spec_version_git</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_version_git():</span>
+<span class="sd">    returns rpm spec &quot;Version:&quot; tagline formatted nicely for git sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+    <span class="n">ver_str</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;~git%{date}~%{rev}&quot;</span>
+    <span class="k">return</span> <span class="n">ver_str</span></div>
+
+<div class="viewcode-block" id="spec_version_url"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_url">[docs]</a><span class="k">def</span> <span class="nf">spec_version_url</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_version_url():</span>
+<span class="sd">    returns rpm spec &quot;Version:&quot; tagline formatted nicely for url sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Source</span><span class="p">)</span>
+    <span class="n">ver_str</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ver_str</span></div>
+
+
+<span class="n">SPEC_VERSION_DICT</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">SPEC_VERSION_DICT</span><span class="p">[</span><span class="n">SourceType</span><span class="o">.</span><span class="n">BZR</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec_version_bzr</span>
+<span class="n">SPEC_VERSION_DICT</span><span class="p">[</span><span class="n">SourceType</span><span class="o">.</span><span class="n">GIT</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec_version_git</span>
+<span class="n">SPEC_VERSION_DICT</span><span class="p">[</span><span class="n">SourceType</span><span class="o">.</span><span class="n">URL</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec_version_url</span>
+
+
+<div class="viewcode-block" id="spec_version_read"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_read">[docs]</a><span class="k">def</span> <span class="nf">spec_version_read</span><span class="p">(</span><span class="n">file_obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_version_read():</span>
+<span class="sd">    returns version string found on rpm spec &quot;Version:&quot; tagline</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_obj</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">)</span>
+
+    <span class="n">file_obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file_obj</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Version:&quot;</span><span class="p">:</span>
+            <span class="n">file_obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Version:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">file_obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">RPMSpecError</span><span class="p">(</span><span class="s2">&quot;No Version tag was found in the file.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="spec_release_read"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_release_read">[docs]</a><span class="k">def</span> <span class="nf">spec_release_read</span><span class="p">(</span><span class="n">file_obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_release_read():</span>
+<span class="sd">    returns release string found on rpm spec &quot;Release:&quot; tagline</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_obj</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">)</span>
+
+    <span class="n">file_obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file_obj</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Release:&quot;</span><span class="p">:</span>
+            <span class="n">file_obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Release:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">file_obj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">RPMSpecError</span><span class="p">(</span><span class="s2">&quot;No Release tag was found in the file.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="if_version"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.if_version">[docs]</a><span class="k">def</span> <span class="nf">if_version</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.if_version()</span>
+<span class="sd">    function returns version string if &quot;Version: &quot; is found on spec file line</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Version:&quot;</span></div>
+
+
+<div class="viewcode-block" id="if_release"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.if_release">[docs]</a><span class="k">def</span> <span class="nf">if_release</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.if_release()</span>
+<span class="sd">    function returns release string if &quot;Release: &quot; is found on spec file line</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Release:&quot;</span></div>
+
+
+<div class="viewcode-block" id="bump_release"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.bump_release">[docs]</a><span class="k">def</span> <span class="nf">bump_release</span><span class="p">(</span><span class="n">relstr_old</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.bump_release()</span>
+<span class="sd">    returns release string bumped by 1 (hopefully intelligently)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">relstr_old</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">rest</span> <span class="o">=</span> <span class="n">relstr_old</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">reset</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">rnum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">rest</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">rest</span></div>
+
+
+<div class="viewcode-block" id="spec_bump"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_bump">[docs]</a><span class="k">def</span> <span class="nf">spec_bump</span><span class="p">(</span><span class="n">specfile</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.construct.rpm_spec.spec_bump()</span>
+<span class="sd">    function bumps the spec file for new release (via rpmdev-bumpspec)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;automatic build by kentauros&quot;</span>
+
+    <span class="c1"># construct rpmdev-bumpspec command</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rpmdev-bumpspec&quot;</span><span class="p">]</span>
+
+    <span class="c1"># add --verbose or --quiet depending on settings</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">VERBY</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">DEBUG</span><span class="p">:</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--quiet&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">VERBY</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">DEBUG</span><span class="p">:</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--verbose&quot;</span><span class="p">)</span>
+
+    <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">specfile</span><span class="p">)</span>
+
+    <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--comment=&#39;</span> <span class="o">+</span> <span class="n">comment</span><span class="p">)</span>
+
+    <span class="n">log_command</span><span class="p">(</span><span class="n">LOGPREFIX1</span><span class="p">,</span> <span class="s2">&quot;rpmdev-bumpspec&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../construct.html">kentauros.construct</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Fabio Valentini.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

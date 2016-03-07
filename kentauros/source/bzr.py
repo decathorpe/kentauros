@@ -1,7 +1,8 @@
 """
-kentauros.source.bzr
-contains GitSource class and methods
-this class is for handling sources that are specified by bzr repo URL
+This submodule contains only contains the BzrSource class and methods for
+handling sources that have :code:`source.type=bzr` specified and
+:code:`source.orig` set to a bzr repository URL (or :code:`lp:` abbreviation)
+in the package's configuration file.
 """
 
 import os
@@ -20,10 +21,17 @@ LOGPREFIX1 = "ktr/source/bzr: "
 
 class BzrSource(Source):
     """
-    kentauros.source.bzr.BzrSource:
-    Source subclass holding information and methods for handling bzr sources
-    - if bzr command is not found on system, self.active = False
-    - self.remote is set for checking connection to specified server
+This Source subclass holds information and methods for handling bzr sources.
+
+* If the :code:`bzr` command is not found on the system, :code:`self.active` is
+  automatically set to :code:`False` in the package's configuration file.
+* For the purpose of checking connectivity to the remote server, the URL is
+  stored in :code:`self.remote`. If the specified repository is hosted on
+  `launchpad.net <https://launchpad.net>`_, :code:`lp:` will be substituted with
+  launchpad's URL automatically.
+
+Arguments:
+    package (Package):  instance of Package that this Source belongs to
     """
 
     def __init__(self, package):
@@ -47,15 +55,20 @@ class BzrSource(Source):
 
     def rev(self):
         """
-        kentauros.source.bzr.BzrSource.rev():
-        method that returns the revision the bzr repository is at
-        - returns revision number as string if successful
-        - returns last saved revision number if sources are gone after export
-        - returns None if everything fails
+This method determines which revision the bzr repository associated with
+this BzrSource currently is at and returns it as a string. Once run, it saves
+the last processed revision number in :code:`self.saved_rev`, in case the
+revision needs to be determined when bzr repository might not be accessible
+anymore (e.g. if :code:`bzr.keep=False` is set in configuration, so the
+repository is not kept after export to tarball).
+
+Returns:
+    str(): either successfully determined revision string from repository,
+    last stored revision string or :code:`""` when not
         """
 
         if not self.active:
-            return None
+            return ""
 
         cmd = ["bzr", "revno"]
 
@@ -63,9 +76,9 @@ class BzrSource(Source):
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
-            if self.saved_rev is None:
+            if self.saved_rev is "":
                 err("Sources need to be .get() before .rev() can be determined.")
-                return None
+                return ""
             else:
                 return self.saved_rev
 
@@ -79,6 +92,13 @@ class BzrSource(Source):
 
 
     def formatver(self):
+        """
+This method returns a nicely formatted version string for bzr sources.
+
+Returns:
+    str(): formatted version string (base version + :code:`~bzr` + revision)
+        """
+
         if not self.active:
             return None
 

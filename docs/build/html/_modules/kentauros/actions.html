@@ -1,0 +1,412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kentauros.actions &mdash; kentauros 0.9.2dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9.2dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kentauros.actions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">kentauros.actions module</span>
+<span class="sd">classes, methods, functions, definitions for actions executable by CLI arguments</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span><span class="p">,</span> <span class="n">NoSectionError</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">from</span> <span class="nn">kentauros.config</span> <span class="kn">import</span> <span class="n">KTR_CONF</span>
+<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">KTR_SYSTEM_DATADIR</span><span class="p">,</span> <span class="n">ActionType</span><span class="p">,</span> <span class="n">SourceType</span>
+<span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">kentauros.package</span> <span class="kn">import</span> <span class="n">Package</span>
+
+
+<span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/actions: &quot;</span>
+
+
+<div class="viewcode-block" id="Action"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.Action">[docs]</a><span class="k">class</span> <span class="nc">Action</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.Action:</span>
+<span class="sd">    base class for Actions that are chosen by CLI</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">Package</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span> <span class="o">=</span> <span class="n">package</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="n">force</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="Action.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.Action.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        kentauros.actions.Action.execute:</span>
+<span class="sd">        execute Action</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=no-self-use</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="BuildAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.BuildAction">[docs]</a><span class="k">class</span> <span class="nc">BuildAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.BuildAction:</span>
+<span class="sd">    action for building source package locally</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">BUILD</span>
+
+<div class="viewcode-block" id="BuildAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.BuildAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">success</span></div></div>
+
+
+<div class="viewcode-block" id="ChainAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ChainAction">[docs]</a><span class="k">class</span> <span class="nc">ChainAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.ChainAction:</span>
+<span class="sd">    action for getting (if neccessary), updating, constructing,</span>
+<span class="sd">    building and uploading source package</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CHAIN</span>
+
+<div class="viewcode-block" id="ChainAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ChainAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">veryfied</span> <span class="o">=</span> <span class="n">VerifyAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">veryfied</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="n">get</span> <span class="o">=</span> <span class="n">GetAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="n">UpdateAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">get</span> <span class="ow">or</span> <span class="n">update</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="n">ExportAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="n">success</span> <span class="o">=</span> <span class="n">ConstructAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="n">success</span> <span class="o">=</span> <span class="n">BuildAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="n">UploadAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="CleanAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.CleanAction">[docs]</a><span class="k">class</span> <span class="nc">CleanAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.Clean:</span>
+<span class="sd">    action for cleaning sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CLEAN</span>
+
+<div class="viewcode-block" id="CleanAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.CleanAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="ConfigAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ConfigAction">[docs]</a><span class="k">class</span> <span class="nc">ConfigAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.ConfigAction:</span>
+<span class="sd">    action for setting config values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">section</span> <span class="o">=</span> <span class="n">section</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="ConfigAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ConfigAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">NoSectionError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">update_config</span><span class="p">()</span>
+
+        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Configuration value changed: &quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.conf: &quot;</span> <span class="o">+</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">section</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="ConstructAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ConstructAction">[docs]</a><span class="k">class</span> <span class="nc">ConstructAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.Construct:</span>
+<span class="sd">    action for building source package</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONSTRUCT</span>
+
+<div class="viewcode-block" id="ConstructAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ConstructAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+        <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="n">relreset</span><span class="o">=</span><span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">export</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="CreateAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.CreateAction">[docs]</a><span class="k">class</span> <span class="nc">CreateAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.CreateAction:</span>
+<span class="sd">    action for initialising an empty package from templates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+        <span class="c1"># copy templates from KTR_SYSTEM_DATADIR to confdir and specdir</span>
+        <span class="n">conf_template_orig</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_SYSTEM_DATADIR</span><span class="p">,</span> <span class="s2">&quot;package.conf&quot;</span><span class="p">)</span>
+        <span class="n">spec_template_orig</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_SYSTEM_DATADIR</span><span class="p">,</span> <span class="s2">&quot;template.spec&quot;</span><span class="p">)</span>
+
+        <span class="n">conf_template_dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">confdir</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.conf&quot;</span><span class="p">)</span>
+        <span class="n">spec_template_dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">specdir</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.spec&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">conf_template_dest</span><span class="p">)</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">conf_template_orig</span><span class="p">,</span> <span class="n">conf_template_dest</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.conf already exists. Specify --force to overwrite.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">spec_template_dest</span><span class="p">)</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">spec_template_orig</span><span class="p">,</span> <span class="n">spec_template_dest</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.spec already exists. Specify --force to overwrite.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+            <span class="c1"># set name in config template</span>
+            <span class="n">conf_template</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
+            <span class="n">conf_template</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">conf_template_dest</span><span class="p">)</span>
+
+            <span class="n">conf_template</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;package&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">conf_template</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">conf_template_dest</span><span class="p">)</span>
+
+            <span class="c1"># initialise package</span>
+            <span class="n">package</span> <span class="o">=</span> <span class="n">Package</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CreateAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.CreateAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span></div></div>
+
+
+<div class="viewcode-block" id="ExportAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ExportAction">[docs]</a><span class="k">class</span> <span class="nc">ExportAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.ExportAction:</span>
+<span class="sd">    action for exporting sources from repository</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">EXPORT</span>
+
+<div class="viewcode-block" id="ExportAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ExportAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">export</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="GetAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.GetAction">[docs]</a><span class="k">class</span> <span class="nc">GetAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.GetAction:</span>
+<span class="sd">    action for getting sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">GET</span>
+
+<div class="viewcode-block" id="GetAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.GetAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="PrepareAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.PrepareAction">[docs]</a><span class="k">class</span> <span class="nc">PrepareAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.PrepareAction:</span>
+<span class="sd">    action for preparing sources (get/update, export)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">PREPARE</span>
+
+<div class="viewcode-block" id="PrepareAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.PrepareAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="RefreshAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.RefreshAction">[docs]</a><span class="k">class</span> <span class="nc">RefreshAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.RefreshAction:</span>
+<span class="sd">    action for refreshing sources (clean + get)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">REFRESH</span>
+
+<div class="viewcode-block" id="RefreshAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.RefreshAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="c1"># TODO</span>
+        <span class="c1"># Source.refresh() needs return value from .get()</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="StatusAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.StatusAction">[docs]</a><span class="k">class</span> <span class="nc">StatusAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.StatusAction:</span>
+<span class="sd">    action for displaying configuration values and available packages</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">STATUS</span>
+
+<div class="viewcode-block" id="StatusAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.StatusAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="UpdateAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.UpdateAction">[docs]</a><span class="k">class</span> <span class="nc">UpdateAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.UpdateAction:</span>
+<span class="sd">    action for updating sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">UPDATE</span>
+
+<div class="viewcode-block" id="UpdateAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.UpdateAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">update</span></div></div>
+
+
+<div class="viewcode-block" id="UploadAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.UploadAction">[docs]</a><span class="k">class</span> <span class="nc">UploadAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.UploadAction:</span>
+<span class="sd">    action for uploading source package</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">UPLOAD</span>
+
+<div class="viewcode-block" id="UploadAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.UploadAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">uploader</span><span class="o">.</span><span class="n">upload</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<div class="viewcode-block" id="VerifyAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.VerifyAction">[docs]</a><span class="k">class</span> <span class="nc">VerifyAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.actions.VerifyAction:</span>
+<span class="sd">    action for verifying that everything is in place</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">VERIFY</span>
+
+<div class="viewcode-block" id="VerifyAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.VerifyAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+
+
+<span class="n">ACTION_DICT</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">BUILD</span><span class="p">]</span> <span class="o">=</span> <span class="n">BuildAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CHAIN</span><span class="p">]</span> <span class="o">=</span> <span class="n">ChainAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">]</span> <span class="o">=</span> <span class="n">CleanAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">]</span> <span class="o">=</span> <span class="n">ConfigAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONSTRUCT</span><span class="p">]</span> <span class="o">=</span> <span class="n">ConstructAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CREATE</span><span class="p">]</span> <span class="o">=</span> <span class="n">CreateAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">EXPORT</span><span class="p">]</span> <span class="o">=</span> <span class="n">ExportAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">GET</span><span class="p">]</span> <span class="o">=</span> <span class="n">GetAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">PREPARE</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrepareAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">REFRESH</span><span class="p">]</span> <span class="o">=</span> <span class="n">RefreshAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">STATUS</span><span class="p">]</span> <span class="o">=</span> <span class="n">StatusAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">UPDATE</span><span class="p">]</span> <span class="o">=</span> <span class="n">UpdateAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">UPLOAD</span><span class="p">]</span> <span class="o">=</span> <span class="n">UploadAction</span>
+<span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">VERIFY</span><span class="p">]</span> <span class="o">=</span> <span class="n">VerifyAction</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Fabio Valentini.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.ifconfig',
+    'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
 ]
 
@@ -289,3 +290,8 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+# napoleon_use_ivar = True
+napoleon_numpy_docstring = False
+napoleon_use_rtype = False
+

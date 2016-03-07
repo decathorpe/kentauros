@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kentauros.config.common &mdash; kentauros 0.9.2dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.9.2dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kentauros.config.common</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">kentauros.config.common</span>
+<span class="sd">this file contains common functions, definitions, classes and methods for</span>
+<span class="sd">all configuration methods.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span><span class="p">,</span> <span class="n">NoOptionError</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">KtrConfType</span>
+<span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">err</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">kentauros.init.env</span> <span class="kn">import</span> <span class="n">HOME</span>
+
+
+<span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/config/common: &quot;</span>
+<span class="n">LOGPREFIX2</span> <span class="o">=</span> <span class="s2">&quot;                   - &quot;</span>
+
+
+<div class="viewcode-block" id="ConfigException"><a class="viewcode-back" href="../../../kentauros.config.html#kentauros.config.common.ConfigException">[docs]</a><span class="k">class</span> <span class="nc">ConfigException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.config.common.ConfigException:</span>
+<span class="sd">    exception that is raised if erors occur during configuration parsing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">__replace_home__</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">string</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">if</span> <span class="s2">&quot;$HOME&quot;</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$HOME&quot;</span><span class="p">,</span> <span class="n">HOME</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;~&quot;</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">,</span> <span class="n">HOME</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">string</span>
+
+
+<div class="viewcode-block" id="KtrConf"><a class="viewcode-back" href="../../../kentauros.config.html#kentauros.config.common.KtrConf">[docs]</a><span class="k">class</span> <span class="nc">KtrConf</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.config.common.KtrConf</span>
+<span class="sd">    class that contains information about kentauros configuration options.</span>
+<span class="sd">    this includes:</span>
+<span class="sd">    - location of base directory (basedir)</span>
+<span class="sd">    - location of package configuration files (confdir)</span>
+<span class="sd">    - location of package source directories / tarballs (datadir)</span>
+<span class="sd">    - location of built source packages (packdir)</span>
+<span class="sd">    - location of package spec files (specdir)</span>
+<span class="sd">    - may be extended</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conftype</span><span class="p">,</span> <span class="n">basedir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conftype</span><span class="p">,</span> <span class="n">KtrConfType</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">basedir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span> <span class="o">=</span> <span class="n">basedir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="s2">&quot;configs&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="s2">&quot;sources&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="s2">&quot;packages&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="s2">&quot;specs&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">conftype</span>
+
+        <span class="c1"># if values are read from config file, remember where from</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
+
+
+<div class="viewcode-block" id="KtrConf.validate"><a class="viewcode-back" href="../../../kentauros.config.html#kentauros.config.common.KtrConf.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        kentauros.config.base.KtrConf.validate()</span>
+<span class="sd">        method for verifying valid configuration content.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># basedir does not have to be checked, because:</span>
+        <span class="c1"># - it is either set at initialisation and</span>
+        <span class="c1">#   defines all other values, or</span>
+        <span class="c1"># - it is not set at initialisation and</span>
+        <span class="c1">#   all other values have been defined manually</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">confdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> \
+           <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> \
+           <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> \
+           <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span></div>
+
+
+<div class="viewcode-block" id="KtrConf.succby"><a class="viewcode-back" href="../../../kentauros.config.html#kentauros.config.common.KtrConf.succby">[docs]</a>    <span class="k">def</span> <span class="nf">succby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        kentauros.config.common.KtrConf.succby()</span>
+<span class="sd">        method that replaces config values in this KtrConf (self) with non-None</span>
+<span class="sd">          config values from another KtrConf (other)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">KtrConf</span><span class="p">)</span>
+
+        <span class="c1"># if basedir is not set: all other values have been explicitly set,</span>
+        <span class="c1"># so override all of them</span>
+        <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span> <span class="o">=</span> <span class="n">__replace_home__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">basedir</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">confdir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">datadir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">packdir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">specdir</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Last attempted action was overriding default values.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ConfigException</span><span class="p">(</span><span class="s2">&quot;An error occured during configuration parsing.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KtrConf.from_file"><a class="viewcode-back" href="../../../kentauros.config.html#kentauros.config.common.KtrConf.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        kentauros.config.common.KtrConf.from_file():</span>
+<span class="sd">        method that reads a configuration file and parses read values into object attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="n">errmsg</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">filepath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
+
+        <span class="n">successful</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">successful</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">errmsg</span><span class="p">:</span>
+                <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="n">errmsg</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="s2">&quot;main&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__replace_home__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="s2">&quot;basedir&quot;</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="n">NoOptionError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">basedir</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="s2">&quot;confdir&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__replace_home__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="s2">&quot;confdir&quot;</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="s2">&quot;configs&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;datadir&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__replace_home__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="s2">&quot;datadir&quot;</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="s2">&quot;sources&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;packdir&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__replace_home__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="s2">&quot;packdir&quot;</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="s2">&quot;packages&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;specdir&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__replace_home__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="s2">&quot;specdir&quot;</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="s2">&quot;specs&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Not all neccessary configuration options have been set.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Fabio Valentini.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

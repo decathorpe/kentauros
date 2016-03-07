@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>kentauros.definitions &mdash; kentauros 0.9.2dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9.2dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for kentauros.definitions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">kentauros.definitions module</span>
+<span class="sd">contains definition of ktr system datadir used everywhere and</span>
+<span class="sd">enum definitions for:</span>
+<span class="sd">- ktr configuration types</span>
+<span class="sd">- ktr action types</span>
+<span class="sd">- builder types</span>
+<span class="sd">- constructor types</span>
+<span class="sd">- source types</span>
+<span class="sd">- uploader types</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">unique</span>
+
+
+<span class="n">KTR_SYSTEM_DATADIR</span> <span class="o">=</span> <span class="s2">&quot;/usr/share/kentauros/&quot;</span>
+
+
+<span class="nd">@unique</span>
+<div class="viewcode-block" id="KtrConfType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.KtrConfType">[docs]</a><span class="k">class</span> <span class="nc">KtrConfType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.definitions.KtrConfType</span>
+<span class="sd">    enum that defines all possible configuration sources.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CLI</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ENV</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">PROJECT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">USER</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">SYSTEM</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">DEFAULT</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">FALLBACK</span> <span class="o">=</span> <span class="mi">6</span></div>
+
+
+<span class="nd">@unique</span>
+<div class="viewcode-block" id="ActionType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.ActionType">[docs]</a><span class="k">class</span> <span class="nc">ActionType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.definitions.ActionType:</span>
+<span class="sd">    enum containing all types of Action classes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CREATE</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">STATUS</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">CONFIG</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">VERIFY</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">GET</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">UPDATE</span> <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">EXPORT</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">CLEAN</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="n">REFRESH</span> <span class="o">=</span> <span class="mi">24</span>
+    <span class="n">PREPARE</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">CONSTRUCT</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">BUILD</span> <span class="o">=</span> <span class="mi">40</span>
+    <span class="n">UPLOAD</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">CHAIN</span> <span class="o">=</span> <span class="mi">60</span></div>
+
+
+<span class="nd">@unique</span>
+<div class="viewcode-block" id="BuilderType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.BuilderType">[docs]</a><span class="k">class</span> <span class="nc">BuilderType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.definitons.BuilderType:</span>
+<span class="sd">    enum that describes the kind of constructors supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MOCK</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<span class="nd">@unique</span>
+<div class="viewcode-block" id="ConstructorType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.ConstructorType">[docs]</a><span class="k">class</span> <span class="nc">ConstructorType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.definitons.ConstructorType:</span>
+<span class="sd">    enum that describes the kind of constructors supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SRPM</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<span class="nd">@unique</span>
+<div class="viewcode-block" id="SourceType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.SourceType">[docs]</a><span class="k">class</span> <span class="nc">SourceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.definitons.SourceType:</span>
+<span class="sd">    enum that describes the kind of package sources supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">URL</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">GIT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">BZR</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="mi">4</span></div>
+
+
+<span class="nd">@unique</span>
+<div class="viewcode-block" id="UploaderType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.UploaderType">[docs]</a><span class="k">class</span> <span class="nc">UploaderType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.definitons.UploaderType:</span>
+<span class="sd">    enum that describes the kind of uploaders supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">COPR</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Fabio Valentini.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
