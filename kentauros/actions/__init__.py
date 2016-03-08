@@ -1,6 +1,7 @@
 """
-kentauros.actions module
-classes, methods, functions, definitions for actions executable by CLI arguments
+This module contains the quasi-abstract Action class and its subclasses, that
+are used to hold information about actions specified at command line and are
+used to execute their respective actions.
 """
 
 from configparser import ConfigParser, NoSectionError
@@ -18,8 +19,12 @@ LOGPREFIX1 = "ktr/actions: "
 
 class Action:
     """
-    kentauros.actions.Action:
-    base class for Actions that are chosen by CLI
+This class is the base class for all defined actions. For every action that can
+be specified at ktr command line, there is an Action subclass.
+
+Arguments:
+    Package package:    Package instance this action will be run on
+    bool force:         specifies if the corresponding action should be forced
     """
     def __init__(self, package, force):
         assert isinstance(package, Package)
@@ -30,17 +35,24 @@ class Action:
 
     def execute(self):
         """
-        kentauros.actions.Action.execute:
-        execute Action
+This method runs the action corresponding to the Action instance on the package
+specified at initialisation. It is overridden by subclasses to contain the real
+code for the action. Here, it is only a dummy method that executes no code.
+
+Returns:
+    bool:   success of run action
         """
-        # pylint: disable=no-self-use
-        return True
+        pass
 
 
 class BuildAction(Action):
     """
-    kentauros.actions.BuildAction:
-    action for building source package locally
+This Action subclass contains information for executing a local build of the
+package specified at initialisation.
+
+Arguments:
+    Package package:    Package instance this local build will be attempted for
+    bool force:         specifies if the build should be forced (currently without effect)
     """
     def __init__(self, package, force):
         super().__init__(package, force)
