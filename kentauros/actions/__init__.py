@@ -23,8 +23,13 @@ This class is the base class for all defined actions. For every action that can
 be specified at ktr command line, there is an Action subclass.
 
 Arguments:
-    Package package:    Package instance this action will be run on
-    bool force:         specifies if the corresponding action should be forced
+    package (Package): Package instance this action will be run on
+    force (bool):      specifies if the corresponding action should be forced
+
+Attributes:
+    package (Package): stores reference to `Package` given at initialisation
+    force (bool):      stores force value given at initialisation
+    type (ActionType): stores type of action as enum
     """
     def __init__(self, package, force):
         assert isinstance(package, Package)
@@ -52,13 +57,23 @@ package specified at initialisation.
 
 Arguments:
     Package package:    Package instance this local build will be attempted for
-    bool force:         specifies if the build should be forced (currently without effect)
+    bool force:         specifies if the build should be forced (currently
+        without effect)
     """
     def __init__(self, package, force):
         super().__init__(package, force)
         self.type = ActionType.BUILD
 
     def execute(self):
+        """
+This method runs the local build corresponding to the package specified at
+initialisation, with the configuration from package configuration file. This
+method executes the :py:meth:`kentauros.build.Builder.build` method on the
+:py:attr:`kentauros.package.Package.builder` instance.
+
+Returns:
+    bool:   *True* if all builds were successful, *False* if one or more failed
+        """
         success = self.package.builder.build()
         return success
 
