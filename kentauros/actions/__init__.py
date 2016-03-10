@@ -31,6 +31,7 @@ class Action:
         force (bool):      stores force value given at initialisation
         type (ActionType): stores type of action as enum
     """
+
     def __init__(self, package, force):
         assert isinstance(package, Package)
         self.package = package
@@ -48,6 +49,7 @@ class Action:
         Returns:
             bool:   success of executed action
         """
+
         pass
 
 
@@ -60,6 +62,7 @@ class BuildAction(Action):
         Package package:    Package instance this local build will done for
         bool force:         (currently without effect)
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.type = ActionType.BUILD
@@ -69,26 +72,50 @@ class BuildAction(Action):
         This method runs the local build corresponding to the package specified
         at initialisation, with the configuration from package configuration
         file. This method executes the :py:meth:`kentauros.build.Builder.build`
-        method on the :py:attr:`kentauros.package.Package.builder` instance.
+        method of the Builder instance in the specified package.
 
         Returns:
             bool:   *True* if all builds were successful, *False* if otherwise
         """
+
         success = self.package.builder.build()
         return success
 
 
 class ChainAction(Action):
     """
-    kentauros.actions.ChainAction:
-    action for getting (if neccessary), updating, constructing,
-    building and uploading source package
+    This Action subclass contains information for executing a "chain reaction"
+    on the package specified at initialisation, which means the following:
+
+    * get sources if they don't already exist (`GetAction`)
+    * update sources (`UpdateAction`)
+    * if sources already existed, no updates were available and `force`
+      was not specified, action execution will terminate at this point
+    * otherwise, sources are exported (if tarball doesn't already exist)
+      (`ExportAction`)
+    * construct source package (`ConstructAction`), abort if unsuccessful
+    * build source package locally (`BuildAction`), abort if unsuccessful
+    * upload source package to cloud build service (`UploadAction`)
+
+    Arguments:
+        Package package:    Package instance this local build will done for
+        bool force:         force further actions even if sources did not change
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.type = ActionType.CHAIN
 
     def execute(self):
+        """
+        This method runs the "chain reaction" corresponding to the package
+        specified at initialisation, with the configuration from package
+        configuration file.
+
+        Returns:
+            bool:   *True* if chain went all the way through, *False* if not
+        """
+
         veryfied = VerifyAction(self.package, self.force).execute()
         if not veryfied:
             return False
@@ -115,14 +142,28 @@ class ChainAction(Action):
 
 class CleanAction(Action):
     """
-    kentauros.actions.Clean:
-    action for cleaning sources
+    This Action subclass contains information for cleaning up the sources of the
+    package specified at initialisation.
+
+    Arguments:
+        Package package:    Package instance sources will be cleaned for
+        bool force:         (currently without effect)
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.type = ActionType.CLEAN
 
     def execute(self):
+        """
+        This method cleans up the sources of to the package specified at
+        initialisation. It executes the :py:meth:`kentauros.source.Source.clean`
+        method of the Source instance in the specified package.
+
+        Returns:
+            bool:   always *True* at the moment
+        """
+
         self.package.source.clean()
         return True
 

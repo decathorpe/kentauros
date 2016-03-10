@@ -200,7 +200,7 @@ package specified at initialisation.</p>
 <dd><p>This method runs the local build corresponding to the package specified
 at initialisation, with the configuration from package configuration
 file. This method executes the <a class="reference internal" href="kentauros.build.html#kentauros.build.Builder.build" title="kentauros.build.Builder.build"><code class="xref py py-meth docutils literal"><span class="pre">kentauros.build.Builder.build()</span></code></a>
-method on the <code class="xref py py-attr docutils literal"><span class="pre">kentauros.package.Package.builder</span></code> instance.</p>
+method of the Builder instance in the specified package.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -218,13 +218,47 @@ method on the <code class="xref py py-attr docutils literal"><span class="pre">k
 <dt id="kentauros.actions.ChainAction">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ChainAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ChainAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ChainAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
-<p>kentauros.actions.ChainAction:
-action for getting (if neccessary), updating, constructing,
-building and uploading source package</p>
+<p>This Action subclass contains information for executing a &#8220;chain reaction&#8221;
+on the package specified at initialisation, which means the following:</p>
+<ul class="simple">
+<li>get sources if they don&#8217;t already exist (<cite>GetAction</cite>)</li>
+<li>update sources (<cite>UpdateAction</cite>)</li>
+<li>if sources already existed, no updates were available and <cite>force</cite>
+was not specified, action execution will terminate at this point</li>
+<li>otherwise, sources are exported (if tarball doesn&#8217;t already exist)
+(<cite>ExportAction</cite>)</li>
+<li>construct source package (<cite>ConstructAction</cite>), abort if unsuccessful</li>
+<li>build source package locally (<cite>BuildAction</cite>), abort if unsuccessful</li>
+<li>upload source package to cloud build service (<cite>UploadAction</cite>)</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance this local build will done for</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; force further actions even if sources did not change</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="kentauros.actions.ChainAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ChainAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ChainAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This method runs the &#8220;chain reaction&#8221; corresponding to the package
+specified at initialisation, with the configuration from package
+configuration file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
+<em>True</em> if chain went all the way through, <em>False</em> if not</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -232,12 +266,36 @@ building and uploading source package</p>
 <dt id="kentauros.actions.CleanAction">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">CleanAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#CleanAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CleanAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
-<p>kentauros.actions.Clean:
-action for cleaning sources</p>
+<p>This Action subclass contains information for cleaning up the sources of the
+package specified at initialisation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance sources will be cleaned for</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; (currently without effect)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="kentauros.actions.CleanAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#CleanAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CleanAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This method cleans up the sources of to the package specified at
+initialisation. It executes the <code class="xref py py-meth docutils literal"><span class="pre">kentauros.source.Source.clean()</span></code>
+method of the Source instance in the specified package.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
+always <em>True</em> at the moment</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
