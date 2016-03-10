@@ -70,12 +70,14 @@ class MockBuilder(Builder):
         if not self.package.conf.getboolean("mock", "active"):
             return True
 
-        # WARNING: MockBuilder.build() builds all name*.src.rpm packages found in PACKDIR
+        # WARNING: MockBuilder.build() builds !all!
+        # name*.src.rpm packages found in PACKDIR
         srpms = glob.glob(os.path.join(KTR_CONF.packdir,
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:
-            log(LOGPREFIX1 + "No source packages were found. Construct them first.", 2)
+            log(LOGPREFIX1 + \
+                "No source packages were found. Construct them first.", 2)
             return False
 
         log(LOGPREFIX1 + "list of found source packages:", 2)

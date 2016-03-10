@@ -60,6 +60,7 @@ def get_env_config():
     if result.validate():
         return result
     else:
-        log(LOGPREFIX1 + "Not all neccessary config values have been set by env variables.")
+        log(LOGPREFIX1 + \
+            "Not all neccessary config values have been set by env variables.")
         return None
 

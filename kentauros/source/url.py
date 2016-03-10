@@ -1,7 +1,8 @@
 """
 kentauros.source.url
 contains UrlSource class and methods
-this class is for handling sources that are specified by URL pointing to a tarball
+this class is for handling sources that are specified by URL pointing
+to a tarball
 """
 
 import os
@@ -26,7 +27,8 @@ class UrlSource(Source):
 
     def __init__(self, package):
         super().__init__(package)
-        self.dest = os.path.join(self.sdir, os.path.basename(self.conf.get("source", "orig")))
+        self.dest = os.path.join(self.sdir, os.path.basename(
+            self.conf.get("source", "orig")))
         self.type = SourceType.URL
 
         try:
@@ -59,7 +61,8 @@ class UrlSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.package.conf.get("source", "orig")):
-            log("No connection to remote host detected. Cancelling source checkout.", 2)
+            log("No connection to remote host detected. " + \
+                "Cancelling source checkout.", 2)
             return False
 
         # construct wget commands

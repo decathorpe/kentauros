@@ -113,14 +113,16 @@ class KtrConf:
             self.specdir = other.specdir
 
         if not self.validate():
-            err(LOGPREFIX1 + "Last attempted action was overriding default values.")
-            raise ConfigException("An error occured during configuration parsing.")
+            err(LOGPREFIX1 + \
+                "Last attempted action was overriding default values.")
+            raise ConfigException("Error occured during configuration parsing.")
 
 
     def from_file(self, filepath, errmsg=None):
         """
         kentauros.config.common.KtrConf.from_file():
-        method that reads a configuration file and parses read values into object attributes
+        method that reads a configuration file and parses read values into
+        object attributes
         """
 
         if not os.path.exists(filepath):
@@ -140,7 +142,8 @@ class KtrConf:
             return None
 
         try:
-            self.basedir = os.path.abspath(__replace_home__(self.conf.get("main", "basedir")))
+            self.basedir = os.path.abspath(
+                __replace_home__(self.conf.get("main", "basedir")))
         except NoOptionError:
             self.basedir = None
         finally:
@@ -148,27 +151,32 @@ class KtrConf:
                 self.basedir = None
 
         if "confdir" in self.conf.options("main"):
-            self.confdir = os.path.abspath(__replace_home__(self.conf.get("main", "confdir")))
+            self.confdir = os.path.abspath(
+                __replace_home__(self.conf.get("main", "confdir")))
         else:
             self.confdir = os.path.join(self.basedir, "configs")
 
         if "datadir" in self.conf.options("main"):
-            self.datadir = os.path.abspath(__replace_home__(self.conf.get("main", "datadir")))
+            self.datadir = os.path.abspath(
+                __replace_home__(self.conf.get("main", "datadir")))
         else:
             self.datadir = os.path.join(self.basedir, "sources")
 
         if "packdir" in self.conf.options("main"):
-            self.packdir = os.path.abspath(__replace_home__(self.conf.get("main", "packdir")))
+            self.packdir = os.path.abspath(
+                __replace_home__(self.conf.get("main", "packdir")))
         else:
             self.packdir = os.path.join(self.basedir, "packages")
 
         if "specdir" in self.conf.options("main"):
-            self.specdir = os.path.abspath(__replace_home__(self.conf.get("main", "specdir")))
+            self.specdir = os.path.abspath(
+                __replace_home__(self.conf.get("main", "specdir")))
         else:
             self.specdir = os.path.join(self.basedir, "specs")
 
         if not self.validate():
-            log(LOGPREFIX1 + "Not all neccessary configuration options have been set.", 1)
+            log(LOGPREFIX1 + \
+                "Not all neccessary configuration options have been set.", 1)
             log(LOGPREFIX2 + self.file, 1)
             return None
         else:

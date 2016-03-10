@@ -198,12 +198,14 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;mock&quot;</span><span class="p">,</span> <span class="s2">&quot;active&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">True</span>
 
-        <span class="c1"># WARNING: MockBuilder.build() builds all name*.src.rpm packages found in PACKDIR</span>
+        <span class="c1"># WARNING: MockBuilder.build() builds !all!</span>
+        <span class="c1"># name*.src.rpm packages found in PACKDIR</span>
         <span class="n">srpms</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">packdir</span><span class="p">,</span>
                                        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;*.src.rpm&quot;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">srpms</span> <span class="o">==</span> <span class="p">[]:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;No source packages were found. Construct them first.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                <span class="s2">&quot;No source packages were found. Construct them first.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;list of found source packages:&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>

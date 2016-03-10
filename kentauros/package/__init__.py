@@ -10,7 +10,8 @@ from kentauros.init import err, log
 from kentauros.config import KTR_CONF
 from kentauros.definitions import KTR_SYSTEM_DATADIR
 
-from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
+from kentauros.definitions import BuilderType, ConstructorType
+from kentauros.definitions import SourceType, UploaderType
 
 from kentauros.build import BUILDER_TYPE_DICT, Builder
 from kentauros.construct import CONSTRUCTOR_TYPE_DICT, Constructor
@@ -54,12 +55,14 @@ class Package:
         try:
             self.conf["package"]
         except KeyError:
-            raise PackageError("Package config file does not have a 'package' section.")
+            raise PackageError(
+                "Package config file does not have a 'package' section.")
 
         try:
             self.conf["source"]
         except KeyError:
-            raise PackageError("Package config file does not have a 'source' section.")
+            raise PackageError(
+                "Package config file does not have a 'source' section.")
 
         bld_type, con_type, src_type, upl_type = "", "", "", ""
 
@@ -97,10 +100,14 @@ class Package:
 
         # pylint: disable=unsubscriptable-object
 
-        self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self)
-        self.constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self)
-        self.builder = BUILDER_TYPE_DICT[BuilderType[bld_type]](self)
-        self.uploader = UPLOADER_TYPE_DICT[UploaderType[upl_type]](self)
+        self.source = SOURCE_TYPE_DICT[
+            SourceType[src_type]](self)
+        self.constructor = CONSTRUCTOR_TYPE_DICT[
+            ConstructorType[con_type]](self)
+        self.builder = BUILDER_TYPE_DICT[
+            BuilderType[bld_type]](self)
+        self.uploader = UPLOADER_TYPE_DICT[
+            UploaderType[upl_type]](self)
 
 
     def update_config(self):

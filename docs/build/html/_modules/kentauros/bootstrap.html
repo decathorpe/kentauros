@@ -148,23 +148,28 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">basedir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> <span class="s2">&quot;kentauros basedir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> \
+            <span class="s2">&quot;kentauros basedir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">basedir</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">confdir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> <span class="s2">&quot;kentauros confdir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> \
+            <span class="s2">&quot;kentauros confdir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">confdir</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">datadir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> <span class="s2">&quot;kentauros datadir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> \
+            <span class="s2">&quot;kentauros datadir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">datadir</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">packdir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> <span class="s2">&quot;kentauros packdir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> \
+            <span class="s2">&quot;kentauros packdir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">packdir</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">specdir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> <span class="s2">&quot;kentauros specdir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX</span> <span class="o">+</span> \
+            <span class="s2">&quot;kentauros specdir does not exist and will be created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">specdir</span><span class="p">)</span></div>
 
 

@@ -69,7 +69,8 @@ class CoprUploader(Uploader):
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:
-            log(LOGPREFIX1 + "No source packages were found. Construct them first.", 2)
+            log(LOGPREFIX1 + "No source packages were found. " + \
+                "Construct them first.", 2)
             return None
 
         # figure out which srpm to build

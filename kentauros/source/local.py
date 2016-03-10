@@ -1,7 +1,8 @@
 """
 kentauros.source.local
 contains LocalSource class and methods
-this class is for handling sources that are specified by file path pointing to a tarball
+this class is for handling sources that are specified by file path pointing
+to a tarball
 """
 
 import os
@@ -22,7 +23,8 @@ class LocalSource(Source):
     """
     def __init__(self, package):
         super().__init__(package)
-        self.dest = os.path.join(self.sdir, os.path.basename(self.conf.get("source", "orig")))
+        self.dest = os.path.join(self.sdir, os.path.basename(
+            self.conf.get("source", "orig")))
         self.type = SourceType.LOCAL
 
 

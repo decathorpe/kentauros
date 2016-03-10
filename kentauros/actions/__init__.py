@@ -19,17 +19,17 @@ LOGPREFIX1 = "ktr/actions: "
 
 class Action:
     """
-This class is the base class for all defined actions. For every action that can
-be specified at ktr command line, there is an Action subclass.
+    This class is the base class for all defined actions. For every action that
+    can be specified at ktr command line, there is an Action subclass.
 
-Arguments:
-    package (Package): Package instance this action will be run on
-    force (bool):      specifies if the corresponding action should be forced
+    Arguments:
+        package (Package): Package instance this action will be run on
+        force (bool):      specifies if the pending action should be forced
 
-Attributes:
-    package (Package): stores reference to `Package` given at initialisation
-    force (bool):      stores force value given at initialisation
-    type (ActionType): stores type of action as enum
+    Attributes:
+        package (Package): stores reference to `Package` given at initialisation
+        force (bool):      stores force value given at initialisation
+        type (ActionType): stores type of action as enum
     """
     def __init__(self, package, force):
         assert isinstance(package, Package)
@@ -40,25 +40,25 @@ Attributes:
 
     def execute(self):
         """
-This method runs the action corresponding to the Action instance on the package
-specified at initialisation. It is overridden by subclasses to contain the real
-code for the action. Here, it is only a dummy method that executes no code.
+        This method runs the action corresponding to the Action instance on the
+        package specified at initialisation. It is overridden by subclasses to
+        contain the real code for the action. Here, it is only a dummy method
+        that executes no code.
 
-Returns:
-    bool:   success of run action
+        Returns:
+            bool:   success of executed action
         """
         pass
 
 
 class BuildAction(Action):
     """
-This Action subclass contains information for executing a local build of the
-package specified at initialisation.
+    This Action subclass contains information for executing a local build of the
+    package specified at initialisation.
 
-Arguments:
-    Package package:    Package instance this local build will be attempted for
-    bool force:         specifies if the build should be forced (currently
-        without effect)
+    Arguments:
+        Package package:    Package instance this local build will done for
+        bool force:         (currently without effect)
     """
     def __init__(self, package, force):
         super().__init__(package, force)
@@ -66,13 +66,13 @@ Arguments:
 
     def execute(self):
         """
-This method runs the local build corresponding to the package specified at
-initialisation, with the configuration from package configuration file. This
-method executes the :py:meth:`kentauros.build.Builder.build` method on the
-:py:attr:`kentauros.package.Package.builder` instance.
+        This method runs the local build corresponding to the package specified
+        at initialisation, with the configuration from package configuration
+        file. This method executes the :py:meth:`kentauros.build.Builder.build`
+        method on the :py:attr:`kentauros.package.Package.builder` instance.
 
-Returns:
-    bool:   *True* if all builds were successful, *False* if one or more failed
+        Returns:
+            bool:   *True* if all builds were successful, *False* if otherwise
         """
         success = self.package.builder.build()
         return success
@@ -198,13 +198,15 @@ class CreateAction(Action):
         if not os.path.exists(conf_template_dest) or force:
             shutil.copy2(conf_template_orig, conf_template_dest)
         else:
-            log(LOGPREFIX1 + name + ".conf already exists. Specify --force to overwrite.", 2)
+            log(LOGPREFIX1 + name + \
+                ".conf already exists. Specify --force to overwrite.", 2)
             self.success = False
 
         if not os.path.exists(spec_template_dest) or force:
             shutil.copy2(spec_template_orig, spec_template_dest)
         else:
-            log(LOGPREFIX1 + name + ".spec already exists. Specify --force to overwrite.", 2)
+            log(LOGPREFIX1 + name + \
+                ".spec already exists. Specify --force to overwrite.", 2)
             self.success = False
 
         if self.success:

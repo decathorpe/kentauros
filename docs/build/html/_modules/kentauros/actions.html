@@ -147,17 +147,17 @@
 
 <div class="viewcode-block" id="Action"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.Action">[docs]</a><span class="k">class</span> <span class="nc">Action</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This class is the base class for all defined actions. For every action that can</span>
-<span class="sd">be specified at ktr command line, there is an Action subclass.</span>
+<span class="sd">    This class is the base class for all defined actions. For every action that</span>
+<span class="sd">    can be specified at ktr command line, there is an Action subclass.</span>
 
-<span class="sd">Arguments:</span>
-<span class="sd">    package (Package): Package instance this action will be run on</span>
-<span class="sd">    force (bool):      specifies if the corresponding action should be forced</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        package (Package): Package instance this action will be run on</span>
+<span class="sd">        force (bool):      specifies if the pending action should be forced</span>
 
-<span class="sd">Attributes:</span>
-<span class="sd">    package (Package): stores reference to `Package` given at initialisation</span>
-<span class="sd">    force (bool):      stores force value given at initialisation</span>
-<span class="sd">    type (ActionType): stores type of action as enum</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        package (Package): stores reference to `Package` given at initialisation</span>
+<span class="sd">        force (bool):      stores force value given at initialisation</span>
+<span class="sd">        type (ActionType): stores type of action as enum</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">Package</span><span class="p">)</span>
@@ -168,25 +168,25 @@
 
 <div class="viewcode-block" id="Action.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.Action.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This method runs the action corresponding to the Action instance on the package</span>
-<span class="sd">specified at initialisation. It is overridden by subclasses to contain the real</span>
-<span class="sd">code for the action. Here, it is only a dummy method that executes no code.</span>
+<span class="sd">        This method runs the action corresponding to the Action instance on the</span>
+<span class="sd">        package specified at initialisation. It is overridden by subclasses to</span>
+<span class="sd">        contain the real code for the action. Here, it is only a dummy method</span>
+<span class="sd">        that executes no code.</span>
 
-<span class="sd">Returns:</span>
-<span class="sd">    bool:   success of run action</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool:   success of executed action</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 
 
 <div class="viewcode-block" id="BuildAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.BuildAction">[docs]</a><span class="k">class</span> <span class="nc">BuildAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This Action subclass contains information for executing a local build of the</span>
-<span class="sd">package specified at initialisation.</span>
+<span class="sd">    This Action subclass contains information for executing a local build of the</span>
+<span class="sd">    package specified at initialisation.</span>
 
-<span class="sd">Arguments:</span>
-<span class="sd">    Package package:    Package instance this local build will be attempted for</span>
-<span class="sd">    bool force:         specifies if the build should be forced (currently</span>
-<span class="sd">        without effect)</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        Package package:    Package instance this local build will done for</span>
+<span class="sd">        bool force:         (currently without effect)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
@@ -194,13 +194,13 @@
 
 <div class="viewcode-block" id="BuildAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.BuildAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This method runs the local build corresponding to the package specified at</span>
-<span class="sd">initialisation, with the configuration from package configuration file. This</span>
-<span class="sd">method executes the :py:meth:`kentauros.build.Builder.build` method on the</span>
-<span class="sd">:py:attr:`kentauros.package.Package.builder` instance.</span>
+<span class="sd">        This method runs the local build corresponding to the package specified</span>
+<span class="sd">        at initialisation, with the configuration from package configuration</span>
+<span class="sd">        file. This method executes the :py:meth:`kentauros.build.Builder.build`</span>
+<span class="sd">        method on the :py:attr:`kentauros.package.Package.builder` instance.</span>
 
-<span class="sd">Returns:</span>
-<span class="sd">    bool:   *True* if all builds were successful, *False* if one or more failed</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool:   *True* if all builds were successful, *False* if otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">success</span></div></div>
@@ -326,13 +326,15 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">conf_template_dest</span><span class="p">)</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">conf_template_orig</span><span class="p">,</span> <span class="n">conf_template_dest</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.conf already exists. Specify --force to overwrite.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> \
+                <span class="s2">&quot;.conf already exists. Specify --force to overwrite.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="bp">False</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">spec_template_dest</span><span class="p">)</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">spec_template_orig</span><span class="p">,</span> <span class="n">spec_template_dest</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.spec already exists. Specify --force to overwrite.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> \
+                <span class="s2">&quot;.spec already exists. Specify --force to overwrite.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="bp">False</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>

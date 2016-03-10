@@ -231,13 +231,13 @@
 
     <span class="n">build_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s2">&quot;build&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;build source package locally as specified by package configuration&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;build package locally as specified by package.conf&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;build package locally&quot;</span><span class="p">,</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
 
     <span class="n">chain_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s2">&quot;chain&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;run chain reaction (get, update, construct, build, upload)&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;run chain reaction (get/update, construct, build, upload)&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;comlete source to upload toolchain&quot;</span><span class="p">,</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
 
@@ -264,13 +264,13 @@
 
     <span class="n">construct_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s2">&quot;construct&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;construct source package as specified by package configuration&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;construct source package as specified by package.conf&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;construct source package&quot;</span><span class="p">,</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
 
     <span class="n">create_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s2">&quot;create&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;create new package and provide templates for conf and spec&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;create new package and create template.conf and .spec&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;create package from template&quot;</span><span class="p">,</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
 
@@ -377,7 +377,8 @@
 <div class="viewcode-block" id="CLIArgs.parse_args"><a class="viewcode-back" href="../../../kentauros.init.html#kentauros.init.cli.CLIArgs.parse_args">[docs]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli_args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        kentauros.init.cli.CLIArgs.parse_args():</span>
-<span class="sd">        method that overrides initialised default values with values from CLI parser</span>
+<span class="sd">        method that overrides initialised default values with values from</span>
+<span class="sd">        CLI parser</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">debug</span>

@@ -103,13 +103,13 @@ def get_parsed_cli():
 
     build_parser = parsers.add_parser(
         "build",
-        description="build source package locally as specified by package configuration",
+        description="build package locally as specified by package.conf",
         help="build package locally",
         parents=[package_parser])
 
     chain_parser = parsers.add_parser(
         "chain",
-        description="run chain reaction (get, update, construct, build, upload)",
+        description="run chain reaction (get/update, construct, build, upload)",
         help="comlete source to upload toolchain",
         parents=[package_parser])
 
@@ -136,13 +136,13 @@ def get_parsed_cli():
 
     construct_parser = parsers.add_parser(
         "construct",
-        description="construct source package as specified by package configuration",
+        description="construct source package as specified by package.conf",
         help="construct source package",
         parents=[package_parser])
 
     create_parser = parsers.add_parser(
         "create",
-        description="create new package and provide templates for conf and spec",
+        description="create new package and create template.conf and .spec",
         help="create package from template",
         parents=[package_parser])
 
@@ -249,7 +249,8 @@ class CLIArgs:
     def parse_args(self, cli_args):
         """
         kentauros.init.cli.CLIArgs.parse_args():
-        method that overrides initialised default values with values from CLI parser
+        method that overrides initialised default values with values from
+        CLI parser
         """
 
         self.debug = cli_args.debug

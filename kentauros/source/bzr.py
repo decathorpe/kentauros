@@ -21,17 +21,17 @@ LOGPREFIX1 = "ktr/source/bzr: "
 
 class BzrSource(Source):
     """
-This Source subclass holds information and methods for handling bzr sources.
+    This Source subclass holds information and methods for handling bzr sources.
 
-* If the :code:`bzr` command is not found on the system, :code:`self.active` is
-  automatically set to :code:`False` in the package's configuration file.
-* For the purpose of checking connectivity to the remote server, the URL is
-  stored in :code:`self.remote`. If the specified repository is hosted on
-  `launchpad.net <https://launchpad.net>`_, :code:`lp:` will be substituted with
-  launchpad's URL automatically.
+    * If the :code:`bzr` command is not found on the system, :code:`self.active`
+      is automatically set to :code:`False` in the package's configuration file.
+    * For the purpose of checking connectivity to the remote server, the URL is
+      stored in :code:`self.remote`. If the specified repository is hosted on
+      `launchpad.net <https://launchpad.net>`_, :code:`lp:` will be substituted
+      with launchpad's URL automatically.
 
-Arguments:
-    package (Package):  instance of Package that this Source belongs to
+    Arguments:
+        package (Package):  instance of Package that this Source belongs to
     """
 
     def __init__(self, package):
@@ -55,16 +55,16 @@ Arguments:
 
     def rev(self):
         """
-This method determines which revision the bzr repository associated with
-this BzrSource currently is at and returns it as a string. Once run, it saves
-the last processed revision number in :code:`self.saved_rev`, in case the
-revision needs to be determined when bzr repository might not be accessible
-anymore (e.g. if :code:`bzr.keep=False` is set in configuration, so the
-repository is not kept after export to tarball).
+        This method determines which revision the bzr repository associated with
+        this BzrSource currently is at and returns it as a string. Once run, it
+        saves the last processed revision number in :code:`self.saved_rev`, in
+        case the revision needs to be determined when bzr repository might not
+        be accessible anymore (e.g. if :code:`bzr.keep=False` is set in
+        configuration, so the repository is not kept after export to tarball).
 
-Returns:
-    str(): either successfully determined revision string from repository,
-    last stored revision string or :code:`""` when not
+        Returns:
+            str(): either successfully determined revision string from \
+                   repository, last stored rev string or :code:`""` when not
         """
 
         if not self.active:
@@ -77,7 +77,7 @@ Returns:
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
             if self.saved_rev is "":
-                err("Sources need to be .get() before .rev() can be determined.")
+                err("Sources need to be get before rev can be determined.")
                 return ""
             else:
                 return self.saved_rev
@@ -93,10 +93,10 @@ Returns:
 
     def formatver(self):
         """
-This method returns a nicely formatted version string for bzr sources.
+        This method returns a nicely formatted version string for bzr sources.
 
-Returns:
-    str(): formatted version string (base version + :code:`~bzr` + revision)
+        Returns:
+            str(): nice version string (base version + :code:`~bzr` + revision)
         """
 
         if not self.active:
@@ -133,7 +133,8 @@ Returns:
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            log("No connection to remote host detected. Cancelling source checkout.", 2)
+            log("No connection to remote host detected. " + \
+                "Cancelling source checkout.", 2)
             return False
 
         # construct bzr command
@@ -149,7 +150,8 @@ Returns:
         if not self.get("bzr", "branch"):
             cmd.append(self.conf.get("source", "orig"))
         else:
-            cmd.append(self.conf.get("source", "orig") + "/" + self.conf.get("bzr", "branch"))
+            cmd.append(self.conf.get("source", "orig") + "/" + \
+                       self.conf.get("bzr", "branch"))
 
         # set revision is specified
         if self.conf.get("bzr", "rev"):
@@ -169,7 +171,8 @@ Returns:
         # check if checkout worked
         if self.conf.get("bzr", "rev"):
             if self.conf.get("bzr", "rev") != rev:
-                err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
+                err(LOGPREFIX1 + \
+                    "Something went wrong, requested commit not available.")
                 return False
 
         # return True if successful
@@ -195,7 +198,8 @@ Returns:
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            log("No connection to remote host detected. Cancelling source checkout.", 2)
+            log("No connection to remote host detected. " + \
+                "Cancelling source checkout.", 2)
             return False
 
         # construct bzr command
@@ -209,7 +213,8 @@ Returns:
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            err(LOGPREFIX1 + "Sources need to be .get() before .update() can be run.")
+            err(LOGPREFIX1 + \
+                "Sources need to be .get() before .update() can be run.")
             return None
 
         # get old commit ID
@@ -240,14 +245,15 @@ Returns:
         - returns True if export is successful
         - returns False if bzr repository has not been downloaded yet
         - returns False if destination tarball already exists
-        - respects the bzr/keep setting in package.conf (deletes repo after export if set to true)
+        - respects the bzr/keep setting in package.conf (deletes repo
+        after export if set to true)
         """
 
         if not self.active:
             return False
 
         def remove_notkeep():
-            "local function definition for removing bzr repo after export if not keep"
+            "local function for removing bzr repo after export if not keep"
             if not self.conf.getboolean("bzr", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
@@ -271,7 +277,8 @@ Returns:
 
         # check if bzr repo exists
         if not os.access(self.dest, os.R_OK):
-            err(LOGPREFIX1 + "Sources need to be .get() before they can be .export()ed.")
+            err(LOGPREFIX1 + \
+                "Sources need to be get before they can be exported.")
             return False
 
         version = self.formatver()

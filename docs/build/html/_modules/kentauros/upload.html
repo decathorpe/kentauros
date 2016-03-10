@@ -197,7 +197,8 @@
                                        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;*.src.rpm&quot;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">srpms</span> <span class="o">==</span> <span class="p">[]:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;No source packages were found. Construct them first.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;No source packages were found. &quot;</span> <span class="o">+</span> \
+                <span class="s2">&quot;Construct them first.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">None</span>
 
         <span class="c1"># figure out which srpm to build</span>

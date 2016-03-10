@@ -135,15 +135,15 @@ used to execute their respective actions.</p>
 <dt id="kentauros.actions.Action">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">Action</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#Action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.Action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>This class is the base class for all defined actions. For every action that can
-be specified at ktr command line, there is an Action subclass.</p>
+<p>This class is the base class for all defined actions. For every action that
+can be specified at ktr command line, there is an Action subclass.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance this action will be run on</li>
-<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; specifies if the corresponding action should be forced</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; specifies if the pending action should be forced</li>
 </ul>
 </td>
 </tr>
@@ -159,15 +159,16 @@ be specified at ktr command line, there is an Action subclass.</p>
 <dl class="method">
 <dt id="kentauros.actions.Action.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#Action.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.Action.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method runs the action corresponding to the Action instance on the package
-specified at initialisation. It is overridden by subclasses to contain the real
-code for the action. Here, it is only a dummy method that executes no code.</p>
+<dd><p>This method runs the action corresponding to the Action instance on the
+package specified at initialisation. It is overridden by subclasses to
+contain the real code for the action. Here, it is only a dummy method
+that executes no code.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
-success of run action</td>
+success of executed action</td>
 </tr>
 </tbody>
 </table>
@@ -186,9 +187,8 @@ package specified at initialisation.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance this local build will be attempted for</li>
-<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; specifies if the build should be forced (currently
-without effect)</li>
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance this local build will done for</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; (currently without effect)</li>
 </ul>
 </td>
 </tr>
@@ -197,16 +197,16 @@ without effect)</li>
 <dl class="method">
 <dt id="kentauros.actions.BuildAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#BuildAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.BuildAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method runs the local build corresponding to the package specified at
-initialisation, with the configuration from package configuration file. This
-method executes the <a class="reference internal" href="kentauros.build.html#kentauros.build.Builder.build" title="kentauros.build.Builder.build"><code class="xref py py-meth docutils literal"><span class="pre">kentauros.build.Builder.build()</span></code></a> method on the
-<code class="xref py py-attr docutils literal"><span class="pre">kentauros.package.Package.builder</span></code> instance.</p>
+<dd><p>This method runs the local build corresponding to the package specified
+at initialisation, with the configuration from package configuration
+file. This method executes the <a class="reference internal" href="kentauros.build.html#kentauros.build.Builder.build" title="kentauros.build.Builder.build"><code class="xref py py-meth docutils literal"><span class="pre">kentauros.build.Builder.build()</span></code></a>
+method on the <code class="xref py py-attr docutils literal"><span class="pre">kentauros.package.Package.builder</span></code> instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
-<em>True</em> if all builds were successful, <em>False</em> if one or more failed</td>
+<em>True</em> if all builds were successful, <em>False</em> if otherwise</td>
 </tr>
 </tbody>
 </table>

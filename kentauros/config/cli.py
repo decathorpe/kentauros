@@ -56,6 +56,7 @@ def get_cli_config():
     if result.validate():
         return result
     else:
-        log(LOGPREFIX1 + "Not all neccessary config values have been set at CLI.")
+        log(LOGPREFIX1 + \
+            "Not all neccessary values have been set at CLI.")
         return None
 

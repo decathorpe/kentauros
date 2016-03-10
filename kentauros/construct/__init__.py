@@ -11,9 +11,11 @@ import tempfile
 
 from kentauros.config import KTR_CONF
 
-from kentauros.construct.rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT, RPMSpecError
-from kentauros.construct.rpm_spec import spec_version_read, spec_release_read, bump_release
-from kentauros.construct.rpm_spec import if_version, if_release, spec_bump
+from kentauros.construct.rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT
+from kentauros.construct.rpm_spec import RPMSpecError
+from kentauros.construct.rpm_spec import spec_version_read, spec_release_read
+from kentauros.construct.rpm_spec import if_version, if_release
+from kentauros.construct.rpm_spec import bump_release, spec_bump
 
 from kentauros.definitions import SourceType, ConstructorType
 from kentauros.init import VERBY, DEBUG, log, log_command
@@ -86,7 +88,8 @@ class SrpmConstructor(Constructor):
             subprocess.check_output(["which", "rpmbuild"])
             subprocess.check_output(["which", "rpmdev-bumpspec"])
         except subprocess.CalledProcessError:
-            log(LOGPREFIX1 + "Install rpmdevtools to use the specified constructor.")
+            log(LOGPREFIX1 + \
+                "Install rpmdevtools to use the specified constructor.")
             self.active = False
 
 
@@ -113,7 +116,8 @@ class SrpmConstructor(Constructor):
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
-        log(LOGPREFIX1 + "Temporary SOURCES, SPECS, SRPMS directory created.", 1)
+        log(LOGPREFIX1 + \
+            "Temporary SOURCES, SPECS, SRPMS directory created.", 1)
 
 
     def prepare(self, relreset=False):
@@ -124,9 +128,12 @@ class SrpmConstructor(Constructor):
             self.init()
 
         # calculate absolute paths of files
-        pkg_data_dir = os.path.join(KTR_CONF.datadir, self.package.name)
-        pkg_conf_file = os.path.join(KTR_CONF.confdir, self.package.name + ".conf")
-        pkg_spec_file = os.path.join(KTR_CONF.specdir, self.package.name + ".spec")
+        pkg_data_dir = os.path.join(KTR_CONF.datadir,
+                                    self.package.name)
+        pkg_conf_file = os.path.join(KTR_CONF.confdir,
+                                     self.package.name + ".conf")
+        pkg_spec_file = os.path.join(KTR_CONF.specdir,
+                                     self.package.name + ".spec")
 
         # copy sources to rpmbuild/SOURCES
         for entry in os.listdir(pkg_data_dir):
@@ -150,7 +157,8 @@ class SrpmConstructor(Constructor):
         try:
             old_version = spec_version_read(old_specfile)
         except RPMSpecError:
-            log(LOGPREFIX1 + "RPM spec file not valid. Version tag line not found.", 2)
+            log(LOGPREFIX1 + \
+                "RPM spec file not valid. Version tag line not found.", 2)
             old_specfile.close()
             new_specfile.close()
             return False
@@ -159,14 +167,17 @@ class SrpmConstructor(Constructor):
         try:
             old_release = spec_release_read(old_specfile)
         except RPMSpecError:
-            log(LOGPREFIX1 + "RPM spec file not valid. Version tag line not found.", 2)
+            log(LOGPREFIX1 + \
+                "RPM spec file not valid. Release tag line not found.", 2)
             old_specfile.close()
             new_specfile.close()
             return False
 
         # construct preamble and new version string
-        preamble = SPEC_PREAMBLE_DICT[self.package.source.type](self.package.source)
-        new_version = SPEC_VERSION_DICT[self.package.source.type](self.package.source)
+        preamble = SPEC_PREAMBLE_DICT[self.package.source.type](
+            self.package.source)
+        new_version = SPEC_VERSION_DICT[self.package.source.type](
+            self.package.source)
 
         # if old version and new version are different, force release reset to 0
         if new_version != old_version:
@@ -200,8 +211,8 @@ class SrpmConstructor(Constructor):
             spec_bump(new_spec_file)
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
-        # release number and changelog consistency (keep old version once as backup)
-        # BUT: remove preamble again, it would break things for the next build
+        # release number and changelog consistency (keep old version once as
+        # backup) # BUT: remove preamble again, it would break things otherwise
         shutil.move(pkg_spec_file, pkg_spec_file + ".old")
 
         # open new and create old spec file

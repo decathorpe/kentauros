@@ -149,17 +149,17 @@
 
 <div class="viewcode-block" id="BzrSource"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.bzr.BzrSource">[docs]</a><span class="k">class</span> <span class="nc">BzrSource</span><span class="p">(</span><span class="n">Source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This Source subclass holds information and methods for handling bzr sources.</span>
+<span class="sd">    This Source subclass holds information and methods for handling bzr sources.</span>
 
-<span class="sd">* If the :code:`bzr` command is not found on the system, :code:`self.active` is</span>
-<span class="sd">  automatically set to :code:`False` in the package&#39;s configuration file.</span>
-<span class="sd">* For the purpose of checking connectivity to the remote server, the URL is</span>
-<span class="sd">  stored in :code:`self.remote`. If the specified repository is hosted on</span>
-<span class="sd">  `launchpad.net &lt;https://launchpad.net&gt;`_, :code:`lp:` will be substituted with</span>
-<span class="sd">  launchpad&#39;s URL automatically.</span>
+<span class="sd">    * If the :code:`bzr` command is not found on the system, :code:`self.active`</span>
+<span class="sd">      is automatically set to :code:`False` in the package&#39;s configuration file.</span>
+<span class="sd">    * For the purpose of checking connectivity to the remote server, the URL is</span>
+<span class="sd">      stored in :code:`self.remote`. If the specified repository is hosted on</span>
+<span class="sd">      `launchpad.net &lt;https://launchpad.net&gt;`_, :code:`lp:` will be substituted</span>
+<span class="sd">      with launchpad&#39;s URL automatically.</span>
 
-<span class="sd">Arguments:</span>
-<span class="sd">    package (Package):  instance of Package that this Source belongs to</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        package (Package):  instance of Package that this Source belongs to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
@@ -183,16 +183,16 @@
 
 <div class="viewcode-block" id="BzrSource.rev"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.bzr.BzrSource.rev">[docs]</a>    <span class="k">def</span> <span class="nf">rev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This method determines which revision the bzr repository associated with</span>
-<span class="sd">this BzrSource currently is at and returns it as a string. Once run, it saves</span>
-<span class="sd">the last processed revision number in :code:`self.saved_rev`, in case the</span>
-<span class="sd">revision needs to be determined when bzr repository might not be accessible</span>
-<span class="sd">anymore (e.g. if :code:`bzr.keep=False` is set in configuration, so the</span>
-<span class="sd">repository is not kept after export to tarball).</span>
+<span class="sd">        This method determines which revision the bzr repository associated with</span>
+<span class="sd">        this BzrSource currently is at and returns it as a string. Once run, it</span>
+<span class="sd">        saves the last processed revision number in :code:`self.saved_rev`, in</span>
+<span class="sd">        case the revision needs to be determined when bzr repository might not</span>
+<span class="sd">        be accessible anymore (e.g. if :code:`bzr.keep=False` is set in</span>
+<span class="sd">        configuration, so the repository is not kept after export to tarball).</span>
 
-<span class="sd">Returns:</span>
-<span class="sd">    str(): either successfully determined revision string from repository,</span>
-<span class="sd">    last stored revision string or :code:`&quot;&quot;` when not</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str(): either successfully determined revision string from \</span>
+<span class="sd">                   repository, last stored rev string or :code:`&quot;&quot;` when not</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
@@ -205,7 +205,7 @@
         <span class="c1"># if sources are not accessible (anymore), return None or last saved rev</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_rev</span> <span class="ow">is</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                <span class="n">err</span><span class="p">(</span><span class="s2">&quot;Sources need to be .get() before .rev() can be determined.&quot;</span><span class="p">)</span>
+                <span class="n">err</span><span class="p">(</span><span class="s2">&quot;Sources need to be get before rev can be determined.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="s2">&quot;&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_rev</span>
@@ -221,10 +221,10 @@
 
 <div class="viewcode-block" id="BzrSource.formatver"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.bzr.BzrSource.formatver">[docs]</a>    <span class="k">def</span> <span class="nf">formatver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This method returns a nicely formatted version string for bzr sources.</span>
+<span class="sd">        This method returns a nicely formatted version string for bzr sources.</span>
 
-<span class="sd">Returns:</span>
-<span class="sd">    str(): formatted version string (base version + :code:`~bzr` + revision)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str(): nice version string (base version + :code:`~bzr` + revision)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
@@ -261,7 +261,8 @@
 
         <span class="c1"># check for connectivity to server</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remote</span><span class="p">):</span>
-            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;No connection to remote host detected. Cancelling source checkout.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;No connection to remote host detected. &quot;</span> <span class="o">+</span> \
+                <span class="s2">&quot;Cancelling source checkout.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c1"># construct bzr command</span>
@@ -277,7 +278,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bzr&quot;</span><span class="p">,</span> <span class="s2">&quot;branch&quot;</span><span class="p">):</span>
             <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;orig&quot;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;orig&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bzr&quot;</span><span class="p">,</span> <span class="s2">&quot;branch&quot;</span><span class="p">))</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;orig&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> \
+                       <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bzr&quot;</span><span class="p">,</span> <span class="s2">&quot;branch&quot;</span><span class="p">))</span>
 
         <span class="c1"># set revision is specified</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bzr&quot;</span><span class="p">,</span> <span class="s2">&quot;rev&quot;</span><span class="p">):</span>
@@ -297,7 +299,8 @@
         <span class="c1"># check if checkout worked</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bzr&quot;</span><span class="p">,</span> <span class="s2">&quot;rev&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bzr&quot;</span><span class="p">,</span> <span class="s2">&quot;rev&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">rev</span><span class="p">:</span>
-                <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Something went wrong, requested commit is not commit in repo.&quot;</span><span class="p">)</span>
+                <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                    <span class="s2">&quot;Something went wrong, requested commit not available.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c1"># return True if successful</span>
@@ -323,7 +326,8 @@
 
         <span class="c1"># check for connectivity to server</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remote</span><span class="p">):</span>
-            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;No connection to remote host detected. Cancelling source checkout.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;No connection to remote host detected. &quot;</span> <span class="o">+</span> \
+                <span class="s2">&quot;Cancelling source checkout.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c1"># construct bzr command</span>
@@ -337,7 +341,8 @@
 
         <span class="c1"># check if source directory exists before going there</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Sources need to be .get() before .update() can be run.&quot;</span><span class="p">)</span>
+            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                <span class="s2">&quot;Sources need to be .get() before .update() can be run.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">None</span>
 
         <span class="c1"># get old commit ID</span>
@@ -368,14 +373,15 @@
 <span class="sd">        - returns True if export is successful</span>
 <span class="sd">        - returns False if bzr repository has not been downloaded yet</span>
 <span class="sd">        - returns False if destination tarball already exists</span>
-<span class="sd">        - respects the bzr/keep setting in package.conf (deletes repo after export if set to true)</span>
+<span class="sd">        - respects the bzr/keep setting in package.conf (deletes repo</span>
+<span class="sd">        after export if set to true)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="k">def</span> <span class="nf">remove_notkeep</span><span class="p">():</span>
-            <span class="s2">&quot;local function definition for removing bzr repo after export if not keep&quot;</span>
+            <span class="s2">&quot;local function for removing bzr repo after export if not keep&quot;</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;bzr&quot;</span><span class="p">,</span> <span class="s2">&quot;keep&quot;</span><span class="p">):</span>
                 <span class="c1"># try to be careful with &quot;rm -r&quot;</span>
                 <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">)</span>
@@ -399,7 +405,8 @@
 
         <span class="c1"># check if bzr repo exists</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
-            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Sources need to be .get() before they can be .export()ed.&quot;</span><span class="p">)</span>
+            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                <span class="s2">&quot;Sources need to be get before they can be exported.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatver</span><span class="p">()</span>

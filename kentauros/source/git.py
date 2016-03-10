@@ -28,8 +28,8 @@ class GitSource(Source):
     Source subclass holding information and methods for handling git sources
     - if git command is not found on system, self.active = False
     - self.remote is set for checking connection to specified server
-    - if neither branch nor commit are set in package.conf: default to master branch
-    - if shallow clone and specific commit ID are requsted: default to normal clone
+    - if neither branch nor commit are set in package.conf: default to master
+    - if shallow clone and specific commit ID are requsted: default to normal
     """
 
     def __init__(self, package):
@@ -46,13 +46,14 @@ class GitSource(Source):
             self.active = False
 
         # either branch or commit must be set. default to branch=master
-        if self.conf.get("git", "branch") == "" and self.conf.get("git", "commit") == "":
+        if self.conf.get("git", "branch") == "" and \
+           self.conf.get("git", "commit") == "":
             self.conf.set("git", "branch", "master")
             self.package.update_config()
 
         # shallow clones and checking out a specific commit is not supported
         if self.conf.get("git", "commit") != "" and \
-            bool(strtobool(self.conf.get("git", "shallow"))):
+           bool(strtobool(self.conf.get("git", "shallow"))):
 
             self.conf.set("git", "shallow", "false")
             self.package.update_config()
@@ -64,7 +65,7 @@ class GitSource(Source):
     def date(self):
         """
         kentauros.source.git.GitSource.date():
-        method that returns the date and time string of last commit in repository
+        method that returns the date and time string of last commit in repo
         - returns datetime string if successful
         - returns last saved datetime string if sources are gone after export
         - returns None if everything fails
@@ -87,7 +88,7 @@ class GitSource(Source):
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
             if self.saved_date is None:
-                err("Sources need to be .get() before .date() can be determined.")
+                err("Sources need to be get before their age can be read.")
                 return None
             else:
                 return self.saved_date
@@ -107,7 +108,8 @@ class GitSource(Source):
         minute_str = prepend_zero(str(dateobj.minute))
         second_str = prepend_zero(str(dateobj.second))
 
-        date = year_str + month_str + day_str + "." + hour_str + minute_str + second_str
+        date = year_str + month_str + day_str + "." + \
+            hour_str + minute_str + second_str
 
         self.saved_date = date
         return date
@@ -132,7 +134,7 @@ class GitSource(Source):
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
             if self.saved_rev is None:
-                err("Sources need to be .get() before .rev() can be determined.")
+                err("Sources need to be get before commit hash can be read.")
                 return None
             else:
                 return self.saved_rev
@@ -148,13 +150,19 @@ class GitSource(Source):
 
     def formatver(self):
         if not self.active:
-            return None
+            return ""
 
-        ver = self.conf.get("source", "version")    # base version
+        # base version
+        ver = self.conf.get("source", "version")
+
+        # date and time of commit
         ver += "~git"
-        ver += self.date()                          # date and time of commit
+        ver += self.date()
+
+        # first 8 chars of git commit ID
         ver += "~"
-        ver += self.rev()[0:8]                      # first 8 chars of git commit ID
+        ver += self.rev()[0:8]
+
         return ver
 
 
@@ -183,7 +191,8 @@ class GitSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.conf.get("source", "orig")):
-            log("No connection to remote host detected. Cancelling source checkout.", 2)
+            log("No connection to remote host detected. " + \
+                "Cancelling source checkout.", 2)
             return False
 
         # construct git commands
@@ -241,7 +250,8 @@ class GitSource(Source):
         # check if checkout worked
         if self.conf.get("git", "commit"):
             if self.conf.get("git", "commit") != rev:
-                err(LOGPREFIX1 + "Something went wrong, requested commit is not commit in repo.")
+                err(LOGPREFIX1 + \
+                    "Something went wrong, requested commit not in repo.")
                 return False
 
         # return True if successful
@@ -267,7 +277,8 @@ class GitSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.conf.get("source", "orig")):
-            log("No connection to remote host detected. Cancelling source update.", 2)
+            log("No connection to remote host detected. " + \
+                "Cancelling source update.", 2)
             return False
 
         # construct git command
@@ -284,7 +295,8 @@ class GitSource(Source):
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            err(LOGPREFIX1 + "Sources need to be .get() before .update() can be run.")
+            err(LOGPREFIX1 + \
+                "Sources need to be get before an update can be run.")
             return False
 
         # get old commit ID
@@ -316,14 +328,15 @@ class GitSource(Source):
         - returns True if export is successful
         - returns False if git repository has not been downloaded yet
         - returns False if destination tarball already exists
-        - respects the git/keep setting in package.conf (deletes repo after export if set to true)
+        - respects the git/keep setting in package.conf (deletes repo
+        after export if set to true)
         """
 
         if not self.active:
             return False
 
         def remove_notkeep():
-            "local function definition for removing git repo after export if not keep"
+            "local function for removing git repo after export if not keep"
             if not self.conf.getboolean("git", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
@@ -350,7 +363,8 @@ class GitSource(Source):
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
-            err(LOGPREFIX1 + "Sources need to be .get() before they can be .export()ed.")
+            err(LOGPREFIX1 + \
+                "Sources need to be get before they can be exported.")
             return False
 
         version = self.formatver()

@@ -156,8 +156,8 @@
 <span class="sd">    Source subclass holding information and methods for handling git sources</span>
 <span class="sd">    - if git command is not found on system, self.active = False</span>
 <span class="sd">    - self.remote is set for checking connection to specified server</span>
-<span class="sd">    - if neither branch nor commit are set in package.conf: default to master branch</span>
-<span class="sd">    - if shallow clone and specific commit ID are requsted: default to normal clone</span>
+<span class="sd">    - if neither branch nor commit are set in package.conf: default to master</span>
+<span class="sd">    - if shallow clone and specific commit ID are requsted: default to normal</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
@@ -174,13 +174,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="bp">False</span>
 
         <span class="c1"># either branch or commit must be set. default to branch=master</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;branch&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;commit&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;branch&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> \
+           <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;commit&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;branch&quot;</span><span class="p">,</span> <span class="s2">&quot;master&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">update_config</span><span class="p">()</span>
 
         <span class="c1"># shallow clones and checking out a specific commit is not supported</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;commit&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> \
-            <span class="nb">bool</span><span class="p">(</span><span class="n">strtobool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;shallow&quot;</span><span class="p">))):</span>
+           <span class="nb">bool</span><span class="p">(</span><span class="n">strtobool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;shallow&quot;</span><span class="p">))):</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;shallow&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">update_config</span><span class="p">()</span>
@@ -192,7 +193,7 @@
 <div class="viewcode-block" id="GitSource.date"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource.date">[docs]</a>    <span class="k">def</span> <span class="nf">date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        kentauros.source.git.GitSource.date():</span>
-<span class="sd">        method that returns the date and time string of last commit in repository</span>
+<span class="sd">        method that returns the date and time string of last commit in repo</span>
 <span class="sd">        - returns datetime string if successful</span>
 <span class="sd">        - returns last saved datetime string if sources are gone after export</span>
 <span class="sd">        - returns None if everything fails</span>
@@ -215,7 +216,7 @@
         <span class="c1"># if sources are not accessible (anymore), return None or last saved rev</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_date</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">err</span><span class="p">(</span><span class="s2">&quot;Sources need to be .get() before .date() can be determined.&quot;</span><span class="p">)</span>
+                <span class="n">err</span><span class="p">(</span><span class="s2">&quot;Sources need to be get before their age can be read.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_date</span>
@@ -235,7 +236,8 @@
         <span class="n">minute_str</span> <span class="o">=</span> <span class="n">prepend_zero</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dateobj</span><span class="o">.</span><span class="n">minute</span><span class="p">))</span>
         <span class="n">second_str</span> <span class="o">=</span> <span class="n">prepend_zero</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dateobj</span><span class="o">.</span><span class="n">second</span><span class="p">))</span>
 
-        <span class="n">date</span> <span class="o">=</span> <span class="n">year_str</span> <span class="o">+</span> <span class="n">month_str</span> <span class="o">+</span> <span class="n">day_str</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">hour_str</span> <span class="o">+</span> <span class="n">minute_str</span> <span class="o">+</span> <span class="n">second_str</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">year_str</span> <span class="o">+</span> <span class="n">month_str</span> <span class="o">+</span> <span class="n">day_str</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> \
+            <span class="n">hour_str</span> <span class="o">+</span> <span class="n">minute_str</span> <span class="o">+</span> <span class="n">second_str</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">saved_date</span> <span class="o">=</span> <span class="n">date</span>
         <span class="k">return</span> <span class="n">date</span></div>
@@ -260,7 +262,7 @@
         <span class="c1"># if sources are not accessible (anymore), return None or last saved rev</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_rev</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">err</span><span class="p">(</span><span class="s2">&quot;Sources need to be .get() before .rev() can be determined.&quot;</span><span class="p">)</span>
+                <span class="n">err</span><span class="p">(</span><span class="s2">&quot;Sources need to be get before commit hash can be read.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_rev</span>
@@ -276,13 +278,19 @@
 
 <div class="viewcode-block" id="GitSource.formatver"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource.formatver">[docs]</a>    <span class="k">def</span> <span class="nf">formatver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
-        <span class="n">ver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">)</span>    <span class="c1"># base version</span>
+        <span class="c1"># base version</span>
+        <span class="n">ver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">)</span>
+
+        <span class="c1"># date and time of commit</span>
         <span class="n">ver</span> <span class="o">+=</span> <span class="s2">&quot;~git&quot;</span>
-        <span class="n">ver</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>                          <span class="c1"># date and time of commit</span>
+        <span class="n">ver</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+
+        <span class="c1"># first 8 chars of git commit ID</span>
         <span class="n">ver</span> <span class="o">+=</span> <span class="s2">&quot;~&quot;</span>
-        <span class="n">ver</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rev</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>                      <span class="c1"># first 8 chars of git commit ID</span>
+        <span class="n">ver</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rev</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+
         <span class="k">return</span> <span class="n">ver</span></div>
 
 
@@ -311,7 +319,8 @@
 
         <span class="c1"># check for connectivity to server</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;orig&quot;</span><span class="p">)):</span>
-            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;No connection to remote host detected. Cancelling source checkout.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;No connection to remote host detected. &quot;</span> <span class="o">+</span> \
+                <span class="s2">&quot;Cancelling source checkout.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c1"># construct git commands</span>
@@ -369,7 +378,8 @@
         <span class="c1"># check if checkout worked</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;commit&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;commit&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">rev</span><span class="p">:</span>
-                <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Something went wrong, requested commit is not commit in repo.&quot;</span><span class="p">)</span>
+                <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                    <span class="s2">&quot;Something went wrong, requested commit not in repo.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c1"># return True if successful</span>
@@ -395,7 +405,8 @@
 
         <span class="c1"># check for connectivity to server</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;orig&quot;</span><span class="p">)):</span>
-            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;No connection to remote host detected. Cancelling source update.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s2">&quot;No connection to remote host detected. &quot;</span> <span class="o">+</span> \
+                <span class="s2">&quot;Cancelling source update.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c1"># construct git command</span>
@@ -412,7 +423,8 @@
 
         <span class="c1"># check if source directory exists before going there</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Sources need to be .get() before .update() can be run.&quot;</span><span class="p">)</span>
+            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                <span class="s2">&quot;Sources need to be get before an update can be run.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c1"># get old commit ID</span>
@@ -444,14 +456,15 @@
 <span class="sd">        - returns True if export is successful</span>
 <span class="sd">        - returns False if git repository has not been downloaded yet</span>
 <span class="sd">        - returns False if destination tarball already exists</span>
-<span class="sd">        - respects the git/keep setting in package.conf (deletes repo after export if set to true)</span>
+<span class="sd">        - respects the git/keep setting in package.conf (deletes repo</span>
+<span class="sd">        after export if set to true)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="k">def</span> <span class="nf">remove_notkeep</span><span class="p">():</span>
-            <span class="s2">&quot;local function definition for removing git repo after export if not keep&quot;</span>
+            <span class="s2">&quot;local function for removing git repo after export if not keep&quot;</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;keep&quot;</span><span class="p">):</span>
                 <span class="c1"># try to be careful with &quot;rm -r&quot;</span>
                 <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">)</span>
@@ -478,7 +491,8 @@
 
         <span class="c1"># check if git repo exists</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
-            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Sources need to be .get() before they can be .export()ed.&quot;</span><span class="p">)</span>
+            <span class="n">err</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                <span class="s2">&quot;Sources need to be get before they can be exported.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatver</span><span class="p">()</span>

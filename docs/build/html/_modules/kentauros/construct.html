@@ -139,9 +139,11 @@
 
 <span class="kn">from</span> <span class="nn">kentauros.config</span> <span class="kn">import</span> <span class="n">KTR_CONF</span>
 
-<span class="kn">from</span> <span class="nn">kentauros.construct.rpm_spec</span> <span class="kn">import</span> <span class="n">SPEC_PREAMBLE_DICT</span><span class="p">,</span> <span class="n">SPEC_VERSION_DICT</span><span class="p">,</span> <span class="n">RPMSpecError</span>
-<span class="kn">from</span> <span class="nn">kentauros.construct.rpm_spec</span> <span class="kn">import</span> <span class="n">spec_version_read</span><span class="p">,</span> <span class="n">spec_release_read</span><span class="p">,</span> <span class="n">bump_release</span>
-<span class="kn">from</span> <span class="nn">kentauros.construct.rpm_spec</span> <span class="kn">import</span> <span class="n">if_version</span><span class="p">,</span> <span class="n">if_release</span><span class="p">,</span> <span class="n">spec_bump</span>
+<span class="kn">from</span> <span class="nn">kentauros.construct.rpm_spec</span> <span class="kn">import</span> <span class="n">SPEC_PREAMBLE_DICT</span><span class="p">,</span> <span class="n">SPEC_VERSION_DICT</span>
+<span class="kn">from</span> <span class="nn">kentauros.construct.rpm_spec</span> <span class="kn">import</span> <span class="n">RPMSpecError</span>
+<span class="kn">from</span> <span class="nn">kentauros.construct.rpm_spec</span> <span class="kn">import</span> <span class="n">spec_version_read</span><span class="p">,</span> <span class="n">spec_release_read</span>
+<span class="kn">from</span> <span class="nn">kentauros.construct.rpm_spec</span> <span class="kn">import</span> <span class="n">if_version</span><span class="p">,</span> <span class="n">if_release</span>
+<span class="kn">from</span> <span class="nn">kentauros.construct.rpm_spec</span> <span class="kn">import</span> <span class="n">bump_release</span><span class="p">,</span> <span class="n">spec_bump</span>
 
 <span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">SourceType</span><span class="p">,</span> <span class="n">ConstructorType</span>
 <span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">VERBY</span><span class="p">,</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">log_command</span>
@@ -214,7 +216,8 @@
             <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s2">&quot;which&quot;</span><span class="p">,</span> <span class="s2">&quot;rpmbuild&quot;</span><span class="p">])</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s2">&quot;which&quot;</span><span class="p">,</span> <span class="s2">&quot;rpmdev-bumpspec&quot;</span><span class="p">])</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Install rpmdevtools to use the specified constructor.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                <span class="s2">&quot;Install rpmdevtools to use the specified constructor.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="bp">False</span>
 
 
@@ -241,7 +244,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
 
-        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Temporary SOURCES, SPECS, SRPMS directory created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+            <span class="s2">&quot;Temporary SOURCES, SPECS, SRPMS directory created.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SrpmConstructor.prepare"><a class="viewcode-back" href="../../kentauros.construct.html#kentauros.construct.SrpmConstructor.prepare">[docs]</a>    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relreset</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
@@ -252,9 +256,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
 
         <span class="c1"># calculate absolute paths of files</span>
-        <span class="n">pkg_data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">datadir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">pkg_conf_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">confdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.conf&quot;</span><span class="p">)</span>
-        <span class="n">pkg_spec_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">specdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.spec&quot;</span><span class="p">)</span>
+        <span class="n">pkg_data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">datadir</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">pkg_conf_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">confdir</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.conf&quot;</span><span class="p">)</span>
+        <span class="n">pkg_spec_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">specdir</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.spec&quot;</span><span class="p">)</span>
 
         <span class="c1"># copy sources to rpmbuild/SOURCES</span>
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">pkg_data_dir</span><span class="p">):</span>
@@ -278,7 +285,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">old_version</span> <span class="o">=</span> <span class="n">spec_version_read</span><span class="p">(</span><span class="n">old_specfile</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">RPMSpecError</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;RPM spec file not valid. Version tag line not found.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                <span class="s2">&quot;RPM spec file not valid. Version tag line not found.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">old_specfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">new_specfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">return</span> <span class="bp">False</span>
@@ -287,14 +295,17 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">old_release</span> <span class="o">=</span> <span class="n">spec_release_read</span><span class="p">(</span><span class="n">old_specfile</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">RPMSpecError</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;RPM spec file not valid. Version tag line not found.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> \
+                <span class="s2">&quot;RPM spec file not valid. Release tag line not found.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">old_specfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">new_specfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c1"># construct preamble and new version string</span>
-        <span class="n">preamble</span> <span class="o">=</span> <span class="n">SPEC_PREAMBLE_DICT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">type</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
-        <span class="n">new_version</span> <span class="o">=</span> <span class="n">SPEC_VERSION_DICT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">type</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="n">preamble</span> <span class="o">=</span> <span class="n">SPEC_PREAMBLE_DICT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">type</span><span class="p">](</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="n">new_version</span> <span class="o">=</span> <span class="n">SPEC_VERSION_DICT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">type</span><span class="p">](</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
 
         <span class="c1"># if old version and new version are different, force release reset to 0</span>
         <span class="k">if</span> <span class="n">new_version</span> <span class="o">!=</span> <span class="n">old_version</span><span class="p">:</span>
@@ -328,8 +339,8 @@
             <span class="n">spec_bump</span><span class="p">(</span><span class="n">new_spec_file</span><span class="p">)</span>
 
         <span class="c1"># copy new specfile back to ktr/specdir to preserve version tracking,</span>
-        <span class="c1"># release number and changelog consistency (keep old version once as backup)</span>
-        <span class="c1"># BUT: remove preamble again, it would break things for the next build</span>
+        <span class="c1"># release number and changelog consistency (keep old version once as</span>
+        <span class="c1"># backup) # BUT: remove preamble again, it would break things otherwise</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">pkg_spec_file</span><span class="p">,</span> <span class="n">pkg_spec_file</span> <span class="o">+</span> <span class="s2">&quot;.old&quot;</span><span class="p">)</span>
 
         <span class="c1"># open new and create old spec file</span>
