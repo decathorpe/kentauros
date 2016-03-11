@@ -2,12 +2,12 @@
 
 from setuptools import setup
 
-from kentauros.definitions import KTR_SYSTEM_DATADIR
+from kentauros.definitions import KTR_SYSTEM_DATADIR, KTR_VERSION
 
 
 setup(
     name="kentauros",
-    version="0.9.4",
+    version=KTR_VERSION,
     author="Fabio Valentini",
     author_email="decathorpe@gmail.com",
     description="build system for building RPM package from upstream sources",

@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 NAME=kentauros
-VERSION=0.9.4
+VERSION=$(python3 -c 'from kentauros.definitions import KTR_VERSION; print(KTR_VERSION, end="")')
 
 mkdir -p $HOME/rpmbuild/SOURCES
 mkdir -p $HOME/rpmbuild/SPECS

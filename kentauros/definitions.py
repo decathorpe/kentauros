@@ -14,6 +14,7 @@ from enum import Enum, unique
 
 
 KTR_SYSTEM_DATADIR = "/usr/share/kentauros/"
+KTR_VERSION = "0.9.4"
 
 
 class KtrConfType(Enum):
