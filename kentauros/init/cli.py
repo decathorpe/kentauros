@@ -113,6 +113,12 @@ def get_parsed_cli():
         help="comlete source to upload toolchain",
         parents=[package_parser])
 
+    clean_parser = parsers.add_parser(
+        "clean",
+        description="clean sources of specified package(s)",
+        help="clean package sources",
+        parents=[package_parser])
+
     config_parser = parsers.add_parser(
         "config",
         description="change package configuration stored in package.conf file",
@@ -198,6 +204,7 @@ def get_parsed_cli():
     build_parser.set_defaults(action=ActionType.BUILD)
     chain_parser.set_defaults(action=ActionType.CHAIN)
     config_parser.set_defaults(action=ActionType.CONFIG)
+    clean_parser.set_defaults(action=ActionType.CLEAN)
     construct_parser.set_defaults(action=ActionType.CONSTRUCT)
     create_parser.set_defaults(action=ActionType.CREATE)
     export_parser.set_defaults(action=ActionType.EXPORT)
