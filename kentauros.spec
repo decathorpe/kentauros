@@ -12,6 +12,7 @@ URL:            http://github.com/decathorpe/kentauros
 Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
 
+BuildRequires:  python3-dateutil
 BuildRequires:  python3-devel
 
 Requires:       python3-dateutil
