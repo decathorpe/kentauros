@@ -85,11 +85,11 @@ def ktr_get_conf():
     prj_config = KtrConf(KtrConfType.PROJECT).from_file(PRJ_FILE_PATH,
                                                         PRJ_ERR_MSG)
 
-    ktr_confs[KtrConfType.FALLBACK] = get_fallback_config()
-    ktr_confs[KtrConfType.DEFAULT] = def_config
-    ktr_confs[KtrConfType.SYSTEM] = sys_config
-    ktr_confs[KtrConfType.USER] = usr_config
-    ktr_confs[KtrConfType.PROJECT] = prj_config
+    ktr_confs[KtrConfType.FBK] = get_fallback_config()
+    ktr_confs[KtrConfType.DEF] = def_config
+    ktr_confs[KtrConfType.SYS] = sys_config
+    ktr_confs[KtrConfType.USR] = usr_config
+    ktr_confs[KtrConfType.PRJ] = prj_config
     ktr_confs[KtrConfType.ENV] = get_env_config()
     ktr_confs[KtrConfType.CLI] = get_cli_config()
 

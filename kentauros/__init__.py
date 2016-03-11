@@ -9,7 +9,7 @@ import os
 from kentauros.actions import ACTION_DICT
 from kentauros.definitions import ActionType
 
-from kentauros.init import log
+from kentauros.init import get_debug, get_verby, log
 from kentauros.init.cli import CLIArgs, get_parsed_cli
 
 from kentauros.config import ktr_get_conf
@@ -69,9 +69,11 @@ def run():
 
     print()
 
+    log(log_prefix1 + "DEBUG set: " + str(get_debug()), 0)
+    log(log_prefix1 + "VERBOSITY: " + str(get_verby()) + "/2", 1)
+
     cli_args = CLIArgs()
     cli_args.parse_args(get_parsed_cli())
-
 
     # if no action is specified: exit
     if cli_args.action is None:

@@ -16,7 +16,6 @@ from enum import Enum, unique
 KTR_SYSTEM_DATADIR = "/usr/share/kentauros/"
 
 
-@unique
 class KtrConfType(Enum):
     """
     kentauros.definitions.KtrConfType
@@ -24,10 +23,15 @@ class KtrConfType(Enum):
     """
     CLI = 0
     ENV = 1
+    PRJ = 2
     PROJECT = 2
     USER = 3
+    USR = 3
+    SYS = 4
     SYSTEM = 4
+    DEF = 5
     DEFAULT = 5
+    FBK = 6
     FALLBACK = 6
 
 

@@ -81,7 +81,3 @@ def log_command(prefix1, basename, cmdlist, pri=2):
     log(prefix1 + basename + " command:", pri)
     log(prefix2 + cmdstr, pri)
 
-
-log("ktr: DEBUG set: " + str(get_debug()), 0)
-log("ktr: VERBOSITY: " + str(get_verby()) + "/2", 1)
-
