@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from kentauros.definitions import KTR_SYSTEM_DATADIR, KTR_VERSION
 
@@ -14,7 +14,7 @@ setup(
     license="GPLv2",
     keywords="development packaging",
     url="http://github.com/decathorpe/kentauros",
-    packages=['kentauros'],
+    packages=find_packages(),
     entry_points={'console_scripts': ['ktr = kentauros.run.run',],},
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.conf']),
