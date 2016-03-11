@@ -4,8 +4,8 @@
 
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.9.3.2
-Release:        1%{?dist}
+Version:        0.9.4
+Release:        0%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
