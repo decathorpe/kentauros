@@ -1,6 +1,6 @@
-#%%if %%{fedora} > 22
-#%%define debug_package %%{nil}
-#%%endif
+%if %{fedora} > 22
+%define debug_package %{nil}
+%endif
 
 Summary:        Small build system, written in python
 Name:           kentauros
