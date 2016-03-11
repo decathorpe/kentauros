@@ -22,5 +22,16 @@ at the moment, the following is supported:
   * copr for fedora and rhel/epel packages
 """
 
-__all__ = []
+__all__ = ["actions",
+           "bootstrap",
+           "build",
+           "config",
+           "conntest",
+           "construct",
+           "definitions",
+           "init",
+           "package",
+           "run",
+           "source",
+           "upload"]
 

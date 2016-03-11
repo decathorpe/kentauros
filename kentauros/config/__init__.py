@@ -24,7 +24,7 @@ from kentauros.init.cli import CLIArgs, get_parsed_cli
 from kentauros.init.env import HOME
 
 
-__all__ = []
+__all__ = ["cli", "common", "envvar", "fallback"]
 
 
 DEF_FILE_PATH = os.path.join(KTR_SYSTEM_DATADIR, "default.conf")

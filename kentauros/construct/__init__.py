@@ -21,6 +21,9 @@ from kentauros.definitions import SourceType, ConstructorType
 from kentauros.init import get_debug, get_verby, log, log_command
 
 
+__all__ = ["rpm_spec"]
+
+
 LOGPREFIX1 = "ktr/construct: "
 
 

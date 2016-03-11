@@ -9,7 +9,7 @@ from kentauros.init.env import ENVDEBUG, ENVVERBY
 from kentauros.init.cli import CLIArgs, get_parsed_cli
 
 
-__all__ = []
+__all__ = ["cli", "env"]
 
 
 def __smaller_int__(int1, int2):
