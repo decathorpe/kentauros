@@ -301,6 +301,8 @@ class CLIArgs:
 
 
 CLI_ARGS = CLIArgs()
+print("TODO: __main__ = ", end="")
+print(__name__)
 if __name__ == '__main__':
     CLI_ARGS.parse_args(get_parsed_cli())
 

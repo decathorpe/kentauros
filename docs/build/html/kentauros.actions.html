@@ -150,7 +150,7 @@ can be specified at ktr command line, there is an Action subclass.</p>
 <tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
 <li><a class="reference internal" href="kentauros.package.html#module-kentauros.package" title="kentauros.package"><strong>package</strong></a> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; stores reference to <cite>Package</cite> given at initialisation</li>
 <li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; stores force value given at initialisation</li>
-<li><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#type" title="(in Python v3.5)"><strong>type</strong></a> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; stores type of action as enum</li>
+<li><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; stores type of action as enum</li>
 </ul>
 </td>
 </tr>
@@ -186,10 +186,13 @@ package specified at initialisation.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance this local build will done for</li>
 <li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; (currently without effect)</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; here: stores <cite>ActionType.BUILD</cite></p>
 </td>
 </tr>
 </tbody>
@@ -224,21 +227,27 @@ on the package specified at initialisation, which means the following:</p>
 <li>get sources if they don&#8217;t already exist (<cite>GetAction</cite>)</li>
 <li>update sources (<cite>UpdateAction</cite>)</li>
 <li>if sources already existed, no updates were available and <cite>force</cite>
-was not specified, action execution will terminate at this point</li>
+was not specified, action execution will terminate at this point and
+return <cite>False</cite></li>
 <li>otherwise, sources are exported (if tarball doesn&#8217;t already exist)
 (<cite>ExportAction</cite>)</li>
-<li>construct source package (<cite>ConstructAction</cite>), abort if unsuccessful</li>
-<li>build source package locally (<cite>BuildAction</cite>), abort if unsuccessful</li>
+<li>construct source package (<cite>ConstructAction</cite>), terminate chain if not
+successful</li>
+<li>build source package locally (<cite>BuildAction</cite>), terminate chain if not
+successful</li>
 <li>upload source package to cloud build service (<cite>UploadAction</cite>)</li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance this local build will done for</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance this chain reaction will done for</li>
 <li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; force further actions even if sources did not change</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; here: stores <cite>ActionType.CHAIN</cite></p>
 </td>
 </tr>
 </tbody>
@@ -247,7 +256,7 @@ was not specified, action execution will terminate at this point</li>
 <dt id="kentauros.actions.ChainAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ChainAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ChainAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method runs the &#8220;chain reaction&#8221; corresponding to the package
-specified at initialisation, with the configuration from package
+specified at initialisation, with the configuration from the package
 configuration file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -272,10 +281,13 @@ package specified at initialisation.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance sources will be cleaned for</li>
 <li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; (currently without effect)</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; here: stores <cite>ActionType.CLEAN</cite></p>
 </td>
 </tr>
 </tbody>
@@ -301,14 +313,51 @@ always <em>True</em> at the moment</td>
 
 <dl class="class">
 <dt id="kentauros.actions.ConfigAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConfigAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em>, <em>section</em>, <em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConfigAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConfigAction</code><span class="sig-paren">(</span><em>package: kentauros.package.Package</em>, <em>force: bool</em>, <em>section: str</em>, <em>key: str</em>, <em>value: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConfigAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
-<p>kentauros.actions.ConfigAction:
-action for setting config values</p>
+<p>This Action subclass contains information for changing package configuration
+values stored in the package&#8217;s *.conf file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance configuration will be changed for</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; (currently without effect)</li>
+<li><strong>section</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/stdtypes.html#str" title="(in Python v3.5)"><em>str</em></a>) &#8211; section of conf file that <cite>key</cite> is in</li>
+<li><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/stdtypes.html#str" title="(in Python v3.5)"><em>str</em></a>) &#8211; key that <cite>value</cite> will be written to</li>
+<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/stdtypes.html#str" title="(in Python v3.5)"><em>str</em></a>) &#8211; value that will be set in configuration</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; here: stores <cite>ActionType.CONFIG</cite></li>
+<li><strong>section</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/stdtypes.html#str" title="(in Python v3.5)"><em>str</em></a>) &#8211; stores <cite>section</cite> given at initialisation</li>
+<li><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/stdtypes.html#str" title="(in Python v3.5)"><em>str</em></a>) &#8211; stores <cite>key</cite> given at initialisation</li>
+<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/stdtypes.html#str" title="(in Python v3.5)"><em>str</em></a>) &#8211; stores <cite>value</cite> given at initialisation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="kentauros.actions.ConfigAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConfigAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This method checks if the specified section already exists in the
+configuration file - and creates it, if it doesn&#8217;t. Following this
+check, it will change or add <cite>section</cite>/<cite>key</cite> to <cite>value</cite> in the
+<a class="reference external" href="https://docs.python.org/3.5/library/configparser.html#configparser.ConfigParser" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">configparser.ConfigParser</span></code></a> object and then writes the changed
+configuration back to the package&#8217;s *.conf file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
+always <em>True</em> at the moment</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -316,12 +365,54 @@ action for setting config values</p>
 <dt id="kentauros.actions.ConstructAction">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConstructAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConstructAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConstructAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
-<p>kentauros.actions.Construct:
-action for building source package</p>
+<p>This Action subclass contains information for constructing the source
+package from sources and package specification for the package specified at
+initialisation.</p>
+<p>If <cite>force=True</cite> is specified, the build will succeed, even if the package
+version did not change, and will <em>not</em> reset the release number.</p>
+<p>If <cite>force=True</cite> is not specified (<cite>force=False</cite> by default), then the
+release number will only be reset if the package version changed between the
+last build and this one - otherwise it will be attempted to smartly
+increment the number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance source package will be built for</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; determines if release number will be bumped or not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; here: stores <cite>ActionType.CONSTRUCT</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="kentauros.actions.ConstructAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConstructAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConstructAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This method executes several <a class="reference internal" href="kentauros.construct.html#kentauros.construct.Constructor" title="kentauros.construct.Constructor"><code class="xref py py-class docutils literal"><span class="pre">kentauros.construct.Constructor</span></code></a>
+methods to execute the source package build.</p>
+<ul class="simple">
+<li><cite>.init()</cite>: general preparatory work (e.g. creating temporary dirs)</li>
+<li><cite>.prepare()</cite>: copy files to build directory, prepare build, increase
+release number, etc.</li>
+<li>if the <cite>.prepare()</cite> stage is not successful, the action will terminate</li>
+<li><cite>.build()</cite>: build the source package inside the build directory</li>
+<li><cite>.export()</cite>: copy built source package to $PACKAGEDIR</li>
+<li><cite>.clean()</cite>: remove temporary build directory, if neccessary</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
+<em>True</em> when successful, <em>False</em> if preparation failed</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

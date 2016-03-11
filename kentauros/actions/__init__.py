@@ -28,8 +28,8 @@ class Action:
 
     Attributes:
         package (Package): stores reference to `Package` given at initialisation
-        force (bool):      stores force value given at initialisation
-        type (ActionType): stores type of action as enum
+        force (bool): stores force value given at initialisation
+        atype (ActionType): stores type of action as enum
     """
 
     def __init__(self, package, force):
@@ -37,7 +37,7 @@ class Action:
         self.package = package
 
         self.force = force
-        self.type = None
+        self.atype = None
 
     def execute(self):
         """
@@ -47,7 +47,7 @@ class Action:
         that executes no code.
 
         Returns:
-            bool:   success of executed action
+            bool: success of executed action
         """
 
         pass
@@ -59,13 +59,16 @@ class BuildAction(Action):
     package specified at initialisation.
 
     Arguments:
-        Package package:    Package instance this local build will done for
-        bool force:         (currently without effect)
+        Package package: Package instance this local build will done for
+        bool force: (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.BUILD`
     """
 
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.BUILD
+        self.atype = ActionType.BUILD
 
     def execute(self):
         """
@@ -75,7 +78,7 @@ class BuildAction(Action):
         method of the Builder instance in the specified package.
 
         Returns:
-            bool:   *True* if all builds were successful, *False* if otherwise
+            bool: *True* if all builds were successful, *False* if otherwise
         """
 
         success = self.package.builder.build()
@@ -90,30 +93,36 @@ class ChainAction(Action):
     * get sources if they don't already exist (`GetAction`)
     * update sources (`UpdateAction`)
     * if sources already existed, no updates were available and `force`
-      was not specified, action execution will terminate at this point
+      was not specified, action execution will terminate at this point and
+      return `False`
     * otherwise, sources are exported (if tarball doesn't already exist)
       (`ExportAction`)
-    * construct source package (`ConstructAction`), abort if unsuccessful
-    * build source package locally (`BuildAction`), abort if unsuccessful
+    * construct source package (`ConstructAction`), terminate chain if not
+      successful
+    * build source package locally (`BuildAction`), terminate chain if not
+      successful
     * upload source package to cloud build service (`UploadAction`)
 
     Arguments:
-        Package package:    Package instance this local build will done for
-        bool force:         force further actions even if sources did not change
+        package (Package): Package instance this chain reaction will done for
+        force (bool): force further actions even if sources did not change
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.CHAIN`
     """
 
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.CHAIN
+        self.atype = ActionType.CHAIN
 
     def execute(self):
         """
         This method runs the "chain reaction" corresponding to the package
-        specified at initialisation, with the configuration from package
+        specified at initialisation, with the configuration from the package
         configuration file.
 
         Returns:
-            bool:   *True* if chain went all the way through, *False* if not
+            bool: *True* if chain went all the way through, *False* if not
         """
 
         veryfied = VerifyAction(self.package, self.force).execute()
@@ -146,13 +155,16 @@ class CleanAction(Action):
     package specified at initialisation.
 
     Arguments:
-        Package package:    Package instance sources will be cleaned for
-        bool force:         (currently without effect)
+        package (Package): Package instance sources will be cleaned for
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.CLEAN`
     """
 
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.CLEAN
+        self.atype = ActionType.CLEAN
 
     def execute(self):
         """
@@ -161,7 +173,7 @@ class CleanAction(Action):
         method of the Source instance in the specified package.
 
         Returns:
-            bool:   always *True* at the moment
+            bool: always *True* at the moment
         """
 
         self.package.source.clean()
@@ -170,23 +182,48 @@ class CleanAction(Action):
 
 class ConfigAction(Action):
     """
-    kentauros.actions.ConfigAction:
-    action for setting config values
+    This Action subclass contains information for changing package configuration
+    values stored in the package's \\*.conf file.
+
+    Arguments:
+        package (Package): Package instance configuration will be changed for
+        force (bool): (currently without effect)
+        section (str): section of conf file that `key` is in
+        key (str): key that `value` will be written to
+        value (str): value that will be set in configuration
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.CONFIG`
+        section (str): stores `section` given at initialisation
+        key (str): stores `key` given at initialisation
+        value (str): stores `value` given at initialisation
     """
-    def __init__(self, package, force, section, key, value):
+
+    def __init__(self, package: Package, force: bool,
+                 section: str, key: str, value: str):
         super().__init__(package, force)
-        self.type = ActionType.CONFIG
+        self.atype = ActionType.CONFIG
 
         self.section = section
         self.key = key
         self.value = value
 
     def execute(self):
-        try:
-            self.package.conf.set(self.section, self.key, self.value)
-        except NoSectionError:
-            return False
+        """
+        This method checks if the specified section already exists in the
+        configuration file - and creates it, if it doesn't. Following this
+        check, it will change or add `section`/`key` to `value` in the
+        :py:class:`configparser.ConfigParser` object and then writes the changed
+        configuration back to the package's \\*.conf file.
 
+        Returns:
+            bool: always *True* at the moment
+        """
+
+        if self.section not in self.package.conf.sections():
+            self.package.conf.add_section(self.section)
+
+        self.package.conf.set(self.section, self.key, self.value)
         self.package.update_config()
 
         log(LOGPREFIX1 + "Configuration value changed: ", 2)
@@ -198,18 +235,52 @@ class ConfigAction(Action):
 
 class ConstructAction(Action):
     """
-    kentauros.actions.Construct:
-    action for building source package
+    This Action subclass contains information for constructing the source
+    package from sources and package specification for the package specified at
+    initialisation.
+
+    If `force=True` is specified, the build will succeed, even if the package
+    version did not change, and will *not* reset the release number.
+
+    If `force=True` is not specified (`force=False` by default), then the
+    release number will only be reset if the package version changed between the
+    last build and this one - otherwise it will be attempted to smartly
+    increment the number.
+
+    Arguments:
+        package (Package): Package instance source package will be built for
+        force (bool): determines if release number will be bumped or not
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.CONSTRUCT`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.CONSTRUCT
+        self.atype = ActionType.CONSTRUCT
 
     def execute(self):
+        """
+        This method executes several :py:class:`kentauros.construct.Constructor`
+        methods to execute the source package build.
+
+        * `.init()`: general preparatory work (e.g. creating temporary dirs)
+        * `.prepare()`: copy files to build directory, prepare build, increase
+          release number, etc.
+        * if the `.prepare()` stage is not successful, the action will terminate
+        * `.build()`: build the source package inside the build directory
+        * `.export()`: copy built source package to $PACKAGEDIR
+        * `.clean()`: remove temporary build directory, if neccessary
+
+        Returns:
+            bool: *True* when successful, *False* if preparation failed
+        """
+
         self.package.constructor.init()
 
         success = self.package.constructor.prepare(relreset=(not self.force))
         if not success:
+            self.package.constructor.clean()
             return False
 
         self.package.constructor.build()
@@ -261,6 +332,7 @@ class CreateAction(Action):
             # initialise package
             package = Package(name)
             super().__init__(package, force)
+            self.atype = ActionType.CREATE
 
     def execute(self):
         return self.success
@@ -273,7 +345,7 @@ class ExportAction(Action):
     """
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.EXPORT
+        self.atype = ActionType.EXPORT
 
     def execute(self):
         self.package.source.export()
@@ -287,7 +359,7 @@ class GetAction(Action):
     """
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.GET
+        self.atype = ActionType.GET
 
     def execute(self):
         return self.package.source.get()
@@ -300,7 +372,7 @@ class PrepareAction(Action):
     """
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.PREPARE
+        self.atype = ActionType.PREPARE
 
     def execute(self):
         return self.package.source.prepare()
@@ -313,12 +385,11 @@ class RefreshAction(Action):
     """
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.REFRESH
+        self.atype = ActionType.REFRESH
 
     def execute(self):
         self.package.source.refresh()
-        # TODO
-        # Source.refresh() needs return value from .get()
+        # TODO: Source.refresh() needs return value from .get()
         return True
 
 
@@ -329,7 +400,7 @@ class StatusAction(Action):
     """
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.STATUS
+        self.atype = ActionType.STATUS
 
     def execute(self):
         # TODO
@@ -343,7 +414,7 @@ class UpdateAction(Action):
     """
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.UPDATE
+        self.atype = ActionType.UPDATE
 
     def execute(self):
         update = self.package.source.update()
@@ -357,7 +428,7 @@ class UploadAction(Action):
     """
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.UPLOAD
+        self.atype = ActionType.UPLOAD
 
     def execute(self):
         self.package.uploader.upload()
@@ -371,7 +442,7 @@ class VerifyAction(Action):
     """
     def __init__(self, package, force):
         super().__init__(package, force)
-        self.type = ActionType.VERIFY
+        self.atype = ActionType.VERIFY
 
     def execute(self):
         # TODO

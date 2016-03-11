@@ -156,8 +156,8 @@
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        package (Package): stores reference to `Package` given at initialisation</span>
-<span class="sd">        force (bool):      stores force value given at initialisation</span>
-<span class="sd">        type (ActionType): stores type of action as enum</span>
+<span class="sd">        force (bool): stores force value given at initialisation</span>
+<span class="sd">        atype (ActionType): stores type of action as enum</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
@@ -165,7 +165,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span> <span class="o">=</span> <span class="n">package</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="n">force</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="bp">None</span>
 
 <div class="viewcode-block" id="Action.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.Action.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -175,7 +175,7 @@
 <span class="sd">        that executes no code.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool:   success of executed action</span>
+<span class="sd">            bool: success of executed action</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">pass</span></div></div>
@@ -187,13 +187,16 @@
 <span class="sd">    package specified at initialisation.</span>
 
 <span class="sd">    Arguments:</span>
-<span class="sd">        Package package:    Package instance this local build will done for</span>
-<span class="sd">        bool force:         (currently without effect)</span>
+<span class="sd">        Package package: Package instance this local build will done for</span>
+<span class="sd">        bool force: (currently without effect)</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        atype (ActionType): here: stores `ActionType.BUILD`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">BUILD</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">BUILD</span>
 
 <div class="viewcode-block" id="BuildAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.BuildAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -203,7 +206,7 @@
 <span class="sd">        method of the Builder instance in the specified package.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool:   *True* if all builds were successful, *False* if otherwise</span>
+<span class="sd">            bool: *True* if all builds were successful, *False* if otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
@@ -218,30 +221,36 @@
 <span class="sd">    * get sources if they don&#39;t already exist (`GetAction`)</span>
 <span class="sd">    * update sources (`UpdateAction`)</span>
 <span class="sd">    * if sources already existed, no updates were available and `force`</span>
-<span class="sd">      was not specified, action execution will terminate at this point</span>
+<span class="sd">      was not specified, action execution will terminate at this point and</span>
+<span class="sd">      return `False`</span>
 <span class="sd">    * otherwise, sources are exported (if tarball doesn&#39;t already exist)</span>
 <span class="sd">      (`ExportAction`)</span>
-<span class="sd">    * construct source package (`ConstructAction`), abort if unsuccessful</span>
-<span class="sd">    * build source package locally (`BuildAction`), abort if unsuccessful</span>
+<span class="sd">    * construct source package (`ConstructAction`), terminate chain if not</span>
+<span class="sd">      successful</span>
+<span class="sd">    * build source package locally (`BuildAction`), terminate chain if not</span>
+<span class="sd">      successful</span>
 <span class="sd">    * upload source package to cloud build service (`UploadAction`)</span>
 
 <span class="sd">    Arguments:</span>
-<span class="sd">        Package package:    Package instance this local build will done for</span>
-<span class="sd">        bool force:         force further actions even if sources did not change</span>
+<span class="sd">        package (Package): Package instance this chain reaction will done for</span>
+<span class="sd">        force (bool): force further actions even if sources did not change</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        atype (ActionType): here: stores `ActionType.CHAIN`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CHAIN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CHAIN</span>
 
 <div class="viewcode-block" id="ChainAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ChainAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method runs the &quot;chain reaction&quot; corresponding to the package</span>
-<span class="sd">        specified at initialisation, with the configuration from package</span>
+<span class="sd">        specified at initialisation, with the configuration from the package</span>
 <span class="sd">        configuration file.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool:   *True* if chain went all the way through, *False* if not</span>
+<span class="sd">            bool: *True* if chain went all the way through, *False* if not</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">veryfied</span> <span class="o">=</span> <span class="n">VerifyAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
@@ -274,13 +283,16 @@
 <span class="sd">    package specified at initialisation.</span>
 
 <span class="sd">    Arguments:</span>
-<span class="sd">        Package package:    Package instance sources will be cleaned for</span>
-<span class="sd">        bool force:         (currently without effect)</span>
+<span class="sd">        package (Package): Package instance sources will be cleaned for</span>
+<span class="sd">        force (bool): (currently without effect)</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        atype (ActionType): here: stores `ActionType.CLEAN`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CLEAN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CLEAN</span>
 
 <div class="viewcode-block" id="CleanAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.CleanAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -289,7 +301,7 @@
 <span class="sd">        method of the Source instance in the specified package.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool:   always *True* at the moment</span>
+<span class="sd">            bool: always *True* at the moment</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
@@ -298,23 +310,48 @@
 
 <div class="viewcode-block" id="ConfigAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ConfigAction">[docs]</a><span class="k">class</span> <span class="nc">ConfigAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    kentauros.actions.ConfigAction:</span>
-<span class="sd">    action for setting config values</span>
+<span class="sd">    This Action subclass contains information for changing package configuration</span>
+<span class="sd">    values stored in the package&#39;s \\*.conf file.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        package (Package): Package instance configuration will be changed for</span>
+<span class="sd">        force (bool): (currently without effect)</span>
+<span class="sd">        section (str): section of conf file that `key` is in</span>
+<span class="sd">        key (str): key that `value` will be written to</span>
+<span class="sd">        value (str): value that will be set in configuration</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        atype (ActionType): here: stores `ActionType.CONFIG`</span>
+<span class="sd">        section (str): stores `section` given at initialisation</span>
+<span class="sd">        key (str): stores `key` given at initialisation</span>
+<span class="sd">        value (str): stores `value` given at initialisation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">:</span> <span class="n">Package</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                 <span class="n">section</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">section</span> <span class="o">=</span> <span class="n">section</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="ConfigAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ConfigAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">NoSectionError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method checks if the specified section already exists in the</span>
+<span class="sd">        configuration file - and creates it, if it doesn&#39;t. Following this</span>
+<span class="sd">        check, it will change or add `section`/`key` to `value` in the</span>
+<span class="sd">        :py:class:`configparser.ConfigParser` object and then writes the changed</span>
+<span class="sd">        configuration back to the package&#39;s \\*.conf file.</span>
 
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: always *True* at the moment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">update_config</span><span class="p">()</span>
 
         <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Configuration value changed: &quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -326,18 +363,52 @@
 
 <div class="viewcode-block" id="ConstructAction"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ConstructAction">[docs]</a><span class="k">class</span> <span class="nc">ConstructAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    kentauros.actions.Construct:</span>
-<span class="sd">    action for building source package</span>
+<span class="sd">    This Action subclass contains information for constructing the source</span>
+<span class="sd">    package from sources and package specification for the package specified at</span>
+<span class="sd">    initialisation.</span>
+
+<span class="sd">    If `force=True` is specified, the build will succeed, even if the package</span>
+<span class="sd">    version did not change, and will *not* reset the release number.</span>
+
+<span class="sd">    If `force=True` is not specified (`force=False` by default), then the</span>
+<span class="sd">    release number will only be reset if the package version changed between the</span>
+<span class="sd">    last build and this one - otherwise it will be attempted to smartly</span>
+<span class="sd">    increment the number.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        package (Package): Package instance source package will be built for</span>
+<span class="sd">        force (bool): determines if release number will be bumped or not</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        atype (ActionType): here: stores `ActionType.CONSTRUCT`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONSTRUCT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONSTRUCT</span>
 
 <div class="viewcode-block" id="ConstructAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ConstructAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method executes several :py:class:`kentauros.construct.Constructor`</span>
+<span class="sd">        methods to execute the source package build.</span>
+
+<span class="sd">        * `.init()`: general preparatory work (e.g. creating temporary dirs)</span>
+<span class="sd">        * `.prepare()`: copy files to build directory, prepare build, increase</span>
+<span class="sd">          release number, etc.</span>
+<span class="sd">        * if the `.prepare()` stage is not successful, the action will terminate</span>
+<span class="sd">        * `.build()`: build the source package inside the build directory</span>
+<span class="sd">        * `.export()`: copy built source package to $PACKAGEDIR</span>
+<span class="sd">        * `.clean()`: remove temporary build directory, if neccessary</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: *True* when successful, *False* if preparation failed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
 
         <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="n">relreset</span><span class="o">=</span><span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">force</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
@@ -389,6 +460,7 @@
             <span class="c1"># initialise package</span>
             <span class="n">package</span> <span class="o">=</span> <span class="n">Package</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CREATE</span>
 
 <div class="viewcode-block" id="CreateAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.CreateAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span></div></div>
@@ -401,7 +473,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">EXPORT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">EXPORT</span>
 
 <div class="viewcode-block" id="ExportAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.ExportAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">export</span><span class="p">()</span>
@@ -415,7 +487,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">GET</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">GET</span>
 
 <div class="viewcode-block" id="GetAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.GetAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div></div>
@@ -428,7 +500,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">PREPARE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">PREPARE</span>
 
 <div class="viewcode-block" id="PrepareAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.PrepareAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span></div></div>
@@ -441,12 +513,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">REFRESH</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">REFRESH</span>
 
 <div class="viewcode-block" id="RefreshAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.RefreshAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
-        <span class="c1"># TODO</span>
-        <span class="c1"># Source.refresh() needs return value from .get()</span>
+        <span class="c1"># TODO: Source.refresh() needs return value from .get()</span>
         <span class="k">return</span> <span class="bp">True</span></div></div>
 
 
@@ -457,7 +528,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">STATUS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">STATUS</span>
 
 <div class="viewcode-block" id="StatusAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.StatusAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TODO</span>
@@ -471,7 +542,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">UPDATE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">UPDATE</span>
 
 <div class="viewcode-block" id="UpdateAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.UpdateAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -485,7 +556,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">UPLOAD</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">UPLOAD</span>
 
 <div class="viewcode-block" id="UploadAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.UploadAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">uploader</span><span class="o">.</span><span class="n">upload</span><span class="p">()</span>
@@ -499,7 +570,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">VERIFY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">VERIFY</span>
 
 <div class="viewcode-block" id="VerifyAction.execute"><a class="viewcode-back" href="../../kentauros.actions.html#kentauros.actions.VerifyAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TODO</span>
