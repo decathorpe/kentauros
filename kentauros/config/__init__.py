@@ -54,8 +54,11 @@ def ktr_get_conf():
         get and return preferred-by-CLI configuration
         """
 
+        conf_type = None
+
         # check if requirested config type is in Enum
         # pylint: disable=unsubscriptable-object
+
         try:
             conf_type = KtrConfType[pref_conf]
         except KeyError:
