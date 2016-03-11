@@ -7,7 +7,7 @@ from kentauros.definitions import KTR_SYSTEM_DATADIR
 
 setup(
     name="kentauros",
-    version="0.9.3",
+    version="0.9.3.1",
     author="Fabio Valentini",
     author_email="decathorpe@gmail.com",
     description="build system for building RPM package from upstream sources",
@@ -15,10 +15,7 @@ setup(
     keywords="development packaging",
     url="http://github.com/decathorpe/kentauros",
     packages=['kentauros'],
-    entry_points={
-        'console_scripts': [
-            ' ktr = kentauros.run',
-        ]},
+    scripts=['ktr'],
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.spec'])],
