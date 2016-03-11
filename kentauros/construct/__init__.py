@@ -18,7 +18,7 @@ from kentauros.construct.rpm_spec import if_version, if_release
 from kentauros.construct.rpm_spec import bump_release, spec_bump
 
 from kentauros.definitions import SourceType, ConstructorType
-from kentauros.init import VERBY, DEBUG, log, log_command
+from kentauros.init import get_debug, get_verby, log, log_command
 
 
 LOGPREFIX1 = "ktr/construct: "
@@ -248,9 +248,9 @@ class SrpmConstructor(Constructor):
         cmd = ["rpmbuild"]
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 
         cmd.append("-bs")

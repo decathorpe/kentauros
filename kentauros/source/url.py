@@ -10,7 +10,7 @@ import subprocess
 
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
-from kentauros.init import DEBUG, VERBY, log, log_command
+from kentauros.init import get_debug, get_verby, log, log_command
 from kentauros.source.common import Source
 
 
@@ -69,9 +69,9 @@ class UrlSource(Source):
         cmd = ["wget"]
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 
         # set origin and destination

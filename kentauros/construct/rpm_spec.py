@@ -7,7 +7,7 @@ import io
 import subprocess
 
 from kentauros.definitions import SourceType
-from kentauros.init import DEBUG, VERBY, log_command
+from kentauros.init import get_debug, get_verby, log_command
 from kentauros.source.common import Source
 
 
@@ -171,9 +171,9 @@ def spec_bump(specfile, comment=None):
     cmd = ["rpmdev-bumpspec"]
 
     # add --verbose or --quiet depending on settings
-    if (VERBY == 2) and not DEBUG:
+    if (get_verby() == 2) and not get_debug():
         cmd.append("--quiet")
-    if (VERBY == 0) or DEBUG:
+    if (get_verby() == 0) or get_debug():
         cmd.append("--verbose")
 
     cmd.append(specfile)

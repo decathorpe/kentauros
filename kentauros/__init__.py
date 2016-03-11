@@ -25,6 +25,14 @@ def get_action_args(cli_args, pkgname, action_type_enum):
     """
     This function returns arguments for an Action() constructor as tuple.
     It only constructs Package() objects as needed.
+
+    Arguments:
+        cli_args (CLIArgs): parsed command line arguments
+        pkgname (str): name of package the action will be executed for
+        action_type_enum (ActionType): specifies the type of Action
+
+    Returns:
+        tuple: :py:class:`kentauros.action.Action` Constructor arguments
     """
 
     assert isinstance(action_type_enum, ActionType)
@@ -55,6 +63,7 @@ def get_action_args(cli_args, pkgname, action_type_enum):
 
 
 def run():
+    "will be run if executed by 'ktr' script"
     log_prefix1 = "ktr: "
     log_prefix2 = "     - "
 

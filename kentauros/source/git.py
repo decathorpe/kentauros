@@ -15,7 +15,7 @@ import dateutil.parser
 from kentauros.config import ktr_get_conf
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
-from kentauros.init import DEBUG, VERBY, err, log, log_command
+from kentauros.init import get_debug, get_verby, err, log, log_command
 from kentauros.source.common import Source
 
 
@@ -203,9 +203,9 @@ class GitSource(Source):
         cmd1.append("clone")
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd1.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd1.append("--verbose")
 
         # set --depth==1 if shallow is specified
@@ -288,9 +288,9 @@ class GitSource(Source):
         cmd.append("--rebase")
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 
         # check if source directory exists before going there
@@ -350,9 +350,9 @@ class GitSource(Source):
         cmd.append("archive")
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 
         # export HEAD or specified commit

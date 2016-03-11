@@ -11,7 +11,7 @@ import subprocess
 from kentauros.config import ktr_get_conf
 from kentauros.conntest import is_connected
 from kentauros.definitions import UploaderType
-from kentauros.init import DEBUG, err, log, log_command
+from kentauros.init import get_debug, err, log, log_command
 
 
 LOGPREFIX1 = "ktr/upload: "
@@ -90,7 +90,7 @@ class CoprUploader(Uploader):
         # construct copr-cli command
         cmd = ["copr-cli"]
 
-        if DEBUG:
+        if get_debug():
             cmd.append("--debug")
 
         # append build command

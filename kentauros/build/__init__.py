@@ -10,7 +10,7 @@ import subprocess
 
 from kentauros.config import ktr_get_conf
 from kentauros.definitions import SourceType, BuilderType
-from kentauros.init import DEBUG, VERBY, err, log, log_command
+from kentauros.init import get_debug, get_verby, err, log, log_command
 
 
 LOGPREFIX1 = "ktr/build: "
@@ -95,9 +95,9 @@ class MockBuilder(Builder):
         cmd = ["mock"]
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 
         build_succ = list()

@@ -19,12 +19,18 @@ def __smaller_int__(int1, int2):
         return int2
 
 
-CLI_ARGS = CLIArgs()
-CLI_ARGS.parse_args(get_parsed_cli())
+def get_debug():
+    "calculate debug status from environment variables and CLI arguments"
+    cli_args = CLIArgs()
+    cli_args.parse_args(get_parsed_cli())
+    return ENVDEBUG or cli_args.debug
 
 
-DEBUG = ENVDEBUG or CLI_ARGS.debug
-VERBY = __smaller_int__(ENVVERBY, CLI_ARGS.verby)
+def get_verby():
+    "calculate verbosity from environment variables and CLI arguments"
+    cli_args = CLIArgs()
+    cli_args.parse_args(get_parsed_cli())
+    return __smaller_int__(ENVVERBY, cli_args.verby)
 
 
 def dbg(msg):
@@ -33,7 +39,7 @@ def dbg(msg):
     prints debug messages if DEBUG is True
     set by --debug or by environment variable KTR_DEBUG=1
     """
-    if DEBUG:
+    if get_debug():
         print("DEBUG: " + str(msg))
 
 
@@ -57,7 +63,7 @@ def log(msg, pri=2):
     - 2: few messages are printed and subprocesses are invoked with --quiet
     format: <message>
     """
-    if (pri >= VERBY) or DEBUG:
+    if (pri >= get_verby()) or get_debug():
         print(msg)
 
 
@@ -76,6 +82,6 @@ def log_command(prefix1, basename, cmdlist, pri=2):
     log(prefix2 + cmdstr, pri)
 
 
-log("ktr: DEBUG set: " + str(DEBUG), 0)
-log("ktr: VERBOSITY: " + str(VERBY) + "/2", 1)
+log("ktr: DEBUG set: " + str(get_debug()), 0)
+log("ktr: VERBOSITY: " + str(get_verby()) + "/2", 1)
 

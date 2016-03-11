@@ -12,7 +12,7 @@ import subprocess
 from kentauros.config import ktr_get_conf
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
-from kentauros.init import DEBUG, VERBY, err, log, log_command
+from kentauros.init import get_debug, get_verby, err, log, log_command
 from kentauros.source.common import Source
 
 
@@ -141,9 +141,9 @@ class BzrSource(Source):
         cmd = ["bzr", "branch"]
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 
         # set origin
@@ -206,9 +206,9 @@ class BzrSource(Source):
         cmd = ["bzr", "pull"]
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 
         # check if source directory exists before going there
@@ -265,9 +265,9 @@ class BzrSource(Source):
         cmd = ["bzr", "export"]
 
         # add --verbose or --quiet depending on settings
-        if (VERBY == 2) and not DEBUG:
+        if (get_verby() == 2) and not get_debug():
             cmd.append("--quiet")
-        if (VERBY == 0) or DEBUG:
+        if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 
         # export HEAD or specified commit
