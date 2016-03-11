@@ -8,7 +8,7 @@ import glob
 import os
 import subprocess
 
-from kentauros.config import KTR_CONF
+from kentauros.config import ktr_get_conf
 from kentauros.conntest import is_connected
 from kentauros.definitions import UploaderType
 from kentauros.init import DEBUG, err, log, log_command
@@ -65,7 +65,7 @@ class CoprUploader(Uploader):
             return None
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(KTR_CONF.packdir,
+        srpms = glob.glob(os.path.join(ktr_get_conf().packdir,
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:

@@ -12,7 +12,7 @@ from distutils.util import strtobool
 
 import dateutil.parser
 
-from kentauros.config import KTR_CONF
+from kentauros.config import ktr_get_conf
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.init import DEBUG, VERBY, err, log, log_command
@@ -340,7 +340,7 @@ class GitSource(Source):
             if not self.conf.getboolean("git", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
-                assert KTR_CONF.datadir in self.dest
+                assert ktr_get_conf().datadir in self.dest
                 shutil.rmtree(self.dest)
                 log(LOGPREFIX1 + "git repo deleted after export to tarball", 1)
 
@@ -373,7 +373,7 @@ class GitSource(Source):
         # add prefix
         cmd.append("--prefix=" + name_version + "/")
 
-        file_name = os.path.join(KTR_CONF.datadir,
+        file_name = os.path.join(ktr_get_conf().datadir,
                                  self.name,
                                  name_version + ".tar.gz")
 

@@ -12,7 +12,7 @@ from kentauros.definitions import ActionType
 from kentauros.init import log
 from kentauros.init.cli import CLIArgs, get_parsed_cli
 
-from kentauros.config import KTR_CONF
+from kentauros.config import ktr_get_conf
 from kentauros.bootstrap import ktr_bootstrap
 
 from kentauros.package import Package
@@ -84,7 +84,8 @@ def run():
     # if all package are to be processed:
     # get package configs present in CONFDIR
     else:
-        pkg_conf_paths = glob.glob(os.path.join(KTR_CONF.confdir, "*.conf"))
+        pkg_conf_paths = glob.glob(os.path.join(
+            ktr_get_conf().confdir, "*.conf"))
 
         for pkg_conf_path in pkg_conf_paths:
             pkgs.append(os.path.basename(pkg_conf_path).rstrip(".conf"))

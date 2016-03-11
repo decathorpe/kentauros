@@ -8,7 +8,7 @@ import glob
 import os
 import subprocess
 
-from kentauros.config import KTR_CONF
+from kentauros.config import ktr_get_conf
 from kentauros.definitions import SourceType, BuilderType
 from kentauros.init import DEBUG, VERBY, err, log, log_command
 
@@ -72,7 +72,7 @@ class MockBuilder(Builder):
 
         # WARNING: MockBuilder.build() builds !all!
         # name*.src.rpm packages found in PACKDIR
-        srpms = glob.glob(os.path.join(KTR_CONF.packdir,
+        srpms = glob.glob(os.path.join(ktr_get_conf().packdir,
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:

@@ -7,7 +7,7 @@ from configparser import ConfigParser, NoSectionError, NoOptionError
 import os
 
 from kentauros.init import err, log
-from kentauros.config import KTR_CONF
+from kentauros.config import ktr_get_conf
 from kentauros.definitions import KTR_SYSTEM_DATADIR
 
 from kentauros.definitions import BuilderType, ConstructorType
@@ -41,7 +41,7 @@ class Package:
     """
     def __init__(self, name):
         self.name = name
-        self.file = os.path.join(KTR_CONF.confdir, self.name + ".conf")
+        self.file = os.path.join(ktr_get_conf().confdir, self.name + ".conf")
 
         self.conf = ConfigParser()
 

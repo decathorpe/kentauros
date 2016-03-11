@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import tempfile
 
-from kentauros.config import KTR_CONF
+from kentauros.config import ktr_get_conf
 
 from kentauros.construct.rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT
 from kentauros.construct.rpm_spec import RPMSpecError
@@ -127,12 +127,14 @@ class SrpmConstructor(Constructor):
         if not os.path.exists(self.rpmbdir):
             self.init()
 
+        ktr_conf = ktr_get_conf()
+
         # calculate absolute paths of files
-        pkg_data_dir = os.path.join(KTR_CONF.datadir,
+        pkg_data_dir = os.path.join(ktr_conf.datadir,
                                     self.package.name)
-        pkg_conf_file = os.path.join(KTR_CONF.confdir,
+        pkg_conf_file = os.path.join(ktr_conf.confdir,
                                      self.package.name + ".conf")
-        pkg_spec_file = os.path.join(KTR_CONF.specdir,
+        pkg_spec_file = os.path.join(ktr_conf.specdir,
                                      self.package.name + ".spec")
 
         # copy sources to rpmbuild/SOURCES
@@ -268,7 +270,7 @@ class SrpmConstructor(Constructor):
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
         for srpm in srpms:
-            shutil.copy2(srpm, KTR_CONF.packdir)
+            shutil.copy2(srpm, ktr_get_conf().packdir)
             log(LOGPREFIX1 + "File copied: " + srpm, 0)
 
 

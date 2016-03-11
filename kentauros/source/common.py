@@ -7,7 +7,7 @@ import os
 import shutil
 
 from kentauros.init import log
-from kentauros.config import KTR_CONF
+from kentauros.config import ktr_get_conf
 
 
 LOGPREFIX1 = "ktr/source: "
@@ -30,7 +30,7 @@ class Source():
         self.package = package
         self.conf = package.conf
         self.name = self.conf['package']['name']
-        self.sdir = os.path.join(KTR_CONF.datadir, self.name)
+        self.sdir = os.path.join(ktr_get_conf().datadir, self.name)
         self.type = None
 
 
@@ -48,7 +48,7 @@ class Source():
         else:
             # try to be careful with "rm -r"
             assert os.path.isabs(self.sdir)
-            assert KTR_CONF.datadir in self.sdir
+            assert ktr_get_conf().datadir in self.sdir
             shutil.rmtree(self.sdir)
             return True
 
