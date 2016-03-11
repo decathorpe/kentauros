@@ -12,7 +12,7 @@ import os
 from kentauros.actions import ACTION_DICT
 from kentauros.definitions import ActionType
 
-from kentauros.init import get_debug, get_verby, log
+from kentauros.init import get_debug, get_verby, log, dbg
 from kentauros.init.cli import CLIArgs, get_parsed_cli
 
 from kentauros.config import ktr_get_conf
@@ -71,6 +71,12 @@ def run():
 
     log(log_prefix1 + "DEBUG set: " + str(get_debug()), 0)
     log(log_prefix1 + "VERBOSITY: " + str(get_verby()) + "/2", 1)
+
+    dbg(log_prefix1 + "BASEDIR: " + ktr_get_conf().basedir)
+    dbg(log_prefix1 + "CONFDIR: " + ktr_get_conf().confdir)
+    dbg(log_prefix1 + "DATADIR: " + ktr_get_conf().datadir)
+    dbg(log_prefix1 + "PACKDIR: " + ktr_get_conf().packdir)
+    dbg(log_prefix1 + "SPECDIR: " + ktr_get_conf().specdir)
 
     cli_args = CLIArgs()
     cli_args.parse_args(get_parsed_cli())
