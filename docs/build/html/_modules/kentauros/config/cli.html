@@ -140,7 +140,7 @@
 <span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">KtrConfType</span>
 
 <span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">log</span>
-<span class="kn">from</span> <span class="nn">kentauros.init.cli</span> <span class="kn">import</span> <span class="n">CLI_ARGS</span>
+<span class="kn">from</span> <span class="nn">kentauros.init.cli</span> <span class="kn">import</span> <span class="n">CLIArgs</span><span class="p">,</span> <span class="n">get_parsed_cli</span>
 
 
 <span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/config/cli: &quot;</span>
@@ -151,35 +151,39 @@
 <span class="sd">    kentauros.config.cli.get_cli_config():</span>
 <span class="sd">    function that returns a KtrConf object containing CLI settings</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cli_args</span> <span class="o">=</span> <span class="n">CLIArgs</span><span class="p">()</span>
+    <span class="n">cli_args</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">get_parsed_cli</span><span class="p">())</span>
+
     <span class="c1"># if no settings were set at command line, return None</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">basedir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
-       <span class="p">(</span><span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">confdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
-       <span class="p">(</span><span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">datadir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
-       <span class="p">(</span><span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">packdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
-       <span class="p">(</span><span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">specdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">basedir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
+       <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">confdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
+       <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">datadir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
+       <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">packdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
+       <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">specdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">None</span>
 
     <span class="c1"># if at least basedir has been set, construct KtrConf from CLI switches</span>
-    <span class="k">if</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">basedir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">basedir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">KtrConf</span><span class="p">(</span><span class="n">KtrConfType</span><span class="o">.</span><span class="n">CLI</span><span class="p">,</span>
-                         <span class="n">basedir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">basedir</span><span class="p">))</span>
+                         <span class="n">basedir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">basedir</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">confdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">confdir</span>
-        <span class="k">if</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">datadir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">datadir</span>
-        <span class="k">if</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">packdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">packdir</span>
-        <span class="k">if</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">specdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">specdir</span>
+        <span class="k">if</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">confdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">confdir</span>
+        <span class="k">if</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">datadir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">datadir</span>
+        <span class="k">if</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">packdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">packdir</span>
+        <span class="k">if</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">specdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">specdir</span>
 
     <span class="c1"># basedir not set: all other dirs must be specified</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">KtrConf</span><span class="p">(</span><span class="n">KtrConfType</span><span class="o">.</span><span class="n">CLI</span><span class="p">)</span>
-        <span class="n">result</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">confdir</span>
-        <span class="n">result</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">datadir</span>
-        <span class="n">result</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">packdir</span>
-        <span class="n">result</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">CLI_ARGS</span><span class="o">.</span><span class="n">specdir</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">confdir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">confdir</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">datadir</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">packdir</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">specdir</span>
 
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
         <span class="k">return</span> <span class="n">result</span>

@@ -136,10 +136,10 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 
-<span class="kn">from</span> <span class="nn">kentauros.config</span> <span class="kn">import</span> <span class="n">KTR_CONF</span>
+<span class="kn">from</span> <span class="nn">kentauros.config</span> <span class="kn">import</span> <span class="n">ktr_get_conf</span>
 <span class="kn">from</span> <span class="nn">kentauros.conntest</span> <span class="kn">import</span> <span class="n">is_connected</span>
 <span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">UploaderType</span>
-<span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">log_command</span>
+<span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">get_debug</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">log_command</span>
 
 
 <span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/upload: &quot;</span>
@@ -193,7 +193,7 @@
             <span class="k">return</span> <span class="bp">None</span>
 
         <span class="c1"># get all srpms in the package directory</span>
-        <span class="n">srpms</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">KTR_CONF</span><span class="o">.</span><span class="n">packdir</span><span class="p">,</span>
+        <span class="n">srpms</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">packdir</span><span class="p">,</span>
                                        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;*.src.rpm&quot;</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">srpms</span> <span class="o">==</span> <span class="p">[]:</span>
@@ -218,7 +218,7 @@
         <span class="c1"># construct copr-cli command</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;copr-cli&quot;</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">get_debug</span><span class="p">():</span>
             <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--debug&quot;</span><span class="p">)</span>
 
         <span class="c1"># append build command</span>
