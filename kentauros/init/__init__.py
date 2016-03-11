@@ -6,7 +6,7 @@ import enum
 import sys
 
 from kentauros.init.env import ENVDEBUG, ENVVERBY
-from kentauros.init.cli import CLI_ARGS
+from kentauros.init.cli import CLIArgs, get_parsed_cli
 
 
 __all__ = []
@@ -17,6 +17,10 @@ def __smaller_int__(int1, int2):
         return int1
     else:
         return int2
+
+
+CLI_ARGS = CLIArgs()
+CLI_ARGS.parse_args(get_parsed_cli())
 
 
 DEBUG = ENVDEBUG or CLI_ARGS.debug

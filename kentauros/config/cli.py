@@ -12,7 +12,7 @@ from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
 from kentauros.init import log
-from kentauros.init.cli import CLI_ARGS
+from kentauros.init.cli import CLIArgs, get_parsed_cli
 
 
 LOGPREFIX1 = "ktr/config/cli: "
@@ -23,35 +23,39 @@ def get_cli_config():
     kentauros.config.cli.get_cli_config():
     function that returns a KtrConf object containing CLI settings
     """
+
+    cli_args = CLIArgs()
+    cli_args.parse_args(get_parsed_cli())
+
     # if no settings were set at command line, return None
-    if (CLI_ARGS.basedir is None) and \
-       (CLI_ARGS.confdir is None) and \
-       (CLI_ARGS.datadir is None) and \
-       (CLI_ARGS.packdir is None) and \
-       (CLI_ARGS.specdir is None):
+    if (cli_args.basedir is None) and \
+       (cli_args.confdir is None) and \
+       (cli_args.datadir is None) and \
+       (cli_args.packdir is None) and \
+       (cli_args.specdir is None):
         return None
 
     # if at least basedir has been set, construct KtrConf from CLI switches
-    if CLI_ARGS.basedir is not None:
+    if cli_args.basedir is not None:
         result = KtrConf(KtrConfType.CLI,
-                         basedir=os.path.abspath(CLI_ARGS.basedir))
+                         basedir=os.path.abspath(cli_args.basedir))
 
-        if CLI_ARGS.confdir is not None:
-            result.confdir = CLI_ARGS.confdir
-        if CLI_ARGS.datadir is not None:
-            result.datadir = CLI_ARGS.datadir
-        if CLI_ARGS.packdir is not None:
-            result.packdir = CLI_ARGS.packdir
-        if CLI_ARGS.specdir is not None:
-            result.specdir = CLI_ARGS.specdir
+        if cli_args.confdir is not None:
+            result.confdir = cli_args.confdir
+        if cli_args.datadir is not None:
+            result.datadir = cli_args.datadir
+        if cli_args.packdir is not None:
+            result.packdir = cli_args.packdir
+        if cli_args.specdir is not None:
+            result.specdir = cli_args.specdir
 
     # basedir not set: all other dirs must be specified
     else:
         result = KtrConf(KtrConfType.CLI)
-        result.confdir = CLI_ARGS.confdir
-        result.datadir = CLI_ARGS.datadir
-        result.packdir = CLI_ARGS.packdir
-        result.specdir = CLI_ARGS.specdir
+        result.confdir = cli_args.confdir
+        result.datadir = cli_args.datadir
+        result.packdir = cli_args.packdir
+        result.specdir = cli_args.specdir
 
     if result.validate():
         return result

@@ -20,7 +20,7 @@ from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
 from kentauros.init import dbg, err, log
-from kentauros.init.cli import CLI_ARGS
+from kentauros.init.cli import CLIArgs, get_parsed_cli
 from kentauros.init.env import HOME
 
 
@@ -95,8 +95,11 @@ def ktr_get_conf():
 
     ktr_conf = None
 
-    if CLI_ARGS.priconf:
-        ktr_conf = get_pref_conf(CLI_ARGS.priconf)
+    cli_args = CLIArgs()
+    cli_args.parse_args(get_parsed_cli())
+
+    if cli_args.priconf:
+        ktr_conf = get_pref_conf(cli_args.priconf)
 
     if ktr_conf is not None:
         return ktr_conf
