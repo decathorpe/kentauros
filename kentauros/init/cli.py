@@ -276,7 +276,10 @@ class CLIArgs:
         self.packdir = cli_args.packdir
         self.specdir = cli_args.specdir
 
-        self.priconf = KtrConfType[cli_args.priconf.upper()]
+        try:
+            self.priconf = KtrConfType[cli_args.priconf.upper()]
+        except KeyError:
+            self.priconf = None
 
         if 'action' in cli_args:
             self.action = cli_args.action

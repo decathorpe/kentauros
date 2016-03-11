@@ -350,8 +350,6 @@ class GitSource(Source):
         cmd.append("archive")
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
-            cmd.append("--quiet")
         if (get_verby() == 0) or get_debug():
             cmd.append("--verbose")
 

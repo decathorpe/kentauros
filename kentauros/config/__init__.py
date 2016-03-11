@@ -54,27 +54,15 @@ def ktr_get_conf():
         get and return preferred-by-CLI configuration
         """
 
-        conf_type = None
-
         # check if requirested config type is in Enum
         # pylint: disable=unsubscriptable-object
 
-        try:
-            conf_type = KtrConfType[pref_conf]
-        except KeyError:
-            err(LOGPREFIX1 + \
-                "Configuration type not supported.")
-            err(LOGPREFIX1 + \
-                "Supported: default, system, user, project, cli, env")
-
         # get requested config from Dict
-        ktr_conf = conf_dict[conf_type]
-
-        # apply it if it is not None
-        if ktr_conf is not None:
-            return ktr_conf
+        if pref_conf:
+            return conf_dict[pref_conf]
         else:
             return None
+
 
     # configurations, in ascending priority
     ktr_confs = OrderedDict()
