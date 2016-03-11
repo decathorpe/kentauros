@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 NAME=kentauros
-VERSION=0.9.2
+VERSION=0.9.3
 
 mkdir -p $HOME/rpmbuild/SOURCES
 mkdir -p $HOME/rpmbuild/SPECS
