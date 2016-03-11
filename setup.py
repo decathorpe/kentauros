@@ -15,7 +15,7 @@ setup(
     keywords="development packaging",
     url="http://github.com/decathorpe/kentauros",
     packages=['kentauros'],
-    entry_points={'console_scripts': ['ktr = kentauros.run',],},
+    entry_points={'console_scripts': ['ktr = kentauros.run.run',],},
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.spec'])],
