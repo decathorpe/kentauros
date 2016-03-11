@@ -4,7 +4,7 @@ kentauros.init.cli file
 
 import argparse
 
-from kentauros.definitions import ActionType
+from kentauros.definitions import ActionType, KtrConfType
 
 
 def get_parsed_cli():
@@ -260,6 +260,8 @@ class CLIArgs:
         CLI parser
         """
 
+        # pylint: disable=unsubscriptable-object
+
         self.debug = cli_args.debug
 
         if (2 - cli_args.verby) >= 0:
@@ -274,7 +276,7 @@ class CLIArgs:
         self.packdir = cli_args.packdir
         self.specdir = cli_args.specdir
 
-        self.priconf = cli_args.priconf
+        self.priconf = KtrConfType[cli_args.priconf.upper()]
 
         if 'action' in cli_args:
             self.action = cli_args.action
