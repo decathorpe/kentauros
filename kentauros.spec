@@ -50,6 +50,7 @@ rm -rf %{buildroot}
 
 %files
 %{_bindir}/ktr
+%{_bindir}/ktr-config
 %{_datadir}/kentauros/
 
 %{python3_sitelib}/kentauros

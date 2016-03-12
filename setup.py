@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+"""
+setuptools install script for kentauros
+"""
+
 from setuptools import setup, find_packages
 
 from kentauros.definitions import KTR_SYSTEM_DATADIR, KTR_VERSION
@@ -15,7 +19,8 @@ setup(
     keywords="development packaging",
     url="http://github.com/decathorpe/kentauros",
     packages=find_packages(),
-    entry_points={'console_scripts': ['ktr = kentauros.run:run',],},
+    entry_points={'console_scripts': ['ktr = kentauros.run:run',
+                                      'ktr-config = kentauros.run:run_config']},
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.spec'])],

@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+
+"""
+ktr_config is kentauros-config.py
+a script like this will be created at install time by setuptools.
+it is here for testing purposes only and is not part of the install.
+"""
+
+from kentauros.run import run_config
+
+run_config()
+
