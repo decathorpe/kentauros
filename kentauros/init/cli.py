@@ -229,6 +229,12 @@ def get_parsed_cli(instance_type=InstanceType.NORMAL):
             nargs="*",
             help="package name")
         cliparser.set_defaults(action=ActionType.CREATE)
+        cliparser.add_argument(
+            "-f", "--force",
+            action="store_const",
+            const=True,
+            default=False,
+            help="force actions, even if no updates were available")
 
 
     cli_args = cliparser.parse_args()
