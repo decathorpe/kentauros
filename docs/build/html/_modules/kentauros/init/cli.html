@@ -132,7 +132,7 @@
 
 <span class="kn">import</span> <span class="nn">argparse</span>
 
-<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">ActionType</span>
+<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">ActionType</span><span class="p">,</span> <span class="n">KtrConfType</span>
 
 
 <div class="viewcode-block" id="get_parsed_cli"><a class="viewcode-back" href="../../../kentauros.init.html#kentauros.init.cli.get_parsed_cli">[docs]</a><span class="k">def</span> <span class="nf">get_parsed_cli</span><span class="p">():</span>
@@ -241,6 +241,12 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;comlete source to upload toolchain&quot;</span><span class="p">,</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
 
+    <span class="n">clean_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;clean&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;clean sources of specified package(s)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clean package sources&quot;</span><span class="p">,</span>
+        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+
     <span class="n">config_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s2">&quot;config&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;change package configuration stored in package.conf file&quot;</span><span class="p">,</span>
@@ -326,6 +332,7 @@
     <span class="n">build_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">BUILD</span><span class="p">)</span>
     <span class="n">chain_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CHAIN</span><span class="p">)</span>
     <span class="n">config_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">)</span>
+    <span class="n">clean_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">)</span>
     <span class="n">construct_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONSTRUCT</span><span class="p">)</span>
     <span class="n">create_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CREATE</span><span class="p">)</span>
     <span class="n">export_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">EXPORT</span><span class="p">)</span>
@@ -381,6 +388,8 @@
 <span class="sd">        CLI parser</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="c1"># pylint: disable=unsubscriptable-object</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">debug</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">verby</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -395,7 +404,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">packdir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">packdir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">specdir</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">specdir</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">priconf</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">priconf</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">priconf</span> <span class="o">=</span> <span class="n">KtrConfType</span><span class="p">[</span><span class="n">cli_args</span><span class="o">.</span><span class="n">priconf</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">priconf</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="k">if</span> <span class="s1">&#39;action&#39;</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">action</span>

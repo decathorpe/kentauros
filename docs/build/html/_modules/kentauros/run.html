@@ -140,7 +140,7 @@
 <span class="kn">from</span> <span class="nn">kentauros.actions</span> <span class="kn">import</span> <span class="n">ACTION_DICT</span>
 <span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">ActionType</span>
 
-<span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">get_debug</span><span class="p">,</span> <span class="n">get_verby</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">get_debug</span><span class="p">,</span> <span class="n">get_verby</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">dbg</span>
 <span class="kn">from</span> <span class="nn">kentauros.init.cli</span> <span class="kn">import</span> <span class="n">CLIArgs</span><span class="p">,</span> <span class="n">get_parsed_cli</span>
 
 <span class="kn">from</span> <span class="nn">kentauros.config</span> <span class="kn">import</span> <span class="n">ktr_get_conf</span>
@@ -199,6 +199,12 @@
 
     <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;DEBUG set: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_debug</span><span class="p">()),</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;VERBOSITY: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_verby</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;/2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;BASEDIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">basedir</span><span class="p">)</span>
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;CONFDIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">confdir</span><span class="p">)</span>
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;DATADIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">datadir</span><span class="p">)</span>
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;PACKDIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">packdir</span><span class="p">)</span>
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;SPECDIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">specdir</span><span class="p">)</span>
 
     <span class="n">cli_args</span> <span class="o">=</span> <span class="n">CLIArgs</span><span class="p">()</span>
     <span class="n">cli_args</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">get_parsed_cli</span><span class="p">())</span>
