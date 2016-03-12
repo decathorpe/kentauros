@@ -131,8 +131,6 @@
 <span class="sd">package is executed by the setuptools-installed &#39;ktr&#39; script.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c1"># TODO: add run_config() and run_create() entry points to simplify run()</span>
-
 
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -251,9 +249,9 @@
         <span class="n">success</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;Success!&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;: Success!&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;Not successful.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;: Not successful.&quot;</span><span class="p">)</span>
 
     <span class="k">print</span><span class="p">()</span></div>
 

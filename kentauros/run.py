@@ -3,8 +3,6 @@ This module contains the 'run' main function that is called when the
 package is executed by the setuptools-installed 'ktr' script.
 """
 
-# TODO: add run_config() and run_create() entry points to simplify run()
-
 
 import glob
 import os

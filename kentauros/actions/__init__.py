@@ -390,9 +390,7 @@ class RefreshAction(Action):
         self.atype = ActionType.REFRESH
 
     def execute(self):
-        self.package.source.refresh()
-        # TODO: Source.refresh() needs return value from .get()
-        return True
+        return self.package.source.refresh()
 
 
 class StatusAction(Action):

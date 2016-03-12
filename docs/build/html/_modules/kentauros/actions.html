@@ -518,9 +518,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">atype</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">REFRESH</span>
 
 <div class="viewcode-block" id="RefreshAction.execute"><a class="viewcode-back" href="../../apidoc/kentauros.actions.html#kentauros.actions.RefreshAction.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
-        <span class="c1"># TODO: Source.refresh() needs return value from .get()</span>
-        <span class="k">return</span> <span class="bp">True</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="StatusAction"><a class="viewcode-back" href="../../apidoc/kentauros.actions.html#kentauros.actions.StatusAction">[docs]</a><span class="k">class</span> <span class="nc">StatusAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
