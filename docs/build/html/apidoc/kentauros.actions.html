@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kentauros.actions package &mdash; kentauros 0.9.2dev documentation</title>
+  <title>kentauros.actions package &mdash; kentauros 0.9.4dev documentation</title>
   
 
   
@@ -24,16 +24,16 @@
 
   
   
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   
 
   
 
   
-    <link rel="top" title="kentauros 0.9.2dev documentation" href="index.html"/> 
+    <link rel="top" title="kentauros 0.9.4dev documentation" href="../index.html"/> 
 
   
-  <script src="_static/js/modernizr.min.js"></script>
+  <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -48,7 +48,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> kentauros
+            <a href="../index.html" class="icon icon-home"> kentauros
           
 
           
@@ -58,14 +58,14 @@
             
             
               <div class="version">
-                0.9.2dev
+                0.9.4dev
               </div>
             
           
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -79,9 +79,14 @@
           
             
             
-                <ul class="simple">
+                <!-- Local TOC -->
+                <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">kentauros.actions package</a><ul>
+<li><a class="reference internal" href="#module-kentauros.actions">Module contents</a></li>
 </ul>
-
+</li>
+</ul>
+</div>
             
           
         </div>
@@ -93,7 +98,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">kentauros</a>
+        <a href="../index.html">kentauros</a>
       </nav>
 
 
@@ -108,13 +113,13 @@
 
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
+    <li><a href="../index.html">Docs</a> &raquo;</li>
       
     <li>kentauros.actions package</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/kentauros.actions.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/kentauros.actions.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -133,7 +138,7 @@ are used to hold information about actions specified at command line and are
 used to execute their respective actions.</p>
 <dl class="class">
 <dt id="kentauros.actions.Action">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">Action</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#Action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.Action" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">Action</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#Action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.Action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>This class is the base class for all defined actions. For every action that
 can be specified at ktr command line, there is an Action subclass.</p>
@@ -158,7 +163,7 @@ can be specified at ktr command line, there is an Action subclass.</p>
 </table>
 <dl class="method">
 <dt id="kentauros.actions.Action.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#Action.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.Action.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#Action.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.Action.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method runs the action corresponding to the Action instance on the
 package specified at initialisation. It is overridden by subclasses to
 contain the real code for the action. Here, it is only a dummy method
@@ -178,7 +183,7 @@ success of executed action</td>
 
 <dl class="class">
 <dt id="kentauros.actions.BuildAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">BuildAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#BuildAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.BuildAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">BuildAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#BuildAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.BuildAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>This Action subclass contains information for executing a local build of the
 package specified at initialisation.</p>
@@ -199,7 +204,7 @@ package specified at initialisation.</p>
 </table>
 <dl class="method">
 <dt id="kentauros.actions.BuildAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#BuildAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.BuildAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#BuildAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.BuildAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method runs the local build corresponding to the package specified
 at initialisation, with the configuration from package configuration
 file. This method executes the <a class="reference internal" href="kentauros.build.html#kentauros.build.Builder.build" title="kentauros.build.Builder.build"><code class="xref py py-meth docutils literal"><span class="pre">kentauros.build.Builder.build()</span></code></a>
@@ -219,7 +224,7 @@ method of the Builder instance in the specified package.</p>
 
 <dl class="class">
 <dt id="kentauros.actions.ChainAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ChainAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ChainAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ChainAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ChainAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ChainAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ChainAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>This Action subclass contains information for executing a &#8220;chain reaction&#8221;
 on the package specified at initialisation, which means the following:</p>
@@ -254,7 +259,7 @@ successful</li>
 </table>
 <dl class="method">
 <dt id="kentauros.actions.ChainAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ChainAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ChainAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ChainAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ChainAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method runs the &#8220;chain reaction&#8221; corresponding to the package
 specified at initialisation, with the configuration from the package
 configuration file.</p>
@@ -273,7 +278,7 @@ configuration file.</p>
 
 <dl class="class">
 <dt id="kentauros.actions.CleanAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">CleanAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#CleanAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CleanAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">CleanAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#CleanAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CleanAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>This Action subclass contains information for cleaning up the sources of the
 package specified at initialisation.</p>
@@ -294,7 +299,7 @@ package specified at initialisation.</p>
 </table>
 <dl class="method">
 <dt id="kentauros.actions.CleanAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#CleanAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CleanAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#CleanAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CleanAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method cleans up the sources of to the package specified at
 initialisation. It executes the <code class="xref py py-meth docutils literal"><span class="pre">kentauros.source.Source.clean()</span></code>
 method of the Source instance in the specified package.</p>
@@ -313,7 +318,7 @@ always <em>True</em> at the moment</td>
 
 <dl class="class">
 <dt id="kentauros.actions.ConfigAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConfigAction</code><span class="sig-paren">(</span><em>package: kentauros.package.Package</em>, <em>force: bool</em>, <em>section: str</em>, <em>key: str</em>, <em>value: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConfigAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConfigAction</code><span class="sig-paren">(</span><em>package: kentauros.package.Package</em>, <em>force: bool</em>, <em>section: str</em>, <em>key: str</em>, <em>value: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ConfigAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>This Action subclass contains information for changing package configuration
 values stored in the package&#8217;s *.conf file.</p>
@@ -342,7 +347,7 @@ values stored in the package&#8217;s *.conf file.</p>
 </table>
 <dl class="method">
 <dt id="kentauros.actions.ConfigAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConfigAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ConfigAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method checks if the specified section already exists in the
 configuration file - and creates it, if it doesn&#8217;t. Following this
 check, it will change or add <cite>section</cite>/<cite>key</cite> to <cite>value</cite> in the
@@ -363,7 +368,7 @@ always <em>True</em> at the moment</td>
 
 <dl class="class">
 <dt id="kentauros.actions.ConstructAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConstructAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConstructAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConstructAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConstructAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ConstructAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConstructAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>This Action subclass contains information for constructing the source
 package from sources and package specification for the package specified at
@@ -391,7 +396,7 @@ increment the number.</p>
 </table>
 <dl class="method">
 <dt id="kentauros.actions.ConstructAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ConstructAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConstructAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ConstructAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConstructAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method executes several <code class="xref py py-class docutils literal"><span class="pre">kentauros.construct.Constructor</span></code>
 methods to execute the source package build.</p>
 <ul class="simple">
@@ -418,117 +423,117 @@ release number, etc.</li>
 
 <dl class="class">
 <dt id="kentauros.actions.CreateAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">CreateAction</code><span class="sig-paren">(</span><em>name</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#CreateAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CreateAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">CreateAction</code><span class="sig-paren">(</span><em>name</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#CreateAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CreateAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.CreateAction:
 action for initialising an empty package from templates</p>
 <dl class="method">
 <dt id="kentauros.actions.CreateAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#CreateAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CreateAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#CreateAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CreateAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.ExportAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ExportAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ExportAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ExportAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ExportAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ExportAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ExportAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.ExportAction:
 action for exporting sources from repository</p>
 <dl class="method">
 <dt id="kentauros.actions.ExportAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#ExportAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ExportAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ExportAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ExportAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.GetAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">GetAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#GetAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.GetAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">GetAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#GetAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.GetAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.GetAction:
 action for getting sources</p>
 <dl class="method">
 <dt id="kentauros.actions.GetAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#GetAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.GetAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#GetAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.GetAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.PrepareAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">PrepareAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#PrepareAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.PrepareAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">PrepareAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#PrepareAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.PrepareAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.PrepareAction:
 action for preparing sources (get/update, export)</p>
 <dl class="method">
 <dt id="kentauros.actions.PrepareAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#PrepareAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.PrepareAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#PrepareAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.PrepareAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.RefreshAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">RefreshAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#RefreshAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.RefreshAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">RefreshAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#RefreshAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.RefreshAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.RefreshAction:
 action for refreshing sources (clean + get)</p>
 <dl class="method">
 <dt id="kentauros.actions.RefreshAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#RefreshAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.RefreshAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#RefreshAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.RefreshAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.StatusAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">StatusAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#StatusAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.StatusAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">StatusAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#StatusAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.StatusAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.StatusAction:
 action for displaying configuration values and available packages</p>
 <dl class="method">
 <dt id="kentauros.actions.StatusAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#StatusAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.StatusAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#StatusAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.StatusAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.UpdateAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">UpdateAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#UpdateAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UpdateAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">UpdateAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#UpdateAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UpdateAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.UpdateAction:
 action for updating sources</p>
 <dl class="method">
 <dt id="kentauros.actions.UpdateAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#UpdateAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UpdateAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#UpdateAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UpdateAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.UploadAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">UploadAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#UploadAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UploadAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">UploadAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#UploadAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UploadAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.UploadAction:
 action for uploading source package</p>
 <dl class="method">
 <dt id="kentauros.actions.UploadAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#UploadAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UploadAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#UploadAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UploadAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.VerifyAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">VerifyAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#VerifyAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.VerifyAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">VerifyAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#VerifyAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.VerifyAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.VerifyAction:
 action for verifying that everything is in place</p>
 <dl class="method">
 <dt id="kentauros.actions.VerifyAction.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kentauros/actions.html#VerifyAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.VerifyAction.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#VerifyAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.VerifyAction.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -567,22 +572,22 @@ action for verifying that everything is in place</p>
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.2dev',
+            URL_ROOT:'../',
+            VERSION:'0.9.4dev',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
         };
     </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
 
   
 
   
   
-    <script type="text/javascript" src="_static/js/theme.js"></script>
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
   
 
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kentauros.run &mdash; kentauros 0.9.2dev documentation</title>
+  <title>kentauros.run &mdash; kentauros 0.9.4dev documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../index.html"/>
+    <link rel="top" title="kentauros 0.9.4dev documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.9.2dev
+                0.9.4dev
               </div>
             
           
@@ -138,7 +138,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">kentauros.actions</span> <span class="kn">import</span> <span class="n">ACTION_DICT</span>
-<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">ActionType</span>
+<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">ActionType</span><span class="p">,</span> <span class="n">InstanceType</span>
 
 <span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">get_debug</span><span class="p">,</span> <span class="n">get_verby</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">dbg</span>
 <span class="kn">from</span> <span class="nn">kentauros.init.cli</span> <span class="kn">import</span> <span class="n">CLIArgs</span><span class="p">,</span> <span class="n">get_parsed_cli</span>
@@ -149,7 +149,7 @@
 <span class="kn">from</span> <span class="nn">kentauros.package</span> <span class="kn">import</span> <span class="n">Package</span>
 
 
-<div class="viewcode-block" id="get_action_args"><a class="viewcode-back" href="../../kentauros.html#kentauros.run.get_action_args">[docs]</a><span class="k">def</span> <span class="nf">get_action_args</span><span class="p">(</span><span class="n">cli_args</span><span class="p">,</span> <span class="n">pkgname</span><span class="p">,</span> <span class="n">action_type_enum</span><span class="p">):</span>
+<div class="viewcode-block" id="get_action_args"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.run.get_action_args">[docs]</a><span class="k">def</span> <span class="nf">get_action_args</span><span class="p">(</span><span class="n">cli_args</span><span class="p">,</span> <span class="n">pkgname</span><span class="p">,</span> <span class="n">action_type_enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function returns arguments for an Action() constructor as tuple.</span>
 <span class="sd">    It only constructs Package() objects as needed.</span>
@@ -178,10 +178,12 @@
     <span class="n">action_args_dict</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">UPLOAD</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">force</span><span class="p">,)</span>
     <span class="n">action_args_dict</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">VERIFY</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">force</span><span class="p">,)</span>
 
-    <span class="n">action_args_dict</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">force</span><span class="p">,</span>
-                                           <span class="n">cli_args</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span>
-                                           <span class="n">cli_args</span><span class="o">.</span><span class="n">config_key</span><span class="p">,</span>
-                                           <span class="n">cli_args</span><span class="o">.</span><span class="n">config_value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">action_type_enum</span> <span class="o">==</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">:</span>
+        <span class="n">action_args_dict</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">force</span><span class="p">,</span>
+                                               <span class="n">cli_args</span><span class="o">.</span><span class="n">config_section</span><span class="p">,</span>
+                                               <span class="n">cli_args</span><span class="o">.</span><span class="n">config_key</span><span class="p">,</span>
+                                               <span class="n">cli_args</span><span class="o">.</span><span class="n">config_value</span><span class="p">)</span>
+
     <span class="n">action_args_dict</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CREATE</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">force</span><span class="p">,)</span>
 
     <span class="k">if</span> <span class="n">action_type_enum</span> <span class="o">==</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CREATE</span><span class="p">:</span>
@@ -190,7 +192,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">Package</span><span class="p">(</span><span class="n">pkgname</span><span class="p">),)</span> <span class="o">+</span> <span class="n">action_args_dict</span><span class="p">[</span><span class="n">action_type_enum</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../kentauros.html#kentauros.run.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.run.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
     <span class="s2">&quot;will be run if executed by &#39;ktr&#39; script&quot;</span>
     <span class="n">log_prefix1</span> <span class="o">=</span> <span class="s2">&quot;ktr: &quot;</span>
     <span class="n">log_prefix2</span> <span class="o">=</span> <span class="s2">&quot;     - &quot;</span>
@@ -255,6 +257,68 @@
 
     <span class="k">print</span><span class="p">()</span></div>
 
+
+<div class="viewcode-block" id="run_config"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.run.run_config">[docs]</a><span class="k">def</span> <span class="nf">run_config</span><span class="p">():</span>
+    <span class="s2">&quot;will be run if executed by &#39;ktr-config&#39; script&quot;</span>
+    <span class="n">log_prefix1</span> <span class="o">=</span> <span class="s2">&quot;ktr-config: &quot;</span>
+    <span class="n">log_prefix2</span> <span class="o">=</span> <span class="s2">&quot;            - &quot;</span>
+
+    <span class="k">print</span><span class="p">()</span>
+
+    <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;DEBUG set: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_debug</span><span class="p">()),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;VERBOSITY: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_verby</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;/2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;BASEDIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">basedir</span><span class="p">)</span>
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;CONFDIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">confdir</span><span class="p">)</span>
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;DATADIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">datadir</span><span class="p">)</span>
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;PACKDIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">packdir</span><span class="p">)</span>
+    <span class="n">dbg</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;SPECDIR: &quot;</span> <span class="o">+</span> <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">specdir</span><span class="p">)</span>
+
+    <span class="n">cli_args</span> <span class="o">=</span> <span class="n">CLIArgs</span><span class="p">(</span><span class="n">instance_type</span><span class="o">=</span><span class="n">InstanceType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">)</span>
+    <span class="n">cli_args</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">get_parsed_cli</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">action</span> <span class="o">!=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;ktr-config does not take action arguments.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">cli_args</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span>
+
+    <span class="n">ktr_bootstrap</span><span class="p">()</span>
+
+    <span class="n">pkgs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="c1"># if only specified packages are to be processed:</span>
+    <span class="c1"># process packages only</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">packages_all</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">packages</span><span class="p">:</span>
+            <span class="n">pkgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># if all package are to be processed:</span>
+    <span class="c1"># get package configs present in CONFDIR</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pkg_conf_paths</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">ktr_get_conf</span><span class="p">()</span><span class="o">.</span><span class="n">confdir</span><span class="p">,</span> <span class="s2">&quot;*.conf&quot;</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">pkg_conf_path</span> <span class="ow">in</span> <span class="n">pkg_conf_paths</span><span class="p">:</span>
+            <span class="n">pkgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pkg_conf_path</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;.conf&quot;</span><span class="p">))</span>
+
+    <span class="c1"># log list of found packages</span>
+    <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="s2">&quot;Packages:&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">pkgs</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">log_prefix2</span> <span class="o">+</span> <span class="n">package</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># run action for every specified package</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">pkgs</span><span class="p">:</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">ACTION_DICT</span><span class="p">[</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">](</span>
+            <span class="o">*</span><span class="n">get_action_args</span><span class="p">(</span><span class="n">cli_args</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">))</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;: Success!&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">log_prefix1</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;: Not successful.&quot;</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">()</span></div>
+
 </pre></div>
 
            </div>
@@ -288,7 +352,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.9.2dev',
+            VERSION:'0.9.4dev',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kentauros.init.cli &mdash; kentauros 0.9.2dev documentation</title>
+  <title>kentauros.init.cli &mdash; kentauros 0.9.4dev documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../../index.html"/>
+    <link rel="top" title="kentauros 0.9.4dev documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.9.2dev
+                0.9.4dev
               </div>
             
           
@@ -132,14 +132,17 @@
 
 <span class="kn">import</span> <span class="nn">argparse</span>
 
-<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">ActionType</span><span class="p">,</span> <span class="n">KtrConfType</span>
+<span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">ActionType</span><span class="p">,</span> <span class="n">KtrConfType</span><span class="p">,</span> <span class="n">InstanceType</span>
 
 
-<div class="viewcode-block" id="get_parsed_cli"><a class="viewcode-back" href="../../../kentauros.init.html#kentauros.init.cli.get_parsed_cli">[docs]</a><span class="k">def</span> <span class="nf">get_parsed_cli</span><span class="p">():</span>
+<div class="viewcode-block" id="get_parsed_cli"><a class="viewcode-back" href="../../../apidoc/kentauros.init.html#kentauros.init.cli.get_parsed_cli">[docs]</a><span class="k">def</span> <span class="nf">get_parsed_cli</span><span class="p">(</span><span class="n">instance_type</span><span class="o">=</span><span class="n">InstanceType</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.init.cli.cli_parse():</span>
 <span class="sd">    function that builds the kentauros CLI parser and returns the parsed values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instance_type</span><span class="p">,</span> <span class="n">InstanceType</span><span class="p">)</span>
+
     <span class="n">cliparser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Update, build, upload packages. All from source.&quot;</span><span class="p">,</span>
         <span class="n">prog</span><span class="o">=</span><span class="s2">&quot;kentauros&quot;</span><span class="p">)</span>
@@ -205,151 +208,163 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specify preferred configuration to be used &quot;</span> <span class="o">+</span>\
              <span class="s2">&quot;(cli, env, project, user, system, default, fallback)&quot;</span><span class="p">)</span>
 
-    <span class="c1"># sub-commands for ktr</span>
-    <span class="n">parsers</span> <span class="o">=</span> <span class="n">cliparser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span>
-        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;commands&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;kentauros accepts the sub-commands given below&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">instance_type</span> <span class="o">==</span> <span class="n">InstanceType</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">:</span>
+        <span class="c1"># sub-commands for ktr</span>
+        <span class="n">parsers</span> <span class="o">=</span> <span class="n">cliparser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;commands&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;kentauros accepts the sub-commands given below&quot;</span><span class="p">)</span>
 
-    <span class="n">package_parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-    <span class="n">package_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;package&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
-        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;package name&quot;</span><span class="p">)</span>
-    <span class="n">package_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;--all&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_const&quot;</span><span class="p">,</span>
-        <span class="n">const</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;apply action to every package with valid configuration&quot;</span><span class="p">)</span>
-    <span class="n">package_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--force&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_const&quot;</span><span class="p">,</span>
-        <span class="n">const</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;force actions, even if no updates were available&quot;</span><span class="p">)</span>
+        <span class="n">package_parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">package_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;package&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;package name&quot;</span><span class="p">)</span>
+        <span class="n">package_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;--all&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_const&quot;</span><span class="p">,</span>
+            <span class="n">const</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;apply action to every package with valid configuration&quot;</span><span class="p">)</span>
+        <span class="n">package_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--force&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_const&quot;</span><span class="p">,</span>
+            <span class="n">const</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;force actions, even if no updates were available&quot;</span><span class="p">)</span>
 
-    <span class="n">build_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;build&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;build package locally as specified by package.conf&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;build package locally&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">build_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;build&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;build package locally as specified by package.conf&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;build package locally&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">build_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">BUILD</span><span class="p">)</span>
 
-    <span class="n">chain_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;chain&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;run chain reaction (get/update, construct, build, upload)&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;comlete source to upload toolchain&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">chain_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;chain&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;run toolchain (get/update, construct, build, upload)&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;comlete source to upload toolchain&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">chain_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CHAIN</span><span class="p">)</span>
 
-    <span class="n">clean_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;clean&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;clean sources of specified package(s)&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clean package sources&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">clean_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;clean&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;clean sources of specified package(s)&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clean package sources&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">clean_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">)</span>
 
-    <span class="n">config_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;config&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;change package configuration stored in package.conf file&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;change configuration values&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
-    <span class="n">config_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--section&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specify section of config file&quot;</span><span class="p">)</span>
-    <span class="n">config_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-k&quot;</span><span class="p">,</span> <span class="s2">&quot;--key&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specify key of config file in section specified by --section&quot;</span><span class="p">)</span>
-    <span class="n">config_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;-V&quot;</span><span class="p">,</span> <span class="s2">&quot;--value&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specify value to be written to --section/--key&quot;</span><span class="p">)</span>
+        <span class="n">construct_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;construct&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;construct source package as specified by *.conf&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;construct source package&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">construct_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONSTRUCT</span><span class="p">)</span>
 
-    <span class="n">construct_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;construct&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;construct source package as specified by package.conf&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;construct source package&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">export_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;export&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;export sources from repository to tarball&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;export package sources&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">export_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">EXPORT</span><span class="p">)</span>
 
-    <span class="n">create_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;create&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;create new package and create template.conf and .spec&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;create package from template&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">get_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;get&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;get sources specified in package configuration&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;get package sources&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">get_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
 
-    <span class="n">export_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;export&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;export sources from repository to tarball&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;export package sources&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">prepare_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;prepare&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;prepare sources for further use (get/update, export)&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;prepare source tarball for package&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">prepare_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">PREPARE</span><span class="p">)</span>
 
-    <span class="n">get_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;get&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;get sources specified in package configuration&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;get package sources&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">refresh_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;refresh&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;refresh package sources (clean, get)&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;refresh package sources&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">refresh_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">REFRESH</span><span class="p">)</span>
 
-    <span class="n">prepare_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;prepare&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;prepare sources for further use (get/update, export)&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;prepare source tarball for package&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">status_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;display kentauros status (configuration, packages)&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;display kentauros status&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">status_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
 
-    <span class="n">refresh_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;refresh&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;refresh package sources (clean, get)&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;refresh package sources&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">update_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;update&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;update sources specified in package configuration&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;update package sources&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">update_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">UPDATE</span><span class="p">)</span>
 
-    <span class="n">status_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;status&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;display kentauros status (configuration, packages)&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;display kentauros status&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">upload_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;upload&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;upload source package to cloud service or similar&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;upload source package&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">upload_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">UPLOAD</span><span class="p">)</span>
 
-    <span class="n">update_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;update&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;update sources specified in package configuration&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;update package sources&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">verify_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="s2">&quot;verify&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;verify that package *.conf and spec &quot;</span> <span class="o">+</span> \
+                        <span class="s2">&quot;are present and valid&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;verify package conf and spec&quot;</span><span class="p">,</span>
+            <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+        <span class="n">verify_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">VERIFY</span><span class="p">)</span>
 
-    <span class="n">upload_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;upload&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;upload source package to cloud build service or similar&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;upload source package&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
 
-    <span class="n">verify_parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
-        <span class="s2">&quot;verify&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;verify that package configuration and specification &quot;</span> <span class="o">+</span> \
-                    <span class="s2">&quot;are present and valid&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;verify package conf and spec&quot;</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">package_parser</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">instance_type</span> <span class="o">==</span> <span class="n">InstanceType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">:</span>
+        <span class="n">cliparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;package&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;package name&quot;</span><span class="p">)</span>
+        <span class="n">cliparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;--all&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_const&quot;</span><span class="p">,</span>
+            <span class="n">const</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;apply action to every package with valid configuration&quot;</span><span class="p">)</span>
 
-    <span class="n">build_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">BUILD</span><span class="p">)</span>
-    <span class="n">chain_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CHAIN</span><span class="p">)</span>
-    <span class="n">config_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">)</span>
-    <span class="n">clean_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">)</span>
-    <span class="n">construct_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONSTRUCT</span><span class="p">)</span>
-    <span class="n">create_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CREATE</span><span class="p">)</span>
-    <span class="n">export_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">EXPORT</span><span class="p">)</span>
-    <span class="n">get_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
-    <span class="n">prepare_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">PREPARE</span><span class="p">)</span>
-    <span class="n">refresh_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">REFRESH</span><span class="p">)</span>
-    <span class="n">status_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
-    <span class="n">update_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">UPDATE</span><span class="p">)</span>
-    <span class="n">upload_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">UPLOAD</span><span class="p">)</span>
-    <span class="n">verify_parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">VERIFY</span><span class="p">)</span>
+        <span class="n">cliparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--section&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specify section of config file&quot;</span><span class="p">)</span>
+        <span class="n">cliparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-k&quot;</span><span class="p">,</span> <span class="s2">&quot;--key&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specify key of config file in section specified by --section&quot;</span><span class="p">)</span>
+        <span class="n">cliparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-V&quot;</span><span class="p">,</span> <span class="s2">&quot;--value&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specify value to be written to --section/--key&quot;</span><span class="p">)</span>
+        <span class="n">cliparser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">)</span>
+
+
+    <span class="k">elif</span> <span class="n">instance_type</span> <span class="o">==</span> <span class="n">InstanceType</span><span class="o">.</span><span class="n">CREATE</span><span class="p">:</span>
+        <span class="n">cliparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;package&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+            <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;package name&quot;</span><span class="p">)</span>
+        <span class="n">cliparser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CREATE</span><span class="p">)</span>
+
 
     <span class="n">cli_args</span> <span class="o">=</span> <span class="n">cliparser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">cli_args</span></div>
 
 
-<div class="viewcode-block" id="CLIArgs"><a class="viewcode-back" href="../../../kentauros.init.html#kentauros.init.cli.CLIArgs">[docs]</a><span class="k">class</span> <span class="nc">CLIArgs</span><span class="p">:</span>
+<div class="viewcode-block" id="CLIArgs"><a class="viewcode-back" href="../../../apidoc/kentauros.init.html#kentauros.init.cli.CLIArgs">[docs]</a><span class="k">class</span> <span class="nc">CLIArgs</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.init.cli.CLIArgs:</span>
 <span class="sd">    class that initialises CLI argument parsing and prepares them for reading</span>
@@ -357,8 +372,9 @@
 
     <span class="c1"># pylint: disable=too-many-instance-attributes</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance_type</span><span class="o">=</span><span class="n">InstanceType</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">):</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="n">instance_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verby</span> <span class="o">=</span> <span class="mi">2</span>
 
@@ -375,13 +391,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">packages</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">packages_all</span> <span class="o">=</span> <span class="bp">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">confedit</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_key</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_value</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">==</span> <span class="n">InstanceType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">confedit</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_key</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_value</span> <span class="o">=</span> <span class="bp">None</span>
 
 
-<div class="viewcode-block" id="CLIArgs.parse_args"><a class="viewcode-back" href="../../../kentauros.init.html#kentauros.init.cli.CLIArgs.parse_args">[docs]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli_args</span><span class="p">):</span>
+<div class="viewcode-block" id="CLIArgs.parse_args"><a class="viewcode-back" href="../../../apidoc/kentauros.init.html#kentauros.init.cli.CLIArgs.parse_args">[docs]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli_args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        kentauros.init.cli.CLIArgs.parse_args():</span>
 <span class="sd">        method that overrides initialised default values with values from</span>
@@ -406,11 +423,15 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">priconf</span> <span class="o">=</span> <span class="n">KtrConfType</span><span class="p">[</span><span class="n">cli_args</span><span class="o">.</span><span class="n">priconf</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">priconf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">priconf</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="k">if</span> <span class="s1">&#39;action&#39;</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">action</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">==</span> <span class="n">InstanceType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">ActionType</span><span class="o">.</span><span class="n">CONFIG</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -429,15 +450,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="bp">False</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;section&quot;</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="p">)</span> <span class="ow">and</span> \
-           <span class="p">(</span><span class="s2">&quot;key&quot;</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="p">)</span> <span class="ow">and</span> \
-           <span class="p">(</span><span class="s2">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">confedit</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">section</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config_key</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">key</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config_value</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">value</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">confedit</span> <span class="o">=</span> <span class="bp">False</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">==</span> <span class="n">InstanceType</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;section&quot;</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="p">)</span> <span class="ow">and</span> \
+               <span class="p">(</span><span class="s2">&quot;key&quot;</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="p">)</span> <span class="ow">and</span> \
+               <span class="p">(</span><span class="s2">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">confedit</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config_section</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">section</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config_key</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">key</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config_value</span> <span class="o">=</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">confedit</span> <span class="o">=</span> <span class="bp">False</span></div></div>
 
 </pre></div>
 
@@ -472,7 +494,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.9.2dev',
+            VERSION:'0.9.4dev',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

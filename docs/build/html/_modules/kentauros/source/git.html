@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kentauros.source.git &mdash; kentauros 0.9.2dev documentation</title>
+  <title>kentauros.source.git &mdash; kentauros 0.9.4dev documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../../index.html"/>
+    <link rel="top" title="kentauros 0.9.4dev documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.9.2dev
+                0.9.4dev
               </div>
             
           
@@ -150,7 +150,7 @@
 <span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/source/git: &quot;</span>
 
 
-<div class="viewcode-block" id="GitSource"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource">[docs]</a><span class="k">class</span> <span class="nc">GitSource</span><span class="p">(</span><span class="n">Source</span><span class="p">):</span>
+<div class="viewcode-block" id="GitSource"><a class="viewcode-back" href="../../../apidoc/kentauros.source.html#kentauros.source.git.GitSource">[docs]</a><span class="k">class</span> <span class="nc">GitSource</span><span class="p">(</span><span class="n">Source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.source.git.GitSource:</span>
 <span class="sd">    Source subclass holding information and methods for handling git sources</span>
@@ -190,7 +190,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">saved_date</span> <span class="o">=</span> <span class="bp">None</span>
 
 
-<div class="viewcode-block" id="GitSource.date"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource.date">[docs]</a>    <span class="k">def</span> <span class="nf">date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GitSource.date"><a class="viewcode-back" href="../../../apidoc/kentauros.source.html#kentauros.source.git.GitSource.date">[docs]</a>    <span class="k">def</span> <span class="nf">date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        kentauros.source.git.GitSource.date():</span>
 <span class="sd">        method that returns the date and time string of last commit in repo</span>
@@ -243,7 +243,7 @@
         <span class="k">return</span> <span class="n">date</span></div>
 
 
-<div class="viewcode-block" id="GitSource.rev"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource.rev">[docs]</a>    <span class="k">def</span> <span class="nf">rev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GitSource.rev"><a class="viewcode-back" href="../../../apidoc/kentauros.source.html#kentauros.source.git.GitSource.rev">[docs]</a>    <span class="k">def</span> <span class="nf">rev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        kentauros.source.git.GitSource.rev():</span>
 <span class="sd">        method that returns the commit hash of last commit in repository</span>
@@ -276,7 +276,7 @@
         <span class="k">return</span> <span class="n">rev</span></div>
 
 
-<div class="viewcode-block" id="GitSource.formatver"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource.formatver">[docs]</a>    <span class="k">def</span> <span class="nf">formatver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GitSource.formatver"><a class="viewcode-back" href="../../../apidoc/kentauros.source.html#kentauros.source.git.GitSource.formatver">[docs]</a>    <span class="k">def</span> <span class="nf">formatver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
@@ -294,7 +294,7 @@
         <span class="k">return</span> <span class="n">ver</span></div>
 
 
-<div class="viewcode-block" id="GitSource.get"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GitSource.get"><a class="viewcode-back" href="../../../apidoc/kentauros.source.html#kentauros.source.git.GitSource.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        kentauros.source.git.GitSource.get():</span>
 <span class="sd">        method that gets the correspondig git repository</span>
@@ -386,7 +386,7 @@
         <span class="k">return</span> <span class="bp">True</span></div>
 
 
-<div class="viewcode-block" id="GitSource.update"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GitSource.update"><a class="viewcode-back" href="../../../apidoc/kentauros.source.html#kentauros.source.git.GitSource.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        kentauros.source.git.GitSource.update():</span>
 <span class="sd">        method that updates the correspondig git repository</span>
@@ -449,7 +449,7 @@
         <span class="k">return</span> <span class="n">rev_new</span> <span class="o">!=</span> <span class="n">rev_old</span></div>
 
 
-<div class="viewcode-block" id="GitSource.export"><a class="viewcode-back" href="../../../kentauros.source.html#kentauros.source.git.GitSource.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GitSource.export"><a class="viewcode-back" href="../../../apidoc/kentauros.source.html#kentauros.source.git.GitSource.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        kentauros.source.git.GitSource.export():</span>
 <span class="sd">        method that exports the correspondig git repository to tarball</span>
@@ -566,7 +566,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.9.2dev',
+            VERSION:'0.9.4dev',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

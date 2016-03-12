@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kentauros.definitions &mdash; kentauros 0.9.2dev documentation</title>
+  <title>kentauros.definitions &mdash; kentauros 0.9.4dev documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../index.html"/>
+    <link rel="top" title="kentauros 0.9.4dev documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.9.2dev
+                0.9.4dev
               </div>
             
           
@@ -145,7 +145,7 @@
 <span class="n">KTR_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0.9.4&quot;</span>
 
 
-<div class="viewcode-block" id="KtrConfType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.KtrConfType">[docs]</a><span class="k">class</span> <span class="nc">KtrConfType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="KtrConfType"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.definitions.KtrConfType">[docs]</a><span class="k">class</span> <span class="nc">KtrConfType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.definitions.KtrConfType</span>
 <span class="sd">    enum that defines all possible configuration sources.</span>
@@ -165,7 +165,7 @@
 
 
 <span class="nd">@unique</span>
-<div class="viewcode-block" id="ActionType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.ActionType">[docs]</a><span class="k">class</span> <span class="nc">ActionType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionType"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.definitions.ActionType">[docs]</a><span class="k">class</span> <span class="nc">ActionType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.definitions.ActionType:</span>
 <span class="sd">    enum containing all types of Action classes</span>
@@ -187,7 +187,7 @@
 
 
 <span class="nd">@unique</span>
-<div class="viewcode-block" id="BuilderType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.BuilderType">[docs]</a><span class="k">class</span> <span class="nc">BuilderType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="BuilderType"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.definitions.BuilderType">[docs]</a><span class="k">class</span> <span class="nc">BuilderType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.definitons.BuilderType:</span>
 <span class="sd">    enum that describes the kind of constructors supported</span>
@@ -197,7 +197,7 @@
 
 
 <span class="nd">@unique</span>
-<div class="viewcode-block" id="ConstructorType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.ConstructorType">[docs]</a><span class="k">class</span> <span class="nc">ConstructorType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="ConstructorType"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.definitions.ConstructorType">[docs]</a><span class="k">class</span> <span class="nc">ConstructorType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.definitons.ConstructorType:</span>
 <span class="sd">    enum that describes the kind of constructors supported</span>
@@ -207,7 +207,18 @@
 
 
 <span class="nd">@unique</span>
-<div class="viewcode-block" id="SourceType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.SourceType">[docs]</a><span class="k">class</span> <span class="nc">SourceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="InstanceType"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.definitions.InstanceType">[docs]</a><span class="k">class</span> <span class="nc">InstanceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kentauros.definitions.InstanceType:</span>
+<span class="sd">    enum that describes whether ktr, ktr-config or ktr-create has been invoked</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">NORMAL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">CONFIG</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">CREATE</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<span class="nd">@unique</span>
+<div class="viewcode-block" id="SourceType"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.definitions.SourceType">[docs]</a><span class="k">class</span> <span class="nc">SourceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.definitons.SourceType:</span>
 <span class="sd">    enum that describes the kind of package sources supported</span>
@@ -220,7 +231,7 @@
 
 
 <span class="nd">@unique</span>
-<div class="viewcode-block" id="UploaderType"><a class="viewcode-back" href="../../kentauros.html#kentauros.definitions.UploaderType">[docs]</a><span class="k">class</span> <span class="nc">UploaderType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="UploaderType"><a class="viewcode-back" href="../../apidoc/kentauros.html#kentauros.definitions.UploaderType">[docs]</a><span class="k">class</span> <span class="nc">UploaderType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.definitons.UploaderType:</span>
 <span class="sd">    enum that describes the kind of uploaders supported</span>
@@ -261,7 +272,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.9.2dev',
+            VERSION:'0.9.4dev',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

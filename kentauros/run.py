@@ -123,9 +123,9 @@ def run():
         success = action.execute()
 
         if success:
-            log(log_prefix1 + "Success!")
+            log(log_prefix1 + name + ": Success!")
         else:
-            log(log_prefix1 + "Not successful.")
+            log(log_prefix1 + name + ": Not successful.")
 
     print()
 

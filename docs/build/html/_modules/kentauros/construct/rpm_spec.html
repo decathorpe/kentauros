@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kentauros.construct.rpm_spec &mdash; kentauros 0.9.2dev documentation</title>
+  <title>kentauros.construct.rpm_spec &mdash; kentauros 0.9.4dev documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="kentauros 0.9.2dev documentation" href="../../../index.html"/>
+    <link rel="top" title="kentauros 0.9.4dev documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.9.2dev
+                0.9.4dev
               </div>
             
           
@@ -142,7 +142,7 @@
 <span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/construct/rpm_spec: &quot;</span>
 
 
-<div class="viewcode-block" id="RPMSpecError"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.RPMSpecError">[docs]</a><span class="k">class</span> <span class="nc">RPMSpecError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="RPMSpecError"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.RPMSpecError">[docs]</a><span class="k">class</span> <span class="nc">RPMSpecError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.RPMSpecError:</span>
 <span class="sd">    exception for rpm spec errors</span>
@@ -154,7 +154,7 @@
         <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="spec_preamble_bzr"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_bzr">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_bzr</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_preamble_bzr"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_bzr">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_bzr</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_preamble_bzr():</span>
 <span class="sd">    returns rpm spec %defines lines formatted nicely for bzr sources</span>
@@ -163,7 +163,7 @@
     <span class="n">rev_define</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">efine rev &quot;</span> <span class="o">+</span> <span class="n">source</span><span class="o">.</span><span class="n">rev</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">return</span> <span class="n">rev_define</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 
-<div class="viewcode-block" id="spec_preamble_git"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_git">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_git</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_preamble_git"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_git">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_git</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_preamble_git():</span>
 <span class="sd">    returns rpm spec %defines lines formatted nicely for git sources</span>
@@ -173,7 +173,7 @@
     <span class="n">rev_define</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">efine rev &quot;</span> <span class="o">+</span> <span class="n">source</span><span class="o">.</span><span class="n">rev</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">return</span> <span class="n">date_define</span> <span class="o">+</span> <span class="n">rev_define</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 
-<div class="viewcode-block" id="spec_preamble_url"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_url">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_url</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_preamble_url"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_preamble_url">[docs]</a><span class="k">def</span> <span class="nf">spec_preamble_url</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_preamble_url():</span>
 <span class="sd">    returns rpm spec %defines lines formatted nicely for url sources</span>
@@ -188,7 +188,7 @@
 <span class="n">SPEC_PREAMBLE_DICT</span><span class="p">[</span><span class="n">SourceType</span><span class="o">.</span><span class="n">URL</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec_preamble_url</span>
 
 
-<div class="viewcode-block" id="spec_version_bzr"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_bzr">[docs]</a><span class="k">def</span> <span class="nf">spec_version_bzr</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_version_bzr"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_bzr">[docs]</a><span class="k">def</span> <span class="nf">spec_version_bzr</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_version_bzr():</span>
 <span class="sd">    returns rpm spec &quot;Version:&quot; tagline formatted nicely for bzr sources</span>
@@ -197,7 +197,7 @@
     <span class="n">ver_str</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;~rev%{rev}&quot;</span>
     <span class="k">return</span> <span class="n">ver_str</span></div>
 
-<div class="viewcode-block" id="spec_version_git"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_git">[docs]</a><span class="k">def</span> <span class="nf">spec_version_git</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_version_git"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_git">[docs]</a><span class="k">def</span> <span class="nf">spec_version_git</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_version_git():</span>
 <span class="sd">    returns rpm spec &quot;Version:&quot; tagline formatted nicely for git sources</span>
@@ -206,7 +206,7 @@
     <span class="n">ver_str</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;~git%{date}~%{rev}&quot;</span>
     <span class="k">return</span> <span class="n">ver_str</span></div>
 
-<div class="viewcode-block" id="spec_version_url"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_url">[docs]</a><span class="k">def</span> <span class="nf">spec_version_url</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_version_url"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_url">[docs]</a><span class="k">def</span> <span class="nf">spec_version_url</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_version_url():</span>
 <span class="sd">    returns rpm spec &quot;Version:&quot; tagline formatted nicely for url sources</span>
@@ -222,7 +222,7 @@
 <span class="n">SPEC_VERSION_DICT</span><span class="p">[</span><span class="n">SourceType</span><span class="o">.</span><span class="n">URL</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec_version_url</span>
 
 
-<div class="viewcode-block" id="spec_version_read"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_read">[docs]</a><span class="k">def</span> <span class="nf">spec_version_read</span><span class="p">(</span><span class="n">file_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_version_read"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_version_read">[docs]</a><span class="k">def</span> <span class="nf">spec_version_read</span><span class="p">(</span><span class="n">file_obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_version_read():</span>
 <span class="sd">    returns version string found on rpm spec &quot;Version:&quot; tagline</span>
@@ -239,7 +239,7 @@
     <span class="k">raise</span> <span class="n">RPMSpecError</span><span class="p">(</span><span class="s2">&quot;No Version tag was found in the file.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="spec_release_read"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_release_read">[docs]</a><span class="k">def</span> <span class="nf">spec_release_read</span><span class="p">(</span><span class="n">file_obj</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_release_read"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_release_read">[docs]</a><span class="k">def</span> <span class="nf">spec_release_read</span><span class="p">(</span><span class="n">file_obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_release_read():</span>
 <span class="sd">    returns release string found on rpm spec &quot;Release:&quot; tagline</span>
@@ -256,7 +256,7 @@
     <span class="k">raise</span> <span class="n">RPMSpecError</span><span class="p">(</span><span class="s2">&quot;No Release tag was found in the file.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="if_version"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.if_version">[docs]</a><span class="k">def</span> <span class="nf">if_version</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+<div class="viewcode-block" id="if_version"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.if_version">[docs]</a><span class="k">def</span> <span class="nf">if_version</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.if_version()</span>
 <span class="sd">    function returns version string if &quot;Version: &quot; is found on spec file line</span>
@@ -264,7 +264,7 @@
     <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Version:&quot;</span></div>
 
 
-<div class="viewcode-block" id="if_release"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.if_release">[docs]</a><span class="k">def</span> <span class="nf">if_release</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+<div class="viewcode-block" id="if_release"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.if_release">[docs]</a><span class="k">def</span> <span class="nf">if_release</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.if_release()</span>
 <span class="sd">    function returns release string if &quot;Release: &quot; is found on spec file line</span>
@@ -272,7 +272,7 @@
     <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Release:&quot;</span></div>
 
 
-<div class="viewcode-block" id="bump_release"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.bump_release">[docs]</a><span class="k">def</span> <span class="nf">bump_release</span><span class="p">(</span><span class="n">relstr_old</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="bump_release"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.bump_release">[docs]</a><span class="k">def</span> <span class="nf">bump_release</span><span class="p">(</span><span class="n">relstr_old</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.bump_release()</span>
 <span class="sd">    returns release string bumped by 1 (hopefully intelligently)</span>
@@ -280,13 +280,15 @@
     <span class="n">rnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">relstr_old</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">rest</span> <span class="o">=</span> <span class="n">relstr_old</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">reset</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">change</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reset</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">relstr_old</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">reset</span> <span class="ow">and</span> <span class="n">change</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">rnum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">rest</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">rest</span></div>
 
 
-<div class="viewcode-block" id="spec_bump"><a class="viewcode-back" href="../../../kentauros.construct.html#kentauros.construct.rpm_spec.spec_bump">[docs]</a><span class="k">def</span> <span class="nf">spec_bump</span><span class="p">(</span><span class="n">specfile</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="spec_bump"><a class="viewcode-back" href="../../../apidoc/kentauros.construct.html#kentauros.construct.rpm_spec.spec_bump">[docs]</a><span class="k">def</span> <span class="nf">spec_bump</span><span class="p">(</span><span class="n">specfile</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kentauros.construct.rpm_spec.spec_bump()</span>
 <span class="sd">    function bumps the spec file for new release (via rpmdev-bumpspec)</span>
@@ -344,7 +346,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.9.2dev',
+            VERSION:'0.9.4dev',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
