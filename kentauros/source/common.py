@@ -61,7 +61,8 @@ class Source():
         - return False when not
         """
 
-        # pylint: disable=no-self-use
+        log(LOGPREFIX1 + "Dummy method for exporting " + \
+            self.name + " sources invoked. No action will be executed.")
         return False
 
 
@@ -84,7 +85,8 @@ class Source():
         - return False when not
         """
 
-        # pylint: disable=no-self-use
+        log(LOGPREFIX1 + "Dummy method for getting " + \
+            self.name + " sources invoked. No action will be executed.")
         return False
 
 
@@ -108,7 +110,8 @@ class Source():
         - return False when either unsuccessful or no update available
         """
 
-        # pylint: disable=no-self-use
+        log(LOGPREFIX1 + "Dummy method for updating " + \
+            self.name + " sources invoked. No action will be executed.")
         return False
 
 

@@ -14,11 +14,11 @@
 </tr>
 <tr class="even">
 <td>info</td>
-<td>kentauros.conntest</td>
+<td>ktr-config</td>
 <td>&#160;</td>
-<td>17</td>
+<td>9</td>
 <td>0</td>
-<td>Locally disabling bare-except (W0702)</td>
+<td>Locally disabling invalid-name (C0103)</td>
 </tr>
 <tr class="odd">
 <td>info</td>
@@ -45,30 +45,22 @@
 <td>Locally disabling unsubscriptable-object (E1136)</td>
 </tr>
 <tr class="even">
-<td>info</td>
-<td>kentauros.source.common</td>
+<td>warning</td>
+<td>kentauros.actions.__init__</td>
 <td>&#160;</td>
-<td>64</td>
+<td>406</td>
 <td>0</td>
-<td>Locally disabling no-self-use (R0201)</td>
+<td>TODO: output package configuration / status</td>
 </tr>
 <tr class="odd">
-<td>info</td>
-<td>kentauros.source.common</td>
+<td>warning</td>
+<td>kentauros.actions.__init__</td>
 <td>&#160;</td>
-<td>87</td>
+<td>448</td>
 <td>0</td>
-<td>Locally disabling no-self-use (R0201)</td>
+<td>TODO: verify that package *.conf is valid</td>
 </tr>
 <tr class="even">
-<td>info</td>
-<td>kentauros.source.common</td>
-<td>&#160;</td>
-<td>111</td>
-<td>0</td>
-<td>Locally disabling no-self-use (R0201)</td>
-</tr>
-<tr class="odd">
 <td>info</td>
 <td>kentauros.config.__init__</td>
 <td>&#160;</td>
@@ -85,7 +77,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1648 statements analysed.</p><div>
+<p>1656 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -98,33 +90,33 @@
 </tr>
 <tr class="even">
 <td>module</td>
+<td>27</td>
 <td>26</td>
-<td>NC</td>
-<td>NC</td>
+<td>+1.00</td>
 <td>100.00</td>
-<td>0.00</td>
+<td>3.70</td>
 </tr>
 <tr class="odd">
 <td>class</td>
 <td>39</td>
-<td>NC</td>
-<td>NC</td>
+<td>39</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
 <td>91</td>
-<td>NC</td>
-<td>NC</td>
+<td>91</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>function</td>
 <td>35</td>
-<td>NC</td>
-<td>NC</td>
+<td>35</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -139,18 +131,18 @@ kentauros
   \-bootstrap (kentauros.run)
   \-build (kentauros.package)
   \-config (kentauros.source.git)
-  | \-cli (kentauros.config)
-  | \-common (kentauros.config.fallback)
+  | \-common (kentauros.config.cli)
   | \-envvar (kentauros.config)
+  | \-fallback (kentauros.config)
   \-conntest (kentauros.source.git)
   \-construct (kentauros.package)
   | \-rpm_spec (kentauros.construct)
-  \-definitions (kentauros.config.fallback)
-  \-init (kentauros.config.fallback)
+  \-definitions (kentauros.config.cli)
+  \-init (kentauros.config.cli)
   | \-cli (kentauros.config.cli)
   | \-env (kentauros.config)
   \-package (kentauros.actions)
-  \-run (ktr)
+  \-run (ktr-config)
   \-source (kentauros.package)
   | \-bzr (kentauros.source)
   | \-common (kentauros.source.git)
@@ -170,31 +162,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>1897</td>
-<td>50.40</td>
-<td>NC</td>
-<td>NC</td>
+<td>1909</td>
+<td>50.41</td>
+<td>1906</td>
+<td>+3.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
+<td>856</td>
+<td>22.60</td>
 <td>851</td>
-<td>22.61</td>
-<td>NC</td>
-<td>NC</td>
+<td>+5.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>202</td>
-<td>5.37</td>
-<td>NC</td>
-<td>NC</td>
+<td>200</td>
+<td>5.28</td>
+<td>198</td>
+<td>+2.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>814</td>
-<td>21.63</td>
-<td>NC</td>
-<td>NC</td>
+<td>822</td>
+<td>21.71</td>
+<td>816</td>
+<td>+6.00</td>
 </tr>
 </table>
 </div>
@@ -210,14 +202,14 @@ kentauros
 <tr class="even">
 <th>nb duplicated lines</th>
 <td>0</td>
-<td>NC</td>
-<td>NC</td>
+<td>0</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <th>percent duplicated lines</th>
 <td>0.000</td>
-<td>NC</td>
-<td>NC</td>
+<td>0.000</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -233,26 +225,45 @@ kentauros
 <tr class="even">
 <td>convention</td>
 <td>0</td>
-<td>NC</td>
-<td>NC</td>
+<td>0</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
 <td>0</td>
-<td>NC</td>
-<td>NC</td>
+<td>0</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>0</td>
-<td>NC</td>
-<td>NC</td>
+<td>2</td>
+<td>2</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>error</td>
 <td>0</td>
-<td>NC</td>
-<td>NC</td>
+<td>0</td>
+<td>=</td>
+</tr>
+</table>
+</div>
+<div>
+<h2>% errors / warnings by module</h2>
+<table>
+<tr class="header">
+<th>module</th>
+<th>error</th>
+<th>warning</th>
+<th>refactor</th>
+<th>convention</th>
+</tr>
+<tr class="even">
+<td>kentauros.actions.__init__</td>
+<td>0.00</td>
+<td>100.00</td>
+<td>0.00</td>
+<td>0.00</td>
 </tr>
 </table>
 </div>
@@ -265,13 +276,17 @@ kentauros
 </tr>
 <tr class="even">
 <td>locally-disabled</td>
-<td>8</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>fixme</td>
+<td>2</td>
 </tr>
 </table>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 10.00/10</div>
+Your code has been rated at 9.99/10 (previous run: 9.99/10, +0.00)</div>
 </div>
 </body>
 </html>
