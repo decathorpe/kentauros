@@ -189,7 +189,8 @@ class SrpmConstructor(Constructor):
             relreset = True
 
         # construct new release string
-        new_release = bump_release(old_release, relreset)
+        new_release = bump_release(old_release, relreset, change=False)
+        new_release = old_release
 
         # write preamble to new spec file
         new_specfile.write(preamble)

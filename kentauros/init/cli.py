@@ -4,14 +4,17 @@ kentauros.init.cli file
 
 import argparse
 
-from kentauros.definitions import ActionType, KtrConfType
+from kentauros.definitions import ActionType, KtrConfType, InstanceType
 
 
-def get_parsed_cli():
+def get_parsed_cli(instance_type=InstanceType.NORMAL):
     """
     kentauros.init.cli.cli_parse():
     function that builds the kentauros CLI parser and returns the parsed values
     """
+
+    assert isinstance(instance_type, InstanceType)
+
     cliparser = argparse.ArgumentParser(
         description="Update, build, upload packages. All from source.",
         prog="kentauros")
@@ -77,144 +80,156 @@ def get_parsed_cli():
         help="specify preferred configuration to be used " +\
              "(cli, env, project, user, system, default, fallback)")
 
-    # sub-commands for ktr
-    parsers = cliparser.add_subparsers(
-        title="commands",
-        description="kentauros accepts the sub-commands given below")
+    if instance_type == InstanceType.NORMAL:
+        # sub-commands for ktr
+        parsers = cliparser.add_subparsers(
+            title="commands",
+            description="kentauros accepts the sub-commands given below")
 
-    package_parser = argparse.ArgumentParser(add_help=False)
-    package_parser.add_argument(
-        "package",
-        action="store",
-        nargs="*",
-        help="package name")
-    package_parser.add_argument(
-        "-a", "--all",
-        action="store_const",
-        const=True,
-        default=False,
-        help="apply action to every package with valid configuration")
-    package_parser.add_argument(
-        "-f", "--force",
-        action="store_const",
-        const=True,
-        default=False,
-        help="force actions, even if no updates were available")
+        package_parser = argparse.ArgumentParser(add_help=False)
+        package_parser.add_argument(
+            "package",
+            action="store",
+            nargs="*",
+            help="package name")
+        package_parser.add_argument(
+            "-a", "--all",
+            action="store_const",
+            const=True,
+            default=False,
+            help="apply action to every package with valid configuration")
+        package_parser.add_argument(
+            "-f", "--force",
+            action="store_const",
+            const=True,
+            default=False,
+            help="force actions, even if no updates were available")
 
-    build_parser = parsers.add_parser(
-        "build",
-        description="build package locally as specified by package.conf",
-        help="build package locally",
-        parents=[package_parser])
+        build_parser = parsers.add_parser(
+            "build",
+            description="build package locally as specified by package.conf",
+            help="build package locally",
+            parents=[package_parser])
+        build_parser.set_defaults(action=ActionType.BUILD)
 
-    chain_parser = parsers.add_parser(
-        "chain",
-        description="run chain reaction (get/update, construct, build, upload)",
-        help="comlete source to upload toolchain",
-        parents=[package_parser])
+        chain_parser = parsers.add_parser(
+            "chain",
+            description="run toolchain (get/update, construct, build, upload)",
+            help="comlete source to upload toolchain",
+            parents=[package_parser])
+        chain_parser.set_defaults(action=ActionType.CHAIN)
 
-    clean_parser = parsers.add_parser(
-        "clean",
-        description="clean sources of specified package(s)",
-        help="clean package sources",
-        parents=[package_parser])
+        clean_parser = parsers.add_parser(
+            "clean",
+            description="clean sources of specified package(s)",
+            help="clean package sources",
+            parents=[package_parser])
+        clean_parser.set_defaults(action=ActionType.CLEAN)
 
-    config_parser = parsers.add_parser(
-        "config",
-        description="change package configuration stored in package.conf file",
-        help="change configuration values",
-        parents=[package_parser])
-    config_parser.add_argument(
-        "-s", "--section",
-        action="store",
-        default=None,
-        help="specify section of config file")
-    config_parser.add_argument(
-        "-k", "--key",
-        action="store",
-        default=None,
-        help="specify key of config file in section specified by --section")
-    config_parser.add_argument(
-        "-V", "--value",
-        action="store",
-        default=None,
-        help="specify value to be written to --section/--key")
+        construct_parser = parsers.add_parser(
+            "construct",
+            description="construct source package as specified by *.conf",
+            help="construct source package",
+            parents=[package_parser])
+        construct_parser.set_defaults(action=ActionType.CONSTRUCT)
 
-    construct_parser = parsers.add_parser(
-        "construct",
-        description="construct source package as specified by package.conf",
-        help="construct source package",
-        parents=[package_parser])
+        export_parser = parsers.add_parser(
+            "export",
+            description="export sources from repository to tarball",
+            help="export package sources",
+            parents=[package_parser])
+        export_parser.set_defaults(action=ActionType.EXPORT)
 
-    create_parser = parsers.add_parser(
-        "create",
-        description="create new package and create template.conf and .spec",
-        help="create package from template",
-        parents=[package_parser])
+        get_parser = parsers.add_parser(
+            "get",
+            description="get sources specified in package configuration",
+            help="get package sources",
+            parents=[package_parser])
+        get_parser.set_defaults(action=ActionType.GET)
 
-    export_parser = parsers.add_parser(
-        "export",
-        description="export sources from repository to tarball",
-        help="export package sources",
-        parents=[package_parser])
+        prepare_parser = parsers.add_parser(
+            "prepare",
+            description="prepare sources for further use (get/update, export)",
+            help="prepare source tarball for package",
+            parents=[package_parser])
+        prepare_parser.set_defaults(action=ActionType.PREPARE)
 
-    get_parser = parsers.add_parser(
-        "get",
-        description="get sources specified in package configuration",
-        help="get package sources",
-        parents=[package_parser])
+        refresh_parser = parsers.add_parser(
+            "refresh",
+            description="refresh package sources (clean, get)",
+            help="refresh package sources",
+            parents=[package_parser])
+        refresh_parser.set_defaults(action=ActionType.REFRESH)
 
-    prepare_parser = parsers.add_parser(
-        "prepare",
-        description="prepare sources for further use (get/update, export)",
-        help="prepare source tarball for package",
-        parents=[package_parser])
+        status_parser = parsers.add_parser(
+            "status",
+            description="display kentauros status (configuration, packages)",
+            help="display kentauros status",
+            parents=[package_parser])
+        status_parser.set_defaults(action=ActionType.STATUS)
 
-    refresh_parser = parsers.add_parser(
-        "refresh",
-        description="refresh package sources (clean, get)",
-        help="refresh package sources",
-        parents=[package_parser])
+        update_parser = parsers.add_parser(
+            "update",
+            description="update sources specified in package configuration",
+            help="update package sources",
+            parents=[package_parser])
+        update_parser.set_defaults(action=ActionType.UPDATE)
 
-    status_parser = parsers.add_parser(
-        "status",
-        description="display kentauros status (configuration, packages)",
-        help="display kentauros status",
-        parents=[package_parser])
+        upload_parser = parsers.add_parser(
+            "upload",
+            description="upload source package to cloud service or similar",
+            help="upload source package",
+            parents=[package_parser])
+        upload_parser.set_defaults(action=ActionType.UPLOAD)
 
-    update_parser = parsers.add_parser(
-        "update",
-        description="update sources specified in package configuration",
-        help="update package sources",
-        parents=[package_parser])
+        verify_parser = parsers.add_parser(
+            "verify",
+            description="verify that package *.conf and spec " + \
+                        "are present and valid",
+            help="verify package conf and spec",
+            parents=[package_parser])
+        verify_parser.set_defaults(action=ActionType.VERIFY)
 
-    upload_parser = parsers.add_parser(
-        "upload",
-        description="upload source package to cloud build service or similar",
-        help="upload source package",
-        parents=[package_parser])
 
-    verify_parser = parsers.add_parser(
-        "verify",
-        description="verify that package configuration and specification " + \
-                    "are present and valid",
-        help="verify package conf and spec",
-        parents=[package_parser])
+    elif instance_type == InstanceType.CONFIG:
+        cliparser.add_argument(
+            "package",
+            action="store",
+            nargs="*",
+            help="package name")
+        cliparser.add_argument(
+            "-a", "--all",
+            action="store_const",
+            const=True,
+            default=False,
+            help="apply action to every package with valid configuration")
 
-    build_parser.set_defaults(action=ActionType.BUILD)
-    chain_parser.set_defaults(action=ActionType.CHAIN)
-    config_parser.set_defaults(action=ActionType.CONFIG)
-    clean_parser.set_defaults(action=ActionType.CLEAN)
-    construct_parser.set_defaults(action=ActionType.CONSTRUCT)
-    create_parser.set_defaults(action=ActionType.CREATE)
-    export_parser.set_defaults(action=ActionType.EXPORT)
-    get_parser.set_defaults(action=ActionType.GET)
-    prepare_parser.set_defaults(action=ActionType.PREPARE)
-    refresh_parser.set_defaults(action=ActionType.REFRESH)
-    status_parser.set_defaults(action=ActionType.STATUS)
-    update_parser.set_defaults(action=ActionType.UPDATE)
-    upload_parser.set_defaults(action=ActionType.UPLOAD)
-    verify_parser.set_defaults(action=ActionType.VERIFY)
+        cliparser.add_argument(
+            "-s", "--section",
+            action="store",
+            default=None,
+            help="specify section of config file")
+        cliparser.add_argument(
+            "-k", "--key",
+            action="store",
+            default=None,
+            help="specify key of config file in section specified by --section")
+        cliparser.add_argument(
+            "-V", "--value",
+            action="store",
+            default=None,
+            help="specify value to be written to --section/--key")
+        cliparser.set_defaults(action=ActionType.CONFIG)
+
+
+    elif instance_type == InstanceType.CREATE:
+        cliparser.add_argument(
+            "package",
+            action="store",
+            nargs="*",
+            help="package name")
+        cliparser.set_defaults(action=ActionType.CREATE)
+
 
     cli_args = cliparser.parse_args()
 
@@ -229,8 +244,9 @@ class CLIArgs:
 
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self):
+    def __init__(self, instance_type=InstanceType.NORMAL):
 
+        self.instance = instance_type
         self.debug = False
         self.verby = 2
 
@@ -247,10 +263,11 @@ class CLIArgs:
         self.packages = []
         self.packages_all = False
 
-        self.confedit = False
-        self.config_section = None
-        self.config_key = None
-        self.config_value = None
+        if self.instance == InstanceType.CONFIG:
+            self.confedit = False
+            self.config_section = None
+            self.config_key = None
+            self.config_value = None
 
 
     def parse_args(self, cli_args):
@@ -278,11 +295,15 @@ class CLIArgs:
 
         try:
             self.priconf = KtrConfType[cli_args.priconf.upper()]
+        except AttributeError:
+            self.priconf = None
         except KeyError:
             self.priconf = None
 
         if 'action' in cli_args:
             self.action = cli_args.action
+        elif self.instance == InstanceType.CONFIG:
+            self.action = ActionType.CONFIG
         else:
             self.action = None
 
@@ -301,13 +322,14 @@ class CLIArgs:
         else:
             self.force = False
 
-        if ("section" in cli_args) and \
-           ("key" in cli_args) and \
-           ("value" in cli_args):
-            self.confedit = True
-            self.config_section = cli_args.section
-            self.config_key = cli_args.key
-            self.config_value = cli_args.value
-        else:
-            self.confedit = False
+        if self.instance == InstanceType.CONFIG:
+            if ("section" in cli_args) and \
+               ("key" in cli_args) and \
+               ("value" in cli_args):
+                self.confedit = True
+                self.config_section = cli_args.section
+                self.config_key = cli_args.key
+                self.config_value = cli_args.value
+            else:
+                self.confedit = False
 

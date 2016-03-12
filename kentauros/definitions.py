@@ -79,6 +79,17 @@ class ConstructorType(Enum):
 
 
 @unique
+class InstanceType(Enum):
+    """
+    kentauros.definitions.InstanceType:
+    enum that describes whether ktr, ktr-config or ktr-create has been invoked
+    """
+    NORMAL = 0
+    CONFIG = 1
+    CREATE = 2
+
+
+@unique
 class SourceType(Enum):
     """
     kentauros.definitons.SourceType:

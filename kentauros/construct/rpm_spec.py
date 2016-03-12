@@ -144,7 +144,7 @@ def if_release(line):
     return line[0:8] == "Release:"
 
 
-def bump_release(relstr_old, reset=False):
+def bump_release(relstr_old, reset=False, change=False):
     """
     kentauros.construct.rpm_spec.bump_release()
     returns release string bumped by 1 (hopefully intelligently)
@@ -152,9 +152,11 @@ def bump_release(relstr_old, reset=False):
     rnum = int(relstr_old[0])
     rest = relstr_old[1:]
 
-    if not reset:
+    if not change and not reset:
+        return relstr_old
+    if not reset and change:
         return str(rnum + 1) + rest
-    else:
+    if reset:
         return str(0) + rest
 
 
