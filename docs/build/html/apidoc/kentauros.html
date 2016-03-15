@@ -164,8 +164,20 @@
 <li class="toctree-l2"><a class="reference internal" href="kentauros.init.html#module-kentauros.init">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="kentauros.instance.html">kentauros.instance package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kentauros.instance.html#module-kentauros.instance">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="kentauros.package.html">kentauros.package package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="kentauros.package.html#module-kentauros.package">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kentauros.run.html">kentauros.run package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kentauros.run.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kentauros.run.html#module-kentauros.run.common">kentauros.run.common module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kentauros.run.html#module-kentauros.run.ktr">kentauros.run.ktr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kentauros.run.html#module-kentauros.run.ktr_config">kentauros.run.ktr_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kentauros.run.html#module-kentauros.run">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="kentauros.source.html">kentauros.source package</a><ul>
@@ -464,96 +476,6 @@ enum that describes the kind of uploaders supported</p>
 <code class="descname">NONE</code><em class="property"> = &lt;UploaderType.NONE: 0&gt;</em><a class="headerlink" href="#kentauros.definitions.UploaderType.NONE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</dd></dl>
-
-</div>
-<div class="section" id="module-kentauros.instance">
-<span id="kentauros-instance-module"></span><h2>kentauros.instance module<a class="headerlink" href="#module-kentauros.instance" title="Permalink to this headline">¶</a></h2>
-<p>contains KtrInstance class that holds CLI and other status things</p>
-<dl class="class">
-<dt id="kentauros.instance.Kentauros">
-<em class="property">class </em><code class="descclassname">kentauros.instance.</code><code class="descname">Kentauros</code><span class="sig-paren">(</span><em>itype=&lt;InstanceType.NORMAL: 0&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#Kentauros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.Kentauros" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>instance class with dict class variable, as a &#8220;Borg&#8221;, a quasi-singleton</p>
-<dl class="attribute">
-<dt id="kentauros.instance.Kentauros.saved_state">
-<code class="descname">saved_state</code><em class="property"> = {}</em><a class="headerlink" href="#kentauros.instance.Kentauros.saved_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="kentauros.instance.dbg">
-<code class="descclassname">kentauros.instance.</code><code class="descname">dbg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#dbg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.dbg" title="Permalink to this definition">¶</a></dt>
-<dd><p>prints debug messages if DEBUG is True
-set by &#8211;debug or by environment variable KTR_DEBUG=1</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="kentauros.instance.err">
-<code class="descclassname">kentauros.instance.</code><code class="descname">err</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.err" title="Permalink to this definition">¶</a></dt>
-<dd><p>prints error messages to sys.stderr
-format: ERROR: &lt;message&gt;</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="kentauros.instance.log">
-<code class="descclassname">kentauros.instance.</code><code class="descname">log</code><span class="sig-paren">(</span><em>msg</em>, <em>pri=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.log" title="Permalink to this definition">¶</a></dt>
-<dd><p>kentauros.init.log():
-prints log messages if &#8220;priority&#8221; is equal or less to verbosity level.
-priority levels mean (2 is the default):
-- 0: every message is printed and subprocesses are invoked with &#8211;verbose
-- 1: some messages are printed and subprocesses get no CLI flags
-- 2: few messages are printed and subprocesses are invoked with &#8211;quiet
-format: &lt;message&gt;</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="kentauros.instance.log_command">
-<code class="descclassname">kentauros.instance.</code><code class="descname">log_command</code><span class="sig-paren">(</span><em>prefix1</em>, <em>basename</em>, <em>cmdlist</em>, <em>pri=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#log_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.log_command" title="Permalink to this definition">¶</a></dt>
-<dd><p>kentauros.init.log_command():
-prints commands that are executed using the subprocess module.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-kentauros.run">
-<span id="kentauros-run-module"></span><h2>kentauros.run module<a class="headerlink" href="#module-kentauros.run" title="Permalink to this headline">¶</a></h2>
-<p>This module contains the &#8216;run&#8217; main function that is called when the
-package is executed by the setuptools-installed &#8216;ktr&#8217; script.</p>
-<dl class="function">
-<dt id="kentauros.run.get_action_args">
-<code class="descclassname">kentauros.run.</code><code class="descname">get_action_args</code><span class="sig-paren">(</span><em>cli_args</em>, <em>pkgname</em>, <em>action_type_enum</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/run.html#get_action_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.run.get_action_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function returns arguments for an Action() constructor as tuple.
-It only constructs Package() objects as needed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>cli_args</strong> (<a class="reference internal" href="kentauros.init.html#kentauros.init.cli.CLIArgs" title="kentauros.init.cli.CLIArgs"><em>CLIArgs</em></a>) &#8211; parsed command line arguments</li>
-<li><strong>pkgname</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/stdtypes.html#str" title="(in Python v3.5)"><em>str</em></a>) &#8211; name of package the action will be executed for</li>
-<li><strong>action_type_enum</strong> (<a class="reference internal" href="#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; specifies the type of Action</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>tuple</em> &#8211;
-<code class="xref py py-class docutils literal"><span class="pre">kentauros.action.Action</span></code> Constructor arguments</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="kentauros.run.run">
-<code class="descclassname">kentauros.run.</code><code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.run.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>will be run if executed by &#8216;ktr&#8217; script</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="kentauros.run.run_config">
-<code class="descclassname">kentauros.run.</code><code class="descname">run_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/run.html#run_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.run.run_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>will be run if executed by &#8216;ktr-config&#8217; script</p>
 </dd></dl>
 
 </div>

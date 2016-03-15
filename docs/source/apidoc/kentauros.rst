@@ -12,7 +12,9 @@ Subpackages
     kentauros.config
     kentauros.construct
     kentauros.init
+    kentauros.instance
     kentauros.package
+    kentauros.run
     kentauros.source
     kentauros.upload
 
@@ -31,22 +33,6 @@ kentauros.definitions module
 ----------------------------
 
 .. automodule:: kentauros.definitions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.instance module
--------------------------
-
-.. automodule:: kentauros.instance
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.run module
---------------------
-
-.. automodule:: kentauros.run
     :members:
     :undoc-members:
     :show-inheritance:

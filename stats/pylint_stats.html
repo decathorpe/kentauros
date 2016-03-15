@@ -45,7 +45,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1662 statements analysed.</p><div>
+<p>1674 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -58,11 +58,11 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>28</td>
-<td>26</td>
-<td>+2.00</td>
+<td>31</td>
+<td>31</td>
+<td>=</td>
 <td>100.00</td>
-<td>3.57</td>
+<td>3.23</td>
 </tr>
 <tr class="odd">
 <td>class</td>
@@ -95,8 +95,8 @@
 <pre>dateutil 
   \-parser (kentauros.source.git)
 kentauros 
-  \-actions (kentauros.run)
-  \-bootstrap (kentauros.run)
+  \-actions (kentauros.run.ktr_config)
+  \-bootstrap (kentauros.run.ktr_config)
   \-build (kentauros.package)
   \-config (kentauros.build)
   | \-common (kentauros.config.cli)
@@ -108,10 +108,13 @@ kentauros
   \-definitions (kentauros.config.cli)
   \-init 
   | \-cli (kentauros.config.cli)
-  | \-env (kentauros.init)
-  \-instance (kentauros.source.git)
+  | \-env (kentauros.instance)
+  \-instance (kentauros.build)
   \-package (kentauros.actions)
   \-run (ktr-config)
+  | \-common (kentauros.run.ktr_config)
+  | \-ktr (kentauros.run)
+  | \-ktr_config (kentauros.run)
   \-source (kentauros.package)
   | \-bzr (kentauros.source)
   | \-common (kentauros.source.git)
@@ -131,31 +134,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>1921</td>
-<td>50.20</td>
-<td>1915</td>
-<td>+6.00</td>
+<td>1938</td>
+<td>50.31</td>
+<td>1938</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>857</td>
-<td>22.39</td>
-<td>846</td>
-<td>+11.00</td>
+<td>22.25</td>
+<td>857</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>204</td>
-<td>5.33</td>
-<td>201</td>
-<td>+3.00</td>
+<td>5.30</td>
+<td>204</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>845</td>
-<td>22.08</td>
-<td>834</td>
-<td>+11.00</td>
+<td>853</td>
+<td>22.14</td>
+<td>853</td>
+<td>=</td>
 </tr>
 </table>
 </div>
