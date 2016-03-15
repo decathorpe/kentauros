@@ -467,6 +467,55 @@ enum that describes the kind of uploaders supported</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-kentauros.instance">
+<span id="kentauros-instance-module"></span><h2>kentauros.instance module<a class="headerlink" href="#module-kentauros.instance" title="Permalink to this headline">¶</a></h2>
+<p>contains KtrInstance class that holds CLI and other status things</p>
+<dl class="class">
+<dt id="kentauros.instance.Kentauros">
+<em class="property">class </em><code class="descclassname">kentauros.instance.</code><code class="descname">Kentauros</code><span class="sig-paren">(</span><em>itype=&lt;InstanceType.NORMAL: 0&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#Kentauros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.Kentauros" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>instance class with dict class variable, as a &#8220;Borg&#8221;, a quasi-singleton</p>
+<dl class="attribute">
+<dt id="kentauros.instance.Kentauros.saved_state">
+<code class="descname">saved_state</code><em class="property"> = {}</em><a class="headerlink" href="#kentauros.instance.Kentauros.saved_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="kentauros.instance.dbg">
+<code class="descclassname">kentauros.instance.</code><code class="descname">dbg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#dbg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.dbg" title="Permalink to this definition">¶</a></dt>
+<dd><p>prints debug messages if DEBUG is True
+set by &#8211;debug or by environment variable KTR_DEBUG=1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kentauros.instance.err">
+<code class="descclassname">kentauros.instance.</code><code class="descname">err</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.err" title="Permalink to this definition">¶</a></dt>
+<dd><p>prints error messages to sys.stderr
+format: ERROR: &lt;message&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kentauros.instance.log">
+<code class="descclassname">kentauros.instance.</code><code class="descname">log</code><span class="sig-paren">(</span><em>msg</em>, <em>pri=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>kentauros.init.log():
+prints log messages if &#8220;priority&#8221; is equal or less to verbosity level.
+priority levels mean (2 is the default):
+- 0: every message is printed and subprocesses are invoked with &#8211;verbose
+- 1: some messages are printed and subprocesses get no CLI flags
+- 2: few messages are printed and subprocesses are invoked with &#8211;quiet
+format: &lt;message&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kentauros.instance.log_command">
+<code class="descclassname">kentauros.instance.</code><code class="descname">log_command</code><span class="sig-paren">(</span><em>prefix1</em>, <em>basename</em>, <em>cmdlist</em>, <em>pri=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/instance.html#log_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.instance.log_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>kentauros.init.log_command():
+prints commands that are executed using the subprocess module.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-kentauros.run">
 <span id="kentauros-run-module"></span><h2>kentauros.run module<a class="headerlink" href="#module-kentauros.run" title="Permalink to this headline">¶</a></h2>
 <p>This module contains the &#8216;run&#8217; main function that is called when the

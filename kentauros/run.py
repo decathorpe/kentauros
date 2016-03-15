@@ -7,15 +7,12 @@ package is executed by the setuptools-installed 'ktr' script.
 import glob
 import os
 
-from kentauros.actions import ACTION_DICT
 from kentauros.definitions import ActionType, InstanceType
 
-from kentauros.init import get_debug, get_verby, log, dbg
-from kentauros.init.cli import CLIArgs, get_parsed_cli
+from kentauros.instance import Kentauros, dbg, log
 
-from kentauros.config import ktr_get_conf
+from kentauros.actions import ACTION_DICT
 from kentauros.bootstrap import ktr_bootstrap
-
 from kentauros.package import Package
 
 
@@ -67,22 +64,21 @@ def run():
     log_prefix1 = "ktr: "
     log_prefix2 = "     - "
 
+    ktr = Kentauros(itype=InstanceType.NORMAL)
+
     print()
 
-    log(log_prefix1 + "DEBUG set: " + str(get_debug()), 0)
-    log(log_prefix1 + "VERBOSITY: " + str(get_verby()) + "/2", 1)
+    log(log_prefix1 + "DEBUG set: " + str(ktr.debug), 0)
+    log(log_prefix1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
 
-    dbg(log_prefix1 + "BASEDIR: " + ktr_get_conf().basedir)
-    dbg(log_prefix1 + "CONFDIR: " + ktr_get_conf().confdir)
-    dbg(log_prefix1 + "DATADIR: " + ktr_get_conf().datadir)
-    dbg(log_prefix1 + "PACKDIR: " + ktr_get_conf().packdir)
-    dbg(log_prefix1 + "SPECDIR: " + ktr_get_conf().specdir)
-
-    cli_args = CLIArgs()
-    cli_args.parse_args(get_parsed_cli())
+    dbg(log_prefix1 + "BASEDIR: " + ktr.conf.basedir)
+    dbg(log_prefix1 + "CONFDIR: " + ktr.conf.confdir)
+    dbg(log_prefix1 + "DATADIR: " + ktr.conf.datadir)
+    dbg(log_prefix1 + "PACKDIR: " + ktr.conf.packdir)
+    dbg(log_prefix1 + "SPECDIR: " + ktr.conf.specdir)
 
     # if no action is specified: exit
-    if cli_args.action is None:
+    if ktr.cli.action is None:
         log(log_prefix1 + "No action specified. Exiting.", 2)
         log(log_prefix1 + "Use 'ktr --help' for more information.")
         print()
@@ -94,15 +90,15 @@ def run():
 
     # if only specified packages are to be processed:
     # process packages only
-    if not cli_args.packages_all:
-        for name in cli_args.packages:
+    if not ktr.cli.packages_all:
+        for name in ktr.cli.packages:
             pkgs.append(name)
 
     # if all package are to be processed:
     # get package configs present in CONFDIR
     else:
         pkg_conf_paths = glob.glob(os.path.join(
-            ktr_get_conf().confdir, "*.conf"))
+            ktr.conf.confdir, "*.conf"))
 
         for pkg_conf_path in pkg_conf_paths:
             pkgs.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
@@ -114,8 +110,8 @@ def run():
 
     # run action for every specified package
     for name in pkgs:
-        action_type = cli_args.action
-        action = ACTION_DICT[action_type](*get_action_args(cli_args,
+        action_type = ktr.cli.action
+        action = ACTION_DICT[action_type](*get_action_args(ktr.cli,
                                                            name,
                                                            action_type))
         success = action.execute()
@@ -133,24 +129,23 @@ def run_config():
     log_prefix1 = "ktr-config: "
     log_prefix2 = "            - "
 
+    ktr = Kentauros(itype=InstanceType.CONFIG)
+
     print()
 
-    log(log_prefix1 + "DEBUG set: " + str(get_debug()), 0)
-    log(log_prefix1 + "VERBOSITY: " + str(get_verby()) + "/2", 1)
+    log(log_prefix1 + "DEBUG set: " + str(ktr.debug), 0)
+    log(log_prefix1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
 
-    dbg(log_prefix1 + "BASEDIR: " + ktr_get_conf().basedir)
-    dbg(log_prefix1 + "CONFDIR: " + ktr_get_conf().confdir)
-    dbg(log_prefix1 + "DATADIR: " + ktr_get_conf().datadir)
-    dbg(log_prefix1 + "PACKDIR: " + ktr_get_conf().packdir)
-    dbg(log_prefix1 + "SPECDIR: " + ktr_get_conf().specdir)
+    dbg(log_prefix1 + "BASEDIR: " + ktr.conf.basedir)
+    dbg(log_prefix1 + "CONFDIR: " + ktr.conf.confdir)
+    dbg(log_prefix1 + "DATADIR: " + ktr.conf.datadir)
+    dbg(log_prefix1 + "PACKDIR: " + ktr.conf.packdir)
+    dbg(log_prefix1 + "SPECDIR: " + ktr.conf.specdir)
 
-    cli_args = CLIArgs(instance_type=InstanceType.CONFIG)
-    cli_args.parse_args(get_parsed_cli())
-
-    if (cli_args.action is not None) and cli_args.action != ActionType.CONFIG:
+    if (ktr.cli.action is not None) and ktr.cli.action != ActionType.CONFIG:
         log(log_prefix1 + "ktr-config does not take action arguments.", 2)
 
-    cli_args.action = ActionType.CONFIG
+    ktr.cli.action = ActionType.CONFIG
 
     ktr_bootstrap()
 
@@ -158,15 +153,15 @@ def run_config():
 
     # if only specified packages are to be processed:
     # process packages only
-    if not cli_args.packages_all:
-        for name in cli_args.packages:
+    if not ktr.cli.packages_all:
+        for name in ktr.cli.packages:
             pkgs.append(name)
 
     # if all package are to be processed:
     # get package configs present in CONFDIR
     else:
         pkg_conf_paths = glob.glob(os.path.join(
-            ktr_get_conf().confdir, "*.conf"))
+            ktr.conf.confdir, "*.conf"))
 
         for pkg_conf_path in pkg_conf_paths:
             pkgs.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
@@ -179,7 +174,7 @@ def run_config():
     # run action for every specified package
     for name in pkgs:
         action = ACTION_DICT[ActionType.CONFIG](
-            *get_action_args(cli_args, name, ActionType.CONFIG))
+            *get_action_args(ktr.cli, name, ActionType.CONFIG))
         success = action.execute()
 
         if success:

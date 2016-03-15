@@ -9,10 +9,10 @@ import os
 import shutil
 import subprocess
 
-from kentauros.config import ktr_get_conf
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
-from kentauros.init import get_debug, get_verby, err, log, log_command
+from kentauros.instance import Kentauros, err, log, log_command
+
 from kentauros.source.common import Source
 
 
@@ -120,6 +120,8 @@ class BzrSource(Source):
         if not self.active:
             return False
 
+        ktr = Kentauros()
+
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
@@ -141,9 +143,9 @@ class BzrSource(Source):
         cmd = ["bzr", "branch"]
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
+        if (ktr.verby == 2) and not ktr.debug:
             cmd.append("--quiet")
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd.append("--verbose")
 
         # set origin
@@ -192,6 +194,8 @@ class BzrSource(Source):
         if not self.active:
             return False
 
+        ktr = Kentauros()
+
         # if specific revision is requested, do not pull updates (obviously)
         if self.conf.get("bzr", "rev"):
             return False
@@ -206,9 +210,9 @@ class BzrSource(Source):
         cmd = ["bzr", "pull"]
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
+        if (ktr.verby == 2) and not ktr.debug:
             cmd.append("--quiet")
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd.append("--verbose")
 
         # check if source directory exists before going there
@@ -252,12 +256,14 @@ class BzrSource(Source):
         if not self.active:
             return False
 
+        ktr = Kentauros()
+
         def remove_notkeep():
             "local function for removing bzr repo after export if not keep"
             if not self.conf.getboolean("bzr", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
-                assert ktr_get_conf().datadir in self.dest
+                assert ktr.conf.datadir in self.dest
                 shutil.rmtree(self.dest)
                 log(LOGPREFIX1 + "bzr repo deleted after export to tarball", 1)
 
@@ -265,9 +271,9 @@ class BzrSource(Source):
         cmd = ["bzr", "export"]
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
+        if (ktr.verby == 2) and not ktr.debug:
             cmd.append("--quiet")
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd.append("--verbose")
 
         # export HEAD or specified commit
@@ -284,7 +290,7 @@ class BzrSource(Source):
         version = self.formatver()
         name_version = self.name + "-" + version
 
-        file_name = os.path.join(ktr_get_conf().datadir,
+        file_name = os.path.join(ktr.conf.datadir,
                                  self.name,
                                  name_version + ".tar.gz")
 

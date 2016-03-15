@@ -10,7 +10,8 @@ import subprocess
 
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
-from kentauros.init import get_debug, get_verby, log, log_command
+from kentauros.instance import Kentauros, log, log_command
+
 from kentauros.source.common import Source
 
 
@@ -50,6 +51,8 @@ class UrlSource(Source):
         if not self.active:
             return False
 
+        ktr = Kentauros()
+
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
@@ -69,9 +72,9 @@ class UrlSource(Source):
         cmd = ["wget"]
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
+        if (ktr.verby == 2) and not ktr.debug:
             cmd.append("--quiet")
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd.append("--verbose")
 
         # set origin and destination

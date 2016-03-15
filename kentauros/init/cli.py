@@ -249,10 +249,15 @@ class CLIArgs:
     """
 
     # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-statements
+    # pylint: disable=too-few-public-methods
 
-    def __init__(self, instance_type=InstanceType.NORMAL):
+    args = None
 
-        self.instance = instance_type
+    def __init__(self, itype=InstanceType.NORMAL):
+        # pylint: disable=unsubscriptable-object
+
+        self.instance = itype
         self.debug = False
         self.verby = 2
 
@@ -275,67 +280,60 @@ class CLIArgs:
             self.config_key = None
             self.config_value = None
 
+        if self.args is None:
+            CLIArgs.args = get_parsed_cli(itype)
 
-    def parse_args(self, cli_args):
-        """
-        kentauros.init.cli.CLIArgs.parse_args():
-        method that overrides initialised default values with values from
-        CLI parser
-        """
+        self.debug = self.args.debug
 
-        # pylint: disable=unsubscriptable-object
-
-        self.debug = cli_args.debug
-
-        if (2 - cli_args.verby) >= 0:
-            self.verby = 2 - cli_args.verby
+        if (2 - self.args.verby) >= 0:
+            self.verby = 2 - self.args.verby
         else:
             self.verby = 0
             print("DEBUG: Verbosity levels only range from 0 to 2.")
 
-        self.basedir = cli_args.basedir
-        self.confdir = cli_args.confdir
-        self.datadir = cli_args.datadir
-        self.packdir = cli_args.packdir
-        self.specdir = cli_args.specdir
+        self.basedir = self.args.basedir
+        self.confdir = self.args.confdir
+        self.datadir = self.args.datadir
+        self.packdir = self.args.packdir
+        self.specdir = self.args.specdir
 
         try:
-            self.priconf = KtrConfType[cli_args.priconf.upper()]
+            self.priconf = KtrConfType[self.args.priconf.upper()]
         except AttributeError:
             self.priconf = None
         except KeyError:
             self.priconf = None
 
-        if 'action' in cli_args:
-            self.action = cli_args.action
+        if 'action' in self.args:
+            self.action = self.args.action
         elif self.instance == InstanceType.CONFIG:
             self.action = ActionType.CONFIG
         else:
             self.action = None
 
-        if 'package' in cli_args:
-            self.packages = cli_args.package
+        if 'package' in self.args:
+            self.packages = self.args.package
         else:
             self.packages = list()
 
-        if 'all' in cli_args:
-            self.packages_all = cli_args.all
+        if 'all' in self.args:
+            self.packages_all = self.args.all
         else:
             self.packages_all = False
 
-        if 'force' in cli_args:
-            self.force = cli_args.force
+        if 'force' in self.args:
+            self.force = self.args.force
         else:
             self.force = False
 
         if self.instance == InstanceType.CONFIG:
-            if ("section" in cli_args) and \
-               ("key" in cli_args) and \
-               ("value" in cli_args):
+            if ("section" in self.args) and \
+               ("key" in self.args) and \
+               ("value" in self.args):
                 self.confedit = True
-                self.config_section = cli_args.section
-                self.config_key = cli_args.key
-                self.config_value = cli_args.value
+                self.config_section = self.args.section
+                self.config_key = self.args.key
+                self.config_value = self.args.value
             else:
                 self.confedit = False
 

@@ -134,9 +134,8 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">kentauros.config.common</span> <span class="kn">import</span> <span class="n">KtrConf</span>
 <span class="kn">from</span> <span class="nn">kentauros.definitions</span> <span class="kn">import</span> <span class="n">KtrConfType</span>
-<span class="kn">from</span> <span class="nn">kentauros.init</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">kentauros.config.common</span> <span class="kn">import</span> <span class="n">KtrConf</span>
 
 
 <span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/config/fallback: &quot;</span>
@@ -158,7 +157,7 @@
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">validate</span><span class="p">():</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">log</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Something went horribly wrong here.&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">LOGPREFIX1</span> <span class="o">+</span> <span class="s2">&quot;Something went horribly wrong here.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">None</span></div>
 
 </pre></div>

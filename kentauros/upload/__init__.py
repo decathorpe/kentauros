@@ -8,10 +8,9 @@ import glob
 import os
 import subprocess
 
-from kentauros.config import ktr_get_conf
 from kentauros.conntest import is_connected
 from kentauros.definitions import UploaderType
-from kentauros.init import get_debug, err, log, log_command
+from kentauros.instance import Kentauros, err, log, log_command
 
 
 LOGPREFIX1 = "ktr/upload: "
@@ -65,7 +64,7 @@ class CoprUploader(Uploader):
             return None
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(ktr_get_conf().packdir,
+        srpms = glob.glob(os.path.join(Kentauros().conf.packdir,
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:
@@ -90,7 +89,7 @@ class CoprUploader(Uploader):
         # construct copr-cli command
         cmd = ["copr-cli"]
 
-        if get_debug():
+        if Kentauros().debug:
             cmd.append("--debug")
 
         # append build command

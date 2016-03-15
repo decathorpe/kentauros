@@ -7,15 +7,13 @@ this class is for handling sources that are specified by git repo URL
 import os
 import shutil
 import subprocess
-
 from distutils.util import strtobool
-
 import dateutil.parser
 
-from kentauros.config import ktr_get_conf
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
-from kentauros.init import get_debug, get_verby, err, log, log_command
+from kentauros.instance import Kentauros, err, log, log_command
+
 from kentauros.source.common import Source
 
 
@@ -178,6 +176,8 @@ class GitSource(Source):
         if not self.active:
             return False
 
+        ktr = Kentauros()
+
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
@@ -203,13 +203,13 @@ class GitSource(Source):
         cmd1.append("clone")
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
+        if (ktr.verby == 2) and not ktr.debug:
             cmd1.append("--quiet")
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd1.append("--verbose")
 
         # set --depth==1 if shallow is specified
-        if bool(strtobool(self.conf.get("git", "shallow"))):
+        if self.conf.getboolean("git", "shallow"):
             cmd1.append("--depth=1")
 
         # set branch if specified
@@ -271,6 +271,8 @@ class GitSource(Source):
         if not self.active:
             return False
 
+        ktr = Kentauros()
+
         # if specific commit is requested, do not pull updates (obviously)
         if self.conf.get("git", "commit"):
             return False
@@ -288,9 +290,9 @@ class GitSource(Source):
         cmd.append("--rebase")
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
+        if (ktr.verby == 2) and not ktr.debug:
             cmd.append("--quiet")
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd.append("--verbose")
 
         # check if source directory exists before going there
@@ -335,12 +337,14 @@ class GitSource(Source):
         if not self.active:
             return False
 
+        ktr = Kentauros()
+
         def remove_notkeep():
             "local function for removing git repo after export if not keep"
             if not self.conf.getboolean("git", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
-                assert ktr_get_conf().datadir in self.dest
+                assert ktr.conf.datadir in self.dest
                 shutil.rmtree(self.dest)
                 log(LOGPREFIX1 + "git repo deleted after export to tarball", 1)
 
@@ -350,7 +354,7 @@ class GitSource(Source):
         cmd.append("archive")
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd.append("--verbose")
 
         # export HEAD or specified commit
@@ -371,7 +375,7 @@ class GitSource(Source):
         # add prefix
         cmd.append("--prefix=" + name_version + "/")
 
-        file_name = os.path.join(ktr_get_conf().datadir,
+        file_name = os.path.join(ktr.conf.datadir,
                                  self.name,
                                  name_version + ".tar.gz")
 

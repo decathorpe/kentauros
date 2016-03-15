@@ -11,8 +11,7 @@ import os
 from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
-from kentauros.init import log
-from kentauros.init.cli import CLIArgs, get_parsed_cli
+from kentauros.init.cli import CLIArgs
 
 
 LOGPREFIX1 = "ktr/config/cli: "
@@ -25,7 +24,6 @@ def get_cli_config():
     """
 
     cli_args = CLIArgs()
-    cli_args.parse_args(get_parsed_cli())
 
     # if no settings were set at command line, return None
     if (cli_args.basedir is None) and \
@@ -60,7 +58,7 @@ def get_cli_config():
     if result.validate():
         return result
     else:
-        log(LOGPREFIX1 + \
+        print(LOGPREFIX1 + \
             "Not all neccessary values have been set at CLI.")
         return None
 

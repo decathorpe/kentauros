@@ -35,6 +35,14 @@ kentauros.definitions module
     :undoc-members:
     :show-inheritance:
 
+kentauros.instance module
+-------------------------
+
+.. automodule:: kentauros.instance
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros.run module
 --------------------
 

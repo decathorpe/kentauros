@@ -6,8 +6,7 @@ contains Source class definition
 import os
 import shutil
 
-from kentauros.init import log
-from kentauros.config import ktr_get_conf
+from kentauros.instance import Kentauros, log
 
 
 LOGPREFIX1 = "ktr/source: "
@@ -30,7 +29,7 @@ class Source():
         self.package = package
         self.conf = package.conf
         self.name = self.conf['package']['name']
-        self.sdir = os.path.join(ktr_get_conf().datadir, self.name)
+        self.sdir = os.path.join(Kentauros().conf.datadir, self.name)
         self.type = None
 
 
@@ -48,7 +47,7 @@ class Source():
         else:
             # try to be careful with "rm -r"
             assert os.path.isabs(self.sdir)
-            assert ktr_get_conf().datadir in self.sdir
+            assert Kentauros().conf.datadir in self.sdir
             shutil.rmtree(self.sdir)
             return True
 

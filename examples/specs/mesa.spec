@@ -47,7 +47,7 @@
 Summary:        Mesa graphics libraries
 Name:           mesa
 Version:        11.3.0~devel~git%{date}~%{rev}
-Release:        0%{?dist}
+Release:        1%{?dist}
 License:        MIT
 Group:          System Environment/Libraries
 URL:            http://www.mesa3d.org
@@ -638,4 +638,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 15 2016 Fabio Valentini <decathorpe@gmail.com> - 11.3.0~devel~git160315.194215~bb2c5e65-1
+- automatic build by kentauros
+
 

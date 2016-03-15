@@ -8,9 +8,9 @@ from configparser import ConfigParser, NoSectionError
 import os
 import shutil
 
-from kentauros.config import ktr_get_conf
 from kentauros.definitions import KTR_SYSTEM_DATADIR, ActionType, SourceType
-from kentauros.init import log
+from kentauros.instance import Kentauros, log
+
 from kentauros.package import Package
 
 
@@ -302,10 +302,13 @@ class CreateAction(Action):
         conf_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "package.conf")
         spec_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "template.spec")
 
+        # TODO: ktr = Kentauros(itype=InstanceType.CREATE)
+        ktr = Kentauros()
+
         conf_template_dest = os.path.join(
-            ktr_get_conf().confdir, name + ".conf")
+            ktr.conf.confdir, name + ".conf")
         spec_template_dest = os.path.join(
-            ktr_get_conf().specdir, name + ".spec")
+            ktr.conf.specdir, name + ".spec")
 
         self.success = True
 

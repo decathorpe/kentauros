@@ -6,8 +6,7 @@ bootstrap kentauros for actual use
 
 import os
 
-from kentauros.config import ktr_get_conf
-from kentauros.init import log
+from kentauros.instance import Kentauros, log
 
 
 LOGPREFIX = "ktr/bootstrap: "
@@ -19,32 +18,32 @@ def ktr_create_dirs():
     create confdir, datadir, specdir specified by ENV, CLI, configuration files
     """
 
-    ktr_conf = ktr_get_conf()
+    ktr = Kentauros()
 
-    if not os.access(ktr_conf.basedir, os.W_OK):
+    if not os.access(ktr.conf.basedir, os.W_OK):
         log(LOGPREFIX + \
             "kentauros basedir does not exist and will be created.", 1)
-        os.makedirs(ktr_conf.basedir)
+        os.makedirs(ktr.conf.basedir)
 
-    if not os.access(ktr_conf.confdir, os.W_OK):
+    if not os.access(ktr.conf.confdir, os.W_OK):
         log(LOGPREFIX + \
             "kentauros confdir does not exist and will be created.", 1)
-        os.makedirs(ktr_conf.confdir)
+        os.makedirs(ktr.conf.confdir)
 
-    if not os.access(ktr_conf.datadir, os.W_OK):
+    if not os.access(ktr.conf.datadir, os.W_OK):
         log(LOGPREFIX + \
             "kentauros datadir does not exist and will be created.", 1)
-        os.makedirs(ktr_conf.datadir)
+        os.makedirs(ktr.conf.datadir)
 
-    if not os.access(ktr_conf.packdir, os.W_OK):
+    if not os.access(ktr.conf.packdir, os.W_OK):
         log(LOGPREFIX + \
             "kentauros packdir does not exist and will be created.", 1)
-        os.makedirs(ktr_conf.packdir)
+        os.makedirs(ktr.conf.packdir)
 
-    if not os.access(ktr_conf.specdir, os.W_OK):
+    if not os.access(ktr.conf.specdir, os.W_OK):
         log(LOGPREFIX + \
             "kentauros specdir does not exist and will be created.", 1)
-        os.makedirs(ktr_conf.specdir)
+        os.makedirs(ktr.conf.specdir)
 
 
 def ktr_bootstrap():

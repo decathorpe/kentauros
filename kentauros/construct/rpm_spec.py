@@ -7,7 +7,8 @@ import io
 import subprocess
 
 from kentauros.definitions import SourceType
-from kentauros.init import get_debug, get_verby, log_command
+from kentauros.instance import Kentauros, log_command
+
 from kentauros.source.common import Source
 
 
@@ -166,6 +167,8 @@ def spec_bump(specfile, comment=None):
     function bumps the spec file for new release (via rpmdev-bumpspec)
     """
 
+    ktr = Kentauros()
+
     if comment is None:
         comment = "automatic build by kentauros"
 
@@ -173,9 +176,9 @@ def spec_bump(specfile, comment=None):
     cmd = ["rpmdev-bumpspec"]
 
     # add --verbose or --quiet depending on settings
-    if (get_verby() == 2) and not get_debug():
+    if (ktr.verby == 2) and not ktr.debug:
         cmd.append("--quiet")
-    if (get_verby() == 0) or get_debug():
+    if (ktr.verby == 0) or ktr.debug:
         cmd.append("--verbose")
 
     cmd.append(specfile)

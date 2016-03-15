@@ -19,13 +19,13 @@ from kentauros.config.fallback import get_fallback_config
 from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
-from kentauros.init import dbg, err, log
-from kentauros.init.cli import CLIArgs, get_parsed_cli
-from kentauros.init.env import HOME
+from kentauros.init.cli import CLIArgs
 
 
 __all__ = ["cli", "common", "envvar", "fallback"]
 
+
+HOME = os.environ.get("HOME")
 
 DEF_FILE_PATH = os.path.join(KTR_SYSTEM_DATADIR, "default.conf")
 PRJ_FILE_PATH = os.path.abspath("./kentaurosrc")
@@ -88,7 +88,6 @@ def ktr_get_conf():
     ktr_conf = None
 
     cli_args = CLIArgs()
-    cli_args.parse_args(get_parsed_cli())
 
     if cli_args.priconf:
         ktr_conf = get_pref_conf(ktr_confs, cli_args.priconf)

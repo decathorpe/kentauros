@@ -9,16 +9,14 @@ import shutil
 import subprocess
 import tempfile
 
-from kentauros.config import ktr_get_conf
+from kentauros.definitions import SourceType, ConstructorType
+from kentauros.instance import Kentauros, dbg, log, log_command
 
 from kentauros.construct.rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT
 from kentauros.construct.rpm_spec import RPMSpecError
 from kentauros.construct.rpm_spec import spec_version_read, spec_release_read
 from kentauros.construct.rpm_spec import if_version, if_release
 from kentauros.construct.rpm_spec import bump_release, spec_bump
-
-from kentauros.definitions import SourceType, ConstructorType
-from kentauros.init import get_debug, get_verby, log, log_command
 
 
 __all__ = ["rpm_spec"]
@@ -127,17 +125,17 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return False
 
+        ktr = Kentauros()
+
         if not os.path.exists(self.rpmbdir):
             self.init()
 
-        ktr_conf = ktr_get_conf()
-
         # calculate absolute paths of files
-        pkg_data_dir = os.path.join(ktr_conf.datadir,
+        pkg_data_dir = os.path.join(ktr.conf.datadir,
                                     self.package.name)
-        pkg_conf_file = os.path.join(ktr_conf.confdir,
+        pkg_conf_file = os.path.join(ktr.conf.confdir,
                                      self.package.name + ".conf")
-        pkg_spec_file = os.path.join(ktr_conf.specdir,
+        pkg_spec_file = os.path.join(ktr.conf.specdir,
                                      self.package.name + ".spec")
 
         # copy sources to rpmbuild/SOURCES
@@ -245,6 +243,8 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return None
 
+        ktr = Kentauros()
+
         old_home = os.environ['HOME']
         os.environ['HOME'] = self.tempdir
 
@@ -252,9 +252,9 @@ class SrpmConstructor(Constructor):
         cmd = ["rpmbuild"]
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
+        if (ktr.verby == 2) and not ktr.debug:
             cmd.append("--quiet")
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd.append("--verbose")
 
         cmd.append("-bs")
@@ -274,7 +274,7 @@ class SrpmConstructor(Constructor):
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
         for srpm in srpms:
-            shutil.copy2(srpm, ktr_get_conf().packdir)
+            shutil.copy2(srpm, Kentauros().conf.packdir)
             log(LOGPREFIX1 + "File copied: " + srpm, 0)
 
 

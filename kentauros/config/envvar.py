@@ -7,9 +7,8 @@ reads environment variables to eventually determine location of
 
 import os
 
-from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
-from kentauros.init import log
+from kentauros.config.common import KtrConf
 
 
 ENV_BASEDIR = os.environ.get("KTR_BASE_DIR")
@@ -60,7 +59,7 @@ def get_env_config():
     if result.validate():
         return result
     else:
-        log(LOGPREFIX1 + \
+        print(LOGPREFIX1 + \
             "Not all neccessary config values have been set by env variables.")
         return None
 

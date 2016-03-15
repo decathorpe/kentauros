@@ -6,9 +6,8 @@ it defaults to using "./" as default directory for confdir, datadir, specdir.
 
 import os
 
-from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
-from kentauros.init import log
+from kentauros.config.common import KtrConf
 
 
 LOGPREFIX1 = "ktr/config/fallback: "
@@ -30,6 +29,6 @@ def get_fallback_config():
     if result.validate():
         return result
     else:
-        log(LOGPREFIX1 + "Something went horribly wrong here.")
+        print(LOGPREFIX1 + "Something went horribly wrong here.")
         return None
 

@@ -8,8 +8,6 @@ from configparser import ConfigParser, NoOptionError
 import os
 
 from kentauros.definitions import KtrConfType
-from kentauros.init import err, log
-from kentauros.init.env import HOME
 
 
 LOGPREFIX1 = "ktr/config/common: "
@@ -32,10 +30,12 @@ def __replace_home__(string):
     if string is None:
         return None
 
+    home = os.environ.get("HOME")
+
     if "$HOME" in string:
-        return string.replace("$HOME", HOME)
+        return string.replace("$HOME", home)
     elif "~" in string:
-        return string.replace("~", HOME)
+        return string.replace("~", home)
     else:
         return string
 
@@ -113,7 +113,7 @@ class KtrConf:
             self.specdir = other.specdir
 
         if not self.validate():
-            err(LOGPREFIX1 + \
+            print(LOGPREFIX1 + \
                 "Last attempted action was overriding default values.")
             raise ConfigException("Error occured during configuration parsing.")
 
@@ -126,7 +126,7 @@ class KtrConf:
         """
 
         if not os.path.exists(filepath):
-            log(LOGPREFIX1 + errmsg, 0)
+            print(LOGPREFIX1 + errmsg)
             return None
 
         self.file = filepath
@@ -135,7 +135,7 @@ class KtrConf:
         successful = self.conf.read(self.file)
         if not successful:
             if errmsg:
-                log(LOGPREFIX1 + errmsg, 0)
+                print(LOGPREFIX1 + errmsg)
             return None
 
         if "main" not in self.conf.sections():
@@ -175,9 +175,9 @@ class KtrConf:
             self.specdir = os.path.join(self.basedir, "specs")
 
         if not self.validate():
-            log(LOGPREFIX1 + \
-                "Not all neccessary configuration options have been set.", 1)
-            log(LOGPREFIX2 + self.file, 1)
+            print(LOGPREFIX1 + \
+                "Not all neccessary configuration options have been set.")
+            print(LOGPREFIX2 + self.file)
             return None
         else:
             return self

@@ -10,7 +10,7 @@ import subprocess
 
 from kentauros.config import ktr_get_conf
 from kentauros.definitions import SourceType, BuilderType
-from kentauros.init import get_debug, get_verby, err, log, log_command
+from kentauros.instance import Kentauros, err, log, log_command
 
 
 LOGPREFIX1 = "ktr/build: "
@@ -70,6 +70,8 @@ class MockBuilder(Builder):
         if not self.package.conf.getboolean("mock", "active"):
             return True
 
+        ktr = Kentauros()
+
         # WARNING: MockBuilder.build() builds !all!
         # name*.src.rpm packages found in PACKDIR
         srpms = glob.glob(os.path.join(ktr_get_conf().packdir,
@@ -95,9 +97,9 @@ class MockBuilder(Builder):
         cmd = ["mock"]
 
         # add --verbose or --quiet depending on settings
-        if (get_verby() == 2) and not get_debug():
+        if (ktr.verby == 2) and not ktr.debug:
             cmd.append("--quiet")
-        if (get_verby() == 0) or get_debug():
+        if (ktr.verby == 0) or ktr.debug:
             cmd.append("--verbose")
 
         build_succ = list()

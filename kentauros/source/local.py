@@ -9,8 +9,9 @@ import os
 import shutil
 
 from kentauros.definitions import SourceType
+from kentauros.instance import log
+
 from kentauros.source.common import Source
-from kentauros.init import log
 
 
 LOGPREFIX1 = "ktr/source/local: "
