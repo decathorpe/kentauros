@@ -1,5 +1,6 @@
 """
-contains KtrInstance class that holds CLI and other status things
+this module contains KtrInstance class that holds CLI and other status things,
+and, additionally, log, err, log_command functions for printing status msgs
 """
 
 import sys
