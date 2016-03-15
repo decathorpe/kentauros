@@ -127,8 +127,11 @@
             
   <h1>Source code for kentauros.build</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">kentauros.build module</span>
-<span class="sd">contains classes, methods and functions for building packages locally</span>
+<span class="sd">This subpackage contains the quasi-abstract :py:class:`Builder` class and its</span>
+<span class="sd">subclass(es), which are used to hold information about the configured local</span>
+<span class="sd">builder for binary packages. This includes only :py:class:`MockBuilder` right</span>
+<span class="sd">now, but should be extensible for other builders without need for architectural</span>
+<span class="sd">changes.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">distutils.util</span> <span class="kn">import</span> <span class="n">strtobool</span>
@@ -142,7 +145,14 @@
 
 
 <span class="n">LOGPREFIX1</span> <span class="o">=</span> <span class="s2">&quot;ktr/build: &quot;</span>
+<span class="sd">&quot;&quot;&quot;This string specifies the prefix for log and error messages printed to</span>
+<span class="sd">stdout or stderr from inside this subpackage.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="n">LOGPREFIX2</span> <span class="o">=</span> <span class="s2">&quot;           - &quot;</span>
+<span class="sd">&quot;&quot;&quot;This string specifies the prefix for lists printed through log and error</span>
+<span class="sd">functions, printed to stdout or stderr from inside this subpackage.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="Builder"><a class="viewcode-back" href="../../apidoc/kentauros.build.html#kentauros.build.Builder">[docs]</a><span class="k">class</span> <span class="nc">Builder</span><span class="p">:</span>

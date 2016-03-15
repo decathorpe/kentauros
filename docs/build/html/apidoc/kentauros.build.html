@@ -128,8 +128,11 @@
 <h1>kentauros.build package<a class="headerlink" href="#kentauros-build-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-kentauros.build">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kentauros.build" title="Permalink to this headline">¶</a></h2>
-<p>kentauros.build module
-contains classes, methods and functions for building packages locally</p>
+<p>This subpackage contains the quasi-abstract <a class="reference internal" href="#kentauros.build.Builder" title="kentauros.build.Builder"><code class="xref py py-class docutils literal"><span class="pre">Builder</span></code></a> class and its
+subclass(es), which are used to hold information about the configured local
+builder for binary packages. This includes only <a class="reference internal" href="#kentauros.build.MockBuilder" title="kentauros.build.MockBuilder"><code class="xref py py-class docutils literal"><span class="pre">MockBuilder</span></code></a> right
+now, but should be extensible for other builders without need for architectural
+changes.</p>
 <dl class="class">
 <dt id="kentauros.build.Builder">
 <em class="property">class </em><code class="descclassname">kentauros.build.</code><code class="descname">Builder</code><span class="sig-paren">(</span><em>package</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/build.html#Builder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.build.Builder" title="Permalink to this definition">¶</a></dt>
@@ -150,6 +153,20 @@ method that runs the package build</p>
 method that exports built packages</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="data">
+<dt id="kentauros.build.LOGPREFIX1">
+<code class="descclassname">kentauros.build.</code><code class="descname">LOGPREFIX1</code><em class="property"> = 'ktr/build: '</em><a class="headerlink" href="#kentauros.build.LOGPREFIX1" title="Permalink to this definition">¶</a></dt>
+<dd><p>This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="kentauros.build.LOGPREFIX2">
+<code class="descclassname">kentauros.build.</code><code class="descname">LOGPREFIX2</code><em class="property"> = '           - '</em><a class="headerlink" href="#kentauros.build.LOGPREFIX2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This string specifies the prefix for lists printed through log and error
+functions, printed to stdout or stderr from inside this subpackage.</p>
 </dd></dl>
 
 <dl class="class">

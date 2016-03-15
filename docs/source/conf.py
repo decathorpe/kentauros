@@ -292,9 +292,13 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
+# Napoleon settings
 napoleon_use_ivar = True
+napoleon_google_docstring = True
 napoleon_numpy_docstring = False
-napoleon_use_rtype = False
+napoleon_include_private_with_doc = True
+napoleon_include_special_with_doc = True
+napoleon_use_rtype = True
 
 intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
 

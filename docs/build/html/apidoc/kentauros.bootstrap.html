@@ -128,9 +128,17 @@
 <h1>kentauros.bootstrap package<a class="headerlink" href="#kentauros-bootstrap-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-kentauros.bootstrap">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kentauros.bootstrap" title="Permalink to this headline">¶</a></h2>
-<p>kentauros.bootstrap module
-after ENV variables, CLI switches and config files have been evaluated:
-bootstrap kentauros for actual use</p>
+<p>This subpackage contains functions that cover the bare necessity of setting up
+the directories kentauros expects to exist. This happens after CLI arguments
+and environment variables have been parsed to determine which directories those
+should be.</p>
+<dl class="data">
+<dt id="kentauros.bootstrap.LOGPREFIX">
+<code class="descclassname">kentauros.bootstrap.</code><code class="descname">LOGPREFIX</code><em class="property"> = 'ktr/bootstrap: '</em><a class="headerlink" href="#kentauros.bootstrap.LOGPREFIX" title="Permalink to this definition">¶</a></dt>
+<dd><p>This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="kentauros.bootstrap.ktr_bootstrap">
 <code class="descclassname">kentauros.bootstrap.</code><code class="descname">ktr_bootstrap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/bootstrap.html#ktr_bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.bootstrap.ktr_bootstrap" title="Permalink to this definition">¶</a></dt>

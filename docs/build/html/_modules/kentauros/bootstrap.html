@@ -127,9 +127,10 @@
             
   <h1>Source code for kentauros.bootstrap</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">kentauros.bootstrap module</span>
-<span class="sd">after ENV variables, CLI switches and config files have been evaluated:</span>
-<span class="sd">bootstrap kentauros for actual use</span>
+<span class="sd">This subpackage contains functions that cover the bare necessity of setting up</span>
+<span class="sd">the directories kentauros expects to exist. This happens after CLI arguments</span>
+<span class="sd">and environment variables have been parsed to determine which directories those</span>
+<span class="sd">should be.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -138,6 +139,9 @@
 
 
 <span class="n">LOGPREFIX</span> <span class="o">=</span> <span class="s2">&quot;ktr/bootstrap: &quot;</span>
+<span class="sd">&quot;&quot;&quot;This string specifies the prefix for log and error messages printed to</span>
+<span class="sd">stdout or stderr from inside this subpackage.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="ktr_create_dirs"><a class="viewcode-back" href="../../apidoc/kentauros.bootstrap.html#kentauros.bootstrap.ktr_create_dirs">[docs]</a><span class="k">def</span> <span class="nf">ktr_create_dirs</span><span class="p">():</span>

@@ -1,6 +1,9 @@
 """
-kentauros.build module
-contains classes, methods and functions for building packages locally
+This subpackage contains the quasi-abstract :py:class:`Builder` class and its
+subclass(es), which are used to hold information about the configured local
+builder for binary packages. This includes only :py:class:`MockBuilder` right
+now, but should be extensible for other builders without need for architectural
+changes.
 """
 
 from distutils.util import strtobool
@@ -14,7 +17,14 @@ from kentauros.instance import Kentauros, err, log, log_command
 
 
 LOGPREFIX1 = "ktr/build: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
+
 LOGPREFIX2 = "           - "
+"""This string specifies the prefix for lists printed through log and error
+functions, printed to stdout or stderr from inside this subpackage.
+"""
 
 
 class Builder:

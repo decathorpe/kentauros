@@ -128,9 +128,9 @@
 <h1>kentauros.actions package<a class="headerlink" href="#kentauros-actions-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-kentauros.actions">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kentauros.actions" title="Permalink to this headline">¶</a></h2>
-<p>This module contains the quasi-abstract Action class and its subclasses, that
-are used to hold information about actions specified at command line and are
-used to execute their respective actions.</p>
+<p>This subpackage contains the quasi-abstract Action class and its subclasses,
+which are used to hold information about the action specified at command line
+and are used to execute their respective actions.</p>
 <dl class="class">
 <dt id="kentauros.actions.Action">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">Action</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#Action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.Action" title="Permalink to this definition">¶</a></dt>
@@ -167,8 +167,9 @@ that executes no code.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
-success of executed action</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">success of executed action</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -208,8 +209,9 @@ method of the Builder instance in the specified package.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
-<em>True</em> if all builds were successful, <em>False</em> if otherwise</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> if all builds were successful, <em>False</em> if otherwise</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -262,8 +264,9 @@ configuration file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
-<em>True</em> if chain went all the way through, <em>False</em> if not</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> if chain went all the way through, <em>False</em> if not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -302,8 +305,9 @@ method of the Source instance in the specified package.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
-always <em>True</em> at the moment</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">always <em>True</em> at the moment</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -313,7 +317,7 @@ always <em>True</em> at the moment</td>
 
 <dl class="class">
 <dt id="kentauros.actions.ConfigAction">
-<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConfigAction</code><span class="sig-paren">(</span><em>package: kentauros.package.Package</em>, <em>force: bool</em>, <em>section: str</em>, <em>key: str</em>, <em>value: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ConfigAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ConfigAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em>, <em>section</em>, <em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ConfigAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConfigAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>This Action subclass contains information for changing package configuration
 values stored in the package&#8217;s *.conf file.</p>
@@ -352,8 +356,9 @@ configuration back to the package&#8217;s *.conf file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
-always <em>True</em> at the moment</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">always <em>True</em> at the moment</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -392,7 +397,7 @@ increment the number.</p>
 <dl class="method">
 <dt id="kentauros.actions.ConstructAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ConstructAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ConstructAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method executes several <code class="xref py py-class docutils literal"><span class="pre">kentauros.construct.Constructor</span></code>
+<dd><p>This method calls several <code class="xref py py-class docutils literal"><span class="pre">kentauros.construct.Constructor</span></code>
 methods to execute the source package build.</p>
 <ul class="simple">
 <li><cite>.init()</cite>: general preparatory work (e.g. creating temporary dirs)</li>
@@ -401,14 +406,15 @@ release number, etc.</li>
 <li>if the <cite>.prepare()</cite> stage is not successful, the action will terminate</li>
 <li><cite>.build()</cite>: build the source package inside the build directory</li>
 <li><cite>.export()</cite>: copy built source package to $PACKAGEDIR</li>
-<li><cite>.clean()</cite>: remove temporary build directory, if neccessary</li>
+<li><cite>.clean()</cite>: remove temporary build directory, if necessary</li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>bool</em> &#8211;
-<em>True</em> when successful, <em>False</em> if preparation failed</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> when successful, <em>False</em> if preparation failed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -419,13 +425,15 @@ release number, etc.</li>
 <dl class="class">
 <dt id="kentauros.actions.CreateAction">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">CreateAction</code><span class="sig-paren">(</span><em>name</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#CreateAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CreateAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.5/library/functions.html#object" title="(in Python v3.5)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>kentauros.actions.CreateAction:
-action for initialising an empty package from templates</p>
+action for initialising an empty package from templates
+# TODO: write napoleon docstring</p>
 <dl class="method">
 <dt id="kentauros.actions.CreateAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#CreateAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.CreateAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p># TODO: write napoleon docstring</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -433,12 +441,41 @@ action for initialising an empty package from templates</p>
 <dt id="kentauros.actions.ExportAction">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">ExportAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ExportAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ExportAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
-<p>kentauros.actions.ExportAction:
-action for exporting sources from repository</p>
+<p>This Action subclass contains information for exporting the specified source
+from a VCS repository to a tarball (if necessary). It does not have any
+effect for local tarballs and tarballs specified by URL.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance source export will be attempted for</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; (currently without effect)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; here: stores <cite>ActionType.EXPORT</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="kentauros.actions.ExportAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#ExportAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.ExportAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This method executes the
+<a class="reference internal" href="kentauros.source.html#kentauros.source.common.Source.export" title="kentauros.source.common.Source.export"><code class="xref py py-meth docutils literal"><span class="pre">kentauros.source.common.Source.export()</span></code></a> method to execute the
+source export, if possible / necessary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> when successful, <em>False</em> if export failed (file exists)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -446,25 +483,92 @@ action for exporting sources from repository</p>
 <dt id="kentauros.actions.GetAction">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">GetAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#GetAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.GetAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
-<p>kentauros.actions.GetAction:
-action for getting sources</p>
+<p>This Action subclass contains information for downloading or copying the
+package&#8217;s source from the specified origin. Either a VCS repository will be
+cloned by the appropriate tool, or a tarball will be downloaded from URL,
+or a local copy will be made.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance source getting will be attempted for</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; (currently without effect)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; here: stores <cite>ActionType.GET</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="kentauros.actions.GetAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#GetAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.GetAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This method executes the
+<a class="reference internal" href="kentauros.source.html#kentauros.source.common.Source.get" title="kentauros.source.common.Source.get"><code class="xref py py-meth docutils literal"><span class="pre">kentauros.source.common.Source.get()</span></code></a> method to execute the
+source download / copy, if possible / necessary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> when successful, <em>False</em> if action failed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
+</dd></dl>
+
+<dl class="data">
+<dt id="kentauros.actions.LOGPREFIX1">
+<code class="descclassname">kentauros.actions.</code><code class="descname">LOGPREFIX1</code><em class="property"> = 'ktr/actions: '</em><a class="headerlink" href="#kentauros.actions.LOGPREFIX1" title="Permalink to this definition">¶</a></dt>
+<dd><p>This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="kentauros.actions.PrepareAction">
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">PrepareAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#PrepareAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.PrepareAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
-<p>kentauros.actions.PrepareAction:
-action for preparing sources (get/update, export)</p>
+<p>This Action subclass contains information for preparing the package&#8217;s
+source. Sources will be downloaded or copied to destination, updated if
+already there, and exported to a tarball, if necessary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>package</strong> (<a class="reference internal" href="kentauros.package.html#kentauros.package.Package" title="kentauros.package.Package"><em>Package</em></a>) &#8211; Package instance for which source preparation is done</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)"><em>bool</em></a>) &#8211; (currently without effect)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>atype</strong> (<a class="reference internal" href="kentauros.html#kentauros.definitions.ActionType" title="kentauros.definitions.ActionType"><em>ActionType</em></a>) &#8211; here: stores <cite>ActionType.PREPARE</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="kentauros.actions.PrepareAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#PrepareAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.PrepareAction.execute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This method executes the
+<a class="reference internal" href="kentauros.source.html#kentauros.source.common.Source.prepare" title="kentauros.source.common.Source.prepare"><code class="xref py py-meth docutils literal"><span class="pre">kentauros.source.common.Source.prepare()</span></code></a> method to execute
+source preparation. This includes downloading or copying to destination,
+updating if necessary, and exporting to tarball if necessary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> when successful, <em>False</em> if any sub-action failed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.5/library/functions.html#bool" title="(in Python v3.5)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -473,7 +577,8 @@ action for preparing sources (get/update, export)</p>
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">RefreshAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#RefreshAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.RefreshAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.RefreshAction:
-action for refreshing sources (clean + get)</p>
+action for refreshing sources (clean + get)
+# TODO: write napoleon docstring</p>
 <dl class="method">
 <dt id="kentauros.actions.RefreshAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#RefreshAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.RefreshAction.execute" title="Permalink to this definition">¶</a></dt>
@@ -486,7 +591,8 @@ action for refreshing sources (clean + get)</p>
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">StatusAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#StatusAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.StatusAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.StatusAction:
-action for displaying configuration values and available packages</p>
+action for displaying configuration values and available packages
+# TODO: write napoleon docstring</p>
 <dl class="method">
 <dt id="kentauros.actions.StatusAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#StatusAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.StatusAction.execute" title="Permalink to this definition">¶</a></dt>
@@ -499,7 +605,8 @@ action for displaying configuration values and available packages</p>
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">UpdateAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#UpdateAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UpdateAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.UpdateAction:
-action for updating sources</p>
+action for updating sources
+# TODO: write napoleon docstring</p>
 <dl class="method">
 <dt id="kentauros.actions.UpdateAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#UpdateAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UpdateAction.execute" title="Permalink to this definition">¶</a></dt>
@@ -512,7 +619,8 @@ action for updating sources</p>
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">UploadAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#UploadAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UploadAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.UploadAction:
-action for uploading source package</p>
+action for uploading source package
+# TODO: write napoleon docstring</p>
 <dl class="method">
 <dt id="kentauros.actions.UploadAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#UploadAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.UploadAction.execute" title="Permalink to this definition">¶</a></dt>
@@ -525,7 +633,8 @@ action for uploading source package</p>
 <em class="property">class </em><code class="descclassname">kentauros.actions.</code><code class="descname">VerifyAction</code><span class="sig-paren">(</span><em>package</em>, <em>force</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#VerifyAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.VerifyAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kentauros.actions.Action" title="kentauros.actions.Action"><code class="xref py py-class docutils literal"><span class="pre">kentauros.actions.Action</span></code></a></p>
 <p>kentauros.actions.VerifyAction:
-action for verifying that everything is in place</p>
+action for verifying that everything is in place
+# TODO: write napoleon docstring</p>
 <dl class="method">
 <dt id="kentauros.actions.VerifyAction.execute">
 <code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kentauros/actions.html#VerifyAction.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kentauros.actions.VerifyAction.execute" title="Permalink to this definition">¶</a></dt>

@@ -1,7 +1,8 @@
 """
-kentauros.bootstrap module
-after ENV variables, CLI switches and config files have been evaluated:
-bootstrap kentauros for actual use
+This subpackage contains functions that cover the bare necessity of setting up
+the directories kentauros expects to exist. This happens after CLI arguments
+and environment variables have been parsed to determine which directories those
+should be.
 """
 
 import os
@@ -10,6 +11,9 @@ from kentauros.instance import Kentauros, log
 
 
 LOGPREFIX = "ktr/bootstrap: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
 
 
 def ktr_create_dirs():

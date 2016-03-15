@@ -1,7 +1,7 @@
 """
-This module contains the quasi-abstract Action class and its subclasses, that
-are used to hold information about actions specified at command line and are
-used to execute their respective actions.
+This subpackage contains the quasi-abstract Action class and its subclasses,
+which are used to hold information about the action specified at command line
+and are used to execute their respective actions.
 """
 
 from configparser import ConfigParser, NoSectionError
@@ -15,6 +15,9 @@ from kentauros.package import Package
 
 
 LOGPREFIX1 = "ktr/actions: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
 
 
 class Action:
@@ -199,8 +202,7 @@ class ConfigAction(Action):
         value (str): stores `value` given at initialisation
     """
 
-    def __init__(self, package: Package, force: bool,
-                 section: str, key: str, value: str):
+    def __init__(self, package, force, section, key, value):
         super().__init__(package, force)
         self.atype = ActionType.CONFIG
 
@@ -261,7 +263,7 @@ class ConstructAction(Action):
 
     def execute(self):
         """
-        This method executes several :py:class:`kentauros.construct.Constructor`
+        This method calls several :py:class:`kentauros.construct.Constructor`
         methods to execute the source package build.
 
         * `.init()`: general preparatory work (e.g. creating temporary dirs)
@@ -270,7 +272,7 @@ class ConstructAction(Action):
         * if the `.prepare()` stage is not successful, the action will terminate
         * `.build()`: build the source package inside the build directory
         * `.export()`: copy built source package to $PACKAGEDIR
-        * `.clean()`: remove temporary build directory, if neccessary
+        * `.clean()`: remove temporary build directory, if necessary
 
         Returns:
             bool: *True* when successful, *False* if preparation failed
@@ -290,96 +292,96 @@ class ConstructAction(Action):
         return True
 
 
-class CreateAction(Action):
-    """
-    kentauros.actions.CreateAction:
-    action for initialising an empty package from templates
-    """
-    def __init__(self, name, force):
-        assert isinstance(name, str)
-
-        # copy templates from KTR_SYSTEM_DATADIR to confdir and specdir
-        conf_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "package.conf")
-        spec_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "template.spec")
-
-        # TODO: ktr = Kentauros(itype=InstanceType.CREATE)
-        ktr = Kentauros()
-
-        conf_template_dest = os.path.join(
-            ktr.conf.confdir, name + ".conf")
-        spec_template_dest = os.path.join(
-            ktr.conf.specdir, name + ".spec")
-
-        self.success = True
-
-        if not os.path.exists(conf_template_dest) or force:
-            shutil.copy2(conf_template_orig, conf_template_dest)
-        else:
-            log(LOGPREFIX1 + name + \
-                ".conf already exists. Specify --force to overwrite.", 2)
-            self.success = False
-
-        if not os.path.exists(spec_template_dest) or force:
-            shutil.copy2(spec_template_orig, spec_template_dest)
-        else:
-            log(LOGPREFIX1 + name + \
-                ".spec already exists. Specify --force to overwrite.", 2)
-            self.success = False
-
-        if self.success:
-            # set name in config template
-            conf_template = ConfigParser()
-            conf_template.read(conf_template_dest)
-
-            conf_template.set("package", "name", name)
-            conf_template.write(conf_template_dest)
-
-            # initialise package
-            package = Package(name)
-            super().__init__(package, force)
-            self.atype = ActionType.CREATE
-
-    def execute(self):
-        return self.success
-
-
 class ExportAction(Action):
     """
-    kentauros.actions.ExportAction:
-    action for exporting sources from repository
+    This Action subclass contains information for exporting the specified source
+    from a VCS repository to a tarball (if necessary). It does not have any
+    effect for local tarballs and tarballs specified by URL.
+
+    Arguments:
+        package (Package): Package instance source export will be attempted for
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.EXPORT`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.EXPORT
 
     def execute(self):
+        """
+        This method executes the
+        :py:meth:`kentauros.source.common.Source.export` method to execute the
+        source export, if possible / necessary.
+
+        Returns:
+            bool: *True* when successful, *False* if export failed (file exists)
+        """
         self.package.source.export()
         return True
 
 
 class GetAction(Action):
     """
-    kentauros.actions.GetAction:
-    action for getting sources
+    This Action subclass contains information for downloading or copying the
+    package's source from the specified origin. Either a VCS repository will be
+    cloned by the appropriate tool, or a tarball will be downloaded from URL,
+    or a local copy will be made.
+
+    Arguments:
+        package (Package): Package instance source getting will be attempted for
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.GET`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.GET
 
     def execute(self):
+        """
+        This method executes the
+        :py:meth:`kentauros.source.common.Source.get` method to execute the
+        source download / copy, if possible / necessary.
+
+        Returns:
+            bool: *True* when successful, *False* if action failed
+        """
         return self.package.source.get()
 
 
 class PrepareAction(Action):
     """
-    kentauros.actions.PrepareAction:
-    action for preparing sources (get/update, export)
+    This Action subclass contains information for preparing the package's
+    source. Sources will be downloaded or copied to destination, updated if
+    already there, and exported to a tarball, if necessary.
+
+    Arguments:
+        package (Package): Package instance for which source preparation is done
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.PREPARE`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.PREPARE
 
     def execute(self):
+        """
+        This method executes the
+        :py:meth:`kentauros.source.common.Source.prepare` method to execute
+        source preparation. This includes downloading or copying to destination,
+        updating if necessary, and exporting to tarball if necessary.
+
+        Returns:
+            bool: *True* when successful, *False* if any sub-action failed
+        """
         return self.package.source.prepare()
 
 
@@ -387,12 +389,14 @@ class RefreshAction(Action):
     """
     kentauros.actions.RefreshAction:
     action for refreshing sources (clean + get)
+    # TODO: write napoleon docstring
     """
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.REFRESH
 
     def execute(self):
+        # TODO: write napoleon docstring
         return self.package.source.refresh()
 
 
@@ -400,12 +404,14 @@ class StatusAction(Action):
     """
     kentauros.actions.StatusAction:
     action for displaying configuration values and available packages
+    # TODO: write napoleon docstring
     """
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.STATUS
 
     def execute(self):
+        # TODO: write napoleon docstring
         # TODO: output package configuration / status
         return True
 
@@ -414,12 +420,14 @@ class UpdateAction(Action):
     """
     kentauros.actions.UpdateAction:
     action for updating sources
+    # TODO: write napoleon docstring
     """
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.UPDATE
 
     def execute(self):
+        # TODO: write napoleon docstring
         update = self.package.source.update()
         return update
 
@@ -428,12 +436,14 @@ class UploadAction(Action):
     """
     kentauros.actions.UploadAction:
     action for uploading source package
+    # TODO: write napoleon docstring
     """
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.UPLOAD
 
     def execute(self):
+        # TODO: write napoleon docstring
         self.package.uploader.upload()
         return True
 
@@ -442,14 +452,70 @@ class VerifyAction(Action):
     """
     kentauros.actions.VerifyAction:
     action for verifying that everything is in place
+    # TODO: write napoleon docstring
     """
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.VERIFY
 
     def execute(self):
+        # TODO: write napoleon docstring
         # TODO: verify that package *.conf is valid
         return True
+
+
+class CreateAction:
+    """
+    kentauros.actions.CreateAction:
+    action for initialising an empty package from templates
+    # TODO: write napoleon docstring
+    """
+    def __init__(self, name, force):
+        assert isinstance(name, str)
+        self.name = name
+        self.force = force
+
+    def execute(self):
+        """
+        # TODO: write napoleon docstring
+        """
+
+        # copy templates from KTR_SYSTEM_DATADIR to confdir and specdir
+        conf_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "package.conf")
+        spec_template_orig = os.path.join(KTR_SYSTEM_DATADIR, "template.spec")
+
+        ktr = Kentauros()
+
+        conf_template_dest = os.path.join(
+            ktr.conf.confdir, self.name + ".conf")
+        spec_template_dest = os.path.join(
+            ktr.conf.specdir, self.name + ".spec")
+
+        success = True
+
+        if not os.path.exists(conf_template_dest) or self.force:
+            shutil.copy2(conf_template_orig, conf_template_dest)
+        else:
+            log(LOGPREFIX1 + self.name + \
+                ".conf already exists. Specify --force to overwrite.", 2)
+            success = False
+
+        if not os.path.exists(spec_template_dest) or self.force:
+            shutil.copy2(spec_template_orig, spec_template_dest)
+        else:
+            log(LOGPREFIX1 + self.name + \
+                ".spec already exists. Specify --force to overwrite.", 2)
+            success = False
+
+        if success:
+            # set name in config template
+            conf_template = ConfigParser()
+            conf_template.read(conf_template_dest)
+
+            conf_template.set("package", "name", self.name)
+            conf_template.write(conf_template_dest)
+
+        return success
 
 
 ACTION_DICT = dict()
