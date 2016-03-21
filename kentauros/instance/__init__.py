@@ -9,7 +9,7 @@ from kentauros.definitions import InstanceType
 
 from kentauros.config import ktr_get_conf
 from kentauros.init.cli import CLIArgs
-from kentauros.init.env import ENVDEBUG, ENVVERBY
+from kentauros.init.env import get_env_debug, get_env_verby
 
 
 def __smaller_int__(int1, int2):
@@ -39,10 +39,10 @@ class Kentauros:
             self.cli = CLIArgs(itype)
 
         if "debug" not in self.saved_state:
-            self.debug = ENVDEBUG or self.cli.debug
+            self.debug = get_env_debug() or self.cli.debug
 
         if "verby" not in self.saved_state:
-            self.verby = __smaller_int__(ENVVERBY, self.cli.verby)
+            self.verby = __smaller_int__(get_env_verby(), self.cli.verby)
 
         if "conf" not in self.saved_state:
             self.conf = ktr_get_conf()

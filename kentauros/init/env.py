@@ -5,24 +5,18 @@ kentauros.init.env file
 import os
 
 
-ENVDEBUG = bool()
-ENVVERBY = int()
+def get_env_home():
+    return os.environ.get("HOME")
 
+def get_env_debug():
+    if os.getenv("KTR_DEBUG") is None:
+        return False
+    else:
+        return True
 
-if os.getenv("KTR_DEBUG") is None:
-    ENVDEBUG = False
-else:
-    ENVDEBUG = True
-
-if os.getenv("KTR_VERBOSITY") is None:
-    ENVVERBY = 2
-else:
-    ENVVERBY = int(os.getenv("KTR_VERBOSITY"))
-
-
-# get user running ktr
-USER = os.getenv('USER')
-
-# get user home
-HOME = os.path.join("/home/", USER)
+def get_env_verby():
+    if os.environ.get("KTR_VERBOSITY") is None:
+        return 2
+    else:
+        return int(os.environ.get("KTR_VERBOSITY"))
 
