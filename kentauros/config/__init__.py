@@ -1,8 +1,8 @@
 """
-kentauros.config module
-explicitly determines order in which configurations are read.
-later items in the list can override already determined configuration,
-or act as fallback if none has been found so far.
+This subpackage contains definitions of the default kentauros configuration
+files, error messages if they are not found, and a function that returns the
+configuration values determined from the highest priority configuration found
+or the configuration location specified at command line.
 """
 
 from collections import OrderedDict
@@ -20,26 +20,36 @@ from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
 from kentauros.init.cli import CLIArgs
+from kentauros.init.env import get_env_home
 
 
 __all__ = ["cli", "common", "envvar", "fallback"]
 
 
-HOME = os.environ.get("HOME")
-
-DEF_FILE_PATH = os.path.join(KTR_SYSTEM_DATADIR, "default.conf")
-PRJ_FILE_PATH = os.path.abspath("./kentaurosrc")
-SYS_FILE_PATH = "/etc/kentaurosrc"
-USR_FILE_PATH = os.path.join(HOME, ".config/kentaurosrc")
-
-DEF_ERR_MSG = DEF_FILE_PATH + " does not exist or it is not readable."
-PRJ_ERR_MSG = "This directory does not contain a readable kentaurosrc file."
-SYS_ERR_MSG = SYS_FILE_PATH + " does not exist or is not readable."
-USR_ERR_MSG = USR_FILE_PATH + " does not exist or is not readable."
-
-
 LOGPREFIX1 = "ktr/config: "
 LOGPREFIX2 = "            - "
+
+
+def _get_conf_from_file_args(conf_type):
+    assert isinstance(conf_type, KtrConfType)
+
+    def_file_path = os.path.join(KTR_SYSTEM_DATADIR, "default.conf")
+    prj_file_path = os.path.abspath("./kentaurosrc")
+    sys_file_path = "/etc/kentaurosrc"
+    usr_file_path = os.path.join(get_env_home(), ".config/kentaurosrc")
+
+    def_err_msg = def_file_path + " does not exist or it is not readable."
+    prj_err_msg = "This directory does not contain a readable kentaurosrc file."
+    sys_err_msg = sys_file_path + " does not exist or is not readable."
+    usr_err_msg = usr_file_path + " does not exist or is not readable."
+
+    conf_from_file_args = dict()
+    conf_from_file_args[KtrConfType.DEF] = (def_file_path, def_err_msg)
+    conf_from_file_args[KtrConfType.PRJ] = (prj_file_path, prj_err_msg)
+    conf_from_file_args[KtrConfType.SYS] = (sys_file_path, sys_err_msg)
+    conf_from_file_args[KtrConfType.USR] = (usr_file_path, usr_err_msg)
+
+    return conf_from_file_args[conf_type]
 
 
 def ktr_get_conf():
@@ -67,14 +77,14 @@ def ktr_get_conf():
     # configurations, in ascending priority
     ktr_confs = OrderedDict()
 
-    def_config = KtrConf(KtrConfType.DEFAULT).from_file(DEF_FILE_PATH,
-                                                        DEF_ERR_MSG)
-    sys_config = KtrConf(KtrConfType.SYSTEM).from_file(SYS_FILE_PATH,
-                                                       SYS_ERR_MSG)
-    usr_config = KtrConf(KtrConfType.USER).from_file(USR_FILE_PATH,
-                                                     USR_ERR_MSG)
-    prj_config = KtrConf(KtrConfType.PROJECT).from_file(PRJ_FILE_PATH,
-                                                        PRJ_ERR_MSG)
+    def_config = KtrConf(KtrConfType.DEF).from_file(
+        *_get_conf_from_file_args(KtrConfType.DEF))
+    sys_config = KtrConf(KtrConfType.SYS).from_file(
+        *_get_conf_from_file_args(KtrConfType.SYS))
+    usr_config = KtrConf(KtrConfType.USR).from_file(
+        *_get_conf_from_file_args(KtrConfType.USR))
+    prj_config = KtrConf(KtrConfType.PRJ).from_file(
+        *_get_conf_from_file_args(KtrConfType.PRJ))
 
     ktr_confs[KtrConfType.FBK] = get_fallback_config()
     ktr_confs[KtrConfType.DEF] = def_config

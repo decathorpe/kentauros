@@ -8,6 +8,7 @@ from configparser import ConfigParser, NoOptionError
 import os
 
 from kentauros.definitions import KtrConfType
+from kentauros.init.env import get_env_debug
 
 
 LOGPREFIX1 = "ktr/config/common: "
@@ -126,7 +127,8 @@ class KtrConf:
         """
 
         if not os.path.exists(filepath):
-            print(LOGPREFIX1 + errmsg)
+            if get_env_debug():
+                print(LOGPREFIX1 + errmsg)
             return None
 
         self.file = filepath

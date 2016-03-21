@@ -6,17 +6,22 @@ import os
 
 
 def get_env_home():
-    return os.environ.get("HOME")
+    if "HOME" in os.environ:
+        return os.environ.get("HOME")
+    else:
+        return os.path.abspath("./")
+
 
 def get_env_debug():
-    if os.getenv("KTR_DEBUG") is None:
-        return False
+    if "KTR_DEBUG" in os.environ:
+        return bool(os.environ.get("KTR_DEBUG"))
     else:
-        return True
+        return False
+
 
 def get_env_verby():
-    if os.environ.get("KTR_VERBOSITY") is None:
-        return 2
-    else:
+    if "KTR_VERBOSITY" in os.environ:
         return int(os.environ.get("KTR_VERBOSITY"))
+    else:
+        return 2
 
