@@ -1,6 +1,10 @@
 """
-kentauros.source module
-contains Source class, Source subclasses for source types
+This subpackage contains the :py:class:`Source` base class and
+:py:class:`BzrSource`, :py:class:`GitSource`, :py:class:`LocalSource` and
+:py:class:`UrlSource` subclasses, which are used for holding information
+about a package's sources and methods for manipulating them. Additionally, this
+file contains a dictioary which maps :py:class:`SourceType` enums to their
+respective class constructors.
 """
 
 from kentauros.definitions import SourceType

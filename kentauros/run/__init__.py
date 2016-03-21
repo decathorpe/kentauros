@@ -1,12 +1,8 @@
 """
-This module contains the 'run' and 'run_config' main functions that are
-called when the package is executed by the setuptools-installed 'ktr' or
-'ktr-config' scripts.
+This subpackage contains the `run` and `run_config` modules
+(and functions), which are called when the package is executed by the
+setuptools-installed `ktr` and `ktr-config` scripts as entry points.
 """
 
-from kentauros.run.ktr import run
-from kentauros.run.ktr_config import run_config
-
-
-__all__ = ["run", "run_config"]
+__all__ = ["ktr", "ktr_config"]
 

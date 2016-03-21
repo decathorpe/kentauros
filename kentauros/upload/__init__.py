@@ -1,6 +1,9 @@
 """
-kentauros.upload module
-contains classes, methods and functions for uploading packages to build servers
+This subpackage contains the :py:class:`Uploader` base class and
+:py:class:`CoprUploader`, which is used for holding information about a
+package's upload location or method (if defined in package configuration).
+Additionally, this file contains a dictioary which maps :py:class:`UploaderType`
+enums to their respective class constructors.
 """
 
 from distutils.util import strtobool

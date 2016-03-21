@@ -1,6 +1,9 @@
 """
-kentauros.construct module
-contains classes, methods and functions for building source packages
+This subpackage contains the :py:class:`Constructor` base class and
+:py:class:`SrpmConstructor` subclass definitions. They contain methods for
+building sources into buildable packages. Additionally, this file contains a
+dictioary which maps :py:class:`kentauros.definitions.ConstructorType`
+enums to their respective class constructors.
 """
 
 import glob

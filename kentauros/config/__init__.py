@@ -1,8 +1,8 @@
 """
 This subpackage contains definitions of the default kentauros configuration
-files, error messages if they are not found, and a function that returns the
-configuration values determined from the highest priority configuration found
-or the configuration location specified at command line.
+files' locations, error messages if they are not found, and a function that
+returns the configuration values determined from the highest priority
+configuration found or the configuration location specified at command line.
 """
 
 from collections import OrderedDict

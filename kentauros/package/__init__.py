@@ -1,6 +1,10 @@
 """
-kentauros.package module
-base data structures containing information about and methods for packages
+This subpackage contains the :py:class:`Package` class, which holds package
+configuration parsed from the corresponding `package.conf` file (errors that
+occur during parsing are probably not handled correctly yet). After parsing the
+package configuration, :py:class:`Source`, :py:class:`Constructor`,
+:py:class:`Builder` and :py:class:`Uploader` instances are set as attributes
+according to configuration.
 """
 
 from configparser import ConfigParser, NoSectionError, NoOptionError

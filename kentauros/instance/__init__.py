@@ -1,6 +1,9 @@
 """
-this module contains KtrInstance class that holds CLI and other status things,
-and, additionally, log, err, log_command functions for printing status msgs
+This subpackage contains the :py:class:`Kentauros` class, which holds
+configuration values parsed from CLI arguments, environment variables and
+configuration files. The implementation makes sure that command line arguments,
+environment variables and configuration files are parsed only once per program
+run. Additionally, this subpackage holds logging and error printing functions.
 """
 
 import sys
@@ -23,6 +26,7 @@ class Kentauros:
     """
     instance class with dict class variable, as a "Borg", a quasi-singleton
     """
+
     # pylint: disable=too-few-public-methods
     saved_state = dict()
 
