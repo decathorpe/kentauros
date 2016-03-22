@@ -298,7 +298,7 @@ napoleon_google_docstring = True
 napoleon_numpy_docstring = False
 napoleon_include_private_with_doc = True
 napoleon_include_special_with_doc = True
-napoleon_use_rtype = True
+napoleon_use_rtype = False
 
 intersphinx_mapping = {'python': ('https://docs.python.org/3.4', None)}
 
