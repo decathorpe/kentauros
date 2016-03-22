@@ -1,24 +1,29 @@
 """
-kentauros.config.cli file
-processes given command line switches to eventually determine location of
-- configuration files (confdir)
-- source directories / tarballs (datadir)
-- directory containing spec files (specdir)
+This module contains :py:func:`get_cli_config` function, which parses a
+:py:class:`CLIArgs` instance for settings defined by CLI arguments. Those
+settings include - at the moment - the base directory for kentauros data
+(`--basedir`), the directory for package configuration files (`--confdir`), the
+directory for package sources (`--datadir`), the directory for buildable source
+packages (`--packdir`) and the package specification directory (`--specdir`).
 """
 
 import os
 
-from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
+from kentauros.config.common import KtrConf
 from kentauros.init.cli import CLIArgs
 
 
 LOGPREFIX1 = "ktr/config/cli: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
 
 
 def get_cli_config():
     """
+    # TODO: napoleon docstring
     kentauros.config.cli.get_cli_config():
     function that returns a KtrConf object containing CLI settings
     """
@@ -39,21 +44,21 @@ def get_cli_config():
                          basedir=os.path.abspath(cli_args.basedir))
 
         if cli_args.confdir is not None:
-            result.confdir = cli_args.confdir
+            result.confdir = os.path.abspath(cli_args.confdir)
         if cli_args.datadir is not None:
-            result.datadir = cli_args.datadir
+            result.datadir = os.path.abspath(cli_args.datadir)
         if cli_args.packdir is not None:
-            result.packdir = cli_args.packdir
+            result.packdir = os.path.abspath(cli_args.packdir)
         if cli_args.specdir is not None:
-            result.specdir = cli_args.specdir
+            result.specdir = os.path.abspath(cli_args.specdir)
 
     # basedir not set: all other dirs must be specified
     else:
         result = KtrConf(KtrConfType.CLI)
-        result.confdir = cli_args.confdir
-        result.datadir = cli_args.datadir
-        result.packdir = cli_args.packdir
-        result.specdir = cli_args.specdir
+        result.confdir = os.path.abspath(cli_args.confdir)
+        result.datadir = os.path.abspath(cli_args.datadir)
+        result.packdir = os.path.abspath(cli_args.packdir)
+        result.specdir = os.path.abspath(cli_args.specdir)
 
     if result.validate():
         return result
