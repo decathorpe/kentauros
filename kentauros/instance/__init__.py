@@ -24,6 +24,7 @@ def __smaller_int__(int1, int2):
 
 class Kentauros:
     """
+    # TODO: napoleon docstring
     instance class with dict class variable, as a "Borg", a quasi-singleton
     """
 
@@ -54,6 +55,7 @@ class Kentauros:
 
 def dbg(msg):
     """
+    # TODO: napoleon docstring
     kentauros.init.dbg()
     prints debug messages if DEBUG is True
     set by --debug or by environment variable KTR_DEBUG=1
@@ -64,6 +66,7 @@ def dbg(msg):
 
 def err(msg):
     """
+    # TODO: napoleon docstring
     kentauros.init.err()
     prints error messages to sys.stderr
     format: ERROR: <message>
@@ -74,6 +77,7 @@ def err(msg):
 
 def log(msg, pri=2):
     """
+    # TODO: napoleon docstring
     kentauros.init.log():
     prints log messages if "priority" is equal or less to verbosity level.
     priority levels mean (2 is the default):
@@ -88,6 +92,7 @@ def log(msg, pri=2):
 
 def log_command(prefix1, basename, cmdlist, pri=2):
     """
+    # TODO: napoleon docstring
     kentauros.init.log_command():
     prints commands that are executed using the subprocess module.
     """

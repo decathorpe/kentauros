@@ -31,6 +31,8 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 class Builder:
     """
+    # TODO: napoleon docstring
+    # TODO: move to common.py
     kentauros.build.Builder:
     base class for source package builders
     """
@@ -39,6 +41,7 @@ class Builder:
 
     def build(self):
         """
+        # TODO: napoleon docstring
         kentauros.build.Builder.build():
         method that runs the package build
         """
@@ -46,6 +49,7 @@ class Builder:
 
     def export(self):
         """
+        # TODO: napoleon docstring
         kentauros.build.Builder.export():
         method that exports built packages
         """
@@ -54,6 +58,8 @@ class Builder:
 
 class MockBuilder(Builder):
     """
+    # TODO: napoleon docstring
+    # TODO: move to mock.py
     kentauros.build.MockBuilder:
     class for .src.rpm source package preparator
     """
@@ -79,6 +85,7 @@ class MockBuilder(Builder):
 
 
     def build(self):
+        # TODO: napoleon docstring
         if not self.package.conf.getboolean("mock", "active"):
             return True
 
@@ -157,7 +164,7 @@ class MockBuilder(Builder):
             return False
 
 
-BUILDER_TYPE_DICT = dict()
+BUILDER_TYPE_DICT = dict()                          # TODO: napoleon docstring
 BUILDER_TYPE_DICT[BuilderType.MOCK] = MockBuilder
 BUILDER_TYPE_DICT[BuilderType.NONE] = Builder
 

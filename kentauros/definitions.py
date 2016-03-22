@@ -1,4 +1,5 @@
 """
+# TODO: napoleon docstring
 kentauros.definitions module
 contains definition of ktr system datadir used everywhere and
 enum definitions for:
@@ -13,12 +14,13 @@ enum definitions for:
 from enum import Enum, unique
 
 
-KTR_SYSTEM_DATADIR = "/usr/share/kentauros/"
-KTR_VERSION = "0.9.4"
+KTR_SYSTEM_DATADIR = "/usr/share/kentauros/"    # TODO: napoleon docstring
+KTR_VERSION = "0.9.4"                           # TODO: napoleon docstring
 
 
 class KtrConfType(Enum):
     """
+    # TODO: napoleon docstring
     kentauros.definitions.KtrConfType
     enum that defines all possible configuration sources.
     """
@@ -39,6 +41,7 @@ class KtrConfType(Enum):
 @unique
 class ActionType(Enum):
     """
+    # TODO: napoleon docstring
     kentauros.definitions.ActionType:
     enum containing all types of Action classes
     """
@@ -61,6 +64,7 @@ class ActionType(Enum):
 @unique
 class BuilderType(Enum):
     """
+    # TODO: napoleon docstring
     kentauros.definitons.BuilderType:
     enum that describes the kind of constructors supported
     """
@@ -71,6 +75,7 @@ class BuilderType(Enum):
 @unique
 class ConstructorType(Enum):
     """
+    # TODO: napoleon docstring
     kentauros.definitons.ConstructorType:
     enum that describes the kind of constructors supported
     """
@@ -81,6 +86,7 @@ class ConstructorType(Enum):
 @unique
 class InstanceType(Enum):
     """
+    # TODO: napoleon docstring
     kentauros.definitions.InstanceType:
     enum that describes whether ktr, ktr-config or ktr-create has been invoked
     """
@@ -92,6 +98,7 @@ class InstanceType(Enum):
 @unique
 class SourceType(Enum):
     """
+    # TODO: napoleon docstring
     kentauros.definitons.SourceType:
     enum that describes the kind of package sources supported
     """
@@ -105,6 +112,7 @@ class SourceType(Enum):
 @unique
 class UploaderType(Enum):
     """
+    # TODO: napoleon docstring
     kentauros.definitons.UploaderType:
     enum that describes the kind of uploaders supported
     """

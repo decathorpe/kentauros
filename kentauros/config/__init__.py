@@ -27,7 +27,14 @@ __all__ = ["cli", "common", "envvar", "fallback"]
 
 
 LOGPREFIX1 = "ktr/config: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
+
 LOGPREFIX2 = "            - "
+"""This string specifies the prefix for lists printed through log and error
+functions, printed to stdout or stderr from inside this subpackage.
+"""
 
 
 def _get_conf_from_file_args(conf_type):
@@ -54,6 +61,7 @@ def _get_conf_from_file_args(conf_type):
 
 def ktr_get_conf():
     """
+    # TODO: napoleon docstring
     kentauros.config.get_conf()
     get and return highest-priority configuration for every config value
     """

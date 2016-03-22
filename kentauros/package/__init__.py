@@ -23,8 +23,15 @@ from kentauros.source.common import Source
 from kentauros.upload import UPLOADER_TYPE_DICT, Uploader
 
 
+LOGPREFIX1 = "ktr/package: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
+
+
 class PackageError(Exception):
     """
+    # TODO: napoleon docstring
     kentauros.package.PackageError:
     exception class for package information parsing errors
     """
@@ -38,6 +45,7 @@ class PackageError(Exception):
 
 class Package:
     """
+    # TODO: napoleon docstring
     kentauros.package.Package:
     class that holds information about packages.
     at the moment, this only includes package name and the ConfigParser object
@@ -116,6 +124,7 @@ class Package:
 
     def update_config(self):
         """
+        # TODO: napoleon docstring
         kentauros.package.Package.update_config()
         method that writes package configuration out to $NAME.conf in CONFDIR
         """

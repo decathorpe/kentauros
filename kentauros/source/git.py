@@ -18,10 +18,14 @@ from kentauros.source.common import Source
 
 
 LOGPREFIX1 = "ktr/source/git: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
 
 
 class GitSource(Source):
     """
+    # TODO: napoleon docstring
     kentauros.source.git.GitSource:
     Source subclass holding information and methods for handling git sources
     - if git command is not found on system, self.active = False
@@ -62,6 +66,7 @@ class GitSource(Source):
 
     def date(self):
         """
+        # TODO: napoleon docstring
         kentauros.source.git.GitSource.date():
         method that returns the date and time string of last commit in repo
         - returns datetime string if successful
@@ -115,6 +120,7 @@ class GitSource(Source):
 
     def rev(self):
         """
+        # TODO: napoleon docstring
         kentauros.source.git.GitSource.rev():
         method that returns the commit hash of last commit in repository
         - returns commit hash as string if successful
@@ -147,6 +153,7 @@ class GitSource(Source):
 
 
     def formatver(self):
+        # TODO: napoleon docstring
         if not self.active:
             return ""
 
@@ -166,6 +173,7 @@ class GitSource(Source):
 
     def get(self):
         """
+        # TODO: napoleon docstring
         kentauros.source.git.GitSource.get():
         method that gets the correspondig git repository
         - respects branch and commit settings in package.conf
@@ -260,6 +268,7 @@ class GitSource(Source):
 
     def update(self):
         """
+        # TODO: napoleon docstring
         kentauros.source.git.GitSource.update():
         method that updates the correspondig git repository
         - returns True if update is available and successful
@@ -325,6 +334,7 @@ class GitSource(Source):
 
     def export(self):
         """
+        # TODO: napoleon docstring
         kentauros.source.git.GitSource.export():
         method that exports the correspondig git repository to tarball
         - returns True if export is successful

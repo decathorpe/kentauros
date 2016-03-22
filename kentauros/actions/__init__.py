@@ -521,7 +521,7 @@ class CreateAction:
         return success
 
 
-ACTION_DICT = dict()
+ACTION_DICT = dict()                # TODO: napoleon docstring
 ACTION_DICT[ActionType.BUILD] = BuildAction
 ACTION_DICT[ActionType.CHAIN] = ChainAction
 ACTION_DICT[ActionType.CLEAN] = CleanAction

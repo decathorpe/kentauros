@@ -9,6 +9,8 @@ from kentauros.definitions import ActionType, KtrConfType, InstanceType
 
 def get_parsed_cli(instance_type=InstanceType.NORMAL):
     """
+    # TODO: napoleon docstring
+    # TODO: seperate parsing options for ActionTypes (mapping dict?)
     kentauros.init.cli.cli_parse():
     function that builds the kentauros CLI parser and returns the parsed values
     """
@@ -244,6 +246,7 @@ def get_parsed_cli(instance_type=InstanceType.NORMAL):
 
 class CLIArgs:
     """
+    # TODO: napoleon docstring
     kentauros.init.cli.CLIArgs:
     class that initialises CLI argument parsing and prepares them for reading
     """

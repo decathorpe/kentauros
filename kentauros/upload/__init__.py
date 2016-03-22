@@ -17,10 +17,15 @@ from kentauros.instance import Kentauros, err, log, log_command
 
 
 LOGPREFIX1 = "ktr/upload: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
 
 
 class Uploader:
     """
+    # TODO: napoleon docstring
+    # TODO: move to common.py
     kentauros.upload.Uploader:
     base class for source package uploaders
     """
@@ -37,6 +42,8 @@ class Uploader:
 
 class CoprUploader(Uploader):
     """
+    # TODO: napoleon docstring
+    # TODO: move to copr.py
     kentauros.upload.CoprUploader:
     class for copr package uploader
     """
@@ -121,7 +128,7 @@ class CoprUploader(Uploader):
             os.remove(srpm)
 
 
-UPLOADER_TYPE_DICT = dict()
+UPLOADER_TYPE_DICT = dict()             # TODO: napoleon docstring
 UPLOADER_TYPE_DICT[UploaderType.COPR] = CoprUploader
 UPLOADER_TYPE_DICT[UploaderType.NONE] = Uploader
 

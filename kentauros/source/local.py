@@ -15,10 +15,14 @@ from kentauros.source.common import Source
 
 
 LOGPREFIX1 = "ktr/source/local: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
 
 
 class LocalSource(Source):
     """
+    # TODO: napoleon docstring
     kentauros.source.local.LocalSource:
     Source subclass holding information and methods for handling local sources
     """
@@ -30,12 +34,14 @@ class LocalSource(Source):
 
 
     def formatver(self):
+        # TODO: napoleon docstring
         ver = self.conf.get("source", "version")
         return ver
 
 
     def get(self):
         """
+        # TODO: napoleon docstring
         kentauros.source.local.LocalSource.get():
         method that gets the correspondig local file (usually tarball)
         - returns True if copying is successful

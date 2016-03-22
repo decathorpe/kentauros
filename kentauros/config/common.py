@@ -1,4 +1,5 @@
 """
+# TODO: napoleon docstring
 kentauros.config.common
 this file contains common functions, definitions, classes and methods for
 all configuration methods.
@@ -12,11 +13,18 @@ from kentauros.init.env import get_env_debug
 
 
 LOGPREFIX1 = "ktr/config/common: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
 LOGPREFIX2 = "                   - "
+"""This string specifies the prefix for lists printed through log and error
+functions, printed to stdout or stderr from inside this subpackage.
+"""
 
 
 class ConfigException(Exception):
     """
+    # TODO: napoleon docstring
     kentauros.config.common.ConfigException:
     exception that is raised if erors occur during configuration parsing
     """
@@ -43,6 +51,7 @@ def __replace_home__(string):
 
 class KtrConf:
     """
+    # TODO: napoleon docstring
     kentauros.config.common.KtrConf
     class that contains information about kentauros configuration options.
     this includes:
@@ -79,6 +88,7 @@ class KtrConf:
 
     def validate(self):
         """
+        # TODO: napoleon docstring
         kentauros.config.base.KtrConf.validate()
         method for verifying valid configuration content.
         """
@@ -98,9 +108,10 @@ class KtrConf:
 
     def succby(self, other):
         """
+        # TODO: napoleon docstring
         kentauros.config.common.KtrConf.succby()
         method that replaces config values in this KtrConf (self) with non-None
-          config values from another KtrConf (other)
+        config values from another KtrConf (other)
         """
         assert isinstance(other, KtrConf)
 
@@ -121,6 +132,7 @@ class KtrConf:
 
     def from_file(self, filepath, errmsg=None):
         """
+        # TODO: napoleon docstring
         kentauros.config.common.KtrConf.from_file():
         method that reads a configuration file and parses read values into
         object attributes
