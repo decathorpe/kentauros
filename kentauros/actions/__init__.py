@@ -61,8 +61,8 @@ class Action:
 
 class BuildAction(Action):
     """
-    This Action subclass contains information for executing a local build of the
-    package specified at initialisation.
+    This `Action` subclass contains information for executing a local build of
+    the package specified at initialisation.
 
     Arguments:
         Package package: Package instance this local build will done for
@@ -93,7 +93,7 @@ class BuildAction(Action):
 
 class ChainAction(Action):
     """
-    This Action subclass contains information for executing a "chain reaction"
+    This `Action` subclass contains information for executing a "chain reaction"
     on the package specified at initialisation, which means the following:
 
     * get sources if they don't already exist (`GetAction`)
@@ -157,8 +157,8 @@ class ChainAction(Action):
 
 class CleanAction(Action):
     """
-    This Action subclass contains information for cleaning up the sources of the
-    package specified at initialisation.
+    This `Action` subclass contains information for cleaning up the sources of
+    the package specified at initialisation.
 
     Arguments:
         package (Package): Package instance sources will be cleaned for
@@ -188,8 +188,8 @@ class CleanAction(Action):
 
 class ConfigAction(Action):
     """
-    This Action subclass contains information for changing package configuration
-    values stored in the package's \\*.conf file.
+    This `Action` subclass contains information for changing package
+    configuration values stored in the package's \\*.conf file.
 
     Arguments:
         package (Package): Package instance configuration will be changed for
@@ -240,7 +240,7 @@ class ConfigAction(Action):
 
 class ConstructAction(Action):
     """
-    This Action subclass contains information for constructing the source
+    This `Action` subclass contains information for constructing the source
     package from sources and package specification for the package specified at
     initialisation.
 
@@ -297,9 +297,9 @@ class ConstructAction(Action):
 
 class ExportAction(Action):
     """
-    This Action subclass contains information for exporting the specified source
-    from a VCS repository to a tarball (if necessary). It does not have any
-    effect for local tarballs and tarballs specified by URL.
+    This `Action` subclass contains information for exporting the specified
+    source from a VCS repository to a tarball (if necessary). It does not have
+    any effect for local tarballs and tarballs specified by URL.
 
     Arguments:
         package (Package): Package instance source export will be attempted for
@@ -322,13 +322,14 @@ class ExportAction(Action):
         Returns:
             bool: *True* when successful, *False* if export failed (file exists)
         """
+
         self.package.source.export()
         return True
 
 
 class GetAction(Action):
     """
-    This Action subclass contains information for downloading or copying the
+    This `Action` subclass contains information for downloading or copying the
     package's source from the specified origin. Either a VCS repository will be
     cloned by the appropriate tool, or a tarball will be downloaded from URL,
     or a local copy will be made.
@@ -354,13 +355,14 @@ class GetAction(Action):
         Returns:
             bool: *True* when successful, *False* if action failed
         """
+
         return self.package.source.get()
 
 
 class PrepareAction(Action):
     """
-    This Action subclass contains information for preparing the package's
-    source. Sources will be downloaded or copied to destination, updated if
+    This `Action` subclass contains information for preparing the package's
+    sources. Sources will be downloaded or copied to destination, updated if
     already there, and exported to a tarball, if necessary.
 
     Arguments:
@@ -385,30 +387,56 @@ class PrepareAction(Action):
         Returns:
             bool: *True* when successful, *False* if any sub-action failed
         """
+
         return self.package.source.prepare()
 
 
 class RefreshAction(Action):
     """
-    kentauros.actions.RefreshAction:
-    action for refreshing sources (clean + get)
-    # TODO: write napoleon docstring
+    This `Action` subclass contains information for refreshing the package's
+    source. Sources will be cleaned up and re-downloaded as specified.
+
+    Arguments:
+        package (Package): Package instance for which source refreshing is done
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.REFRESH`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.REFRESH
 
     def execute(self):
-        # TODO: write napoleon docstring
+        """
+        This method executes the
+        :py:meth:`kentauros.source.common.Source.refresh` method to execute a
+        source refresh. This includes cleaning up the package's source directory
+        and redownloading or copying sources from origin to destination.
+
+        Returns:
+            bool: *True* when successful, *False* if any sub-action failed
+        """
+
         return self.package.source.refresh()
 
 
 class StatusAction(Action):
     """
-    kentauros.actions.StatusAction:
-    action for displaying configuration values and available packages
-    # TODO: write napoleon docstring
+    This `Action` subclass contains information for displaying packages which
+    are configured for use with kentauros. At the moment, this only includes
+    printing a list of packages, which is done by default when kentauros is run.
+    More status messages are plannned for the future.
+
+    Arguments:
+        package (Package): Package instance for which status will be printed
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.STATUS`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.STATUS
@@ -421,42 +449,84 @@ class StatusAction(Action):
 
 class UpdateAction(Action):
     """
-    kentauros.actions.UpdateAction:
-    action for updating sources
-    # TODO: write napoleon docstring
+    This `Action` subclass contains information for updating the package's
+    source as specified in the package configuration. This only has effect for
+    VCS sources, which will pull upstream changes as specified.
+
+    Arguments:
+        package (Package): Package instance source update will be run for
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.UPDATE`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.UPDATE
 
     def execute(self):
-        # TODO: write napoleon docstring
+        """
+        This method executes the
+        :py:meth:`kentauros.source.common.Source.update` method to execute the
+        source updating, if possible - this only has effect for sources with
+        an upstream VCS specified as origin.
+
+        Returns:
+            bool: *True* when update was available, *False* if not or failure
+        """
+
         update = self.package.source.update()
         return update
 
 
 class UploadAction(Action):
     """
-    kentauros.actions.UploadAction:
-    action for uploading source package
-    # TODO: write napoleon docstring
+    This `Action` subclass contains information for uploading the buildable
+    source package to a cloud service (or similar) as specified in the package
+    configuration.
+
+    Arguments:
+        package (Package): source package upload will be done for `package`
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.UPLOAD`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.UPLOAD
 
     def execute(self):
-        # TODO: write napoleon docstring
+        """
+        This method executes the
+        :py:meth:`kentauros.upload.Uploader.upload` method to execute the
+        source upload, if possible - this only has effect for packages with
+        a valid uploader specified in the package configuration file.
+
+        Returns:
+            bool: always *True*, future error checking still missing
+        """
+
+        # TODO: error handling
         self.package.uploader.upload()
         return True
 
 
 class VerifyAction(Action):
     """
-    kentauros.actions.VerifyAction:
-    action for verifying that everything is in place
-    # TODO: write napoleon docstring
+    This `Action` subclass contains information for making sure the package's
+    configuration file is valid and everything needed for actions is in place.
+
+    Arguments:
+        package (Package): validation will be done for `package`
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.VERIFY`
     """
+
     def __init__(self, package, force):
         super().__init__(package, force)
         self.atype = ActionType.VERIFY
@@ -469,10 +539,17 @@ class VerifyAction(Action):
 
 class CreateAction:
     """
-    kentauros.actions.CreateAction:
-    action for initialising an empty package from templates
-    # TODO: write napoleon docstring
+    This `Action` subclass contains information for making sure the package's
+    configuration file is valid and everything needed for actions is in place.
+
+    Arguments:
+        package (Package): validation will be done for `package`
+        force (bool): (currently without effect)
+
+    Attributes:
+        atype (ActionType): here: stores `ActionType.VERIFY`
     """
+
     def __init__(self, name, force):
         assert isinstance(name, str)
         self.name = name
@@ -480,7 +557,13 @@ class CreateAction:
 
     def execute(self):
         """
-        # TODO: write napoleon docstring
+        This method copies the template package configuration file and template
+        specification file to the future package's configuration and template
+        file location. At the moment, the specification template is only
+        available as a simple RPM spec template.
+
+        Returns:
+            bool: *True* if everything was copied into place successfully
         """
 
         # copy templates from KTR_SYSTEM_DATADIR to confdir and specdir
@@ -521,7 +604,11 @@ class CreateAction:
         return success
 
 
-ACTION_DICT = dict()                # TODO: napoleon docstring
+ACTION_DICT = dict()
+"""This dictionary maps `ActionType` enum members to their respective action
+subclass constructors.
+"""
+
 ACTION_DICT[ActionType.BUILD] = BuildAction
 ACTION_DICT[ActionType.CHAIN] = ChainAction
 ACTION_DICT[ActionType.CLEAN] = CleanAction
