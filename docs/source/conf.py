@@ -300,5 +300,5 @@ napoleon_include_private_with_doc = True
 napoleon_include_special_with_doc = True
 napoleon_use_rtype = True
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3.4', None)}
 
