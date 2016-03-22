@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 """
+# TODO: napoleon docstring
 ktr is kentauros.py
 a script like this will be created at install time by setuptools.
 it is here for testing purposes only and is not part of the install.
 """
 
-from kentauros.run import run
+from kentauros.run.ktr import run
 
 run()
 

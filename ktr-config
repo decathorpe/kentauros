@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 """
+# TODO: napoleon docstring
 ktr_config is kentauros-config.py
 a script like this will be created at install time by setuptools.
 it is here for testing purposes only and is not part of the install.
@@ -8,7 +9,7 @@ it is here for testing purposes only and is not part of the install.
 
 # pylint: disable=invalid-name
 
-from kentauros.run import run_config
+from kentauros.run.ktr_config import run_config
 
 run_config()
 
