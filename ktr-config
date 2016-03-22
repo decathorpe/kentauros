@@ -3,7 +3,7 @@
 """ktr-config is kentauros-config.py
 This simple python script is only included in git for testing purposes. A script
 like this will be generated at install time by setuptools, using the specified
-entry point :py:func:`kentauros.run.ktr.run`.
+entry point :py:func:`kentauros.run.ktr_config.run_config`.
 """
 
 # pylint: disable=invalid-name
