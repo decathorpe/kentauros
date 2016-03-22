@@ -1,4 +1,5 @@
 """
+# TODO: napoleon docstring
 this file contains the run_config() function called by 'ktr_config'
 as entry point
 """
@@ -14,26 +15,36 @@ from kentauros.bootstrap import ktr_bootstrap
 from kentauros.run.common import get_action_args
 
 
+LOGPREFIX1 = "ktr-config: "
+"""This string specifies the prefix for log and error messages printed to
+stdout or stderr from inside this subpackage.
+"""
+
+LOGPREFIX2 = "            - "
+"""This string specifies the prefix for lists printed through log and error
+functions, printed to stdout or stderr from inside this subpackage.
+"""
+
+
 def run_config():
-    "will be run if executed by 'ktr-config' script"
-    log_prefix1 = "ktr-config: "
-    log_prefix2 = "            - "
+    # TODO: napoleon docstring
+    "will be run if executed by 'ktr-config' script # TODO: napoleon docstring"
 
     ktr = Kentauros(itype=InstanceType.CONFIG)
 
     print()
 
-    log(log_prefix1 + "DEBUG set: " + str(ktr.debug), 0)
-    log(log_prefix1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
+    log(LOGPREFIX1 + "DEBUG set: " + str(ktr.debug), 0)
+    log(LOGPREFIX1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
 
-    dbg(log_prefix1 + "BASEDIR: " + ktr.conf.basedir)
-    dbg(log_prefix1 + "CONFDIR: " + ktr.conf.confdir)
-    dbg(log_prefix1 + "DATADIR: " + ktr.conf.datadir)
-    dbg(log_prefix1 + "PACKDIR: " + ktr.conf.packdir)
-    dbg(log_prefix1 + "SPECDIR: " + ktr.conf.specdir)
+    dbg(LOGPREFIX1 + "BASEDIR: " + ktr.conf.basedir)
+    dbg(LOGPREFIX1 + "CONFDIR: " + ktr.conf.confdir)
+    dbg(LOGPREFIX1 + "DATADIR: " + ktr.conf.datadir)
+    dbg(LOGPREFIX1 + "PACKDIR: " + ktr.conf.packdir)
+    dbg(LOGPREFIX1 + "SPECDIR: " + ktr.conf.specdir)
 
     if (ktr.cli.action is not None) and ktr.cli.action != ActionType.CONFIG:
-        log(log_prefix1 + "ktr-config does not take action arguments.", 2)
+        log(LOGPREFIX1 + "ktr-config does not take action arguments.", 2)
 
     ktr.cli.action = ActionType.CONFIG
 
@@ -57,9 +68,9 @@ def run_config():
             pkgs.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
 
     # log list of found packages
-    log(log_prefix1 + "Packages:", 2)
+    log(LOGPREFIX1 + "Packages:", 2)
     for package in pkgs:
-        log(log_prefix2 + package, 2)
+        log(LOGPREFIX2 + package, 2)
 
     # run action for every specified package
     for name in pkgs:
@@ -68,8 +79,9 @@ def run_config():
         success = action.execute()
 
         if success:
-            log(log_prefix1 + name + ": Success!")
+            log(LOGPREFIX1 + name + ": Success!")
         else:
-            log(log_prefix1 + name + ": Not successful.")
+            log(LOGPREFIX1 + name + ": Not successful.")
 
     print()
+
