@@ -9,10 +9,10 @@ packages (`--packdir`) and the package specification directory (`--specdir`).
 
 import os
 
-from kentauros.definitions import KtrConfType
+from kentauros.definitions import KtrConfType, InstanceType
 
 from kentauros.config.common import KtrConf
-from kentauros.init.cli import CLIArgs
+from kentauros.init.cli import CLI_ARGS_DICT
 
 
 LOGPREFIX1 = "ktr/config/cli: "
@@ -21,21 +21,23 @@ stdout or stderr from inside this subpackage.
 """
 
 
-def get_cli_config():
+def get_cli_config(itype):
     """
     # TODO: napoleon docstring
     kentauros.config.cli.get_cli_config():
     function that returns a KtrConf object containing CLI settings
     """
 
-    cli_args = CLIArgs()
+    assert isinstance(itype, InstanceType)
+
+    cli_args = CLI_ARGS_DICT[itype]()
 
     # if no settings were set at command line, return None
-    if (cli_args.basedir is None) and \
-       (cli_args.confdir is None) and \
-       (cli_args.datadir is None) and \
-       (cli_args.packdir is None) and \
-       (cli_args.specdir is None):
+    if (cli_args.get_ktr_basedir() is None) and \
+       (cli_args.get_ktr_confdir() is None) and \
+       (cli_args.get_ktr_datadir() is None) and \
+       (cli_args.get_ktr_packdir() is None) and \
+       (cli_args.get_ktr_specdir() is None):
         return None
 
     # if at least basedir has been set, construct KtrConf from CLI switches

@@ -93,7 +93,7 @@ class MockBuilder(Builder):
 
         # WARNING: MockBuilder.build() builds !all!
         # name*.src.rpm packages found in PACKDIR
-        srpms = glob.glob(os.path.join(ktr_get_conf().packdir,
+        srpms = glob.glob(os.path.join(ktr_get_conf(Kentauros().itype).packdir,
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:

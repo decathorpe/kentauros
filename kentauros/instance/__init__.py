@@ -11,7 +11,7 @@ import sys
 from kentauros.definitions import InstanceType
 
 from kentauros.config import ktr_get_conf
-from kentauros.init.cli import CLIArgs
+from kentauros.init.cli import CLI_ARGS_DICT
 from kentauros.init.env import get_env_debug, get_env_verby
 
 
@@ -40,17 +40,19 @@ class Kentauros:
     def __init__(self, itype=InstanceType.NORMAL):
         assert isinstance(itype, InstanceType)
 
+        self.itype = itype
+
         if "cli" not in self.saved_state:
-            self.cli = CLIArgs(itype)
+            self.cli = CLI_ARGS_DICT[itype](itype)
 
         if "debug" not in self.saved_state:
-            self.debug = get_env_debug() or self.cli.debug
+            self.debug = get_env_debug() or self.cli.get_debug()
 
         if "verby" not in self.saved_state:
-            self.verby = __smaller_int__(get_env_verby(), self.cli.verby)
+            self.verby = __smaller_int__(get_env_verby(), self.cli.get_verby())
 
         if "conf" not in self.saved_state:
-            self.conf = ktr_get_conf()
+            self.conf = ktr_get_conf(itype)
 
 
 def dbg(msg):

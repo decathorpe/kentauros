@@ -162,6 +162,8 @@ class SrpmConstructor(Constructor):
                 shutil.copy2(entry_path, self.srcsdir)
                 log(LOGPREFIX1 + "File copied: " + entry_path, 0)
 
+        # TODO: remove source tarball if sources/keep = false is set
+
         # copy package.conf to rpmbuild/SOURCES
         shutil.copy2(pkg_conf_file, self.srcsdir)
         log(LOGPREFIX1 + "File copied: " + pkg_conf_file, 0)

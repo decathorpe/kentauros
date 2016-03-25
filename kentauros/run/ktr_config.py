@@ -27,8 +27,8 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 
 def run_config():
-    # TODO: napoleon docstring
     "will be run if executed by 'ktr-config' script # TODO: napoleon docstring"
+    # TODO: napoleon docstring
 
     ktr = Kentauros(itype=InstanceType.CONFIG)
 
@@ -43,19 +43,14 @@ def run_config():
     dbg(LOGPREFIX1 + "PACKDIR: " + ktr.conf.packdir)
     dbg(LOGPREFIX1 + "SPECDIR: " + ktr.conf.specdir)
 
-    if (ktr.cli.action is not None) and ktr.cli.action != ActionType.CONFIG:
-        log(LOGPREFIX1 + "ktr-config does not take action arguments.", 2)
-
-    ktr.cli.action = ActionType.CONFIG
-
     ktr_bootstrap()
 
     pkgs = list()
 
     # if only specified packages are to be processed:
     # process packages only
-    if not ktr.cli.packages_all:
-        for name in ktr.cli.packages:
+    if not ktr.cli.get_packages_all():
+        for name in ktr.cli.get_packages():
             pkgs.append(name)
 
     # if all package are to be processed:

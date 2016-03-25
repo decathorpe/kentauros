@@ -24,6 +24,7 @@ class KtrConfType(Enum):
     kentauros.definitions.KtrConfType
     enum that defines all possible configuration sources.
     """
+
     CLI = 0
     ENV = 1
     PRJ = 2
@@ -45,6 +46,8 @@ class ActionType(Enum):
     kentauros.definitions.ActionType:
     enum containing all types of Action classes
     """
+
+    NONE = 0
     CREATE = 10
     STATUS = 11
     CONFIG = 12
@@ -68,6 +71,7 @@ class BuilderType(Enum):
     kentauros.definitons.BuilderType:
     enum that describes the kind of constructors supported
     """
+
     NONE = 0
     MOCK = 1
 
@@ -79,6 +83,7 @@ class ConstructorType(Enum):
     kentauros.definitons.ConstructorType:
     enum that describes the kind of constructors supported
     """
+
     NONE = 0
     SRPM = 1
 
@@ -90,6 +95,7 @@ class InstanceType(Enum):
     kentauros.definitions.InstanceType:
     enum that describes whether ktr, ktr-config or ktr-create has been invoked
     """
+
     NORMAL = 0
     CONFIG = 1
     CREATE = 2
@@ -102,6 +108,7 @@ class SourceType(Enum):
     kentauros.definitons.SourceType:
     enum that describes the kind of package sources supported
     """
+
     NONE = 0
     URL = 1
     GIT = 2
@@ -116,6 +123,7 @@ class UploaderType(Enum):
     kentauros.definitons.UploaderType:
     enum that describes the kind of uploaders supported
     """
+
     NONE = 0
     COPR = 1
 

@@ -23,25 +23,25 @@ def get_action_args(cli_args, pkgname, action_type_enum):
     assert isinstance(action_type_enum, ActionType)
 
     action_args_dict = dict()
-    action_args_dict[ActionType.BUILD] = (cli_args.force,)
-    action_args_dict[ActionType.CHAIN] = (cli_args.force,)
-    action_args_dict[ActionType.CLEAN] = (cli_args.force,)
-    action_args_dict[ActionType.CONSTRUCT] = (cli_args.force,)
-    action_args_dict[ActionType.EXPORT] = (cli_args.force,)
-    action_args_dict[ActionType.GET] = (cli_args.force,)
-    action_args_dict[ActionType.REFRESH] = (cli_args.force,)
-    action_args_dict[ActionType.STATUS] = (cli_args.force,)
-    action_args_dict[ActionType.UPDATE] = (cli_args.force,)
-    action_args_dict[ActionType.UPLOAD] = (cli_args.force,)
-    action_args_dict[ActionType.VERIFY] = (cli_args.force,)
+    action_args_dict[ActionType.BUILD] = (cli_args.get_force(),)
+    action_args_dict[ActionType.CHAIN] = (cli_args.get_force(),)
+    action_args_dict[ActionType.CLEAN] = (cli_args.get_force(),)
+    action_args_dict[ActionType.CONSTRUCT] = (cli_args.get_force(),)
+    action_args_dict[ActionType.EXPORT] = (cli_args.get_force(),)
+    action_args_dict[ActionType.GET] = (cli_args.get_force(),)
+    action_args_dict[ActionType.REFRESH] = (cli_args.get_force(),)
+    action_args_dict[ActionType.STATUS] = (cli_args.get_force(),)
+    action_args_dict[ActionType.UPDATE] = (cli_args.get_force(),)
+    action_args_dict[ActionType.UPLOAD] = (cli_args.get_force(),)
+    action_args_dict[ActionType.VERIFY] = (cli_args.get_force(),)
 
     if action_type_enum == ActionType.CONFIG:
-        action_args_dict[ActionType.CONFIG] = (cli_args.force,
-                                               cli_args.config_section,
-                                               cli_args.config_key,
-                                               cli_args.config_value)
+        action_args_dict[ActionType.CONFIG] = (cli_args.get_force(),
+                                               cli_args.get_config_section(),
+                                               cli_args.get_config_key(),
+                                               cli_args.get_config_value())
 
-    action_args_dict[ActionType.CREATE] = (cli_args.force,)
+    action_args_dict[ActionType.CREATE] = (cli_args.get_force(),)
 
     if action_type_enum == ActionType.CREATE:
         return (pkgname,) + action_args_dict[ActionType.CREATE]

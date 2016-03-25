@@ -10,7 +10,7 @@ import configparser
 from enum import Enum
 import os
 
-from kentauros.definitions import KTR_SYSTEM_DATADIR
+from kentauros.definitions import KTR_SYSTEM_DATADIR, InstanceType
 
 from kentauros.config.cli import get_cli_config
 from kentauros.config.envvar import get_env_config
@@ -19,7 +19,7 @@ from kentauros.config.fallback import get_fallback_config
 from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
-from kentauros.init.cli import CLIArgs
+from kentauros.init.cli import CLI_ARGS_DICT
 from kentauros.init.env import get_env_home
 
 
@@ -37,7 +37,11 @@ functions, printed to stdout or stderr from inside this subpackage.
 """
 
 
-def _get_conf_from_file_args(conf_type):
+def get_conf_from_file_args(conf_type):
+    """
+    # TODO: napoleon docstring
+    """
+
     assert isinstance(conf_type, KtrConfType)
 
     def_file_path = os.path.join(KTR_SYSTEM_DATADIR, "default.conf")
@@ -59,21 +63,20 @@ def _get_conf_from_file_args(conf_type):
     return conf_from_file_args[conf_type]
 
 
-def ktr_get_conf():
+def ktr_get_conf(itype):
     """
     # TODO: napoleon docstring
     kentauros.config.get_conf()
     get and return highest-priority configuration for every config value
     """
 
+    assert isinstance(itype, InstanceType)
+
     def get_pref_conf(conf_dict, pref_conf):
         """
         kentauros.config.get_pref_conf()
         get and return preferred-by-CLI configuration
         """
-
-        # check if requirested config type is in Enum
-        # pylint: disable=unsubscriptable-object
 
         # get requested config from Dict
         if pref_conf:
@@ -86,13 +89,13 @@ def ktr_get_conf():
     ktr_confs = OrderedDict()
 
     def_config = KtrConf(KtrConfType.DEF).from_file(
-        *_get_conf_from_file_args(KtrConfType.DEF))
+        *get_conf_from_file_args(KtrConfType.DEF))
     sys_config = KtrConf(KtrConfType.SYS).from_file(
-        *_get_conf_from_file_args(KtrConfType.SYS))
+        *get_conf_from_file_args(KtrConfType.SYS))
     usr_config = KtrConf(KtrConfType.USR).from_file(
-        *_get_conf_from_file_args(KtrConfType.USR))
+        *get_conf_from_file_args(KtrConfType.USR))
     prj_config = KtrConf(KtrConfType.PRJ).from_file(
-        *_get_conf_from_file_args(KtrConfType.PRJ))
+        *get_conf_from_file_args(KtrConfType.PRJ))
 
     ktr_confs[KtrConfType.FBK] = get_fallback_config()
     ktr_confs[KtrConfType.DEF] = def_config
@@ -100,15 +103,15 @@ def ktr_get_conf():
     ktr_confs[KtrConfType.USR] = usr_config
     ktr_confs[KtrConfType.PRJ] = prj_config
     ktr_confs[KtrConfType.ENV] = get_env_config()
-    ktr_confs[KtrConfType.CLI] = get_cli_config()
+    ktr_confs[KtrConfType.CLI] = get_cli_config(itype)
 
 
     ktr_conf = None
 
-    cli_args = CLIArgs()
+    cli_args = CLI_ARGS_DICT[itype]()
 
-    if cli_args.priconf:
-        ktr_conf = get_pref_conf(ktr_confs, cli_args.priconf)
+    if cli_args.get_priconf():
+        ktr_conf = get_pref_conf(ktr_confs, cli_args.get_priconf())
 
     if ktr_conf is not None:
         return ktr_conf

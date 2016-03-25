@@ -617,6 +617,7 @@ ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
 ACTION_DICT[ActionType.CREATE] = CreateAction
 ACTION_DICT[ActionType.EXPORT] = ExportAction
 ACTION_DICT[ActionType.GET] = GetAction
+ACTION_DICT[ActionType.NONE] = Action
 ACTION_DICT[ActionType.PREPARE] = PrepareAction
 ACTION_DICT[ActionType.REFRESH] = RefreshAction
 ACTION_DICT[ActionType.STATUS] = StatusAction

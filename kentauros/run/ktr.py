@@ -26,8 +26,8 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 
 def run():
-    # TODO: napoleon docstring
     "will be run if executed by 'ktr' script # TODO: napoleon docstring"
+    # TODO: napoleon docstring
 
     ktr = Kentauros(itype=InstanceType.NORMAL)
 
@@ -43,7 +43,7 @@ def run():
     dbg(LOGPREFIX1 + "SPECDIR: " + ktr.conf.specdir)
 
     # if no action is specified: exit
-    if ktr.cli.action is None:
+    if ktr.cli.get_action() is None:
         log(LOGPREFIX1 + "No action specified. Exiting.", 2)
         log(LOGPREFIX1 + "Use 'ktr --help' for more information.")
         print()
@@ -55,8 +55,8 @@ def run():
 
     # if only specified packages are to be processed:
     # process packages only
-    if not ktr.cli.packages_all:
-        for name in ktr.cli.packages:
+    if not ktr.cli.get_packages_all():
+        for name in ktr.cli.get_packages():
             pkgs.append(name)
 
     # if all package are to be processed:
@@ -75,7 +75,7 @@ def run():
 
     # run action for every specified package
     for name in pkgs:
-        action_type = ktr.cli.action
+        action_type = ktr.cli.get_action()
         action = ACTION_DICT[action_type](*get_action_args(ktr.cli,
                                                            name,
                                                            action_type))
