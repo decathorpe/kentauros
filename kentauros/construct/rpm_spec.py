@@ -192,8 +192,6 @@ def spec_bump(specfile, comment=None):
     cmd = ["rpmdev-bumpspec"]
 
     # add --verbose or --quiet depending on settings
-    if (ktr.verby == 2) and not ktr.debug:
-        cmd.append("--quiet")
     if (ktr.verby == 0) or ktr.debug:
         cmd.append("--verbose")
 
