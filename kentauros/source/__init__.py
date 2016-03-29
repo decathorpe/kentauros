@@ -19,7 +19,8 @@ from kentauros.source.url import UrlSource
 __all__ = ["bzr", "common", "git", "local", "url"]
 
 
-SOURCE_TYPE_DICT = dict()           # TODO: napoleon docstring
+SOURCE_TYPE_DICT = dict()
+# TODO: napoleon variable docstring
 SOURCE_TYPE_DICT[SourceType.BZR] = BzrSource
 SOURCE_TYPE_DICT[SourceType.GIT] = GitSource
 SOURCE_TYPE_DICT[SourceType.LOCAL] = LocalSource

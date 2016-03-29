@@ -1,4 +1,5 @@
 """
+# TODO: napoleon module docstring
 kentauros.construct.rpm_spec
 contains helper functions for building rpm source packages
 """
@@ -20,7 +21,7 @@ stdout or stderr from inside this subpackage.
 
 class RPMSpecError(Exception):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon class docstring
     kentauros.construct.rpm_spec.RPMSpecError:
     exception for rpm spec errors
     """
@@ -33,7 +34,7 @@ class RPMSpecError(Exception):
 
 def spec_preamble_bzr(source):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_preamble_bzr():
     returns rpm spec %defines lines formatted nicely for bzr sources
     """
@@ -43,7 +44,7 @@ def spec_preamble_bzr(source):
 
 def spec_preamble_git(source):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_preamble_git():
     returns rpm spec %defines lines formatted nicely for git sources
     """
@@ -54,7 +55,7 @@ def spec_preamble_git(source):
 
 def spec_preamble_url(source):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_preamble_url():
     returns rpm spec %defines lines formatted nicely for url sources
     """
@@ -62,7 +63,8 @@ def spec_preamble_url(source):
     return ""
 
 
-SPEC_PREAMBLE_DICT = dict()             # TODO: napoleon docstring
+SPEC_PREAMBLE_DICT = dict()
+# TODO: napoleon variable docstring
 SPEC_PREAMBLE_DICT[SourceType.BZR] = spec_preamble_bzr
 SPEC_PREAMBLE_DICT[SourceType.GIT] = spec_preamble_git
 SPEC_PREAMBLE_DICT[SourceType.URL] = spec_preamble_url
@@ -70,7 +72,7 @@ SPEC_PREAMBLE_DICT[SourceType.URL] = spec_preamble_url
 
 def spec_version_bzr(source):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_version_bzr():
     returns rpm spec "Version:" tagline formatted nicely for bzr sources
     """
@@ -80,7 +82,7 @@ def spec_version_bzr(source):
 
 def spec_version_git(source):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_version_git():
     returns rpm spec "Version:" tagline formatted nicely for git sources
     """
@@ -90,7 +92,7 @@ def spec_version_git(source):
 
 def spec_version_url(source):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_version_url():
     returns rpm spec "Version:" tagline formatted nicely for url sources
     """
@@ -99,7 +101,8 @@ def spec_version_url(source):
     return ver_str
 
 
-SPEC_VERSION_DICT = dict()              # TODO: napoleon docstring
+SPEC_VERSION_DICT = dict()
+# TODO: napoleon variable docstring
 SPEC_VERSION_DICT[SourceType.BZR] = spec_version_bzr
 SPEC_VERSION_DICT[SourceType.GIT] = spec_version_git
 SPEC_VERSION_DICT[SourceType.URL] = spec_version_url
@@ -107,7 +110,7 @@ SPEC_VERSION_DICT[SourceType.URL] = spec_version_url
 
 def spec_version_read(file_obj):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_version_read():
     returns version string found on rpm spec "Version:" tagline
     """
@@ -125,7 +128,7 @@ def spec_version_read(file_obj):
 
 def spec_release_read(file_obj):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_release_read():
     returns release string found on rpm spec "Release:" tagline
     """
@@ -143,7 +146,7 @@ def spec_release_read(file_obj):
 
 def if_version(line):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.if_version()
     function returns version string if "Version: " is found on spec file line
     """
@@ -152,7 +155,7 @@ def if_version(line):
 
 def if_release(line):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.if_release()
     function returns release string if "Release: " is found on spec file line
     """
@@ -161,7 +164,7 @@ def if_release(line):
 
 def bump_release(relstr_old, reset=False, change=False):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.bump_release()
     returns release string bumped by 1 (hopefully intelligently)
     """
@@ -178,7 +181,7 @@ def bump_release(relstr_old, reset=False, change=False):
 
 def spec_bump(specfile, comment=None):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.construct.rpm_spec.spec_bump()
     function bumps the spec file for new release (via rpmdev-bumpspec)
     """

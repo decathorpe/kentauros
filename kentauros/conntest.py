@@ -1,5 +1,5 @@
 """
-# TODO: napoleon docstring
+# TODO: napoleon module docstring
 kentauros.conntest module
 connectivity test to arbitrary URL
 """
@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 
 def is_connected(url):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.conntest.is_connected():
     function that tests if the host behind "url" is reachable
     """
@@ -20,11 +20,12 @@ def is_connected(url):
     try:
         host = socket.gethostbyname(hostname)
         socket.create_connection((host, 80), 2)
-        return True
     except socket.herror:
         return False
     except socket.gaierror:
         return False
     except socket.timeout:
         return False
+
+    return True
 

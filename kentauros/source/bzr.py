@@ -113,7 +113,7 @@ class BzrSource(Source):
 
     def get(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.bzr.BzrSource.get():
         method that gets the correspondig bzr repository
         - respects branch and rev settings in package.conf
@@ -187,7 +187,7 @@ class BzrSource(Source):
 
     def update(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.bzr.BzrSource.update():
         method that updates the correspondig bzr repository
         - returns True if update is available and successful
@@ -249,7 +249,7 @@ class BzrSource(Source):
 
     def export(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.bzr.BzrSource.export():
         method that exports the correspondig bzr repository to tarball
         - returns True if export is successful

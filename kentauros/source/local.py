@@ -1,4 +1,5 @@
 """
+# TODO: napoleon module docstring
 kentauros.source.local
 contains LocalSource class and methods
 this class is for handling sources that are specified by file path pointing
@@ -22,7 +23,7 @@ stdout or stderr from inside this subpackage.
 
 class LocalSource(Source):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon class docstring
     kentauros.source.local.LocalSource:
     Source subclass holding information and methods for handling local sources
     """
@@ -34,14 +35,14 @@ class LocalSource(Source):
 
 
     def formatver(self):
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         ver = self.conf.get("source", "version")
         return ver
 
 
     def get(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.local.LocalSource.get():
         method that gets the correspondig local file (usually tarball)
         - returns True if copying is successful

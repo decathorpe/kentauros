@@ -33,7 +33,7 @@ stdout or stderr from inside this subpackage.
 
 class Constructor:
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon class docstring
     # TODO: move to common.py
     kentauros.construct.Constructor:
     base class for source package preparators
@@ -43,7 +43,7 @@ class Constructor:
 
     def init(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.construct.Constructor.init()
         method that creates directories needed for source package building
         """
@@ -51,7 +51,7 @@ class Constructor:
 
     def prepare(self, relreset=False):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.construct.Constructor.prepare()
         method that copies files needed for source package building
         """
@@ -59,7 +59,7 @@ class Constructor:
 
     def build(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.construct.Constructor.build()
         method that builds source package
         """
@@ -67,7 +67,7 @@ class Constructor:
 
     def export(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.construct.Constructor.export()
         method that moves built source package
         """
@@ -75,7 +75,7 @@ class Constructor:
 
     def clean(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.construct.Constructor.clean()
         method that cleans up temporary files
         """
@@ -84,7 +84,7 @@ class Constructor:
 
 class SrpmConstructor(Constructor):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon class docstring
     # TODO: move to srpm.py
     kentauros.construct.SrpmConstructor:
     class for .src.rpm source package preparator
@@ -110,7 +110,7 @@ class SrpmConstructor(Constructor):
 
 
     def init(self):
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         if not self.active:
             return None
 
@@ -138,7 +138,7 @@ class SrpmConstructor(Constructor):
 
 
     def prepare(self, relreset=False):
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         if not self.active:
             return False
 
@@ -259,7 +259,7 @@ class SrpmConstructor(Constructor):
 
 
     def build(self):
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         if not self.active:
             return None
 
@@ -288,7 +288,7 @@ class SrpmConstructor(Constructor):
 
 
     def export(self):
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         if not self.active:
             return None
 
@@ -306,7 +306,8 @@ class SrpmConstructor(Constructor):
         shutil.rmtree(self.tempdir)
 
 
-CONSTRUCTOR_TYPE_DICT = dict()                      # TODO: napoleon docstring
+CONSTRUCTOR_TYPE_DICT = dict()
+# TODO: napoleon variable docstring
 CONSTRUCTOR_TYPE_DICT[ConstructorType.NONE] = Constructor
 CONSTRUCTOR_TYPE_DICT[ConstructorType.SRPM] = SrpmConstructor
 

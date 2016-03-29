@@ -21,7 +21,7 @@ stdout or stderr from inside this subpackage.
 
 def get_env_config():
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.config.envvar.get_env_config():
     function that returns a KtrConf object containing ENV settings
     """

@@ -18,7 +18,7 @@ stdout or stderr from inside this subpackage.
 
 def ktr_create_dirs():
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.bootstrap.ktr_create_dirs()
     create confdir, datadir, specdir specified by ENV, CLI, configuration files
     """
@@ -53,7 +53,7 @@ def ktr_create_dirs():
 
 def ktr_bootstrap():
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.bootstrap.ktr_bootstrap()
     bootstrap everything for actual use of ktr
     """

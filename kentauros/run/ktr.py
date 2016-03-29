@@ -1,5 +1,5 @@
 """
-# TODO: napoleon docstring
+# TODO: napoleon module docstring
 this file contains the run() function called by 'ktr' as entry point
 """
 
@@ -26,8 +26,8 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 
 def run():
-    "will be run if executed by 'ktr' script # TODO: napoleon docstring"
-    # TODO: napoleon docstring
+    "will be run if executed by 'ktr' script"
+    # TODO: napoleon function docstring
 
     ktr = Kentauros(itype=InstanceType.NORMAL)
 

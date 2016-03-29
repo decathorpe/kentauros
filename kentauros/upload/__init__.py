@@ -24,7 +24,7 @@ stdout or stderr from inside this subpackage.
 
 class Uploader:
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon class docstring
     # TODO: move to common.py
     kentauros.upload.Uploader:
     base class for source package uploaders
@@ -34,6 +34,7 @@ class Uploader:
 
     def upload(self):
         """
+        # TODO: napoleon method docstring
         kentauros.upload.Uploader.upload():
         method that uploads the package
         """
@@ -42,7 +43,7 @@ class Uploader:
 
 class CoprUploader(Uploader):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon class docstring
     # TODO: move to copr.py
     kentauros.upload.CoprUploader:
     class for copr package uploader
@@ -70,6 +71,8 @@ class CoprUploader(Uploader):
 
 
     def upload(self):
+        # TODO: napoleon method docstring
+
         if not self.package.conf.getboolean("copr", "active"):
             return None
 
@@ -128,7 +131,8 @@ class CoprUploader(Uploader):
             os.remove(srpm)
 
 
-UPLOADER_TYPE_DICT = dict()             # TODO: napoleon docstring
+UPLOADER_TYPE_DICT = dict()
+# TODO: napoleon variable docstring
 UPLOADER_TYPE_DICT[UploaderType.COPR] = CoprUploader
 UPLOADER_TYPE_DICT[UploaderType.NONE] = Uploader
 

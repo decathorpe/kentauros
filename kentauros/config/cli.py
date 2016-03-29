@@ -23,7 +23,7 @@ stdout or stderr from inside this subpackage.
 
 def get_cli_config(itype):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.config.cli.get_cli_config():
     function that returns a KtrConf object containing CLI settings
     """

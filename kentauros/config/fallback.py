@@ -1,5 +1,5 @@
 """
-# TODO: napoleon docstring
+# TODO: napoleon module docstring
 kentauros.config.fallback
 this KtrConf is used if looking in all other places yields no (usable) results.
 it defaults to using "./" as default directory for confdir, datadir, specdir.
@@ -19,7 +19,7 @@ stdout or stderr from inside this subpackage.
 
 def get_fallback_config():
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.config.fallback.get_fallback_config():
     function that returns fallback values for kentauros configuration
     """

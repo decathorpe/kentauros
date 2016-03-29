@@ -39,7 +39,7 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 def get_conf_from_file_args(conf_type):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     """
 
     assert isinstance(conf_type, KtrConfType)
@@ -65,7 +65,7 @@ def get_conf_from_file_args(conf_type):
 
 def ktr_get_conf(itype):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon function docstring
     kentauros.config.get_conf()
     get and return highest-priority configuration for every config value
     """
@@ -74,6 +74,7 @@ def ktr_get_conf(itype):
 
     def get_pref_conf(conf_dict, pref_conf):
         """
+        # TODO: napoleon function docstring
         kentauros.config.get_pref_conf()
         get and return preferred-by-CLI configuration
         """

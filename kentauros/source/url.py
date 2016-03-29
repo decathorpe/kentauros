@@ -1,4 +1,5 @@
 """
+# TODO: napoleon module docstring
 kentauros.source.url
 contains UrlSource class and methods
 this class is for handling sources that are specified by URL pointing
@@ -23,7 +24,7 @@ stdout or stderr from inside this subpackage.
 
 class UrlSource(Source):
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon class docstring
     kentauros.source.url.UrlSource:
     Source subclass holding information and methods for handling URL sources
     - if wget command is not found on system, self.active = False
@@ -46,7 +47,7 @@ class UrlSource(Source):
 
     def get(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.url.UrlSource.get():
         method that gets the correspondig file from URL (usually tarball)
         - returns True if download is successful

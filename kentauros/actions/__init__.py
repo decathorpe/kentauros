@@ -442,7 +442,7 @@ class StatusAction(Action):
         self.atype = ActionType.STATUS
 
     def execute(self):
-        # TODO: write napoleon docstring
+        # TODO: write napoleon method docstring
         # TODO: output package configuration / status
         return True
 
@@ -532,7 +532,7 @@ class VerifyAction(Action):
         self.atype = ActionType.VERIFY
 
     def execute(self):
-        # TODO: write napoleon docstring
+        # TODO: write napoleon method docstring
         # TODO: verify that package *.conf is valid
         return True
 

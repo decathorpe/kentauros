@@ -1,4 +1,5 @@
 """
+# TODO: napoleon module docstring
 kentauros.source.common
 contains Source class definition
 """
@@ -17,7 +18,7 @@ stdout or stderr from inside this subpackage.
 
 class Source():
     """
-    # TODO: napoleon docstring
+    # TODO: napoleon class docstring
     kentauros.source.common.Source
     class that contains information about upstream source code and
     methods that depend on it.
@@ -39,7 +40,7 @@ class Source():
 
     def clean(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.common.Source.clean():
         default method of cleaning up sources in datadir/pkgname
         - returns False if sdir does not exist.
@@ -59,7 +60,7 @@ class Source():
 
     def export(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.common.Source.export():
         default method for source exporting; override as neccessary
         - return True when successful
@@ -73,7 +74,7 @@ class Source():
 
     def formatver(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.common.Source.formatver():
         default method for getting source version string; override as neccessary
         by default this is the string found in package configuration
@@ -85,7 +86,7 @@ class Source():
 
     def get(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.common.Source.get():
         default method for downloading/copying sources; override as neccessary
         - return True when successful
@@ -99,7 +100,7 @@ class Source():
 
     def refresh(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.common.Source.refresh():
         default method for refreshing sources (clean and get)
         returns success value from .get()
@@ -112,7 +113,7 @@ class Source():
 
     def update(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.common.Source.update():
         default method for updating sources; override as neccessary
         - return True when update was successful and available
@@ -126,7 +127,7 @@ class Source():
 
     def prepare(self):
         """
-        # TODO: napoleon docstring
+        # TODO: napoleon method docstring
         kentauros.source.common.Source.prepare():
         default method for preparing sources (get/update, export)
         - return True when all steps were successful

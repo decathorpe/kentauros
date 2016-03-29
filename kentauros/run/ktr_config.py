@@ -1,5 +1,5 @@
 """
-# TODO: napoleon docstring
+# TODO: napoleon module docstring
 this file contains the run_config() function called by 'ktr_config'
 as entry point
 """
@@ -27,8 +27,8 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 
 def run_config():
-    "will be run if executed by 'ktr-config' script # TODO: napoleon docstring"
-    # TODO: napoleon docstring
+    "will be run if executed by 'ktr-config' script"
+    # TODO: napoleon function docstring
 
     ktr = Kentauros(itype=InstanceType.CONFIG)
 
