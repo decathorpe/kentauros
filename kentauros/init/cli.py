@@ -5,6 +5,7 @@ contains classes which provide methods that return parsed CLI arguments,
 depending on where the `kentauros` module is used from.
 """
 
+
 import argparse
 
 from kentauros.definitions import ActionType, KtrConfType, InstanceType

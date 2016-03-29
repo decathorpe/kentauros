@@ -12,14 +12,6 @@ kentauros.source.bzr module
     :undoc-members:
     :show-inheritance:
 
-kentauros.source.common module
-------------------------------
-
-.. automodule:: kentauros.source.common
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.source.git module
 ---------------------------
 
@@ -32,6 +24,14 @@ kentauros.source.local module
 -----------------------------
 
 .. automodule:: kentauros.source.local
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.source.source module
+------------------------------
+
+.. automodule:: kentauros.source.source
     :members:
     :undoc-members:
     :show-inheritance:

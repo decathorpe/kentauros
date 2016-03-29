@@ -5,6 +5,7 @@ this file contains common functions, definitions, classes and methods for
 all configuration methods.
 """
 
+
 from configparser import ConfigParser, NoOptionError
 import os
 

@@ -5,6 +5,7 @@ returns the configuration values determined from the highest priority
 configuration found or the configuration location specified at command line.
 """
 
+
 from collections import OrderedDict
 import configparser
 from enum import Enum

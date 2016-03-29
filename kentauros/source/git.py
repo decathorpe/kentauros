@@ -5,17 +5,17 @@ contains GitSource class and methods
 this class is for handling sources that are specified by git repo URL
 """
 
+
 import os
 import shutil
 import subprocess
-from distutils.util import strtobool
 import dateutil.parser
 
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, err, log, log_command
 
-from kentauros.source.common import Source
+from kentauros.source.source import Source
 
 
 LOGPREFIX1 = "ktr/source/git: "
@@ -56,7 +56,7 @@ class GitSource(Source):
 
         # shallow clones and checking out a specific commit is not supported
         if self.conf.get("git", "commit") != "" and \
-           bool(strtobool(self.conf.get("git", "shallow"))):
+           self.conf.getboolean("git", "shallow"):
 
             self.conf.set("git", "shallow", "false")
             self.package.update_config()

@@ -7,16 +7,18 @@ file contains a dictioary which maps :py:class:`SourceType` enums to their
 respective class constructors.
 """
 
+
 from kentauros.definitions import SourceType
 
+from kentauros.source.source import Source
+
 from kentauros.source.bzr import BzrSource
-from kentauros.source.common import Source
 from kentauros.source.git import GitSource
 from kentauros.source.local import LocalSource
 from kentauros.source.url import UrlSource
 
 
-__all__ = ["bzr", "common", "git", "local", "url"]
+__all__ = ["bzr", "git", "local", "source", "url"]
 
 
 SOURCE_TYPE_DICT = dict()

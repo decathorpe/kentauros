@@ -6,6 +6,7 @@ this class is for handling sources that are specified by URL pointing
 to a tarball
 """
 
+
 import os
 import subprocess
 
@@ -13,7 +14,7 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, log, log_command
 
-from kentauros.source.common import Source
+from kentauros.source.source import Source
 
 
 LOGPREFIX1 = "ktr/source/url: "

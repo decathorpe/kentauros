@@ -6,13 +6,14 @@ this class is for handling sources that are specified by file path pointing
 to a tarball
 """
 
+
 import os
 import shutil
 
 from kentauros.definitions import SourceType
 from kentauros.instance import log
 
-from kentauros.source.common import Source
+from kentauros.source.source import Source
 
 
 LOGPREFIX1 = "ktr/source/local: "

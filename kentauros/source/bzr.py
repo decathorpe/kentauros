@@ -5,6 +5,7 @@ handling sources that have :code:`source.type=bzr` specified and
 in the package's configuration file.
 """
 
+
 import os
 import shutil
 import subprocess
@@ -13,7 +14,7 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, err, log, log_command
 
-from kentauros.source.common import Source
+from kentauros.source.source import Source
 
 
 LOGPREFIX1 = "ktr/source/bzr: "

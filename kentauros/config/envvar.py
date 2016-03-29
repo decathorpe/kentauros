@@ -7,6 +7,7 @@ configuration files (`KTR_CONFDIR`), the directory for package sources
 and the package specification directory (`KTR_SPECDIR`).
 """
 
+
 import os
 
 from kentauros.definitions import KtrConfType

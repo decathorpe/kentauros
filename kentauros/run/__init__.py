@@ -4,5 +4,6 @@ This subpackage contains the `run` and `run_config` modules
 setuptools-installed `ktr` and `ktr-config` scripts as entry points.
 """
 
-__all__ = ["ktr", "ktr_config"]
+
+__all__ = ["common", "ktr", "ktr_config"]
 

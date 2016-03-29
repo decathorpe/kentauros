@@ -4,13 +4,14 @@ kentauros.construct.rpm_spec
 contains helper functions for building rpm source packages
 """
 
+
 import io
 import subprocess
 
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, log_command
 
-from kentauros.source.common import Source
+from kentauros.source.source import Source
 
 
 LOGPREFIX1 = "ktr/construct/rpm_spec: "

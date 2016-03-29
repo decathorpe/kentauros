@@ -5,6 +5,7 @@ and environment variables have been parsed to determine which directories those
 should be.
 """
 
+
 import os
 
 from kentauros.instance import Kentauros, log

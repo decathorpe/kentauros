@@ -5,6 +5,7 @@ this KtrConf is used if looking in all other places yields no (usable) results.
 it defaults to using "./" as default directory for confdir, datadir, specdir.
 """
 
+
 import os
 
 from kentauros.definitions import KtrConfType

@@ -7,6 +7,7 @@ this file contains a dictioary which maps
 constructors.
 """
 
+
 from configparser import ConfigParser, NoSectionError
 import os
 import shutil
@@ -609,6 +610,7 @@ ACTION_DICT = dict()
 subclass constructors.
 """
 
+ACTION_DICT[ActionType.NONE] = Action
 ACTION_DICT[ActionType.BUILD] = BuildAction
 ACTION_DICT[ActionType.CHAIN] = ChainAction
 ACTION_DICT[ActionType.CLEAN] = CleanAction
@@ -617,7 +619,6 @@ ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
 ACTION_DICT[ActionType.CREATE] = CreateAction
 ACTION_DICT[ActionType.EXPORT] = ExportAction
 ACTION_DICT[ActionType.GET] = GetAction
-ACTION_DICT[ActionType.NONE] = Action
 ACTION_DICT[ActionType.PREPARE] = PrepareAction
 ACTION_DICT[ActionType.REFRESH] = RefreshAction
 ACTION_DICT[ActionType.STATUS] = StatusAction

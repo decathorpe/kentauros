@@ -6,6 +6,7 @@ environment variables and configuration files are parsed only once per program
 run. Additionally, this subpackage holds logging and error printing functions.
 """
 
+
 import sys
 
 from kentauros.definitions import InstanceType

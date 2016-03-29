@@ -4,6 +4,7 @@ kentauros.source.common
 contains Source class definition
 """
 
+
 import os
 import shutil
 

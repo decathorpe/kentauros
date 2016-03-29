@@ -7,6 +7,7 @@ package configuration, :py:class:`Source`, :py:class:`Constructor`,
 according to configuration.
 """
 
+
 from configparser import ConfigParser, NoSectionError, NoOptionError
 import os
 
@@ -19,7 +20,7 @@ from kentauros.instance import Kentauros, err, log
 from kentauros.build import BUILDER_TYPE_DICT, Builder
 from kentauros.construct import CONSTRUCTOR_TYPE_DICT, Constructor
 from kentauros.source import SOURCE_TYPE_DICT
-from kentauros.source.common import Source
+from kentauros.source.source import Source
 from kentauros.upload import UPLOADER_TYPE_DICT, Uploader
 
 
