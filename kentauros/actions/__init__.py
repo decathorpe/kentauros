@@ -2,9 +2,8 @@
 This subpackage contains the quasi-abstract :py:class:`Action` class and its
 subclasses, which are used to hold information about the action specified at
 command line and are used to execute their respective actions. Additionally,
-this file contains a dictioary which maps
-:py:class:`kentauros.definitions.ActionType` enums to their respective class
-constructors.
+this file contains a dictioary which maps ``ActionType`` enums to their
+respective class constructors.
 """
 
 

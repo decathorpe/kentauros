@@ -1,5 +1,6 @@
 """
-common code for run() entry points
+This module contains common code for entry point functions. At this moment, this
+only includes the :py:func:`get_action_args` function.
 """
 
 

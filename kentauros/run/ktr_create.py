@@ -1,10 +1,8 @@
 """
-This module contains the :py:func:`run_config` function that is called as entry
-point from the ``ktr-config`` script.
+This module contains the :py:func:`run_create` function that is called as entry
+point from the ``ktr-create`` script.
 """
 
-import glob
-import os
 
 from kentauros.definitions import ActionType, InstanceType
 from kentauros.instance import Kentauros, dbg, log
@@ -14,7 +12,7 @@ from kentauros.bootstrap import ktr_bootstrap
 from kentauros.run.common import get_action_args
 
 
-LOGPREFIX1 = "ktr-config: "
+LOGPREFIX1 = "ktr-create: "
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.
 """
@@ -25,11 +23,11 @@ functions, printed to stdout or stderr from inside this subpackage.
 """
 
 
-def run_config():
-    "will be run if executed by 'ktr-config' script"
+def run_create():
+    "will be run if executed by 'ktr-create' script"
     # TODO: napoleon function docstring
 
-    ktr = Kentauros(itype=InstanceType.CONFIG)
+    ktr = Kentauros(itype=InstanceType.CREATE)
 
     print()
 
@@ -44,22 +42,14 @@ def run_config():
 
     ktr_bootstrap()
 
-    pkgs = list()
+    # get packages from CLI
+    pkgs = ktr.cli.get_packages()
 
-    # if only specified packages are to be processed:
-    # process packages only
-    if not ktr.cli.get_packages_all():
-        for name in ktr.cli.get_packages():
-            pkgs.append(name)
-
-    # if all package are to be processed:
-    # get package configs present in CONFDIR
-    else:
-        pkg_conf_paths = glob.glob(os.path.join(
-            ktr.conf.confdir, "*.conf"))
-
-        for pkg_conf_path in pkg_conf_paths:
-            pkgs.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
+    # if list of packages is empty, nothing has to be done
+    if not pkgs:
+        log(LOGPREFIX1 + "No package names given. Exiting.", 2)
+        print()
+        return
 
     # log list of found packages
     log(LOGPREFIX1 + "Packages:", 2)
@@ -68,8 +58,8 @@ def run_config():
 
     # run action for every specified package
     for name in pkgs:
-        action = ACTION_DICT[ActionType.CONFIG](
-            *get_action_args(ktr.cli, name, ActionType.CONFIG))
+        action = ACTION_DICT[ActionType.CREATE](
+            *get_action_args(ktr.cli, name, ActionType.CREATE))
         success = action.execute()
 
         if success:

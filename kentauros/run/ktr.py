@@ -1,6 +1,6 @@
 """
-# TODO: napoleon module docstring
-this file contains the run() function called by 'ktr' as entry point
+This module contains the :py:func:`run` function that is called as entry point
+from the ``ktr`` script.
 """
 
 import glob
