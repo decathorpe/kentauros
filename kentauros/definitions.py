@@ -15,8 +15,8 @@ from enum import Enum, unique
 
 
 KTR_SYSTEM_DATADIR = "/usr/share/kentauros/"
- # TODO: napoleon variable docstring
-KTR_VERSION = "0.9.4"
+# TODO: napoleon variable docstring
+KTR_VERSION = "0.9.4dev"
 # TODO: napoleon variable docstring
 
 
