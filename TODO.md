@@ -11,3 +11,5 @@
 
 - verify that every needed bit of information is in the config file: ```verify``` action (only skeleton implementation present)
 
+- add export of binary packages after mock builds
+

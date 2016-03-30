@@ -1,55 +1,73 @@
 """
-# TODO: napoleon module docstring
-kentauros.definitions module
-contains definition of ktr system datadir used everywhere and
-enum definitions for:
-- ktr configuration types
-- ktr action types
-- builder types
-- constructor types
-- source types
-- uploader types
+This module contains all definitions of types and global variables that are
+used by nearly every other module / subpackage.
+
+It includes these globally used variables:
+
+* ``KTR_SYSTEM_DATADIR``:       directory where kentauros data is installed to /
+  resides when installed
+* ``KTR_VERSION``:              this version string is used when installing and
+  packaging kentauros
+
+The following Enums are defined here:
+
+* :py:class:`KtrConfType`:      types of kentauros configuration source
+* :py:class:`ActionType`:       types of actions that can be executed
+* :py:class:`BuilderType`:      types of supported binary package builders
+* :py:class:`ConstructorType`:  types of supported source package constructors
+* :py:class:`InstanceType`:     types of kentauros instances
+* :py:class:`SourceType`:       types of supported package sources
+* :py:class:`UploaderType`:     types of supported package uploaders
 """
+
 
 from enum import Enum, unique
 
 
 KTR_SYSTEM_DATADIR = "/usr/share/kentauros/"
-# TODO: napoleon variable docstring
+"""This string represents the absolute path which kentauros data files are
+copied to at installation and where they are expected to be when running ktr.
+"""
+
 KTR_VERSION = "0.9.4dev"
-# TODO: napoleon variable docstring
+"""This string represents the version string used by ``setup.py`` at install
+time and ``make-srpm.sh`` when building an srpm package. The version in
+``kentauros.spec`` has to be set manually yet.
+"""
 
 
 class KtrConfType(Enum):
     """
-    # TODO: napoleon class docstring
-    kentauros.definitions.KtrConfType
-    enum that defines all possible configuration sources.
+    This Enum defines the types of configuration file locations kentauros
+    supports and tries to read from. For all of them, their full qualifier and
+    a 3-letter abbreviation (if longer than 3 letters) is given for comfort.
     """
 
     CLI = 0
     ENV = 1
     PRJ = 2
-    PROJECT = 2
-    USER = 3
     USR = 3
     SYS = 4
-    SYSTEM = 4
     DEF = 5
-    DEFAULT = 5
     FBK = 6
+
+    PROJECT = 2
+    USER = 3
+    SYSTEM = 4
+    DEFAULT = 5
     FALLBACK = 6
 
 
 @unique
 class ActionType(Enum):
     """
-    # TODO: napoleon class docstring
-    kentauros.definitions.ActionType:
-    enum containing all types of Action classes
+    This Enum defines the different types of actions that are supported by
+    kentauros. This includes a default ``NONE`` type and a fallback ``DUMMY``
+    type.
     """
 
     NONE = 0
+    DUMMY = 1
     CREATE = 10
     STATUS = 11
     CONFIG = 12
@@ -69,33 +87,39 @@ class ActionType(Enum):
 @unique
 class BuilderType(Enum):
     """
-    # TODO: napoleon class docstring
-    kentauros.definitons.BuilderType:
-    enum that describes the kind of constructors supported
+    This Enum defines the different types of binary package builders that are
+    supported by kentauros. At the moment, only ``mock`` is supported for
+    building binary packages locally. It also includes a default ``NONE`` type
+    and a fallback ``DUMMY`` type.
     """
 
     NONE = 0
-    MOCK = 1
+    DUMMY = 1
+    MOCK = 2
 
 
 @unique
 class ConstructorType(Enum):
     """
-    # TODO: napoleon class docstring
-    kentauros.definitons.ConstructorType:
-    enum that describes the kind of constructors supported
+    This Enum defines the different types of source package builders that are
+    supported by kentauros. At the moment, only ``srpm`` packages are supported
+    as source packages. It also includes a default ``NONE`` type and a fallback
+    ``DUMMY`` type.
     """
 
     NONE = 0
-    SRPM = 1
+    DUMMY = 1
+    SRPM = 2
 
 
 @unique
 class InstanceType(Enum):
     """
-    # TODO: napoleon class docstring
-    kentauros.definitions.InstanceType:
-    enum that describes whether ktr, ktr-config or ktr-create has been invoked
+    This Enum defines the different modes in which kentauros can be run (as
+    imported from different scripts). This includes ``NORMAL`` invocation for
+    most standard actions, ``CONFIG`` for changing package-specific
+    configuration values and ``CREATE`` for creating package configuration files
+    from templates.
     """
 
     NORMAL = 0
@@ -106,26 +130,30 @@ class InstanceType(Enum):
 @unique
 class SourceType(Enum):
     """
-    # TODO: napoleon class docstring
-    kentauros.definitons.SourceType:
-    enum that describes the kind of package sources supported
+    This Enum defines the different types of package source sources that are
+    supported by kentauros. At the moment, ``local``, ``url``, ``git`` and
+    ``bzr`` sources are supported. It also includes a default ``NONE`` type and
+    a fallback ``DUMMY`` type.
     """
 
     NONE = 0
-    URL = 1
-    GIT = 2
-    BZR = 3
-    LOCAL = 4
+    DUMMY = 1
+    URL = 2
+    GIT = 3
+    BZR = 4
+    LOCAL = 5
 
 
 @unique
 class UploaderType(Enum):
     """
-    # TODO: napoleon class docstring
-    kentauros.definitons.UploaderType:
-    enum that describes the kind of uploaders supported
+    This Enum defines the different types of (source) package uploaders that are
+    supported by kentauros. At the moment, only source packages can be uploaded,
+    and only to ``copr``. It also includes a default ``NONE`` type and a
+    fallback ``DUMMY`` type.
     """
 
     NONE = 0
-    COPR = 1
+    DUMMY = 1
+    COPR = 2
 
