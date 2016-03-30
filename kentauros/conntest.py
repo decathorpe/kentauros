@@ -1,21 +1,27 @@
 """
-# TODO: napoleon module docstring
-kentauros.conntest module
-connectivity test to arbitrary URL
+This module contains one function (:py:func:`is_connected`), which is used for
+basic connectivity checks before actions that require internet access / access
+to a specific URL.
 """
+
 
 import socket
 from urllib.parse import urlparse
 
 
-def is_connected(url):
+def is_connected(host_url):
     """
-    # TODO: napoleon function docstring
-    kentauros.conntest.is_connected():
-    function that tests if the host behind "url" is reachable
+    This function tries to create a connection to the hostname specified by the
+    URL argument. If any error occurs during connecting, ``False`` is returned.
+
+    Arguments:
+        str host_url:   URL of the host connectivity will checked to
+
+    Returns:
+        bool:   ``True`` if connection setup successful, ``False`` if not
     """
 
-    hostname = urlparse(url).hostname
+    hostname = urlparse(host_url).hostname
 
     try:
         host = socket.gethostbyname(hostname)
