@@ -364,9 +364,9 @@ def get_cli_parser(instance_type: InstanceType=InstanceType.NORMAL):
 def get_parsed_cli(instance_type: InstanceType=InstanceType.NORMAL):
     """
     This function returns a `Namespace` object which contains the parsed CLI
-    switches and arguments, as specified in the :py:class:`ArgumentParser`
-    constructing functions in this module - and also depending on the instance
-    type specified.
+    switches and arguments, as specified in the
+    :py:class:`argparse.ArgumentParser` constructing functions in this module -
+    and also depending on the instance type specified.
 
     Arguments:
         InstanceType instance_type: invocation type (which script) - this

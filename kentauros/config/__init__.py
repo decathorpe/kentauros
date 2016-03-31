@@ -40,7 +40,7 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 def get_conf_from_file_args(conf_type: KtrConfType):
     """
-    This function returns the arguments for :py:method:`KtrConf.from_file`
+    This function returns the arguments for :py:meth:`KtrConf.from_file`
     method calls, depending on the type of configuration file location.
 
     Arguments:

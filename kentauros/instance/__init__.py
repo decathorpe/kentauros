@@ -113,7 +113,8 @@ def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):
     Arguments:
         str prefix1:  module-wide prefix string
         str basename: command base name
-        list cmdlist: list of strings, as passed to ``subprocess`` functions
+        list cmdlist: list of strings, as passed to :py:mod:``subprocess``
+                      functions
         int pri:      message priority (0-2, where 0 is lowest and 2 is highest)
     """
 
