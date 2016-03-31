@@ -12,7 +12,7 @@ from kentauros.package import Package
 
 def get_action_args(cli_args: CLIArgs,
                     pkgname: str,
-                    action_type_enum: ActionType):
+                    action_type_enum: ActionType) -> tuple:
     """
     This function returns arguments for an Action() constructor as tuple.
     It only constructs Package() objects as needed.

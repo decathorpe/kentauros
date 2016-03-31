@@ -49,7 +49,7 @@ class MockBuilder(Builder):
             self.package.update_config()
 
 
-    def build(self):
+    def build(self) -> bool:
         # TODO: napoleon method docstring
         if not self.package.conf.getboolean("mock", "active"):
             return True

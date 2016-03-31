@@ -37,7 +37,7 @@ class ConfigException(Exception):
         return repr(self.value)
 
 
-def __replace_home__(string: str):
+def __replace_home__(string: str) -> str:
     if string is None:
         return None
 
@@ -89,7 +89,7 @@ class KtrConf:
         self.conf = None
 
 
-    def validate(self):
+    def validate(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.config.base.KtrConf.validate()

@@ -7,7 +7,7 @@ for basic functions and determining debug and verbosity level.
 import os
 
 
-def get_env_home():
+def get_env_home() -> str:
     """
     This function tries to get the home directory of the user running ktr.
     If the "*HOME*" variable is not set, the current directory is used.
@@ -19,7 +19,7 @@ def get_env_home():
         return os.path.abspath("./")
 
 
-def get_env_debug():
+def get_env_debug() -> bool:
     """
     This function returns *True* if the "*KTR_DEBUG*" environment variable was
     set to anything parseable to *True* by python. If not (or the variable has
@@ -32,7 +32,7 @@ def get_env_debug():
         return False
 
 
-def get_env_verby():
+def get_env_verby() -> int:
     """
     This function returns the parsed value of the "*KTR_VERBOSITY*" environment
     variable (anything parseable to an :py:class:`int`). If it has not been set,

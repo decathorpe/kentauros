@@ -34,7 +34,7 @@ class RPMSpecError(Exception):
         return repr(self.value)
 
 
-def spec_preamble_bzr(source: Source):
+def spec_preamble_bzr(source: Source) -> str:
     """
     This function returns the "%defines" necessary for packages built from *bzr*
     repositories. This includes a definition of "rev" just now.
@@ -51,7 +51,7 @@ def spec_preamble_bzr(source: Source):
     return rev_define + "\n"
 
 
-def spec_preamble_git(source: Source):
+def spec_preamble_git(source: Source) -> str:
     """
     This function returns the "%defines" necessary for packages built from *git*
     repositories. This includes a definition of "rev" and "date" just now. The
@@ -71,7 +71,7 @@ def spec_preamble_git(source: Source):
     return date_define + rev_define + "\n"
 
 
-def spec_preamble_url(source: Source):
+def spec_preamble_url(source: Source) -> str:
     """
     This function returns the "%defines" necessary for packages built from
     tarballs specified by *url*.
@@ -94,7 +94,7 @@ SPEC_PREAMBLE_DICT[SourceType.GIT] = spec_preamble_git
 SPEC_PREAMBLE_DICT[SourceType.URL] = spec_preamble_url
 
 
-def spec_version_bzr(source: Source):
+def spec_version_bzr(source: Source) -> str:
     """
     This function returns the version string for packages built from *bzr*
     repositories.
@@ -111,7 +111,7 @@ def spec_version_bzr(source: Source):
     return ver_str
 
 
-def spec_version_git(source: Source):
+def spec_version_git(source: Source) -> str:
     """
     This function returns the version string for packages built from *git*
     repositories.
@@ -128,7 +128,7 @@ def spec_version_git(source: Source):
     return ver_str
 
 
-def spec_version_url(source: Source):
+def spec_version_url(source: Source) -> str:
     """
     This function returns the version string for packages built from tarballs
     specified by *url*.
@@ -152,7 +152,7 @@ SPEC_VERSION_DICT[SourceType.GIT] = spec_version_git
 SPEC_VERSION_DICT[SourceType.URL] = spec_version_url
 
 
-def spec_version_read(file_obj: io.IOBase):
+def spec_version_read(file_obj: io.IOBase) -> str:
     """
     This function reads and parses an RPM spec file for its "Version" tag.
 
@@ -175,7 +175,7 @@ def spec_version_read(file_obj: io.IOBase):
     raise RPMSpecError("No Version tag was found in the file.")
 
 
-def spec_release_read(file_obj: io.IOBase):
+def spec_release_read(file_obj: io.IOBase) -> str:
     """
     This function reads and parses an RPM spec file for its "Release:" tag.
 
@@ -198,7 +198,7 @@ def spec_release_read(file_obj: io.IOBase):
     raise RPMSpecError("No Release tag was found in the file.")
 
 
-def if_version(line: str):
+def if_version(line: str) -> bool:
     """
     This function returns ``True`` if the line contains the "Version:" tag and
     ``False`` if not.
@@ -213,7 +213,7 @@ def if_version(line: str):
     return line[0:8] == "Version:"
 
 
-def if_release(line: str):
+def if_release(line: str) -> bool:
     """
     This function returns ``True`` if the line contains the "Release:" tag and
     ``False`` if not.
@@ -228,7 +228,7 @@ def if_release(line: str):
     return line[0:8] == "Release:"
 
 
-def bump_release(relstr_old: str, reset: bool=False, change: bool=False):
+def bump_release(relstr_old: str, reset: bool=False, change: bool=False) -> str:
     """
     This function takes an old release string, processes it and returns a new
     release string. By default, this does nothing to the string, because the

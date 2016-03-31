@@ -46,7 +46,7 @@ class UrlSource(Source):
             self.active = False
 
 
-    def get(self):
+    def get(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.url.UrlSource.get():

@@ -65,7 +65,7 @@ class GitSource(Source):
         self.saved_date = None
 
 
-    def date(self):
+    def date(self) -> str:
         """
         # TODO: napoleon method docstring
         kentauros.source.git.GitSource.date():
@@ -119,7 +119,7 @@ class GitSource(Source):
         return date
 
 
-    def rev(self):
+    def rev(self) -> str:
         """
         # TODO: napoleon method docstring
         kentauros.source.git.GitSource.rev():
@@ -153,7 +153,7 @@ class GitSource(Source):
         return rev
 
 
-    def formatver(self):
+    def formatver(self) -> str:
         # TODO: napoleon method docstring
         if not self.active:
             return ""
@@ -172,7 +172,7 @@ class GitSource(Source):
         return ver
 
 
-    def get(self):
+    def get(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.git.GitSource.get():
@@ -267,7 +267,7 @@ class GitSource(Source):
         return True
 
 
-    def update(self):
+    def update(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.git.GitSource.update():
@@ -333,7 +333,7 @@ class GitSource(Source):
         return rev_new != rev_old
 
 
-    def export(self):
+    def export(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.git.GitSource.export():

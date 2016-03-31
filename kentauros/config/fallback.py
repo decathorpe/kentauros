@@ -18,7 +18,7 @@ stdout or stderr from inside this subpackage.
 """
 
 
-def get_fallback_config():
+def get_fallback_config() -> KtrConf:
     """
     This function provides fallback valies for kentauros instance settings and
     puts them into a :py:class:`KtrConf` instance for further processing.

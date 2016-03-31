@@ -57,7 +57,7 @@ class BzrSource(Source):
             self.remote = self.conf.get("source", "orig")
 
 
-    def rev(self):
+    def rev(self) -> str:
         """
         This method determines which revision the bzr repository associated with
         this BzrSource currently is at and returns it as a string. Once run, it
@@ -67,8 +67,8 @@ class BzrSource(Source):
         configuration, so the repository is not kept after export to tarball).
 
         Returns:
-            str(): either successfully determined revision string from \
-                   repository, last stored rev string or :code:`""` when not
+            str: either successfully determined revision string from \
+                 repository, last stored rev string or ``""`` when not
         """
 
         if not self.active:
@@ -95,12 +95,12 @@ class BzrSource(Source):
         return rev
 
 
-    def formatver(self):
+    def formatver(self) -> str:
         """
         This method returns a nicely formatted version string for bzr sources.
 
         Returns:
-            str(): nice version string (base version + :code:`~bzr` + revision)
+            str: nice version string (base version + :code:`~bzr` + revision)
         """
 
         if not self.active:
@@ -112,7 +112,7 @@ class BzrSource(Source):
         return ver
 
 
-    def get(self):
+    def get(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.bzr.BzrSource.get():
@@ -186,7 +186,7 @@ class BzrSource(Source):
         return True
 
 
-    def update(self):
+    def update(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.bzr.BzrSource.update():
@@ -248,7 +248,7 @@ class BzrSource(Source):
         return rev_new != rev_old
 
 
-    def export(self):
+    def export(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.bzr.BzrSource.export():

@@ -77,7 +77,7 @@ class BuildAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.BUILD
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method runs the local build corresponding to the package specified
         at initialisation, with the configuration from package configuration
@@ -122,7 +122,7 @@ class ChainAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.CHAIN
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method runs the "chain reaction" corresponding to the package
         specified at initialisation, with the configuration from the package
@@ -173,7 +173,7 @@ class CleanAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.CLEAN
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method cleans up the sources of to the package specified at
         initialisation. It executes the :py:meth:`kentauros.source.Source.clean`
@@ -215,7 +215,7 @@ class ConfigAction(Action):
         self.key = key
         self.value = value
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method checks if the specified section already exists in the
         configuration file - and creates it, if it doesn't. Following this
@@ -266,7 +266,7 @@ class ConstructAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.CONSTRUCT
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method calls several :py:class:`kentauros.construct.Constructor`
         methods to execute the source package build.
@@ -315,7 +315,7 @@ class ExportAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.EXPORT
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method executes the
         :py:meth:`kentauros.source.common.Source.export` method to execute the
@@ -348,7 +348,7 @@ class GetAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.GET
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method executes the
         :py:meth:`kentauros.source.common.Source.get` method to execute the
@@ -379,7 +379,7 @@ class PrepareAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.PREPARE
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method executes the
         :py:meth:`kentauros.source.common.Source.prepare` method to execute
@@ -410,7 +410,7 @@ class RefreshAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.REFRESH
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method executes the
         :py:meth:`kentauros.source.common.Source.refresh` method to execute a
@@ -443,7 +443,7 @@ class StatusAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.STATUS
 
-    def execute(self):
+    def execute(self) -> bool:
         # TODO: write napoleon method docstring
         # TODO: output package configuration / status
         return True
@@ -467,7 +467,7 @@ class UpdateAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.UPDATE
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method executes the
         :py:meth:`kentauros.source.common.Source.update` method to execute the
@@ -500,7 +500,7 @@ class UploadAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.UPLOAD
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method executes the
         :py:meth:`kentauros.upload.Uploader.upload` method to execute the
@@ -533,7 +533,7 @@ class VerifyAction(Action):
         super().__init__(package, force)
         self.atype = ActionType.VERIFY
 
-    def execute(self):
+    def execute(self) -> bool:
         # TODO: write napoleon method docstring
         # TODO: verify that package *.conf is valid
         return True
@@ -559,7 +559,7 @@ class CreateAction:
         self.name = name
         self.force = force
 
-    def execute(self):
+    def execute(self) -> bool:
         """
         This method copies the template package configuration file and template
         specification file to the future package's configuration and template

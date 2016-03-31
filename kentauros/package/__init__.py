@@ -36,6 +36,7 @@ class PackageError(Exception):
     kentauros.package.PackageError:
     exception class for package information parsing errors
     """
+
     def __init__(self, value: str):
         super().__init__()
         self.value = value

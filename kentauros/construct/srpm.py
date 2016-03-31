@@ -80,7 +80,7 @@ class SrpmConstructor(Constructor):
             "Temporary SOURCES, SPECS, SRPMS directory created.", 1)
 
 
-    def prepare(self, relreset=False):
+    def prepare(self, relreset=False) -> bool:
         # TODO: napoleon method docstring
         if not self.active:
             return False

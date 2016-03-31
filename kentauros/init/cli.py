@@ -6,12 +6,12 @@ depending on where the `kentauros` module is used from.
 """
 
 
-import argparse
+from argparse import ArgumentParser
 
 from kentauros.definitions import ActionType, KtrConfType, InstanceType
 
 
-def get_cli_parser_base():
+def get_cli_parser_base() -> ArgumentParser:
     """
     This function constructs and returns a basic parser for command line
     arguments, which will be further processed and added to by other functions.
@@ -34,10 +34,10 @@ def get_cli_parser_base():
       contains instructions for building binaries from source (optional)
 
     Returns:
-        argparse.ArgumentParser: basic CLI argument parser
+        ArgumentParser: basic CLI argument parser
     """
 
-    cliparser = argparse.ArgumentParser(
+    cliparser = ArgumentParser(
         description="execute actions on packages and their sources",
         prog="ktr")
 
@@ -105,7 +105,7 @@ def get_cli_parser_base():
     return cliparser
 
 
-def get_cli_parser_normal(cliparser: argparse.ArgumentParser):
+def get_cli_parser_normal(cliparser: ArgumentParser) -> ArgumentParser:
     """
     This function constructs and returns a parser for command line arguments,
     which is used for "normal" execution (e.g. invoking the ``ktr`` script).
@@ -118,21 +118,21 @@ def get_cli_parser_normal(cliparser: argparse.ArgumentParser):
     * ``--force`` (``-f``) switch to force actions which would not be executed
 
     Arguments:
-        argparse.ArgumentParser cliparser: basic argument parser got from
-                                           :py:func:`get_cli_parser_base()`
+        ArgumentParser cliparser: basic argument parser got from
+                                  :py:func:`get_cli_parser_base()`
 
     Returns:
-        argparse.ArgumentParser: CLI argument parser for ``ktr`` script
+        ArgumentParser: CLI argument parser for ``ktr`` script
     """
 
-    assert isinstance(cliparser, argparse.ArgumentParser)
+    assert isinstance(cliparser, ArgumentParser)
 
     # sub-commands for ktr
     parsers = cliparser.add_subparsers(
         title="commands",
         description="kentauros accepts the sub-commands given below")
 
-    package_parser = argparse.ArgumentParser(add_help=False)
+    package_parser = ArgumentParser(add_help=False)
     package_parser.add_argument(
         "package",
         action="store",
@@ -239,7 +239,7 @@ def get_cli_parser_normal(cliparser: argparse.ArgumentParser):
     return cliparser
 
 
-def get_cli_parser_config(cliparser: argparse.ArgumentParser):
+def get_cli_parser_config(cliparser: ArgumentParser) -> ArgumentParser:
     """
     This function constructs and returns a parser for command line arguments,
     which is used when changing package settings (e.g. by invoking the
@@ -255,14 +255,14 @@ def get_cli_parser_config(cliparser: argparse.ArgumentParser):
     * ``--value`` (``-V``) argument to specify the value to be written
 
     Arguments:
-        argparse.ArgumentParser cliparser: basic argument parser got from
+        ArgumentParser cliparser: basic argument parser got from
                                            :py:func:`get_cli_parser_base()`
 
     Returns:
-        argparse.ArgumentParser: CLI argument parser for ``ktr-config`` script
+        ArgumentParser: CLI argument parser for ``ktr-config`` script
     """
 
-    assert isinstance(cliparser, argparse.ArgumentParser)
+    assert isinstance(cliparser, ArgumentParser)
 
     cliparser.add_argument(
         "package",
@@ -296,7 +296,7 @@ def get_cli_parser_config(cliparser: argparse.ArgumentParser):
     return cliparser
 
 
-def get_cli_parser_create(cliparser: argparse.ArgumentParser):
+def get_cli_parser_create(cliparser: ArgumentParser) -> ArgumentParser:
     """
     This function constructs and returns a parser for command line arguments,
     which is used when creating a new package from template (not used yet).
@@ -308,14 +308,14 @@ def get_cli_parser_create(cliparser: argparse.ArgumentParser):
     * ``--force`` (``-f``) switch to force action
 
     Arguments:
-        argparse.ArgumentParser cliparser: basic argument parser got from
-                                           :py:func:`get_cli_parser_base()`
+        ArgumentParser cliparser: basic argument parser got from
+                                  :py:func:`get_cli_parser_base()`
 
     Returns:
-        argparse.ArgumentParser: CLI argument parser for ``ktr-create`` script
+        ArgumentParser: CLI argument parser for ``ktr-create`` script
     """
 
-    assert isinstance(cliparser, argparse.ArgumentParser)
+    assert isinstance(cliparser, ArgumentParser)
 
     cliparser.add_argument(
         "package",
@@ -333,52 +333,50 @@ def get_cli_parser_create(cliparser: argparse.ArgumentParser):
     return cliparser
 
 
-def get_cli_parser(instance_type: InstanceType=InstanceType.NORMAL):
+def get_cli_parser(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
     """
     This function returns a parser for command line arguments with certain
     switches and arguments, depending on which kentauros instance it is used
     for.
 
     Arguments:
-        InstanceType instance_type: invocation type (which script) - this
-                                    determines which CLI switches and arguments
-                                    will be available and defaults to normal
-                                    invocation
+        InstanceType itype: invocation type (which script) - this determines
+                            which CLI switches and arguments will be available
+                            and defaults to normal invocation
 
     Returns:
-        argparse.ArgumentParser: CLI argument parser for the specified instance
+        ArgumentParser: CLI argument parser for the specified instance
     """
 
-    assert isinstance(instance_type, InstanceType)
+    assert isinstance(itype, InstanceType)
 
     parser_dict = dict()
     parser_dict[InstanceType.NORMAL] = get_cli_parser_normal
     parser_dict[InstanceType.CONFIG] = get_cli_parser_config
     parser_dict[InstanceType.CREATE] = get_cli_parser_create
 
-    cliparser = parser_dict[instance_type](get_cli_parser_base())
+    cliparser = parser_dict[itype](get_cli_parser_base())
 
     return cliparser
 
 
-def get_parsed_cli(instance_type: InstanceType=InstanceType.NORMAL):
+def get_parsed_cli(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
     """
     This function returns a `Namespace` object which contains the parsed CLI
     switches and arguments, as specified in the
-    :py:class:`argparse.ArgumentParser` constructing functions in this module -
+    :py:class:`ArgumentParser` constructing functions in this module -
     and also depending on the instance type specified.
 
     Arguments:
-        InstanceType instance_type: invocation type (which script) - this
-                                    determines which CLI switches and arguments
-                                    will be available and defaults to normal
-                                    invocation
+        InstanceType itype: invocation type (which script) - this determines
+                            which CLI switches and arguments will be available
+                            and defaults to normal invocation
 
     Returns:
         Namespace: parsed CLI arguments and switches
     """
 
-    cli_args = get_cli_parser(instance_type).parse_args()
+    cli_args = get_cli_parser(itype).parse_args()
 
     return cli_args
 
@@ -405,7 +403,7 @@ class CLIArgs:
         if self.args is None:
             CLIArgs.args = get_parsed_cli(itype)
 
-    def get_debug(self):
+    def get_debug(self) -> bool:
         """
         This method simply returns whether the ``--debug`` or ``-d`` switch has
         been set at the command line.
@@ -416,7 +414,7 @@ class CLIArgs:
 
         return self.args.debug
 
-    def get_verby(self):
+    def get_verby(self) -> int:
         """
         This method returns how often the ``--verbose`` or ``-v`` switch has
         been set at the command line, subtracted from 2. This results in a
@@ -434,7 +432,7 @@ class CLIArgs:
             print("DEBUG: Verbosity levels only range from 0 to 2.")
             return 0
 
-    def get_priconf(self):
+    def get_priconf(self) -> KtrConfType:
         """
         This method returns the preferred configuration file location (as an
         instance of :py:class:`KtrConfType`).
@@ -452,7 +450,7 @@ class CLIArgs:
         except KeyError:
             return None
 
-    def get_ktr_basedir(self):
+    def get_ktr_basedir(self) -> str:
         """
         This method returns kentauros BASEDIR specified by CLI argument.
 
@@ -465,7 +463,7 @@ class CLIArgs:
 
         return self.args.basedir
 
-    def get_ktr_confdir(self):
+    def get_ktr_confdir(self) -> str:
         """
         This method returns kentauros CONFDIR specified by CLI argument.
 
@@ -478,7 +476,7 @@ class CLIArgs:
 
         return self.args.confdir
 
-    def get_ktr_datadir(self):
+    def get_ktr_datadir(self) -> str:
         """
         This method returns kentauros DATADIR specified by CLI argument.
 
@@ -491,7 +489,7 @@ class CLIArgs:
 
         return self.args.datadir
 
-    def get_ktr_packdir(self):
+    def get_ktr_packdir(self) -> str:
         """
         This method returns kentauros PACKDIR specified by CLI argument.
 
@@ -504,7 +502,7 @@ class CLIArgs:
 
         return self.args.packdir
 
-    def get_ktr_specdir(self):
+    def get_ktr_specdir(self) -> str:
         """
         This method returns kentauros SPECDIR specified by CLI argument.
 
@@ -517,7 +515,7 @@ class CLIArgs:
 
         return self.args.specdir
 
-    def get_action(self):
+    def get_action(self) -> ActionType:
         """
         This method returns which package action has been specified at CLI.
         If this is ``None``, something went wrong and no action type will be
@@ -531,7 +529,7 @@ class CLIArgs:
             return self.args.action
         return ActionType.NONE
 
-    def get_packages(self):
+    def get_packages(self) -> list:
         """
         This method returns all the package names which were collected from
         the CLI arguments.
@@ -545,7 +543,7 @@ class CLIArgs:
         else:
             return list()
 
-    def get_packages_all(self):
+    def get_packages_all(self) -> bool:
         """
         This method simply returns whether the ``--all`` or ``-a`` switch has
         been set at the command line.
@@ -559,7 +557,7 @@ class CLIArgs:
         else:
             return False
 
-    def get_force(self):
+    def get_force(self) -> bool:
         """
         This method simply returns whether the ``--force`` or ``-f`` switch has
         been set at the command line.
@@ -593,7 +591,7 @@ class CLIArgsConfig(CLIArgs):
         if self.args is None:
             CLIArgs.args = get_parsed_cli(InstanceType.CONFIG)
 
-    def get_config_section(self):
+    def get_config_section(self) -> str:
         """
         This method returns the configuration file section as specified by
         CLI argument.
@@ -604,7 +602,7 @@ class CLIArgsConfig(CLIArgs):
 
         return self.args.section
 
-    def get_config_key(self):
+    def get_config_key(self) -> str:
         """
         This method returns the configuration file key as specified by CLI
         argument.
@@ -615,7 +613,7 @@ class CLIArgsConfig(CLIArgs):
 
         return self.args.key
 
-    def get_config_value(self):
+    def get_config_value(self) -> str:
         """
         This method returns the configuration file value as specified by CLI
         argument.
@@ -626,7 +624,7 @@ class CLIArgsConfig(CLIArgs):
 
         return self.args.value
 
-    def get_confedit(self):
+    def get_confedit(self) -> bool:
         """
         This method returns whether everything necessary for editing a config
         file has been supplied at CLI (section, key, value).

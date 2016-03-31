@@ -39,7 +39,7 @@ class Source():
         self.type = None
 
 
-    def clean(self):
+    def clean(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.common.Source.clean():
@@ -59,7 +59,7 @@ class Source():
             return True
 
 
-    def export(self):
+    def export(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.common.Source.export():
@@ -73,7 +73,7 @@ class Source():
         return False
 
 
-    def formatver(self):
+    def formatver(self) -> str:
         """
         # TODO: napoleon method docstring
         kentauros.source.common.Source.formatver():
@@ -85,7 +85,7 @@ class Source():
         return self.package.conf.get("source", "version")
 
 
-    def get(self):
+    def get(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.common.Source.get():
@@ -99,7 +99,7 @@ class Source():
         return False
 
 
-    def refresh(self):
+    def refresh(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.common.Source.refresh():
@@ -112,7 +112,7 @@ class Source():
         return success
 
 
-    def update(self):
+    def update(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.common.Source.update():
@@ -126,7 +126,7 @@ class Source():
         return False
 
 
-    def prepare(self):
+    def prepare(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.common.Source.prepare():

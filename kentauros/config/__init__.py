@@ -38,7 +38,7 @@ functions, printed to stdout or stderr from inside this subpackage.
 """
 
 
-def get_conf_from_file_args(conf_type: KtrConfType):
+def get_conf_from_file_args(conf_type: KtrConfType) -> tuple:
     """
     This function returns the arguments for :py:meth:`KtrConf.from_file`
     method calls, depending on the type of configuration file location.
@@ -71,7 +71,7 @@ def get_conf_from_file_args(conf_type: KtrConfType):
     return conf_from_file_args[conf_type]
 
 
-def ktr_get_conf(itype: InstanceType):
+def ktr_get_conf(itype: InstanceType) -> KtrConf:
     """
     This function gets and parses :py:class:`KtrConf` instances for
     configuration values.

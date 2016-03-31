@@ -35,13 +35,13 @@ class LocalSource(Source):
         self.type = SourceType.LOCAL
 
 
-    def formatver(self):
+    def formatver(self) -> str:
         # TODO: napoleon method docstring
         ver = self.conf.get("source", "version")
         return ver
 
 
-    def get(self):
+    def get(self) -> bool:
         """
         # TODO: napoleon method docstring
         kentauros.source.local.LocalSource.get():
