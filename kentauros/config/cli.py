@@ -24,9 +24,14 @@ stdout or stderr from inside this subpackage.
 
 def get_cli_config(itype: InstanceType):
     """
-    # TODO: napoleon function docstring
-    kentauros.config.cli.get_cli_config():
-    function that returns a KtrConf object containing CLI settings
+    This function reads and parses command line settings and switches and puts
+    them into a :py:class:`KtrConf` instance for further processing.
+
+    Returns:
+        KtrConf: settings parsed from command line settings or switches
+
+    Returns:
+        None:    when no settings were set by environment variables
     """
 
     assert isinstance(itype, InstanceType)

@@ -24,8 +24,11 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 
 def run_create():
-    "will be run if executed by 'ktr-create' script"
-    # TODO: napoleon function docstring
+    """
+    This function is corresponding to (one of) the "main" function of the
+    `kentauros` package and is the entry point used by the ``ktr-create`` script
+    from git and the script installed by setuptools at installation.
+    """
 
     ktr = Kentauros(itype=InstanceType.CREATE)
 

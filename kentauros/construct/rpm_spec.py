@@ -36,20 +36,33 @@ class RPMSpecError(Exception):
 
 def spec_preamble_bzr(source: Source):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_preamble_bzr():
-    returns rpm spec %defines lines formatted nicely for bzr sources
+    This function returns the "%defines" necessary for packages built from *bzr*
+    repositories. This includes a definition of "rev" just now.
+
+    Arguments:
+        Source source: source repository the revision will be determined from
+
+    Returns:
+        str: string containing the ``%defines rev $REV`` line
     """
 
     assert isinstance(source, Source)
     rev_define = "%define rev " + source.rev() + "\n"
     return rev_define + "\n"
 
+
 def spec_preamble_git(source: Source):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_preamble_git():
-    returns rpm spec %defines lines formatted nicely for git sources
+    This function returns the "%defines" necessary for packages built from *git*
+    repositories. This includes a definition of "rev" and "date" just now. The
+    value of "rev" here are the first 8 characters of the corresponding git
+    commit hash.
+
+    Arguments:
+        Source source: source repository the revision will be determined from
+
+    Returns:
+        str: string with the "%defines rev $REV" and "%defines date $DATE" lines
     """
 
     assert isinstance(source, Source)
@@ -57,11 +70,17 @@ def spec_preamble_git(source: Source):
     rev_define = "%define rev " + source.rev()[0:8] + "\n"
     return date_define + rev_define + "\n"
 
+
 def spec_preamble_url(source: Source):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_preamble_url():
-    returns rpm spec %defines lines formatted nicely for url sources
+    This function returns the "%defines" necessary for packages built from
+    tarballs specified by *url*.
+
+    Arguments:
+        Source source: source the ``%defines`` will be determined from
+
+    Returns:
+        str: empty string
     """
 
     assert isinstance(source, Source)
@@ -77,31 +96,48 @@ SPEC_PREAMBLE_DICT[SourceType.URL] = spec_preamble_url
 
 def spec_version_bzr(source: Source):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_version_bzr():
-    returns rpm spec "Version:" tagline formatted nicely for bzr sources
+    This function returns the version string for packages built from *bzr*
+    repositories.
+
+    Arguments:
+        Source source: source repository a version string will be generated for
+
+    Returns:
+        str: version string in the format ``$VERSION~rev%{rev}``
     """
 
     assert isinstance(source, Source)
     ver_str = source.conf.get("source", "version") + "~rev%{rev}"
     return ver_str
 
+
 def spec_version_git(source: Source):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_version_git():
-    returns rpm spec "Version:" tagline formatted nicely for git sources
+    This function returns the version string for packages built from *git*
+    repositories.
+
+    Arguments:
+        Source source:  source repository a version string will be generated for
+
+    Returns:
+        str: version string in the format ``$VERSION~git%{date}~%{rev}``
     """
 
     assert isinstance(source, Source)
     ver_str = source.conf.get("source", "version") + "~git%{date}~%{rev}"
     return ver_str
 
+
 def spec_version_url(source: Source):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_version_url():
-    returns rpm spec "Version:" tagline formatted nicely for url sources
+    This function returns the version string for packages built from tarballs
+    specified by *url*.
+
+    Arguments:
+        Source source:  source a version string will be generated for
+
+    Returns:
+        str: version string in the format ``$VERSION``
     """
 
     assert isinstance(source, Source)
@@ -118,9 +154,13 @@ SPEC_VERSION_DICT[SourceType.URL] = spec_version_url
 
 def spec_version_read(file_obj: io.IOBase):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_version_read():
-    returns version string found on rpm spec "Version:" tagline
+    This function reads and parses an RPM spec file for its "Version" tag.
+
+    Arguments:
+        io.IOBase file_obj: file object corresponding the the RPM spec file
+
+    Returns:
+        str: version string found on the line containing the "Version:" tag
     """
 
     assert isinstance(file_obj, io.IOBase)
@@ -137,9 +177,13 @@ def spec_version_read(file_obj: io.IOBase):
 
 def spec_release_read(file_obj: io.IOBase):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_release_read():
-    returns release string found on rpm spec "Release:" tagline
+    This function reads and parses an RPM spec file for its "Release:" tag.
+
+    Arguments:
+        io.IOBase file_obj: file object corresponding the the RPM spec file
+
+    Returns:
+        str: release string found on the line containing the "Release:" tag
     """
 
     assert isinstance(file_obj, io.IOBase)
@@ -156,9 +200,14 @@ def spec_release_read(file_obj: io.IOBase):
 
 def if_version(line: str):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.if_version()
-    function returns version string if "Version: " is found on spec file line
+    This function returns ``True`` if the line contains the "Version:" tag and
+    ``False`` if not.
+
+    Arguments:
+        str line: string to be processed
+
+    Returns:
+        bool: "Version:" tag present or not
     """
 
     return line[0:8] == "Version:"
@@ -166,9 +215,14 @@ def if_version(line: str):
 
 def if_release(line: str):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.if_release()
-    function returns release string if "Release: " is found on spec file line
+    This function returns ``True`` if the line contains the "Release:" tag and
+    ``False`` if not.
+
+    Arguments:
+        str line: string to be processed
+
+    Returns:
+        bool: "Release:" tag present or not
     """
 
     return line[0:8] == "Release:"
@@ -176,27 +230,36 @@ def if_release(line: str):
 
 def bump_release(relstr_old: str, reset: bool=False, change: bool=False):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.bump_release()
-    returns release string bumped by 1 (hopefully intelligently)
+    This function takes an old release string, processes it and returns a new
+    release string. By default, this does nothing to the string, because the
+    release string will be bumped by :py:func:`spec_bump` anyway.
+
+    Arguments:
+        str relstr_old: old release string
+        bool reset:  switch to enable release reset to "0whatever" (for example
+                     after version changes)
+        bool change: switch to enable changes (incrementing first digit by 1)
     """
 
-    rnum = int(relstr_old[0])
-    rest = relstr_old[1:]
+    release_inum = int(relstr_old[0])
+    release_rest = relstr_old[1:]
 
     if not change and not reset:
         return relstr_old
     if not reset and change:
-        return str(rnum + 1) + rest
+        return str(release_inum + 1) + release_rest
     if reset:
-        return str(0) + rest
+        return str(0) + release_rest
 
 
 def spec_bump(specfile: str, comment: str=None):
     """
-    # TODO: napoleon function docstring
-    kentauros.construct.rpm_spec.spec_bump()
-    function bumps the spec file for new release (via rpmdev-bumpspec)
+    This function calls ``rpmdev-bumpspec`` with the specified arguments to
+    bump the release number and create a changelog entry with a given comment.
+
+    Arguments:
+        str specfile: absolute path of RPM spec file to process
+        str comment:  comment to be added to the changelog entry
     """
 
     ktr = Kentauros()
@@ -217,4 +280,6 @@ def spec_bump(specfile: str, comment: str=None):
 
     log_command(LOGPREFIX1, "rpmdev-bumpspec", cmd, 1)
     subprocess.call(cmd)
+
+    # TODO: error handling
 

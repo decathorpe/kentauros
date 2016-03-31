@@ -22,9 +22,14 @@ stdout or stderr from inside this subpackage.
 
 def get_env_config():
     """
-    # TODO: napoleon function docstring
-    kentauros.config.envvar.get_env_config():
-    function that returns a KtrConf object containing ENV settings
+    This function reads and parses environment variables and puts them into a
+    :py:class:`KtrConf` instance for further processing.
+
+    Returns:
+        KtrConf: settings parsed from environment variables
+
+    Returns:
+        None:    when no settings were set by environment variables
     """
 
     env_basedir = os.environ.get("KTR_BASE_DIR")

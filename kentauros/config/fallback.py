@@ -20,10 +20,13 @@ stdout or stderr from inside this subpackage.
 
 def get_fallback_config():
     """
-    # TODO: napoleon function docstring
-    kentauros.config.fallback.get_fallback_config():
-    function that returns fallback values for kentauros configuration
+    This function provides fallback valies for kentauros instance settings and
+    puts them into a :py:class:`KtrConf` instance for further processing.
+
+    Returns:
+        KtrConf: fallback settings
     """
+
     result = KtrConf(KtrConfType.FALLBACK,
                      basedir=os.path.abspath("./"))
 

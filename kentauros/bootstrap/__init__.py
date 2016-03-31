@@ -17,14 +17,15 @@ stdout or stderr from inside this subpackage.
 """
 
 
-def ktr_create_dirs():
+def ktr_bootstrap():
     """
-    # TODO: napoleon function docstring
-    kentauros.bootstrap.ktr_create_dirs()
-    create confdir, datadir, specdir specified by ENV, CLI, configuration files
+    This function has to be called before any other actions are attempted on
+    packages. It ensures that the required directory structure is present.
     """
 
     ktr = Kentauros()
+
+    # TODO: error handling
 
     if not os.access(ktr.conf.basedir, os.W_OK):
         log(LOGPREFIX + \
@@ -50,13 +51,4 @@ def ktr_create_dirs():
         log(LOGPREFIX + \
             "kentauros specdir does not exist and will be created.", 1)
         os.makedirs(ktr.conf.specdir)
-
-
-def ktr_bootstrap():
-    """
-    # TODO: napoleon function docstring
-    kentauros.bootstrap.ktr_bootstrap()
-    bootstrap everything for actual use of ktr
-    """
-    ktr_create_dirs()
 

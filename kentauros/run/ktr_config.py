@@ -26,8 +26,11 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 
 def run_config():
-    "will be run if executed by 'ktr-config' script"
-    # TODO: napoleon function docstring
+    """
+    This function is corresponding to (one of) the "main" function of the
+    `kentauros` package and is the entry point used by the ``ktr-config`` script
+    from git and the script installed by setuptools at installation.
+    """
 
     ktr = Kentauros(itype=InstanceType.CONFIG)
 

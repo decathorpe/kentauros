@@ -40,7 +40,14 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 def get_conf_from_file_args(conf_type: KtrConfType):
     """
-    # TODO: napoleon function docstring
+    This function returns the arguments for :py:method:`KtrConf.from_file`
+    method calls, depending on the type of configuration file location.
+
+    Arguments:
+        KtrConfType conf_type: type of configuration arguments will be built for
+
+    Returns:
+        tuple: collection of method call arguments
     """
 
     assert isinstance(conf_type, KtrConfType)
@@ -66,26 +73,17 @@ def get_conf_from_file_args(conf_type: KtrConfType):
 
 def ktr_get_conf(itype: InstanceType):
     """
-    # TODO: napoleon function docstring
-    kentauros.config.get_conf()
-    get and return highest-priority configuration for every config value
+    This function gets and parses :py:class:`KtrConf` instances for
+    configuration values.
+
+    Arguments:
+        InstanceType itype: instance type CLI configuration will be parsed for
+
+    Returns:
+        KtrConf:  highest-priority or requested :py:class:`KtrConf` instance
     """
 
     assert isinstance(itype, InstanceType)
-
-    def get_pref_conf(conf_dict, pref_conf):
-        """
-        # TODO: napoleon function docstring
-        kentauros.config.get_pref_conf()
-        get and return preferred-by-CLI configuration
-        """
-
-        # get requested config from Dict
-        if pref_conf:
-            return conf_dict[pref_conf]
-        else:
-            return None
-
 
     # configurations, in ascending priority
     ktr_confs = OrderedDict()
@@ -113,7 +111,7 @@ def ktr_get_conf(itype: InstanceType):
     cli_args = CLI_ARGS_DICT[itype]()
 
     if cli_args.get_priconf():
-        ktr_conf = get_pref_conf(ktr_confs, cli_args.get_priconf())
+        ktr_conf = ktr_confs[cli_args.get_priconf()]
 
     if ktr_conf is not None:
         return ktr_conf

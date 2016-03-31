@@ -26,8 +26,11 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 
 def run():
-    "will be run if executed by 'ktr' script"
-    # TODO: napoleon function docstring
+    """
+    This function is corresponding to (one of) the "main" function of the
+    `kentauros` package and is the entry point used by the ``ktr`` script from
+    git and the script installed by setuptools at installation.
+    """
 
     ktr = Kentauros(itype=InstanceType.NORMAL)
 
@@ -45,7 +48,7 @@ def run():
     # if no action is specified: exit
     if ktr.cli.get_action() is None:
         log(LOGPREFIX1 + "No action specified. Exiting.", 2)
-        log(LOGPREFIX1 + "Use 'ktr --help' for more information.")
+        log(LOGPREFIX1 + "Use 'ktr --help' for more information.", 2)
         print()
         return
 
