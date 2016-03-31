@@ -20,7 +20,7 @@ class Constructor:
         """
         pass
 
-    def prepare(self, relreset=False):
+    def prepare(self, relreset: bool=False):
         """
         # TODO: napoleon method docstring
         kentauros.construct.Constructor.prepare()

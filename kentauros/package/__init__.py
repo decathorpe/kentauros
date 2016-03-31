@@ -36,7 +36,7 @@ class PackageError(Exception):
     kentauros.package.PackageError:
     exception class for package information parsing errors
     """
-    def __init__(self, value):
+    def __init__(self, value: str):
         super().__init__()
         self.value = value
 
@@ -51,7 +51,9 @@ class Package:
     class that holds information about packages.
     at the moment, this only includes package name and the ConfigParser object
     """
-    def __init__(self, name):
+    def __init__(self, name: str):
+        assert isinstance(name, str)
+
         self.name = name
         self.file = os.path.join(Kentauros().conf.confdir,
                                  self.name + ".conf")

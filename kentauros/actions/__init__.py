@@ -38,10 +38,11 @@ class Action:
         atype (ActionType): stores type of action as enum
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         assert isinstance(package, Package)
-        self.package = package
+        assert isinstance(force, bool)
 
+        self.package = package
         self.force = force
         self.atype = None
 
@@ -72,7 +73,7 @@ class BuildAction(Action):
         atype (ActionType): here: stores `ActionType.BUILD`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.BUILD
 
@@ -117,7 +118,7 @@ class ChainAction(Action):
         atype (ActionType): here: stores `ActionType.CHAIN`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.CHAIN
 
@@ -168,7 +169,7 @@ class CleanAction(Action):
         atype (ActionType): here: stores `ActionType.CLEAN`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.CLEAN
 
@@ -205,7 +206,8 @@ class ConfigAction(Action):
         value (str): stores `value` given at initialisation
     """
 
-    def __init__(self, package, force, section, key, value):
+    def __init__(self, package: Package, force: bool,
+                 section: str, key: str, value: str):
         super().__init__(package, force)
         self.atype = ActionType.CONFIG
 
@@ -260,7 +262,7 @@ class ConstructAction(Action):
         atype (ActionType): here: stores `ActionType.CONSTRUCT`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.CONSTRUCT
 
@@ -309,7 +311,7 @@ class ExportAction(Action):
         atype (ActionType): here: stores `ActionType.EXPORT`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.EXPORT
 
@@ -342,7 +344,7 @@ class GetAction(Action):
         atype (ActionType): here: stores `ActionType.GET`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.GET
 
@@ -373,7 +375,7 @@ class PrepareAction(Action):
         atype (ActionType): here: stores `ActionType.PREPARE`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.PREPARE
 
@@ -404,7 +406,7 @@ class RefreshAction(Action):
         atype (ActionType): here: stores `ActionType.REFRESH`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.REFRESH
 
@@ -437,7 +439,7 @@ class StatusAction(Action):
         atype (ActionType): here: stores `ActionType.STATUS`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.STATUS
 
@@ -461,7 +463,7 @@ class UpdateAction(Action):
         atype (ActionType): here: stores `ActionType.UPDATE`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.UPDATE
 
@@ -494,7 +496,7 @@ class UploadAction(Action):
         atype (ActionType): here: stores `ActionType.UPLOAD`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.UPLOAD
 
@@ -527,7 +529,7 @@ class VerifyAction(Action):
         atype (ActionType): here: stores `ActionType.VERIFY`
     """
 
-    def __init__(self, package, force):
+    def __init__(self, package: Package, force: bool):
         super().__init__(package, force)
         self.atype = ActionType.VERIFY
 
@@ -550,8 +552,10 @@ class CreateAction:
         atype (ActionType): here: stores `ActionType.VERIFY`
     """
 
-    def __init__(self, name, force):
+    def __init__(self, name: str, force: bool):
         assert isinstance(name, str)
+        assert isinstance(force, bool)
+
         self.name = name
         self.force = force
 

@@ -22,7 +22,7 @@ stdout or stderr from inside this subpackage.
 """
 
 
-def get_cli_config(itype):
+def get_cli_config(itype: InstanceType):
     """
     # TODO: napoleon function docstring
     kentauros.config.cli.get_cli_config():

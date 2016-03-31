@@ -105,7 +105,7 @@ def get_cli_parser_base():
     return cliparser
 
 
-def get_cli_parser_normal(cliparser):
+def get_cli_parser_normal(cliparser: argparse.ArgumentParser):
     """
     This function constructs and returns a parser for command line arguments,
     which is used for "normal" execution (e.g. invoking the ``ktr`` script).
@@ -239,7 +239,7 @@ def get_cli_parser_normal(cliparser):
     return cliparser
 
 
-def get_cli_parser_config(cliparser):
+def get_cli_parser_config(cliparser: argparse.ArgumentParser):
     """
     This function constructs and returns a parser for command line arguments,
     which is used when changing package settings (e.g. by invoking the
@@ -296,7 +296,7 @@ def get_cli_parser_config(cliparser):
     return cliparser
 
 
-def get_cli_parser_create(cliparser):
+def get_cli_parser_create(cliparser: argparse.ArgumentParser):
     """
     This function constructs and returns a parser for command line arguments,
     which is used when creating a new package from template (not used yet).
@@ -333,7 +333,7 @@ def get_cli_parser_create(cliparser):
     return cliparser
 
 
-def get_cli_parser(instance_type=InstanceType.NORMAL):
+def get_cli_parser(instance_type: InstanceType=InstanceType.NORMAL):
     """
     This function returns a parser for command line arguments with certain
     switches and arguments, depending on which kentauros instance it is used
@@ -361,7 +361,7 @@ def get_cli_parser(instance_type=InstanceType.NORMAL):
     return cliparser
 
 
-def get_parsed_cli(instance_type=InstanceType.NORMAL):
+def get_parsed_cli(instance_type: InstanceType=InstanceType.NORMAL):
     """
     This function returns a `Namespace` object which contains the parsed CLI
     switches and arguments, as specified in the :py:class:`ArgumentParser`
@@ -401,7 +401,7 @@ class CLIArgs:
 
     args = None
 
-    def __init__(self, itype=InstanceType.NORMAL):
+    def __init__(self, itype: InstanceType=InstanceType.NORMAL):
         if self.args is None:
             CLIArgs.args = get_parsed_cli(itype)
 
@@ -641,8 +641,7 @@ class CLIArgsConfig(CLIArgs):
 
 
 CLI_ARGS_DICT = dict()
-"""
-This dictionary contains a mapping from :py:class:`InstanceType` members to
+""" This dictionary contains a mapping from :py:class:`InstanceType` members to
 their respective :py:class:`CLIArgs` class or subclass constructors.
 """
 

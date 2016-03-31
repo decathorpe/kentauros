@@ -9,7 +9,7 @@ import socket
 from urllib.parse import urlparse
 
 
-def is_connected(host_url):
+def is_connected(host_url: str):
     """
     This function tries to create a connection to the hostname specified by the
     URL argument. If any error occurs during connecting, ``False`` is returned.

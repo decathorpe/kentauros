@@ -16,7 +16,7 @@ from kentauros.init.cli import CLI_ARGS_DICT
 from kentauros.init.env import get_env_debug, get_env_verby
 
 
-def __smaller_int__(int1, int2):
+def __smaller_int__(int1: int, int2: int):
     if int1 < int2:
         return int1
     else:
@@ -32,13 +32,13 @@ class Kentauros:
     # pylint: disable=too-few-public-methods
     saved_state = dict()
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str):
         return self.saved_state.__getitem__(attr)
 
-    def __setattr__(self, attr, val):
+    def __setattr__(self, attr: str, val):
         self.saved_state.__setitem__(attr, val)
 
-    def __init__(self, itype=InstanceType.NORMAL):
+    def __init__(self, itype: InstanceType=InstanceType.NORMAL):
         assert isinstance(itype, InstanceType)
 
         self.itype = itype
@@ -56,7 +56,7 @@ class Kentauros:
             self.conf = ktr_get_conf(itype)
 
 
-def dbg(msg):
+def dbg(msg: str):
     """
     # TODO: napoleon function docstring
     kentauros.init.dbg()
@@ -67,7 +67,7 @@ def dbg(msg):
         print("DEBUG: " + str(msg))
 
 
-def err(msg):
+def err(msg: str):
     """
     # TODO: napoleon function docstring
     kentauros.init.err()
@@ -78,7 +78,7 @@ def err(msg):
     print("ERROR: " + msg, file=sys.stderr)
 
 
-def log(msg, pri=2):
+def log(msg: str, pri: int=2):
     """
     # TODO: napoleon function docstring
     kentauros.init.log():
@@ -93,7 +93,7 @@ def log(msg, pri=2):
         print(msg)
 
 
-def log_command(prefix1, basename, cmdlist, pri=2):
+def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):
     """
     # TODO: napoleon function docstring
     kentauros.init.log_command():

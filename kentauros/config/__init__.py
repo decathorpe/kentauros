@@ -38,7 +38,7 @@ functions, printed to stdout or stderr from inside this subpackage.
 """
 
 
-def get_conf_from_file_args(conf_type):
+def get_conf_from_file_args(conf_type: KtrConfType):
     """
     # TODO: napoleon function docstring
     """
@@ -64,7 +64,7 @@ def get_conf_from_file_args(conf_type):
     return conf_from_file_args[conf_type]
 
 
-def ktr_get_conf(itype):
+def ktr_get_conf(itype: InstanceType):
     """
     # TODO: napoleon function docstring
     kentauros.config.get_conf()

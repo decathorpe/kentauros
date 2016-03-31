@@ -9,6 +9,7 @@ class Builder:
     kentauros.build.Builder:
     base class for source package builders
     """
+
     def __init__(self, package):
         self.package = package
 

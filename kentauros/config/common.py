@@ -29,14 +29,15 @@ class ConfigException(Exception):
     kentauros.config.common.ConfigException:
     exception that is raised if erors occur during configuration parsing
     """
-    def __init__(self, value):
+
+    def __init__(self, value: str):
         super().__init__()
         self.value = value
     def __str__(self):
         return repr(self.value)
 
 
-def __replace_home__(string):
+def __replace_home__(string: str):
     if string is None:
         return None
 
@@ -63,7 +64,8 @@ class KtrConf:
     - location of package spec files (specdir)
     - may be extended
     """
-    def __init__(self, conftype, basedir=None):
+
+    def __init__(self, conftype: KtrConfType, basedir: str=None):
         assert isinstance(conftype, KtrConfType)
 
         if basedir is None:
@@ -93,11 +95,13 @@ class KtrConf:
         kentauros.config.base.KtrConf.validate()
         method for verifying valid configuration content.
         """
+
         # basedir does not have to be checked, because:
         # - it is either set at initialisation and
         #   defines all other values, or
         # - it is not set at initialisation and
         #   all other values have been defined manually
+
         if (self.confdir is None) or \
            (self.datadir is None) or \
            (self.packdir is None) or \
@@ -114,6 +118,7 @@ class KtrConf:
         method that replaces config values in this KtrConf (self) with non-None
         config values from another KtrConf (other)
         """
+
         assert isinstance(other, KtrConf)
 
         # if basedir is not set: all other values have been explicitly set,
@@ -131,7 +136,7 @@ class KtrConf:
             raise ConfigException("Error occured during configuration parsing.")
 
 
-    def from_file(self, filepath, errmsg=None):
+    def from_file(self, filepath: str, errmsg: str=None):
         """
         # TODO: napoleon method docstring
         kentauros.config.common.KtrConf.from_file():

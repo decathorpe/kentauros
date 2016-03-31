@@ -5,10 +5,14 @@ only includes the :py:func:`get_action_args` function.
 
 
 from kentauros.definitions import ActionType
+
+from kentauros.init.cli import CLIArgs
 from kentauros.package import Package
 
 
-def get_action_args(cli_args, pkgname, action_type_enum):
+def get_action_args(cli_args: CLIArgs,
+                    pkgname: str,
+                    action_type_enum: ActionType):
     """
     This function returns arguments for an Action() constructor as tuple.
     It only constructs Package() objects as needed.
@@ -22,6 +26,8 @@ def get_action_args(cli_args, pkgname, action_type_enum):
         tuple: :py:class:`kentauros.action.Action` Constructor arguments
     """
 
+    assert isinstance(cli_args, CLIArgs)
+    assert isinstance(pkgname, str)
     assert isinstance(action_type_enum, ActionType)
 
     action_args_dict = dict()
