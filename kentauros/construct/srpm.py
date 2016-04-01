@@ -1,5 +1,6 @@
 """
-# TODO: napoleon module docstring
+This module contains the :py:class:`SrpmConstructor` class, which can be used
+to construct src.rpm packages.
 """
 
 

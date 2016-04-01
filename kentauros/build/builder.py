@@ -1,5 +1,6 @@
 """
-# TODO: napoleon module docstring
+This module contains the template / dummy :py:class:`Builder` class, which
+is then inherited by actual builders.
 """
 
 

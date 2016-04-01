@@ -1,8 +1,7 @@
 """
-# TODO: napoleon module docstring
-kentauros.source.git
-contains GitSource class and methods
-this class is for handling sources that are specified by git repo URL
+This submodule contains only contains the :py:class:`GitSource` class, which has
+methods for handling sources that have ``source.type=git`` specified and
+``source.orig`` set to a git repository URL in the package's configuration file.
 """
 
 

@@ -1,8 +1,8 @@
 """
-This submodule contains only contains the BzrSource class and methods for
-handling sources that have :code:`source.type=bzr` specified and
-:code:`source.orig` set to a bzr repository URL (or :code:`lp:` abbreviation)
-in the package's configuration file.
+This submodule contains only contains the :py:class:`BzrSource` class, which has
+methods for handling sources that have ``source.type=bzr`` specified and
+``source.orig`` set to a bzr repository URL (or an ``lp:`` abbreviation) in the
+package's configuration file.
 """
 
 
@@ -27,11 +27,11 @@ class BzrSource(Source):
     """
     This Source subclass holds information and methods for handling bzr sources.
 
-    * If the :code:`bzr` command is not found on the system, :code:`self.active`
-      is automatically set to :code:`False` in the package's configuration file.
+    * If the ``bzr`` command is not found on the system, :code:`self.active` is
+      automatically set to :code:`False` in the package's configuration file.
     * For the purpose of checking connectivity to the remote server, the URL is
-      stored in :code:`self.remote`. If the specified repository is hosted on
-      `launchpad.net <https://launchpad.net>`_, :code:`lp:` will be substituted
+      stored in ``self.remote``. If the specified repository is hosted on
+      `launchpad.net <https://launchpad.net>`_, ``lp:`` will be substituted
       with launchpad's URL automatically.
 
     Arguments:
@@ -61,9 +61,9 @@ class BzrSource(Source):
         """
         This method determines which revision the bzr repository associated with
         this BzrSource currently is at and returns it as a string. Once run, it
-        saves the last processed revision number in :code:`self.saved_rev`, in
+        saves the last processed revision number in ``self.saved_rev``, in
         case the revision needs to be determined when bzr repository might not
-        be accessible anymore (e.g. if :code:`bzr.keep=False` is set in
+        be accessible anymore (e.g. if ``bzr.keep=False`` is set in
         configuration, so the repository is not kept after export to tarball).
 
         Returns:
@@ -100,7 +100,7 @@ class BzrSource(Source):
         This method returns a nicely formatted version string for bzr sources.
 
         Returns:
-            str: nice version string (base version + :code:`~bzr` + revision)
+            str: nice version string (base version + "~bzr" + revision)
         """
 
         if not self.active:

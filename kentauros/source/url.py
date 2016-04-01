@@ -1,9 +1,7 @@
 """
-# TODO: napoleon module docstring
-kentauros.source.url
-contains UrlSource class and methods
-this class is for handling sources that are specified by URL pointing
-to a tarball
+This submodule contains only contains the :py:class:`UrlSource` class, which
+has methods for handling sources that have ``source.type=url`` specified and
+``source.orig`` set to a URL of a tarball in the package's configuration file.
 """
 
 

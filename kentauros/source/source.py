@@ -1,7 +1,6 @@
 """
-# TODO: napoleon module docstring
-kentauros.source.common
-contains Source class definition
+This module contains the template / dummy :py:class:`Source` class, which
+is then inherited by actual sources.
 """
 
 

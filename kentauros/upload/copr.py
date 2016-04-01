@@ -1,5 +1,6 @@
 """
-# TODO: napoleon module docstring
+This module contains the :py:class:`CoprUploader` class, which can be used
+to upload src.rpm packages to `copr <http://copr.fedorainfracloud.org>`_.
 """
 
 

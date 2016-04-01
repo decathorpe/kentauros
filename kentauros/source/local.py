@@ -1,9 +1,8 @@
 """
-# TODO: napoleon module docstring
-kentauros.source.local
-contains LocalSource class and methods
-this class is for handling sources that are specified by file path pointing
-to a tarball
+This submodule contains only contains the :py:class:`LocalSource` class, which
+has methods for handling sources that have ``source.type=local`` specified and
+``source.orig`` set to an absolute path of a local file in the package's
+configuration file.
 """
 
 

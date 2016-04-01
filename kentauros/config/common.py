@@ -1,8 +1,5 @@
 """
-# TODO: napoleon module docstring
-kentauros.config.common
-this file contains common functions, definitions, classes and methods for
-all configuration methods.
+This module contains the :py:class:`KtrConf` class and helper things.
 """
 
 

@@ -1,7 +1,5 @@
 """
-# TODO: napoleon module docstring
-kentauros.construct.rpm_spec
-contains helper functions for building rpm source packages
+This module contains many helper functions for handling RPM .spec files.
 """
 
 

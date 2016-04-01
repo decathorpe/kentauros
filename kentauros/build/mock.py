@@ -1,5 +1,6 @@
 """
-# TODO: napoleon module docstring
+This module contains the :py:class:`MockBuilder` class, which can be used
+to build binary packages from src.rpm packages.
 """
 
 
