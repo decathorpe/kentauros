@@ -129,3 +129,10 @@ class MockBuilder(Builder):
                 err(LOGPREFIX2 + str(fail))
             return False
 
+    def export(self) -> bool:
+        """
+        # TODO: export resulting packages to kentauros binary package directory
+        # TODO: napoleon method docstring
+        """
+        pass
+
