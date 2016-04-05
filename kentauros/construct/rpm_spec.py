@@ -20,12 +20,14 @@ stdout or stderr from inside this subpackage.
 
 class RPMSpecError(Exception):
     """
-    # TODO: napoleon class docstring
-    kentauros.construct.rpm_spec.RPMSpecError:
-    exception for rpm spec errors
+    This custom exception will be raised when errors occur during parsing of an
+    RPM spec file.
+
+    Arguments:
+        str value: informational string accompanying the exception
     """
 
-    def __init__(self, value):
+    def __init__(self, value=""):
         super().__init__()
         self.value = value
     def __str__(self):

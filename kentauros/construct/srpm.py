@@ -29,10 +29,23 @@ stdout or stderr from inside this subpackage.
 
 class SrpmConstructor(Constructor):
     """
-    # TODO: napoleon class docstring
-    kentauros.construct.SrpmConstructor:
-    class for .src.rpm source package preparator
+    This :py:class:`Constructor` subclass implements methods for all stages of
+    building and exporting source packages. At class instantiation, it checks
+    for existance of ``rpmbuild`` and ``rpmdev-bumpspec`` binaries. If they are
+    not found in ``$PATH``, this instance is set to inactive.
+
+    Arguments:
+        Package package: package for which this src.rpm constructor is for
+
+    Attributes:
+        bool active: determines if this instance is active
+        str tempdir: absolute path of temporary "HOME" directory
+        str rpmbdir: absolute path of ``rpmbuild`` directory
+        str specdir: absolute path of ``rpmbuild/SPECS`` directory
+        str srpmdir: absolute path of ``rpmbuild/SRPMS`` directory
+        str srcsdir: absolute path of ``rpmbuild/SOURCES`` directory
     """
+
     def __init__(self, package):
         super().__init__(package)
 
@@ -42,7 +55,7 @@ class SrpmConstructor(Constructor):
         self.srpmdir = None
         self.srcsdir = None
 
-        # if bzr is not installed: mark BzrSource instance as inactive
+        # if binaries are not installed: mark SrpmConstructor instance inactive
         try:
             self.active = True
             subprocess.check_output(["which", "rpmbuild"])
@@ -81,7 +94,7 @@ class SrpmConstructor(Constructor):
             "Temporary SOURCES, SPECS, SRPMS directory created.", 1)
 
 
-    def prepare(self, relreset=False) -> bool:
+    def prepare(self, relreset: bool=False) -> bool:
         # TODO: napoleon method docstring
         if not self.active:
             return False
@@ -93,11 +106,11 @@ class SrpmConstructor(Constructor):
 
         # calculate absolute paths of files
         pkg_data_dir = os.path.join(ktr.conf.datadir,
-                                    self.package.name)
+                                    self.pkg.name)
         pkg_conf_file = os.path.join(ktr.conf.confdir,
-                                     self.package.name + ".conf")
+                                     self.pkg.name + ".conf")
         pkg_spec_file = os.path.join(ktr.conf.specdir,
-                                     self.package.name + ".spec")
+                                     self.pkg.name + ".spec")
 
         # copy sources to rpmbuild/SOURCES
         for entry in os.listdir(pkg_data_dir):
@@ -113,7 +126,7 @@ class SrpmConstructor(Constructor):
         log(LOGPREFIX1 + "File copied: " + pkg_conf_file, 0)
 
         # calculate absolute path of new spec file
-        new_spec_file = os.path.join(self.specdir, self.package.name + ".spec")
+        new_spec_file = os.path.join(self.specdir, self.pkg.name + ".spec")
 
         # open old and create new spec file
         old_specfile = open(pkg_spec_file, "r")
@@ -140,10 +153,10 @@ class SrpmConstructor(Constructor):
             return False
 
         # construct preamble and new version string
-        preamble = SPEC_PREAMBLE_DICT[self.package.source.type](
-            self.package.source)
-        new_version = SPEC_VERSION_DICT[self.package.source.type](
-            self.package.source)
+        preamble = SPEC_PREAMBLE_DICT[self.pkg.source.type](
+            self.pkg.source)
+        new_version = SPEC_VERSION_DICT[self.pkg.source.type](
+            self.pkg.source)
 
         # if old version and new version are different, force release reset to 0
         if new_version != old_version:
@@ -173,7 +186,7 @@ class SrpmConstructor(Constructor):
         if new_version != old_version:
             spec_bump(new_spec_file,
                       comment="update to version " + \
-                              self.package.conf.get("source", "version"))
+                              self.pkg.conf.get("source", "version"))
         else:
             spec_bump(new_spec_file)
 
@@ -223,7 +236,7 @@ class SrpmConstructor(Constructor):
 
         cmd.append("-bs")
 
-        cmd.append(os.path.join(self.specdir, self.package.name + ".spec"))
+        cmd.append(os.path.join(self.specdir, self.pkg.name + ".spec"))
 
         log_command(LOGPREFIX1, "rpmbuild", cmd, 1)
         subprocess.call(cmd)

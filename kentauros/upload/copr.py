@@ -22,28 +22,35 @@ stdout or stderr from inside this subpackage.
 
 class CoprUploader(Uploader):
     """
-    # TODO: napoleon class docstring
-    kentauros.upload.CoprUploader:
-    class for copr package uploader
+    This :py:class:`Uploader` subclass implements methods for all stages of
+    uploading source packages. At class instantiation, it checks for existance
+    of the ``copr-cli`` binary. If it is not found in ``$PATH``, this instance
+    is set to inactive.
+
+    Arguments:
+        Package package: package for which this src.rpm uploader is for
+
+    Attributes:
+        bool active: determines if this instance is active
     """
+
     def __init__(self, package):
         super().__init__(package)
 
-        if "copr" not in self.package.conf.sections():
-            self.package.conf.add_section("copr")
-            self.package.conf.set("copr", "active", "false")
-            self.package.update_config()
+        # if "active" value has not been set in package.conf, set it to false
+        if "active" not in self.pkg.conf.options("copr"):
+            self.pkg.conf.set("copr", "active", "false")
+            self.pkg.update_config()
 
-        if "active" not in self.package.conf.options("copr"):
-            self.package.conf.set("copr", "active", "false")
-            self.package.update_config()
+        self.active = self.pkg.conf.getboolean("copr", "active")
 
-        # if copr-cli is not installed: decativate copr uploader in conf file
+        # if binaries are not installed: mark CoprUploader instance inactive
         try:
             subprocess.check_output(["which", "copr-cli"])
         except subprocess.CalledProcessError:
-            self.package.conf.set("copr", "active", "false")
-            self.package.update_config()
+            log(LOGPREFIX1 + \
+                "Install copr-cli to use the specified uploader.")
+            self.active = False
 
         self.remote = "https://copr.fedorainfracloud.org"
 
@@ -51,12 +58,12 @@ class CoprUploader(Uploader):
     def upload(self):
         # TODO: napoleon method docstring
 
-        if not self.package.conf.getboolean("copr", "active"):
+        if not self.active:
             return None
 
         # get all srpms in the package directory
         srpms = glob.glob(os.path.join(Kentauros().conf.packdir,
-                                       self.package.name + "*.src.rpm"))
+                                       self.pkg.name + "*.src.rpm"))
 
         if srpms == []:
             log(LOGPREFIX1 + "No source packages were found. " + \
@@ -68,7 +75,7 @@ class CoprUploader(Uploader):
         srpm = srpms[0]
 
         # get dists to build for
-        dists = self.package.conf.get("copr", "dist").split(",")
+        dists = self.pkg.conf.get("copr", "dist").split(",")
         if dists == "":
             dists = []
 
@@ -87,7 +94,7 @@ class CoprUploader(Uploader):
         cmd.append("build")
 
         # append copr repo
-        cmd.append(self.package.conf.get("copr", "repo"))
+        cmd.append(self.pkg.conf.get("copr", "repo"))
 
         # append chroots (dists)
         for dist in dists:
@@ -95,7 +102,7 @@ class CoprUploader(Uploader):
             cmd.append(dist)
 
         # append --nowait if wait=False
-        if self.package.conf.getboolean("copr", "wait"):
+        if self.pkg.conf.getboolean("copr", "wait"):
             cmd.append("--nowait")
 
         # append package
@@ -105,6 +112,6 @@ class CoprUploader(Uploader):
         subprocess.call(cmd)
 
         # remove source package if keep=False is specified
-        if not self.package.conf.getboolean("copr", "keep"):
+        if not self.pkg.conf.getboolean("copr", "keep"):
             os.remove(srpm)
 

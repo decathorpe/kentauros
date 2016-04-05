@@ -6,12 +6,19 @@ is then inherited by actual constructors.
 
 class Constructor:
     """
-    # TODO: napoleon class docstring
-    kentauros.construct.Constructor:
-    base class for source package preparators
+    This class serves as a quasi-abstract base class for source package
+    constructors. They are expected to override this class's methods as
+    necessary.
+
+    Arguments:
+        Package package: package for which this constructor is for
+
+    Attributes:
+        Package pkg: stores parent package instance reference
     """
+
     def __init__(self, package):
-        self.package = package
+        self.pkg = package
 
     def init(self):
         """
