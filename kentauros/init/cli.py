@@ -441,8 +441,6 @@ class CLIArgs:
             KtrConfType: type of the preferred configuration
         """
 
-        # pylint: disable=unsubscriptable-object
-
         try:
             return KtrConfType[self.args.priconf.upper()]
         except AttributeError:

@@ -32,12 +32,14 @@ stdout or stderr from inside this subpackage.
 
 class PackageError(Exception):
     """
-    # TODO: napoleon class docstring
-    kentauros.package.PackageError:
-    exception class for package information parsing errors
+    This custom exception will be raised when errors occur during parsing of a
+    package configuration file.
+
+    Arguments:
+        str value: informational string accompanying the exception
     """
 
-    def __init__(self, value: str):
+    def __init__(self, value: str=""):
         super().__init__()
         self.value = value
 
@@ -113,8 +115,6 @@ class Package:
         finally:
             if upl_type == "":
                 upl_type = "NONE"
-
-        # pylint: disable=unsubscriptable-object
 
         self.source = SOURCE_TYPE_DICT[
             SourceType[src_type]](self)
