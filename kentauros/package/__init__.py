@@ -49,10 +49,26 @@ class PackageError(Exception):
 
 class Package:
     """
-    # TODO: napoleon class docstring
-    kentauros.package.Package:
-    class that holds information about packages.
-    at the moment, this only includes package name and the ConfigParser object
+    This class envelops all things necessary to perform actions on a specific
+    "package" of software.
+
+    Arguments:
+        str name:                   Base name of software package - reading
+                                    $NAME.conf will be attempted for further
+                                    information about the package.
+
+    Attributes:
+        ConfigParser conf:          parser for package.conf file
+        Source source:              handling of upstream source code
+        Constructor constructor:    handling of building compilable source
+                                    packages
+        Builder builder:            handling of building binary packages from
+                                    source
+        Uploader uploader:          handling of uploading source/binary packages
+                                    to remote location
+
+    Raises:
+        PackageError:               error if package.conf file is invalid
     """
     def __init__(self, name: str):
         assert isinstance(name, str)
