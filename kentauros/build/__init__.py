@@ -19,7 +19,10 @@ __all__ = ["builder", "mock"]
 
 
 BUILDER_TYPE_DICT = dict()
-# TODO: napoleon variable docstring
+""" This dictionary maps `BuilderType` enum members to their respective
+`Builder` subclass constructors.
+"""
+
 BUILDER_TYPE_DICT[BuilderType.MOCK] = MockBuilder
 BUILDER_TYPE_DICT[BuilderType.NONE] = Builder
 

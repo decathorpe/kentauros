@@ -88,7 +88,10 @@ def spec_preamble_url(source: Source) -> str:
 
 
 SPEC_PREAMBLE_DICT = dict()
-# TODO: napoleon variable docstring
+""" This dictionary maps `SourceType` enum members to their respective
+RPM spec preamble generator functions.
+"""
+
 SPEC_PREAMBLE_DICT[SourceType.BZR] = spec_preamble_bzr
 SPEC_PREAMBLE_DICT[SourceType.GIT] = spec_preamble_git
 SPEC_PREAMBLE_DICT[SourceType.URL] = spec_preamble_url
@@ -146,7 +149,10 @@ def spec_version_url(source: Source) -> str:
 
 
 SPEC_VERSION_DICT = dict()
-# TODO: napoleon variable docstring
+""" This dictionary maps `SourceType` enum members to their respective
+RPM spec version string generator functions.
+"""
+
 SPEC_VERSION_DICT[SourceType.BZR] = spec_version_bzr
 SPEC_VERSION_DICT[SourceType.GIT] = spec_version_git
 SPEC_VERSION_DICT[SourceType.URL] = spec_version_url

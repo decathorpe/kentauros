@@ -22,7 +22,10 @@ __all__ = ["bzr", "git", "local", "source", "url"]
 
 
 SOURCE_TYPE_DICT = dict()
-# TODO: napoleon variable docstring
+""" This dictionary maps `SourceType` enum members to their respective
+`Source` subclass constructors.
+"""
+
 SOURCE_TYPE_DICT[SourceType.BZR] = BzrSource
 SOURCE_TYPE_DICT[SourceType.GIT] = GitSource
 SOURCE_TYPE_DICT[SourceType.LOCAL] = LocalSource

@@ -17,7 +17,10 @@ __all__ = ["rpm_spec", "constructor", "srpm"]
 
 
 CONSTRUCTOR_TYPE_DICT = dict()
-# TODO: napoleon variable docstring
+""" This dictionary maps `ConstructorType` enum members to their respective
+`Constructor` subclass constructors.
+"""
+
 CONSTRUCTOR_TYPE_DICT[ConstructorType.NONE] = Constructor
 CONSTRUCTOR_TYPE_DICT[ConstructorType.SRPM] = SrpmConstructor
 

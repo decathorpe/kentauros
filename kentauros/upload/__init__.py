@@ -17,7 +17,10 @@ __all__ = ["copr", "uploader"]
 
 
 UPLOADER_TYPE_DICT = dict()
-# TODO: napoleon variable docstring
+""" This dictionary maps `UploaderType` enum members to their respective
+`Uploader` subclass constructors.
+"""
+
 UPLOADER_TYPE_DICT[UploaderType.COPR] = CoprUploader
 UPLOADER_TYPE_DICT[UploaderType.NONE] = Uploader
 
