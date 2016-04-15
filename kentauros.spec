@@ -5,7 +5,7 @@
 Summary:        Small build system, written in python
 Name:           kentauros
 Version:        0.9.5
-Release:        0%{?dist}
+Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -51,6 +51,7 @@ rm -rf %{buildroot}
 %files
 %{_bindir}/ktr
 %{_bindir}/ktr-config
+%{_bindir}/ktr-create
 %{_datadir}/kentauros/
 
 %{python3_sitelib}/kentauros
@@ -58,6 +59,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Apr 15 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.5-1
+- Fix spec for new version.
+
 * Fri Mar 11 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.3.2-1
 - Bump to version 0.9.3.2.
 
