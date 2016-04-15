@@ -22,9 +22,11 @@ functions, printed to stdout or stderr from inside this subpackage.
 
 class ConfigException(Exception):
     """
-    # TODO: napoleon class docstring
-    kentauros.config.common.ConfigException:
-    exception that is raised if erors occur during configuration parsing
+    This custom exception will be raised when errors occur during parsing of a
+    kentauros configuration file.
+
+    Arguments:
+        str value: informational string accompanying the exception
     """
 
     def __init__(self, value: str):
@@ -50,16 +52,33 @@ def __replace_home__(string: str) -> str:
 
 class KtrConf:
     """
-    # TODO: napoleon class docstring
-    kentauros.config.common.KtrConf
-    class that contains information about kentauros configuration options.
-    this includes:
-    - location of base directory (basedir)
-    - location of package configuration files (confdir)
-    - location of package source directories / tarballs (datadir)
-    - location of built source packages (packdir)
-    - location of package spec files (specdir)
-    - may be extended
+    This class is used to get and store kentauros configuration from one of the
+    valid sources.
+
+    Valid configuration file locations include (in ascending priority):
+
+    - system-wide default configuration, installed with kentauros:
+      `/usr/share/kentauros/default.conf`
+    - system-wide custom configuration, created by the user:
+      `/etc/kentaurosrc`
+    - user-wide configuration: `$HOME/.config/kentaurosrc`
+    - project-specific configuration: `./kentaurosrc`
+    - environment variables: `KTR_BASEDIR`, `KTR_CONFDIR`, etc.
+    - command-line switches: `--basedir=BASEDIR`, etc.
+
+    The settings stored in attributes of this class include:
+
+    - location of kentauros base directory (`basedir`)
+    - location of package configuration directory (`confdir`)
+    - location of package source directories (`datadir`)
+    - location of package specification directory (`specdir`)
+    - location of directory containing built packages (`packdir`)
+
+    Arguments:
+        KtrConfType conftype:   type of this configuration (where it was read
+                                from)
+        str basedir:            optional string specifying `basedir` at class
+                                initialisation
     """
 
     def __init__(self, conftype: KtrConfType, basedir: str=None):
@@ -88,9 +107,11 @@ class KtrConf:
 
     def validate(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.config.base.KtrConf.validate()
-        method for verifying valid configuration content.
+        This method contains a simple and stupid, fast verification that the
+        stored configuration does not contain missing values (`None`).
+
+        Returns:
+            bool: `True` if a basic test is passed, `False` if not
         """
 
         # basedir does not have to be checked, because:
@@ -110,10 +131,16 @@ class KtrConf:
 
     def succby(self, other):
         """
-        # TODO: napoleon method docstring
-        kentauros.config.common.KtrConf.succby()
-        method that replaces config values in this KtrConf (self) with non-None
-        config values from another KtrConf (other)
+        This method overrides attributes with those from another
+        :py:class:`KtrConf` instance and does basic verification of the
+        resulting configuration values.
+
+        Arguments:
+            KtrConf other:      configuration from which values are read
+
+        Raises:
+            ConfigException:    This exception is raised when an error occurs
+                                during configuration verification.
         """
 
         assert isinstance(other, KtrConf)
@@ -126,6 +153,7 @@ class KtrConf:
             self.datadir = other.datadir
             self.packdir = other.packdir
             self.specdir = other.specdir
+            self.type = other.type
 
         if not self.validate():
             print(LOGPREFIX1 + \
@@ -135,10 +163,20 @@ class KtrConf:
 
     def from_file(self, filepath: str, errmsg: str=None):
         """
-        # TODO: napoleon method docstring
-        kentauros.config.common.KtrConf.from_file():
-        method that reads a configuration file and parses read values into
-        object attributes
+        This method is used to read values from an `ini`-style configuration
+        file and store the results in the instance's attributes.
+
+        It also stores the :py:class:`ConfigParser` object and file path, in
+        case they were needed along the line.
+
+        Arguments:
+            str filepath:   path to configuration file
+            str errmsg:     error message that will be printed in case the file
+                            is not found at the specified location
+
+        Returns:
+            KtrConf:        returns instance itself for prettier code later on,\
+                            or `None` if file is not found.
         """
 
         if not os.path.exists(filepath):
