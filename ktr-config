@@ -9,6 +9,12 @@ entry point :py:func:`kentauros.run.ktr_config.run_config`.
 
 # pylint: disable=invalid-name
 
+
+import os
+import sys
+
+sys.path.insert(0, os.getcwd())
+
 from kentauros.run.ktr_config import run_config
 
 run_config()
