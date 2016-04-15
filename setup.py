@@ -20,7 +20,7 @@ setup(
     url="http://github.com/decathorpe/kentauros",
     packages=find_packages(),
     entry_points={'console_scripts': [
-        'ktr = kentauros.run:run',
+        'ktr = kentauros.run.ktr:run',
         'ktr-config = kentauros.run.ktr_config:run_config',
         'ktr-create = kentauros.run.ktr_create:run_create']},
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
