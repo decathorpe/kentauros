@@ -583,11 +583,11 @@ class CLIArgsConfig(CLIArgs):
               (``None`` at first and set later - at first initialisation)
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, itype: InstanceType=InstanceType.CONFIG):
+        super().__init__(itype)
 
         if self.args is None:
-            CLIArgs.args = get_parsed_cli(InstanceType.CONFIG)
+            CLIArgs.args = get_parsed_cli(itype)
 
     def get_config_section(self) -> str:
         """
