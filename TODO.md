@@ -1,15 +1,29 @@
 # TODO items for kentauros
 
-- ```package.__init__()```: make sure no hyphen is in source/version
 
-- mock: use lockfile for waiting for running builds to finish?
+## ktr
 
-- allow variables in package.conf and substitute
- - ```$(VERSION)```, ```$(NAME)```, etc.
+- add exports directory to configuration / initialisation. built binary packages
+  will be put there eventually
 
-- bzr: allow lightweight checkouts (conf/bzr/shallow=true)
 
-- verify that every needed bit of information is in the config file: ```verify``` action (only skeleton implementation present)
+## actions/verify
 
-- add export of binary packages after mock builds
+- implementation missing
+
+
+## builder/mock
+
+- wait for running builds to finish (mock lockfile)
+- export successfully built RPM packages to `$EXPODIR`
+
+## package
+
+- at initialisation, replace hyphens in source/version with tilde
+- allow variables in package configuration file (`$(VERSION)`, `$(NAME)`)
+
+
+## source/bzr
+
+- bzr lightweight checkouts are not supported yet
 
