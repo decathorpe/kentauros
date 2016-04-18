@@ -102,7 +102,7 @@ class CoprUploader(Uploader):
             cmd.append(dist)
 
         # append --nowait if wait=False
-        if self.pkg.conf.getboolean("copr", "wait"):
+        if not self.pkg.conf.getboolean("copr", "wait"):
             cmd.append("--nowait")
 
         # append package
