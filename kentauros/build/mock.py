@@ -59,7 +59,7 @@ class MockBuilder(Builder):
         # check if user is in the "mock" group
         mock_group = grp.getgrnam("mock")
         mock_user = os.getenv("USER")
-        if (mock_user not in mock_group.gr_mem) and (mock_user != "root"):
+        if not ((mock_user in mock_group.gr_mem) or (mock_user == "root")):
             log(LOGPREFIX1 + "This user is not allowed to build in mock.", 2)
             return False
 
