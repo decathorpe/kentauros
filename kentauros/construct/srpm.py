@@ -105,12 +105,9 @@ class SrpmConstructor(Constructor):
             self.init()
 
         # calculate absolute paths of files
-        pkg_data_dir = os.path.join(ktr.conf.datadir,
-                                    self.pkg.name)
-        pkg_conf_file = os.path.join(ktr.conf.confdir,
-                                     self.pkg.name + ".conf")
-        pkg_spec_file = os.path.join(ktr.conf.specdir,
-                                     self.pkg.name + ".spec")
+        pkg_data_dir = os.path.join(ktr.conf.datadir, self.pkg.name)
+        pkg_conf_file = os.path.join(ktr.conf.confdir, self.pkg.name + ".conf")
+        pkg_spec_file = os.path.join(ktr.conf.specdir, self.pkg.name + ".spec")
 
         # copy sources to rpmbuild/SOURCES
         for entry in os.listdir(pkg_data_dir):
@@ -119,7 +116,17 @@ class SrpmConstructor(Constructor):
                 shutil.copy2(entry_path, self.srcsdir)
                 log(LOGPREFIX1 + "File copied: " + entry_path, 0)
 
-        # TODO: remove source tarball if sources/keep = false is set
+        # remove tarballs if they should not be kept
+        if not self.pkg.conf.getboolean("source", "keep"):
+            # remove $DATADIR/$PKGNAME/$PKGNAME*.tar.gz
+            tarballs = glob.glob(
+                os.path.join(pkg_data_dir, self.pkg.name) + "*.tar.gz")
+            # remove only the newest one to be safe
+            tarballs.sort(reverse=True)
+            if os.path.isfile(tarballs[0]):
+                assert pkg_data_dir in tarballs[0]
+                os.remove(tarballs[0])
+                log(LOGPREFIX1 + "File removed: " + tarballs[0], 0)
 
         # copy package.conf to rpmbuild/SOURCES
         shutil.copy2(pkg_conf_file, self.srcsdir)
