@@ -14,8 +14,3 @@
 
 - RPM construction fails when a hyphen is in the version string
 
-
-## constructor/srpm/rpm_spec
-
-- release string increments _always_, even if base version string is changed
-
