@@ -143,7 +143,7 @@ class ChainAction(Action):
 
         ExportAction(self.package, self.force).execute()
 
-        success = ConstructAction(self.package, self.force).execute()
+        success = ConstructAction(self.package, self.force or get).execute()
         if not success:
             return False
 
@@ -285,7 +285,7 @@ class ConstructAction(Action):
 
         self.package.constructor.init()
 
-        success = self.package.constructor.prepare(relreset=(not self.force))
+        success = self.package.constructor.prepare(self.force)
         if not success:
             self.package.constructor.clean()
             return False

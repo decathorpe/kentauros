@@ -94,7 +94,7 @@ class SrpmConstructor(Constructor):
             "Temporary SOURCES, SPECS, SRPMS directory created.", 1)
 
 
-    def prepare(self, relreset: bool=False) -> bool:
+    def prepare(self, force: bool=False) -> bool:
         # TODO: napoleon method docstring
         if not self.active:
             return False
@@ -163,6 +163,7 @@ class SrpmConstructor(Constructor):
         preamble = SPEC_PREAMBLE_DICT[self.pkg.source.type](self.pkg.source)
         new_version = SPEC_VERSION_DICT[self.pkg.source.type](self.pkg.source)
 
+        relreset = False
         # if old version and new version are different, force release reset to 0
         if new_version != old_version:
             relreset = True
@@ -188,11 +189,11 @@ class SrpmConstructor(Constructor):
         new_specfile.close()
 
         # if version has changed, put it into the changelog
-        if relreset:
+        if old_version != new_version:
             spec_bump(new_spec_file,
                       comment="Update to version " + \
                               self.pkg.conf.get("source", "version") + ".")
-        else:
+        elif force:
             spec_bump(new_spec_file)
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
