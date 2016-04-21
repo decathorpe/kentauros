@@ -47,7 +47,7 @@
 Summary:        Mesa graphics libraries
 Name:           mesa
 Version:        11.3.0~devel~git%{date}~%{rev}
-Release:        1%{?dist}
+Release:        0%{?dist}
 License:        MIT
 Group:          System Environment/Libraries
 URL:            http://www.mesa3d.org
