@@ -234,7 +234,25 @@ def if_release(line: str) -> bool:
     return line[0:8] == "Release:"
 
 
-def bump_release(relstr_old: str, reset: bool=False, change: bool=False) -> str:
+def format_tagline(tag: str, value: str) -> str:
+    """
+    This function takes a tag and value as arguments and returns a nicely
+    formatted tagline.
+
+    Arguments:
+        str tag:    tag of tagline
+        str value:  tag value
+
+    Returns:
+        str: pretty tagline
+    """
+
+    tag_len = len(tag)
+    return tag + ":" + (16 - tag_len - 1) * " " + value + "\n"
+
+
+
+def bump_release(relstr_old: str, reset: bool=False) -> str:
     """
     This function takes an old release string, processes it and returns a new
     release string. By default, this does nothing to the string, because the
@@ -247,13 +265,10 @@ def bump_release(relstr_old: str, reset: bool=False, change: bool=False) -> str:
         bool change: switch to enable changes (incrementing first digit by 1)
     """
 
-    release_inum = int(relstr_old[0])
     release_rest = relstr_old[1:]
 
-    if not change and not reset:
+    if not reset:
         return relstr_old
-    if not reset and change:
-        return str(release_inum + 1) + release_rest
     if reset:
         return str(0) + release_rest
 
@@ -271,7 +286,7 @@ def spec_bump(specfile: str, comment: str=None):
     ktr = Kentauros()
 
     if comment is None:
-        comment = "automatic build by kentauros"
+        comment = "Automatic build by kentauros."
 
     # construct rpmdev-bumpspec command
     cmd = ["rpmdev-bumpspec"]

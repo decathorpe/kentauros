@@ -17,7 +17,7 @@ from kentauros.construct.constructor import Constructor
 from kentauros.construct.rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT
 from kentauros.construct.rpm_spec import RPMSpecError
 from kentauros.construct.rpm_spec import spec_version_read, spec_release_read
-from kentauros.construct.rpm_spec import if_version, if_release
+from kentauros.construct.rpm_spec import if_version, if_release, format_tagline
 from kentauros.construct.rpm_spec import bump_release, spec_bump
 
 
@@ -160,17 +160,15 @@ class SrpmConstructor(Constructor):
             return False
 
         # construct preamble and new version string
-        preamble = SPEC_PREAMBLE_DICT[self.pkg.source.type](
-            self.pkg.source)
-        new_version = SPEC_VERSION_DICT[self.pkg.source.type](
-            self.pkg.source)
+        preamble = SPEC_PREAMBLE_DICT[self.pkg.source.type](self.pkg.source)
+        new_version = SPEC_VERSION_DICT[self.pkg.source.type](self.pkg.source)
 
         # if old version and new version are different, force release reset to 0
         if new_version != old_version:
             relreset = True
 
         # construct new release string
-        new_release = bump_release(old_release, relreset, change=False)
+        new_release = bump_release(old_release, relreset)
         new_release = old_release
 
         # write preamble to new spec file
@@ -179,9 +177,9 @@ class SrpmConstructor(Constructor):
         # write rest of file and change Version and Release tags accordingly
         for line in old_specfile:
             if if_version(line):
-                new_specfile.write("Version:" + 8 * " " + new_version + "\n")
+                new_specfile.write(format_tagline("Version", new_version))
             elif if_release(line):
-                new_specfile.write("Release:" + 8 * " " + new_release + "\n")
+                new_specfile.write(format_tagline("Release", new_release))
             else:
                 new_specfile.write(line)
 
@@ -190,10 +188,10 @@ class SrpmConstructor(Constructor):
         new_specfile.close()
 
         # if version has changed, put it into the changelog
-        if new_version != old_version:
+        if relreset:
             spec_bump(new_spec_file,
-                      comment="update to version " + \
-                              self.pkg.conf.get("source", "version"))
+                      comment="Update to version " + \
+                              self.pkg.conf.get("source", "version") + ".")
         else:
             spec_bump(new_spec_file)
 
