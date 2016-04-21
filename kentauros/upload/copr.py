@@ -55,7 +55,7 @@ class CoprUploader(Uploader):
         self.remote = "https://copr.fedorainfracloud.org"
 
 
-    def upload(self):
+    def upload(self) -> bool:
         # TODO: napoleon method docstring
 
         if not self.active:
@@ -66,9 +66,9 @@ class CoprUploader(Uploader):
                                        self.pkg.name + "*.src.rpm"))
 
         if srpms == []:
-            log(LOGPREFIX1 + "No source packages were found. " + \
-                "Construct them first.", 2)
-            return None
+            log(LOGPREFIX1 + \
+                "No source packages were found. Construct them first.", 2)
+            return False
 
         # figure out which srpm to build
         srpms.sort(reverse=True)

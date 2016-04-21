@@ -65,9 +65,8 @@ class MockBuilder(Builder):
 
         ktr = Kentauros()
 
-        # WARNING: MockBuilder.build() builds !all!
-        # name*.src.rpm packages found in PACKDIR
-        srpms = glob.glob(os.path.join(Kentauros().conf.packdir,
+        # get all srpms in the package directory
+        srpms = glob.glob(os.path.join(ktr.conf.packdir,
                                        self.package.name + "*.src.rpm"))
 
         if srpms == []:
@@ -75,14 +74,17 @@ class MockBuilder(Builder):
                 "No source packages were found. Construct them first.", 2)
             return False
 
-        log(LOGPREFIX1 + "list of found source packages:", 2)
-        for srpm in srpms:
-            log(LOGPREFIX2 + srpm)
+        # figure out which srpm to build
+        srpms.sort(reverse=True)
+        srpm = srpms[0]
 
+        # get dists to build for
         dists = self.package.conf.get("mock", "dist").split(",")
+        if dists == "":
+            dists = []
 
         if dists != []:
-            log(LOGPREFIX1 + "list of specified chroots:", 2)
+            log(LOGPREFIX1 + "Specified chroots:", 2)
             for dist in dists:
                 log(LOGPREFIX2 + dist, 2)
 
@@ -105,16 +107,13 @@ class MockBuilder(Builder):
                 cmd_new = cmd.copy()
                 cmd_new.append("-r")
                 cmd_new.append(dist)
-                for srpm in srpms:
-                    cmd_newest = cmd_new.copy()
-                    cmd_newest.append(srpm)
-                    mock_cmds.append(cmd_newest)
-        else:
-            cmd_new = cmd.copy()
-            for srpm in srpms:
                 cmd_newest = cmd_new.copy()
                 cmd_newest.append(srpm)
                 mock_cmds.append(cmd_newest)
+        else:
+            cmd_new = cmd_new.copy()
+            cmd_new.append(srpm)
+            mock_cmds.append(cmd_newest)
 
         for mock_cmd in mock_cmds:
             log_command(LOGPREFIX1, "mock", mock_cmd, 1)
@@ -126,8 +125,7 @@ class MockBuilder(Builder):
 
         # remove source package if keep=False is specified
         if not self.package.conf.getboolean("mock", "keep"):
-            for srpm in srpms:
-                os.remove(srpm)
+            os.remove(srpm)
 
         if build_fail == []:
             return True
