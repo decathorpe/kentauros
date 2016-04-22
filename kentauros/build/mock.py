@@ -72,7 +72,6 @@ class MockBuild:
 
         return cmd
 
-
     def build(self):
         """
         This method starts the mock build (and waits for already running builds
@@ -96,7 +95,7 @@ class MockBuild:
                     fcntl.lockf(lock_file.fileno(),
                                 fcntl.LOCK_EX | fcntl.LOCK_NB)
                 except IOError:
-                    log(LOGPREFIX1 + \
+                    log(LOGPREFIX1 +
                         "The specified build chroot is busy, waiting.", 2)
                     time.sleep(120)
                 else:
@@ -130,13 +129,12 @@ class MockBuilder(Builder):
             self.package.conf.set("mock", "active", "false")
             self.package.update_config()
 
-        # if mock is not installed: decativate mock builder in conf file
+        # if mock is not installed: deactivate mock builder in conf file
         try:
             subprocess.check_output(["which", "mock"])
         except subprocess.CalledProcessError:
             self.package.conf.set("mock", "active", "false")
             self.package.update_config()
-
 
     def build(self) -> bool:
         # TODO: napoleon method docstring
@@ -156,8 +154,8 @@ class MockBuilder(Builder):
         srpms = glob.glob(os.path.join(ktr.conf.packdir,
                                        self.package.name + "*.src.rpm"))
 
-        if srpms == []:
-            log(LOGPREFIX1 + \
+        if not srpms:
+            log(LOGPREFIX1 +
                 "No source packages were found. Construct them first.", 2)
             return False
 
@@ -170,7 +168,7 @@ class MockBuilder(Builder):
         if dists == "":
             dists = []
 
-        if dists != []:
+        if dists:
             log(LOGPREFIX1 + "Specified chroots:", 2)
             for dist in dists:
                 log(LOGPREFIX2 + dist, 2)
@@ -178,7 +176,7 @@ class MockBuilder(Builder):
         # generate build queue
         build_queue = list()
 
-        if dists == []:
+        if not dists:
             build_queue.append(MockBuild(srpm))
         else:
             for dist in dists:
@@ -211,11 +209,9 @@ class MockBuilder(Builder):
 
         return not build_fail
 
-
     def export(self) -> bool:
         """
         # TODO: export resulting packages to kentauros binary package directory
         # TODO: napoleon method docstring
         """
         pass
-
