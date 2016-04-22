@@ -143,7 +143,8 @@ class ChainAction(Action):
 
         ExportAction(self.package, self.force).execute()
 
-        success = ConstructAction(self.package, self.force or get or update).execute()
+        success = ConstructAction(self.package,
+                                  self.force or get or update).execute()
         if not success:
             return False
 
