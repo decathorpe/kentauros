@@ -1,5 +1,7 @@
 examples/packages/*
 examples/sources/*
 
+.idea
+
 *.old
 *.tmp
