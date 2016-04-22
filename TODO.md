@@ -14,8 +14,8 @@
 
 ## builder/mock
 
-- wait for running builds to finish (mock lockfile)
 - export successfully built RPM packages to `$EXPODIR`
+
 
 ## package
 
