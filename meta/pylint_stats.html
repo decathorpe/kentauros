@@ -203,8 +203,8 @@
 <tr class="even">
 <td>module</td>
 <td>40</td>
-<td>36</td>
-<td>+4.00</td>
+<td>40</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -219,8 +219,8 @@
 <tr class="even">
 <td>method</td>
 <td>113</td>
-<td>114</td>
-<td>-1.00</td>
+<td>113</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -239,18 +239,17 @@
 <pre>dateutil 
   \-parser (kentauros.source.git)
 kentauros 
-  \-actions (kentauros.run.ktr_config)
-  | \-action (kentauros.actions.std_actions)
+  \-actions (kentauros.run.ktr_create)
+  | \-action (kentauros.actions.create_action)
   | \-config_action (kentauros.actions)
   | \-create_action (kentauros.actions)
   | \-std_actions (kentauros.actions)
-  \-bootstrap (kentauros.run.ktr_config)
+  \-bootstrap (kentauros.run.ktr_create)
   \-build (kentauros.package)
   | \-builder (kentauros.build.mock)
   | \-mock (kentauros.build)
   \-config (kentauros.instance)
-  | \-cli (kentauros.config)
-  | \-common (kentauros.config)
+  | \-common (kentauros.config.cli)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
   \-conntest (kentauros.source.git)
@@ -258,14 +257,14 @@ kentauros
   | \-constructor (kentauros.construct.srpm)
   | \-rpm_spec (kentauros.construct.srpm)
   | \-srpm (kentauros.construct)
-  \-definitions (kentauros.config)
+  \-definitions (kentauros.config.cli)
   \-init 
-  | \-cli (kentauros.config)
+  | \-cli (kentauros.config.cli)
   | \-env (kentauros.config)
   \-instance (kentauros.build.mock)
   \-package (kentauros.actions.std_actions)
   \-run 
-  | \-common (kentauros.run.ktr_config)
+  | \-common (kentauros.run.ktr_create)
   \-source (kentauros.package)
   | \-bzr (kentauros.source)
   | \-git (kentauros.source)
@@ -274,7 +273,7 @@ kentauros
   | \-url (kentauros.source)
   \-upload (kentauros.package)
     \-copr (kentauros.upload)
-    \-uploader (kentauros.upload)</pre></div>
+    \-uploader (kentauros.upload.copr)</pre></div>
 <div>
 <h2>Raw metrics</h2>
 <table>
@@ -289,29 +288,29 @@ kentauros
 <td>code</td>
 <td>2083</td>
 <td>39.95</td>
-<td>2054</td>
-<td>+29.00</td>
+<td>2083</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>1838</td>
 <td>35.25</td>
-<td>1737</td>
-<td>+101.00</td>
+<td>1838</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>212</td>
 <td>4.07</td>
-<td>216</td>
-<td>-4.00</td>
+<td>212</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
 <td>1081</td>
 <td>20.73</td>
-<td>1052</td>
-<td>+29.00</td>
+<td>1081</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -362,14 +361,14 @@ kentauros
 <tr class="even">
 <td>warning</td>
 <td>18</td>
-<td>50</td>
-<td>-32.00</td>
+<td>18</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>error</td>
 <td>0</td>
-<td>0</td>
-<td>=</td>
+<td>1</td>
+<td>-1.00</td>
 </tr>
 </table>
 </div>
@@ -475,7 +474,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.90/10 (previous run: 9.72/10, +0.18)</div>
+Your code has been rated at 9.90/10 (previous run: 9.87/10, +0.03)</div>
 </div>
 </body>
 </html>

@@ -44,26 +44,26 @@ def get_cli_config(itype: InstanceType) -> KtrConf:
         return None
 
     # if at least basedir has been set, construct KtrConf from CLI switches
-    if cli_args.basedir is not None:
+    if cli_args.get_ktr_basedir() is not None:
         result = KtrConf(KtrConfType.CLI,
                          basedir=os.path.abspath(cli_args.basedir))
 
-        if cli_args.confdir is not None:
-            result.confdir = os.path.abspath(cli_args.confdir)
-        if cli_args.datadir is not None:
-            result.datadir = os.path.abspath(cli_args.datadir)
-        if cli_args.packdir is not None:
-            result.packdir = os.path.abspath(cli_args.packdir)
-        if cli_args.specdir is not None:
-            result.specdir = os.path.abspath(cli_args.specdir)
+        if cli_args.get_ktr_confdir() is not None:
+            result.confdir = os.path.abspath(cli_args.get_ktr_confdir())
+        if cli_args.get_ktr_datadir() is not None:
+            result.datadir = os.path.abspath(cli_args.get_ktr_datadir())
+        if cli_args.get_ktr_packdir() is not None:
+            result.packdir = os.path.abspath(cli_args.get_ktr_packdir())
+        if cli_args.get_ktr_specdir() is not None:
+            result.specdir = os.path.abspath(cli_args.get_ktr_specdir())
 
     # basedir not set: all other dirs must be specified
     else:
         result = KtrConf(KtrConfType.CLI)
-        result.confdir = os.path.abspath(cli_args.confdir)
-        result.datadir = os.path.abspath(cli_args.datadir)
-        result.packdir = os.path.abspath(cli_args.packdir)
-        result.specdir = os.path.abspath(cli_args.specdir)
+        result.confdir = os.path.abspath(cli_args.get_ktr_confdir())
+        result.datadir = os.path.abspath(cli_args.get_ktr_datadir())
+        result.packdir = os.path.abspath(cli_args.get_ktr_packdir())
+        result.specdir = os.path.abspath(cli_args.get_ktr_specdir())
 
     if result.validate():
         return result
