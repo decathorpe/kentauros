@@ -22,41 +22,34 @@ class Constructor:
 
     def init(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.construct.Constructor.init()
-        method that creates directories needed for source package building
+        This method creates the directory structure needed by other methods of
+        this class.
         """
         pass
 
     def prepare(self, relreset: bool=False):
         """
-        # TODO: napoleon method docstring
-        kentauros.construct.Constructor.prepare()
-        method that copies files needed for source package building
+        This method prepares all files necessary for the actual assembly of the
+        source package.
         """
         pass
 
     def build(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.construct.Constructor.build()
-        method that builds source package
+        This method assembles the source package from files prepared previously.
         """
         pass
 
     def export(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.construct.Constructor.export()
-        method that moves built source package
+        This method exports (moves) the assembled source packages to the
+        specified package directory.
         """
         pass
 
     def clean(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.construct.Constructor.clean()
-        method that cleans up temporary files
+        This method cleans up all temporary files and directories.
         """
         pass
 

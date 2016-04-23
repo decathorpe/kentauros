@@ -70,6 +70,7 @@ class Package:
     Raises:
         PackageError:               error if package.conf file is invalid
     """
+
     def __init__(self, name: str):
         assert isinstance(name, str)
 
@@ -82,8 +83,8 @@ class Package:
         result = self.conf.read(self.file)
         if result == []:
             self.conf = None
-            err("Package configuration could not be read.")
-            err("Path: " + self.file)
+            err(LOGPREFIX1 + "Package configuration could not be read.")
+            err(LOGPREFIX1 + "Path: " + self.file)
             raise PackageError("Package configuration could not be read.")
 
         try:
@@ -144,9 +145,8 @@ class Package:
 
     def update_config(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.package.Package.update_config()
-        method that writes package configuration out to $NAME.conf in CONFDIR
+        This method writes a changes package configuration back to the
+        configuration file for permanent changes.
         """
 
         try:
@@ -154,6 +154,6 @@ class Package:
             self.conf.write(conf_file)
             conf_file.close()
         except OSError:
-            err("Package configuration file could not be written.")
-            err("Path: " + self.file)
+            err(LOGPREFIX1 + "Package configuration file could not be written.")
+            err(LOGPREFIX1 + "Path: " + self.file)
 

@@ -28,21 +28,21 @@ class CoprUploader(Uploader):
     is set to inactive.
 
     Arguments:
-        Package package: package for which this src.rpm uploader is for
+        Package package:    package for which this src.rpm uploader is for
 
     Attributes:
-        bool active: determines if this instance is active
+        bool active:        determines if this instance is active
     """
 
     def __init__(self, package):
         super().__init__(package)
 
         # if "active" value has not been set in package.conf, set it to false
-        if "active" not in self.pkg.conf.options("copr"):
-            self.pkg.conf.set("copr", "active", "false")
-            self.pkg.update_config()
+        if "active" not in self.upkg.conf.options("copr"):
+            self.upkg.conf.set("copr", "active", "false")
+            self.upkg.update_config()
 
-        self.active = self.pkg.conf.getboolean("copr", "active")
+        self.active = self.upkg.conf.getboolean("copr", "active")
 
         # if binaries are not installed: mark CoprUploader instance inactive
         try:
@@ -56,14 +56,23 @@ class CoprUploader(Uploader):
 
 
     def upload(self) -> bool:
-        # TODO: napoleon method docstring
+        """
+        This method executes the upload of the newest SRPM package found in the
+        package directory. The invocation of `copr-cli` also includes the chroot
+        settings set in the package configuration file.
+
+        Errors during execution of the `copr-cli` command are currently ignored.
+
+        Returns:
+            bool:       returns `False` if anything goes wrong, `True` otherwise
+        """
 
         if not self.active:
-            return None
+            return False
 
         # get all srpms in the package directory
         srpms = glob.glob(os.path.join(Kentauros().conf.packdir,
-                                       self.pkg.name + "*.src.rpm"))
+                                       self.upkg.name + "*.src.rpm"))
 
         if srpms == []:
             log(LOGPREFIX1 + \
@@ -75,14 +84,9 @@ class CoprUploader(Uploader):
         srpm = srpms[0]
 
         # get dists to build for
-        dists = self.pkg.conf.get("copr", "dist").split(",")
+        dists = self.upkg.conf.get("copr", "dist").split(",")
         if dists == "":
             dists = []
-
-        # check for connectivity to server
-        if not is_connected(self.remote):
-            log("No connection to remote host detected. Cancelling upload.", 2)
-            return None
 
         # construct copr-cli command
         cmd = ["copr-cli"]
@@ -94,7 +98,7 @@ class CoprUploader(Uploader):
         cmd.append("build")
 
         # append copr repo
-        cmd.append(self.pkg.conf.get("copr", "repo"))
+        cmd.append(self.upkg.conf.get("copr", "repo"))
 
         # append chroots (dists)
         for dist in dists:
@@ -102,16 +106,23 @@ class CoprUploader(Uploader):
             cmd.append(dist)
 
         # append --nowait if wait=False
-        if not self.pkg.conf.getboolean("copr", "wait"):
+        if not self.upkg.conf.getboolean("copr", "wait"):
             cmd.append("--nowait")
 
         # append package
         cmd.append(srpm)
 
+        # check for connectivity to server
+        if not is_connected(self.remote):
+            log("No connection to remote host detected. Cancelling upload.", 2)
+            return False
+
         log_command(LOGPREFIX1, "copr-cli", cmd, 1)
         subprocess.call(cmd)
 
         # remove source package if keep=False is specified
-        if not self.pkg.conf.getboolean("copr", "keep"):
+        if not self.upkg.conf.getboolean("copr", "keep"):
             os.remove(srpm)
+
+        return True
 

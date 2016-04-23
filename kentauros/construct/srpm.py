@@ -67,11 +67,16 @@ class SrpmConstructor(Constructor):
 
 
     def init(self):
-        # TODO: napoleon method docstring
-        if not self.active:
-            return None
+        """
+        This method creates a temporary directory (which is then set to `$HOME`
+        in the :py:meth:`SrpmConstructor.build()` method) and other necessary
+        subdirectores (here: `SOURCES`, `SRPMS`, `SPECS`).
+        """
 
-        # make sure to finally call self.clean()
+        if not self.active:
+            return
+
+        # make sure to finally call self.clean()!
         self.tempdir = tempfile.mkdtemp()
 
         log(LOGPREFIX1 + "Temporary directory " + self.tempdir + " created.", 1)
@@ -81,21 +86,49 @@ class SrpmConstructor(Constructor):
         self.srpmdir = os.path.join(self.tempdir, "rpmbuild", "SRPMS")
         self.srcsdir = os.path.join(self.tempdir, "rpmbuild", "SOURCES")
 
+        # create $TEMPDIR/rpmbuild
         if not os.path.exists(self.rpmbdir):
             os.mkdir(self.rpmbdir)
 
-        log(LOGPREFIX1 + "Temporary rpmbuild directory created.", 1)
+        log(LOGPREFIX1 + "Temporary rpmbuild directory created:", 1)
+        log(LOGPREFIX1 + self.tempdir, 1)
 
+        # create $TEMPDIR/rpmbuild/{SPECS,SRPMS,SOURCES}
         for directory in [self.specdir, self.srpmdir, self.srcsdir]:
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
         log(LOGPREFIX1 + \
-            "Temporary SOURCES, SPECS, SRPMS directory created.", 1)
+            "Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.", 1)
 
 
     def prepare(self, force: bool=False) -> bool:
-        # TODO: napoleon method docstring
+        """
+        This method prepares all files necessary for source package assembly.
+
+        This includes
+
+        - copying every file (not directories) from package source directory to
+          `rpmbuild/SOURCES` directory,
+        - removing the latest tarball from the package source directory if it
+          should not be kept,
+        - copying the package configuration file to `rpmbuild/SOURCES` in case
+          it will be included in the source package
+        - preparing the `package.spec` file in `rpmbuild/SPECS` from the
+          template in the spec directory,
+        - defining macros for git and bzr version string additions,
+        - setting `Version:` and `Release:` tags according to configuration,
+        - appending a changelog entry automatically for every different build,
+        - copying back the modified spec file (sans macros) to preserve newly
+          added changelog entries.
+
+        Arguments:
+            bool force:     force version reset (triggered e. g. by CVS update)
+
+        Returns:
+            bool:           returns `True` if the preparation was successful.
+        """
+
         if not self.active:
             return False
 
@@ -222,9 +255,15 @@ class SrpmConstructor(Constructor):
 
 
     def build(self):
-        # TODO: napoleon method docstring
+        """
+        This method executes the actual SRPM package assembly. It sets `$HOME`
+        to the created temporary directory and executes `rpmbuild -bs` with the
+        copy of the package spec file in `rpmbuild/SPECS`. After that, `$HOME`
+        is reset to the old value.
+        """
+
         if not self.active:
-            return None
+            return
 
         ktr = Kentauros()
 
@@ -251,7 +290,12 @@ class SrpmConstructor(Constructor):
 
 
     def export(self):
-        # TODO: napoleon method docstring
+        """
+        This method copies the assembled source packages from `rpmbuild/SRPMS`
+        to the directory for built packages as specified in the kentauros
+        configuration. If multiple SRPM packages are found, they all are copied.
+        """
+
         if not self.active:
             return None
 

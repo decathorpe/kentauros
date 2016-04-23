@@ -11,20 +11,20 @@ class Uploader:
     necessary.
 
     Arguments:
-        Package package: package for which this constructor is for
+        Package package:    package for which this constructor is for
 
     Attributes:
-        Package pkg: stores parent package instance reference
+        Package upkg:       stores parent package instance reference
     """
 
     def __init__(self, package):
-        self.pkg = package
+        self.upkg = package
 
     def upload(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.upload.Uploader.upload():
-        method that uploads the package
+        This method executes the source package upload with the settings
+        specified in the package configuration.
         """
+
         pass
 

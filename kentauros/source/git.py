@@ -25,13 +25,21 @@ stdout or stderr from inside this subpackage.
 
 class GitSource(Source):
     """
-    # TODO: napoleon class docstring
-    kentauros.source.git.GitSource:
-    Source subclass holding information and methods for handling git sources
-    - if git command is not found on system, self.active = False
-    - self.remote is set for checking connection to specified server
-    - if neither branch nor commit are set in package.conf: default to master
-    - if shallow clone and specific commit ID are requsted: default to normal
+    This Source subclass holds information and methods for handling git sources.
+
+    - If the `git` command is not found on the system, `self.active` is
+      automatically set to `False`.
+    - For the purpose of checking connectivity to the remote server, the URL is
+      stored in `self.remote`.
+    - If neither `branch` nor `commit` hash has been set in the package
+      configuration file, then the branch defaults to `master` (this is also
+      written to the configuration file).
+    - If a specific commit hash has been specified in the package configuration
+      file, `shallow` is automatically set to `False` (this is also written to
+      the configuration file).
+
+    Arguments:
+        Package package:    package instance this `Source` belongs to
     """
 
     def __init__(self, package):
@@ -66,19 +74,20 @@ class GitSource(Source):
 
     def date(self) -> str:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.git.GitSource.date():
-        method that returns the date and time string of last commit in repo
-        - returns datetime string if successful
-        - returns last saved datetime string if sources are gone after export
-        - returns None if everything fails
+        This method provides an easy way of getting the date and time of the
+        requrested commit in a standardised format (YYMMDD.HHmmSS). It also
+        stores the latest parsed date between method invocations, if the source
+        goes away and the commit datetime string is needed again.
+
+        Returns:
+            str:        commit date.time string (YYMMDD.HHmmSS)
         """
 
         if not self.active:
             return None
 
         def prepend_zero(string):
-            "local function for prepending '0' to one-digit time value strings"
+            "This local function prepends '0' to one-digit time value strings."
             if len(string) == 1:
                 return "0" + string
             else:
@@ -120,12 +129,12 @@ class GitSource(Source):
 
     def rev(self) -> str:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.git.GitSource.rev():
-        method that returns the commit hash of last commit in repository
-        - returns commit hash as string if successful
-        - returns last saved commit hash if sources are gone after export
-        - returns None if everything fails
+        This method provides an easy way of getting the commit hash of the
+        requrested commit. It also stores the latest commit hash between method
+        invocations, if the source goes away and the hash is needed again.
+
+        Returns:
+            str:        commit hash
         """
 
         if not self.active:
@@ -153,7 +162,16 @@ class GitSource(Source):
 
 
     def formatver(self) -> str:
-        # TODO: napoleon method docstring
+        """
+        This method assembles a standardised version string for git sources.
+        This includes the package source base version, the git commit date and
+        time and the first eight characters of the git commit hash, for example:
+        `11.3.0~devel~git160422~39e9cf6c`
+
+        Returns:
+            str:        nicely formatted version string
+        """
+
         if not self.active:
             return ""
 
@@ -173,12 +191,12 @@ class GitSource(Source):
 
     def get(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.git.GitSource.get():
-        method that gets the correspondig git repository
-        - respects branch and commit settings in package.conf
-        - returns True if download is successful
-        - returns False if no connection or source already downloaded
+        This method executes the git repository download to the package source
+        directory. This respects the branch and commit set in the package
+        configuration file.
+
+        Returns:
+            bool:  `True` if successful, `False` if not or source already exists
         """
 
         if not self.active:
@@ -268,13 +286,12 @@ class GitSource(Source):
 
     def update(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.git.GitSource.update():
-        method that updates the correspondig git repository
-        - returns True if update is available and successful
-        - returns False if git repository has not been downloaded yet
-        - returns False if a specific commit is requested in package.conf
-        - returns False if no connection or no updates available
+        This method executes a git repository update as specified in the package
+        configuration file. If a specific commit has been set in the config
+        file, this method will not attempt to execute an update.
+
+        Returns:
+            bool: `True` if update available and successful, `False` otherwise
         """
 
         if not self.active:
@@ -334,14 +351,13 @@ class GitSource(Source):
 
     def export(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.git.GitSource.export():
-        method that exports the correspondig git repository to tarball
-        - returns True if export is successful
-        - returns False if git repository has not been downloaded yet
-        - returns False if destination tarball already exists
-        - respects the git/keep setting in package.conf (deletes repo
-        after export if set to true)
+        This method executes the export from the package source repository to a
+        tarball with pretty file name. It also respects the `git.keep=False`
+        setting in the package configuration file - the git repository will be
+        deleted from disk after the export if this flag is set.
+
+        Returns:
+            bool:       `True` if successful, `False` if not or already exported
         """
 
         if not self.active:

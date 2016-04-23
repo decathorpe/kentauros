@@ -342,7 +342,13 @@ class StatusAction(Action):
         self.atype = ActionType.STATUS
 
     def execute(self) -> bool:
-        # TODO: write napoleon method docstring
+        """
+        This method prints a pretty summary of a package's configuration values
+        to the console.
+
+        Currently, this does nothing whatsoever.
+        """
+
         # TODO: output package configuration / status
         return True
 
@@ -432,7 +438,13 @@ class VerifyAction(Action):
         self.atype = ActionType.VERIFY
 
     def execute(self) -> bool:
-        # TODO: write napoleon method docstring
+        """
+        This method executes a verification of the package configuration and
+        checks if every file necessary for actions is present (and valid).
+
+        Currently, this does no checking whatsoever.
+        """
+
         # TODO: verify that package *.conf is valid
         return True
 

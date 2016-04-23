@@ -1,7 +1,7 @@
 """
 This submodule contains only contains the :py:class:`BzrSource` class, which has
-methods for handling sources that have ``source.type=bzr`` specified and
-``source.orig`` set to a bzr repository URL (or an ``lp:`` abbreviation) in the
+methods for handling sources that have `source.type=bzr` specified and
+`source.orig` set to a bzr repository URL (or an `lp:` abbreviation) in the
 package's configuration file.
 """
 
@@ -27,15 +27,15 @@ class BzrSource(Source):
     """
     This Source subclass holds information and methods for handling bzr sources.
 
-    * If the ``bzr`` command is not found on the system, :code:`self.active` is
-      automatically set to :code:`False` in the package's configuration file.
+    * If the `bzr` command is not found on the system, `self.active` is
+      automatically set to `False`.
     * For the purpose of checking connectivity to the remote server, the URL is
-      stored in ``self.remote``. If the specified repository is hosted on
-      `launchpad.net <https://launchpad.net>`_, ``lp:`` will be substituted
-      with launchpad's URL automatically.
+      stored in `self.remote`. If the specified repository is hosted on
+      `launchpad.net <https://launchpad.net>`_, `lp:` will be substituted with
+      launchpad's URL automatically.
 
     Arguments:
-        package (Package):  instance of Package that this Source belongs to
+        Package package:    package instance this `Source` belongs to
     """
 
     def __init__(self, package):
@@ -61,14 +61,14 @@ class BzrSource(Source):
         """
         This method determines which revision the bzr repository associated with
         this BzrSource currently is at and returns it as a string. Once run, it
-        saves the last processed revision number in ``self.saved_rev``, in
+        saves the last processed revision number in `self.saved_rev`, in
         case the revision needs to be determined when bzr repository might not
-        be accessible anymore (e.g. if ``bzr.keep=False`` is set in
+        be accessible anymore (e.g. if `bzr.keep=False` is set in
         configuration, so the repository is not kept after export to tarball).
 
         Returns:
             str: either successfully determined revision string from \
-                 repository, last stored rev string or ``""`` when not
+                 repository, last stored rev string or `""` when not
         """
 
         if not self.active:
@@ -114,12 +114,12 @@ class BzrSource(Source):
 
     def get(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.bzr.BzrSource.get():
-        method that gets the correspondig bzr repository
-        - respects branch and rev settings in package.conf
-        - returns True if download is successful
-        - returns False if no connection or source already downloaded
+        This method executes the bzr repository download to the package source
+        directory. This respects the branch and revision set in the package
+        configuration file.
+
+        Returns:
+            bool:  `True` if successful, `False` if not or source already exists
         """
 
         if not self.active:
@@ -188,13 +188,12 @@ class BzrSource(Source):
 
     def update(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.bzr.BzrSource.update():
-        method that updates the correspondig bzr repository
-        - returns True if update is available and successful
-        - returns False if bzr repository has not been downloaded yet
-        - returns False if a specific revision is requested in package.conf
-        - returns False if no connection or no updates available
+        This method executes a bzr repository update as specified in the package
+        configuration file. If a specific revision has been set in the config
+        file, this method will not attempt to execute an update.
+
+        Returns:
+            bool: `True` if update available and successful, `False` otherwise
         """
 
         if not self.active:
@@ -250,14 +249,13 @@ class BzrSource(Source):
 
     def export(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.bzr.BzrSource.export():
-        method that exports the correspondig bzr repository to tarball
-        - returns True if export is successful
-        - returns False if bzr repository has not been downloaded yet
-        - returns False if destination tarball already exists
-        - respects the bzr/keep setting in package.conf (deletes repo
-        after export if set to true)
+        This method executes the export from the package source repository to a
+        tarball with pretty file name. It also respects the `bzr.keep=False`
+        setting in the package configuration file - the bzr repository will be
+        deleted from disk after the export if this flag is set.
+
+        Returns:
+            bool:       `True` if successful, `False` if not or already exported
         """
 
         if not self.active:

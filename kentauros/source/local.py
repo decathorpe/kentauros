@@ -1,7 +1,7 @@
 """
 This submodule contains only contains the :py:class:`LocalSource` class, which
-has methods for handling sources that have ``source.type=local`` specified and
-``source.orig`` set to an absolute path of a local file in the package's
+has methods for handling sources that have `source.type=local` specified and
+`source.orig` set to an absolute path of a local file in the package's
 configuration file.
 """
 
@@ -23,30 +23,27 @@ stdout or stderr from inside this subpackage.
 
 class LocalSource(Source):
     """
-    # TODO: napoleon class docstring
-    kentauros.source.local.LocalSource:
-    Source subclass holding information and methods for handling local sources
+    This :py:class:`Source` subclass provides handling of local sources.
+
+    Arguments:
+        Package package:    package instance this source belongs to
     """
+
     def __init__(self, package):
         super().__init__(package)
         self.dest = os.path.join(self.sdir, os.path.basename(
             self.conf.get("source", "orig")))
         self.type = SourceType.LOCAL
 
-
-    def formatver(self) -> str:
-        # TODO: napoleon method docstring
-        ver = self.conf.get("source", "version")
-        return ver
-
-
     def get(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.local.LocalSource.get():
-        method that gets the correspondig local file (usually tarball)
-        - returns True if copying is successful
-        - returns False if destination already exists
+        This method attempts to copy the specified source from the location
+        specified in the package configuration file to the determined
+        destination. If the destination file already exists, nothing will be
+        done.
+
+        Returns:
+            bool:       `True` if source was copied successfully, `False` if not
         """
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not

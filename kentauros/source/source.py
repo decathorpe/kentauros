@@ -16,35 +16,50 @@ stdout or stderr from inside this subpackage.
 """
 
 
+# TODO: remove Source.conf attribute
+# TODO: rename Source.package to Source.spkg
+# TODO: rename Source.type to Source.stype
+
+
 class Source():
     """
-    # TODO: napoleon class docstring
-    kentauros.source.common.Source
-    class that contains information about upstream source code and
-    methods that depend on it.
-    - name: name that upstream source should get (filename or VCS repodir name)
-    - sdir: directory that contains all source files of the package
-    - dest: destination where upstream source is put (override in subclasses)
-    - orig: origin of upstream sources (URL to file, git repo, etc.)
-    - type: determines type of upstream source
-    - keep: determines if sources are kept between builds
+    This class serves as a quasi-abstract base class for source package
+    uploaders. They are expected to override this class's methods as
+    necessary. It provides common infrastructure for all code sources.
+
+    Attributes:
+        str name:           package name
+        str sdir:           source directory of the package this source belongs
+                            to
+        str dest:           destination path when downloading / copying sources
+        str orig:           origin of the source, as specified in the package
+                            configuration file
+        bool keep:          determines wheather sources are kept between actions
+        ConfigParser conf:  package configuration object
+        Package package:    mother package
+        SourceType type:    type of source
     """
 
     def __init__(self, package):
-        self.package = package
         self.conf = package.conf
-        self.name = self.conf['package']['name']
-        self.sdir = os.path.join(Kentauros().conf.datadir, self.name)
-        self.type = None
 
+        self.name = self.conf['package']['name']
+
+        self.sdir = os.path.join(Kentauros().conf.datadir, self.name)
+        self.dest = None
+        self.orig = None
+        self.keep = False
+
+        self.package = package
+        self.type = None
 
     def clean(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.common.Source.clean():
-        default method of cleaning up sources in datadir/pkgname
-        - returns False if sdir does not exist.
-        - returns True after successful cleaning.
+        This method cleans up all of a package's sources (removes the source
+        directory completely).
+
+        Returns:
+            bool:   `True` if successful, `False` if directory doesn't exist
         """
 
         if not os.path.exists(self.sdir):
@@ -58,52 +73,48 @@ class Source():
             return True
 
 
-    def export(self) -> bool:
+    def export(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.source.common.Source.export():
-        default method for source exporting; override as neccessary
-        - return True when successful
-        - return False when not
+        This dummy method will be overridden by subclasses. It is expected that
+        an appropriately named tarball is present within the package's source
+        directory after this method has been executed.
         """
 
-        log(LOGPREFIX1 + "Dummy method for exporting " + \
-            self.name + " sources invoked. No action will be executed.")
-        return False
+        pass
 
 
     def formatver(self) -> str:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.common.Source.formatver():
-        default method for getting source version string; override as neccessary
-        by default this is the string found in package configuration
-        override as neccesary (e.g. bzr rev, git date/commit hash, etc.)
+        This method provides a generic way of getting a package's version as
+        string. Subclasses are expected to override this method with their own
+        version string generators, which then might include git commit hashes,
+        git commit date and time, bzr revision, etc..
+
+        Returns:
+            str:        formatted version string
         """
 
         return self.package.conf.get("source", "version")
 
 
-    def get(self) -> bool:
+    def get(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.source.common.Source.get():
-        default method for downloading/copying sources; override as neccessary
-        - return True when successful
-        - return False when not
+        This dummy method will be overridden by subclasses. It is expected that
+        an appropriately named source file or directory is present within the
+        package's source directory after this method has been executed.
         """
 
-        log(LOGPREFIX1 + "Dummy method for getting " + \
-            self.name + " sources invoked. No action will be executed.")
-        return False
+        pass
 
 
     def refresh(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.common.Source.refresh():
-        default method for refreshing sources (clean and get)
-        returns success value from .get()
+        This method provides a generic way of refreshing a package's sources.
+        This will invoke the generic :py:meth:`Source.clean()` method and the
+        :py:meth`Source.get()` method (as overridden by the subclass).
+
+        Returns:
+            bool:       success status of source getting
         """
 
         self.clean()
@@ -111,27 +122,31 @@ class Source():
         return success
 
 
-    def update(self) -> bool:
+    def update(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.source.common.Source.update():
-        default method for updating sources; override as neccessary
-        - return True when update was successful and available
-        - return False when either unsuccessful or no update available
+        This dummy method will be overridden by subclasses. It is expected that
+        the source repository present within the package's source directory is
+        up-to-date with upstream sources after this method has been executed,
+        except when package configuration specifies something else explicitely.
         """
 
-        log(LOGPREFIX1 + "Dummy method for updating " + \
-            self.name + " sources invoked. No action will be executed.")
-        return False
+        pass
 
 
     def prepare(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.common.Source.prepare():
-        default method for preparing sources (get/update, export)
-        - return True when all steps were successful
-        - return False when something fails (either get/update or export)
+        This method provides a generic way of preparing a package's sources.
+        This will invoke the :py:meth`Source.get()` method or the
+        :py:meth`Source.update()` method and the :py:meth`Source.export()`
+        method (as overridden by the subclass, respectively).
+
+        If sources can be downloaded / copied into place successfully, an
+        update for them will not be attempted. Otherwise (sources are already
+        present within the package directory), an update will be attempted
+        before exporting.
+
+        Returns:
+            bool:       success status of source getting or updating
         """
 
         get_success = self.get()
