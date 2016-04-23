@@ -46,7 +46,7 @@ def get_cli_config(itype: InstanceType) -> KtrConf:
     # if at least basedir has been set, construct KtrConf from CLI switches
     if cli_args.get_ktr_basedir() is not None:
         result = KtrConf(KtrConfType.CLI,
-                         basedir=os.path.abspath(cli_args.basedir))
+                         basedir=os.path.abspath(cli_args.get_ktr_basedir()))
 
         if cli_args.get_ktr_confdir() is not None:
             result.confdir = os.path.abspath(cli_args.get_ktr_confdir())
