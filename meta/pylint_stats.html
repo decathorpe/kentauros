@@ -38,7 +38,7 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.actions.ktr</td>
+<td>kentauros.actions.std_actions</td>
 <td>&#160;</td>
 <td>352</td>
 <td>0</td>
@@ -46,7 +46,7 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.actions.ktr</td>
+<td>kentauros.actions.std_actions</td>
 <td>&#160;</td>
 <td>418</td>
 <td>0</td>
@@ -54,7 +54,7 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.actions.ktr</td>
+<td>kentauros.actions.std_actions</td>
 <td>&#160;</td>
 <td>448</td>
 <td>0</td>
@@ -189,7 +189,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1830 statements analysed.</p><div>
+<p>1839 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -203,8 +203,8 @@
 <tr class="even">
 <td>module</td>
 <td>40</td>
-<td>40</td>
-<td>=</td>
+<td>36</td>
+<td>+4.00</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -219,8 +219,8 @@
 <tr class="even">
 <td>method</td>
 <td>113</td>
-<td>113</td>
-<td>=</td>
+<td>114</td>
+<td>-1.00</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -239,17 +239,18 @@
 <pre>dateutil 
   \-parser (kentauros.source.git)
 kentauros 
-  \-actions (kentauros.run.ktr_create)
-  | \-common (kentauros.actions.ktr_create)
-  | \-ktr (kentauros.actions)
-  | \-ktr_config (kentauros.actions)
-  | \-ktr_create (kentauros.actions)
-  \-bootstrap (kentauros.run.ktr_create)
+  \-actions (kentauros.run.ktr_config)
+  | \-action (kentauros.actions.std_actions)
+  | \-config_action (kentauros.actions)
+  | \-create_action (kentauros.actions)
+  | \-std_actions (kentauros.actions)
+  \-bootstrap (kentauros.run.ktr_config)
   \-build (kentauros.package)
   | \-builder (kentauros.build.mock)
   | \-mock (kentauros.build)
   \-config (kentauros.instance)
-  | \-common (kentauros.config.cli)
+  | \-cli (kentauros.config)
+  | \-common (kentauros.config)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
   \-conntest (kentauros.source.git)
@@ -257,14 +258,14 @@ kentauros
   | \-constructor (kentauros.construct.srpm)
   | \-rpm_spec (kentauros.construct.srpm)
   | \-srpm (kentauros.construct)
-  \-definitions (kentauros.config.cli)
+  \-definitions (kentauros.config)
   \-init 
-  | \-cli (kentauros.config.cli)
+  | \-cli (kentauros.config)
   | \-env (kentauros.config)
   \-instance (kentauros.build.mock)
-  \-package (kentauros.actions.common)
+  \-package (kentauros.actions.std_actions)
   \-run 
-  | \-common (kentauros.run.ktr_create)
+  | \-common (kentauros.run.ktr_config)
   \-source (kentauros.package)
   | \-bzr (kentauros.source)
   | \-git (kentauros.source)
@@ -286,31 +287,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2074</td>
-<td>39.89</td>
-<td>2074</td>
-<td>=</td>
+<td>2083</td>
+<td>39.95</td>
+<td>2054</td>
+<td>+29.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1835</td>
-<td>35.30</td>
-<td>1819</td>
-<td>+16.00</td>
+<td>1838</td>
+<td>35.25</td>
+<td>1737</td>
+<td>+101.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>212</td>
-<td>4.08</td>
-<td>213</td>
-<td>-1.00</td>
+<td>4.07</td>
+<td>216</td>
+<td>-4.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1078</td>
+<td>1081</td>
 <td>20.73</td>
-<td>1077</td>
-<td>+1.00</td>
+<td>1052</td>
+<td>+29.00</td>
 </tr>
 </table>
 </div>
@@ -361,8 +362,8 @@ kentauros
 <tr class="even">
 <td>warning</td>
 <td>18</td>
-<td>25</td>
-<td>-7.00</td>
+<td>50</td>
+<td>-32.00</td>
 </tr>
 <tr class="odd">
 <td>error</td>
@@ -404,7 +405,7 @@ kentauros
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.actions.ktr</td>
+<td>kentauros.actions.std_actions</td>
 <td>0.00</td>
 <td>16.67</td>
 <td>0.00</td>
@@ -474,7 +475,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.90/10 (previous run: 9.86/10, +0.04)</div>
+Your code has been rated at 9.90/10 (previous run: 9.72/10, +0.18)</div>
 </div>
 </body>
 </html>

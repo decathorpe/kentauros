@@ -9,10 +9,10 @@ from configparser import ConfigParser
 import os
 import shutil
 
-from kentauros.definitions import KTR_SYSTEM_DATADIR
+from kentauros.definitions import KTR_SYSTEM_DATADIR, ActionType
 from kentauros.instance import Kentauros, log
 
-from kentauros.actions.common import LOGPREFIX1
+from kentauros.actions.action import LOGPREFIX1
 
 
 class CreateAction:

@@ -7,7 +7,7 @@ script.
 from kentauros.definitions import ActionType
 
 from kentauros.package import Package
-from kentauros.actions.common import Action
+from kentauros.actions.action import Action
 
 
 class BuildAction(Action):

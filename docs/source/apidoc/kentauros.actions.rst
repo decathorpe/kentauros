@@ -4,34 +4,34 @@ kentauros.actions package
 Submodules
 ----------
 
-kentauros.actions.common module
+kentauros.actions.action module
 -------------------------------
 
-.. automodule:: kentauros.actions.common
+.. automodule:: kentauros.actions.action
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.ktr module
-----------------------------
+kentauros.actions.config_action module
+--------------------------------------
 
-.. automodule:: kentauros.actions.ktr
+.. automodule:: kentauros.actions.config_action
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.ktr_config module
------------------------------------
+kentauros.actions.create_action module
+--------------------------------------
 
-.. automodule:: kentauros.actions.ktr_config
+.. automodule:: kentauros.actions.create_action
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.ktr_create module
------------------------------------
+kentauros.actions.std_actions module
+------------------------------------
 
-.. automodule:: kentauros.actions.ktr_create
+.. automodule:: kentauros.actions.std_actions
     :members:
     :undoc-members:
     :show-inheritance:
