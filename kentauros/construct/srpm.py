@@ -163,7 +163,7 @@ class SrpmConstructor(Constructor):
         preamble = SPEC_PREAMBLE_DICT[self.pkg.source.type](self.pkg.source)
         new_version = SPEC_VERSION_DICT[self.pkg.source.type](self.pkg.source)
 
-        relreset = False
+        relreset = force
         # if old version and new version are different, force release reset to 0
         if new_version != old_version:
             relreset = True
