@@ -9,7 +9,7 @@ from kentauros.package import Package
 
 LOGPREFIX1 = "ktr/actions: "
 """This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+``stdout`` or ``stderr`` from inside this subpackage.
 """
 
 
@@ -38,13 +38,9 @@ class Action:
 
     def execute(self):
         """
-        This method runs the action corresponding to the Action instance on the
-        package specified at initialisation. It is overridden by subclasses to
-        contain the real code for the action. Here, it is only a dummy method
-        that executes no code.
-
-        Returns:
-            bool:           success of executed action
+        This method runs the action corresponding to the :py:class:`Action`
+        instance on the package specified at initialisation. It is overridden by
+        subclasses to contain the real code for the action.
         """
 
         pass

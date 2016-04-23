@@ -1,6 +1,6 @@
 """
-This submodule contains the actions used by a invocation of the `ktr-create`
-script.
+This submodule contains the :py:class:`CreateAction`, which is executed by the
+``ktr-create`` CLI script.
 """
 
 
@@ -17,23 +17,28 @@ from kentauros.actions.common import LOGPREFIX1
 
 class CreateAction:
     """
-    This `Action` subclass contains information for making sure the package's
-    configuration file is valid and everything needed for actions is in place.
+    This action is the only one that is not an :py:class:`Action` subclass,
+    because a non-existing package cannot be supplied as an argument. Instead,
+    this class takes a name string as argument at initialisation, and creates
+    all files needed for a valid package configuration from templates.
 
     Arguments:
-        str name:           validation will be done for `package`
-        bool force:         currently without effect
+        str name:           name of the package that will be created
+        bool force:         currently without effect (common flag of actions)
 
     Attributes:
-        ActionType atype:   here: stores `ActionType.VERIFY`
+        ActionType atype:   here: stores ``ActionType.CREATE``
     """
 
     def __init__(self, name: str, force: bool):
         assert isinstance(name, str)
         assert isinstance(force, bool)
 
+        self.atype = ActionType.CREATE
+
         self.name = name
         self.force = force
+
 
     def execute(self) -> bool:
         """
@@ -43,7 +48,7 @@ class CreateAction:
         available as a simple RPM spec template.
 
         Returns:
-            bool:       *True* if everything was copied into place successfully
+            bool:   ``True`` if everything was copied into place successfully
         """
 
         # copy templates from KTR_SYSTEM_DATADIR to confdir and specdir

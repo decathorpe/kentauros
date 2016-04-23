@@ -1,6 +1,6 @@
 """
-This submodule contains the actions used by a invocation of the `ktr-config`
-script.
+This submodule contains the :py:class:`ConfigAction`, which is executed by the
+``ktr-config`` CLI script.
 """
 
 
@@ -13,21 +13,21 @@ from kentauros.actions.common import Action, LOGPREFIX1
 
 class ConfigAction(Action):
     """
-    This `Action` subclass contains information for changing package
-    configuration values stored in the package's \\*.conf file.
+    This :py:class:`Action` subclass contains information for changing package
+    configuration values stored in the package's configuration file.
 
     Arguments:
         Package kpkg:       Package instance configuration will be changed for
-        bool force:         currently without effect
-        str section:        section of conf file that `key` is in
-        str key:            key that `value` will be written to
-        str value:          value that will be set in configuration
+        bool force:         currently without effect (common for all actions)
+        str section:        ``section`` of conf file that ``key`` is in
+        str key:            ``key`` that ``value`` will be written to
+        str value:          ``value`` that will be set in configuration
 
     Attributes:
-        ActionType atype:   here: stores `ActionType.CONFIG`
-        str section:        stores `section` given at initialisation
-        str key:            stores `key` given at initialisation
-        str value:          stores `value` given at initialisation
+        ActionType atype:   here: stores ``ActionType.CONFIG``
+        str section:        stores the section given at initialisation
+        str key:            stores the key given at initialisation
+        str value:          stores the value given at initialisation
     """
 
     def __init__(self, kpkg: Package, force: bool,
@@ -43,12 +43,12 @@ class ConfigAction(Action):
         """
         This method checks if the specified section already exists in the
         configuration file - and creates it, if it doesn't. Following this
-        check, it will change or add `section`/`key` to `value` in the
+        check, it will change or add ``section``/``key`` with ``value`` in the
         :py:class:`configparser.ConfigParser` object and then writes the changed
-        configuration back to the package's \\*.conf file.
+        configuration back to the package's configuration file.
 
         Returns:
-            bool:           always *True* at the moment
+            bool:           always ``True`` at the moment
         """
 
         if self.section not in self.kpkg.conf.sections():

@@ -35,11 +35,7 @@
 - `definitions.py`
 
 - `actions`
-  - `__init__.py`
-  - `action.py`
   - `std_actions.py`
-  - `config_action.py`
-  - `create_action.py`
 
 - `bootstrap`
   - `__init__.py`

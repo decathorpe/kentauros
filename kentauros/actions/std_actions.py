@@ -1,5 +1,5 @@
 """
-This submodule contains the actions used by a normal invocation of the `ktr`
+This submodule contains the actions which are executed by the ``ktr`` CLI
 script.
 """
 
@@ -12,15 +12,15 @@ from kentauros.actions.common import Action
 
 class BuildAction(Action):
     """
-    This `Action` subclass contains information for executing a local build of
-    the package specified at initialisation.
+    This :py:class:`Action` subclass contains information for executing a local
+    build of the package specified at initialisation.
 
     Arguments:
-        Package kpkg:       Package instance this local build will done for
-        bool force:         currently without effect
+        Package kpkg:       package this local build will done for
+        bool force:         currently without effect (common flag of actions)
 
     Attributes:
-        ActionType atype:   here: stores `ActionType.BUILD`
+        ActionType atype:   here: stores ``ActionType.BUILD``
     """
 
     def __init__(self, kpkg: Package, force: bool):

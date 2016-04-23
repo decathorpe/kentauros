@@ -30,7 +30,7 @@ from kentauros.actions.create_action import CreateAction
 
 ACTION_DICT = dict()
 """This dictionary maps :py:class:`ActionType` enum members to their respective
-action subclass constructors.
+:py:class:`Action` subclass constructors.
 """
 
 ACTION_DICT[ActionType.NONE] = Action
