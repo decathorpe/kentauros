@@ -2,22 +2,30 @@
 This subpackage contains the quasi-abstract :py:class:`Action` class and its
 subclasses, which are used to hold information about the action specified at
 command line and are used to execute their respective actions. Additionally,
-this file contains a dictionary which maps :py:class:``ActionType`` enums to
+this file contains a dictionary which maps :py:class:`ActionType` enums to
 their respective class constructors.
 """
 
 
 from kentauros.definitions import ActionType
 
-from kentauros.actions.common import Action
+from kentauros.actions.action import Action
 
-from kentauros.actions.ktr import BuildAction, ChainAction, CleanAction
-from kentauros.actions.ktr import ConstructAction, ExportAction, GetAction
-from kentauros.actions.ktr import PrepareAction, RefreshAction, StatusAction
-from kentauros.actions.ktr import UpdateAction, UploadAction, VerifyAction
+from kentauros.actions.std_actions import BuildAction
+from kentauros.actions.std_actions import ChainAction
+from kentauros.actions.std_actions import CleanAction
+from kentauros.actions.std_actions import ConstructAction
+from kentauros.actions.std_actions import ExportAction
+from kentauros.actions.std_actions import GetAction
+from kentauros.actions.std_actions import PrepareAction
+from kentauros.actions.std_actions import RefreshAction
+from kentauros.actions.std_actions import StatusAction
+from kentauros.actions.std_actions import UpdateAction
+from kentauros.actions.std_actions import UploadAction
+from kentauros.actions.std_actions import VerifyAction
 
-from kentauros.actions.ktr_config import ConfigAction
-from kentauros.actions.ktr_create import CreateAction
+from kentauros.actions.config_action import ConfigAction
+from kentauros.actions.create_action import CreateAction
 
 
 ACTION_DICT = dict()
