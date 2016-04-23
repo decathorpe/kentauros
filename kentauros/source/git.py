@@ -19,7 +19,7 @@ from kentauros.source.source import Source
 
 LOGPREFIX1 = "ktr/source/git: "
 """This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+``stdout`` or ``stderr`` from inside this subpackage.
 """
 
 
@@ -27,19 +27,19 @@ class GitSource(Source):
     """
     This Source subclass holds information and methods for handling git sources.
 
-    - If the `git` command is not found on the system, `self.active` is
-      automatically set to `False`.
+    - If the ``git`` command is not found on the system, ``self.active`` is
+      automatically set to ``False``.
     - For the purpose of checking connectivity to the remote server, the URL is
-      stored in `self.remote`.
-    - If neither `branch` nor `commit` hash has been set in the package
-      configuration file, then the branch defaults to `master` (this is also
+      stored in ``self.remote``.
+    - If neither ``branch`` nor ``commit`` hash has been set in the package
+      configuration file, then the branch defaults to ``master`` (this is also
       written to the configuration file).
     - If a specific commit hash has been specified in the package configuration
-      file, `shallow` is automatically set to `False` (this is also written to
-      the configuration file).
+      file, ``shallow`` is automatically set to ``False`` (this is also written
+      to the configuration file).
 
     Arguments:
-        Package package:    package instance this `Source` belongs to
+        Package package:  package instance this :py:class:`GitSource` belongs to
     """
 
     def __init__(self, package):
@@ -75,12 +75,12 @@ class GitSource(Source):
     def date(self) -> str:
         """
         This method provides an easy way of getting the date and time of the
-        requrested commit in a standardised format (YYMMDD.HHmmSS). It also
+        requrested commit in a standardised format (``YYMMDD.HHmmSS``). It also
         stores the latest parsed date between method invocations, if the source
         goes away and the commit datetime string is needed again.
 
         Returns:
-            str:        commit date.time string (YYMMDD.HHmmSS)
+            str:        commit date.time string (``YYMMDD.HHmmSS``)
         """
 
         if not self.active:
@@ -166,7 +166,7 @@ class GitSource(Source):
         This method assembles a standardised version string for git sources.
         This includes the package source base version, the git commit date and
         time and the first eight characters of the git commit hash, for example:
-        `11.3.0~devel~git160422~39e9cf6c`
+        ``11.3.0~devel~git160422~39e9cf6c``
 
         Returns:
             str:        nicely formatted version string
@@ -196,7 +196,7 @@ class GitSource(Source):
         configuration file.
 
         Returns:
-            bool:  `True` if successful, `False` if not or source already exists
+            bool: ``True`` if successful, ``False`` if not or source pre-exists
         """
 
         if not self.active:
@@ -217,7 +217,7 @@ class GitSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.conf.get("source", "orig")):
-            log("No connection to remote host detected. " + \
+            log("No connection to remote host detected. " +
                 "Cancelling source checkout.", 2)
             return False
 
@@ -291,7 +291,7 @@ class GitSource(Source):
         file, this method will not attempt to execute an update.
 
         Returns:
-            bool: `True` if update available and successful, `False` otherwise
+            bool: ``True`` if update available and successful, ``False`` if not
         """
 
         if not self.active:
@@ -323,7 +323,7 @@ class GitSource(Source):
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            err(LOGPREFIX1 + \
+            err(LOGPREFIX1 +
                 "Sources need to be get before an update can be run.")
             return False
 
@@ -352,12 +352,12 @@ class GitSource(Source):
     def export(self) -> bool:
         """
         This method executes the export from the package source repository to a
-        tarball with pretty file name. It also respects the `git.keep=False`
+        tarball with pretty file name. It also respects the ``git.keep=False``
         setting in the package configuration file - the git repository will be
         deleted from disk after the export if this flag is set.
 
         Returns:
-            bool:       `True` if successful, `False` if not or already exported
+            bool:   ``True`` if successful or already done, ``False`` at failure
         """
 
         if not self.active:
@@ -366,13 +366,19 @@ class GitSource(Source):
         ktr = Kentauros()
 
         def remove_notkeep():
-            "local function for removing git repo after export if not keep"
+            """
+            This local function removes the git repository after it has been
+            exported to a tarball, if ``git.keep=false`` is set.
+            """
+
             if not self.conf.getboolean("git", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
                 assert ktr.conf.datadir in self.dest
                 shutil.rmtree(self.dest)
-                log(LOGPREFIX1 + "git repo deleted after export to tarball", 1)
+                log(LOGPREFIX1 +
+                    "git repository has been deleted " +
+                    "after exporting to tarball.", 1)
 
         # construct git command
         cmd = ["git"]
@@ -413,7 +419,7 @@ class GitSource(Source):
             log(LOGPREFIX1 + "Tarball has already been exported.", 1)
             # remove git repo if keep is False
             remove_notkeep()
-            return False
+            return True
 
         # remember previous directory
         prevdir = os.getcwd()
