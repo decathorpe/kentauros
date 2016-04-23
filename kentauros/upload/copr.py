@@ -85,7 +85,7 @@ class CoprUploader(Uploader):
 
         # get dists to build for
         dists = self.upkg.conf.get("copr", "dist").split(",")
-        if dists == "":
+        if dists == [""]:
             dists = []
 
         # construct copr-cli command

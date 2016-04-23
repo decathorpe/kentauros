@@ -165,7 +165,7 @@ class MockBuilder(Builder):
 
         # get dists to build for
         dists = self.package.conf.get("mock", "dist").split(",")
-        if dists == "":
+        if dists == [""]:
             dists = []
 
         if dists:
