@@ -4,34 +4,50 @@ kentauros.actions package
 Submodules
 ----------
 
-kentauros.actions.action module
--------------------------------
+kentauros.actions.act_abstract module
+-------------------------------------
 
-.. automodule:: kentauros.actions.action
+.. automodule:: kentauros.actions.act_abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.config_action module
---------------------------------------
+kentauros.actions.act_common module
+-----------------------------------
 
-.. automodule:: kentauros.actions.config_action
+.. automodule:: kentauros.actions.act_common
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.create_action module
---------------------------------------
+kentauros.actions.act_config module
+-----------------------------------
 
-.. automodule:: kentauros.actions.create_action
+.. automodule:: kentauros.actions.act_config
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.std_actions module
-------------------------------------
+kentauros.actions.act_create module
+-----------------------------------
 
-.. automodule:: kentauros.actions.std_actions
+.. automodule:: kentauros.actions.act_create
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.actions.act_dummy module
+----------------------------------
+
+.. automodule:: kentauros.actions.act_dummy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.actions.acts module
+-----------------------------
+
+.. automodule:: kentauros.actions.acts
     :members:
     :undoc-members:
     :show-inheritance:

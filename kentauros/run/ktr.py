@@ -52,7 +52,8 @@ def run():
         print()
         return
 
-    ktr_bootstrap()
+    if not ktr_bootstrap():
+        raise SystemExit
 
     pkgs = list()
 

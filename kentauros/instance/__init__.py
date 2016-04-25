@@ -23,13 +23,15 @@ def __smaller_int__(int1: int, int2: int):
         return int2
 
 
+# TODO: make log, err, dbg methods of Kentauros
+
+
 class Kentauros:
     """
     # TODO: napoleon class docstring
     instance class with dict class variable, as a "Borg", a quasi-singleton
     """
 
-    # pylint: disable=too-few-public-methods
     saved_state = dict()
 
     def __getattr__(self, attr: str):

@@ -45,7 +45,8 @@ def run_config():
     dbg(LOGPREFIX1 + "PACKDIR: " + ktr.conf.packdir)
     dbg(LOGPREFIX1 + "SPECDIR: " + ktr.conf.specdir)
 
-    ktr_bootstrap()
+    if not ktr_bootstrap():
+        raise SystemExit
 
     pkgs = list()
 

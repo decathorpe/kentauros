@@ -43,7 +43,8 @@ def run_create():
     dbg(LOGPREFIX1 + "PACKDIR: " + ktr.conf.packdir)
     dbg(LOGPREFIX1 + "SPECDIR: " + ktr.conf.specdir)
 
-    ktr_bootstrap()
+    if not ktr_bootstrap():
+        raise SystemExit
 
     # get packages from CLI
     pkgs = ktr.cli.get_packages()

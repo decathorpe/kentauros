@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
 
     kentauros.actions
-    kentauros.bootstrap
     kentauros.build
     kentauros.config
     kentauros.construct
@@ -20,6 +19,14 @@ Subpackages
 
 Submodules
 ----------
+
+kentauros.bootstrap module
+--------------------------
+
+.. automodule:: kentauros.bootstrap
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 kentauros.conntest module
 -------------------------
