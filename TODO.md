@@ -31,14 +31,12 @@
 # final ktr docstring versions
 
 - `__init__.py`
+- `bootstrap.py`
 - `conntest.py`
 - `definitions.py`
 
 - `actions`
-  - `std_actions.py`
-
-- `bootstrap`
-  - `__init__.py`
+  - `acts.py`
 
 - `build`
   - `__init__.py`
