@@ -9,23 +9,24 @@ their respective class constructors.
 
 from kentauros.definitions import ActionType
 
-from kentauros.actions.action import Action
+from kentauros.actions.act_abstract import Action
 
-from kentauros.actions.std_actions import BuildAction
-from kentauros.actions.std_actions import ChainAction
-from kentauros.actions.std_actions import CleanAction
-from kentauros.actions.std_actions import ConstructAction
-from kentauros.actions.std_actions import ExportAction
-from kentauros.actions.std_actions import GetAction
-from kentauros.actions.std_actions import PrepareAction
-from kentauros.actions.std_actions import RefreshAction
-from kentauros.actions.std_actions import StatusAction
-from kentauros.actions.std_actions import UpdateAction
-from kentauros.actions.std_actions import UploadAction
-from kentauros.actions.std_actions import VerifyAction
+from kentauros.actions.acts import BuildAction
+from kentauros.actions.acts import ChainAction
+from kentauros.actions.acts import CleanAction
+from kentauros.actions.acts import ConstructAction
+from kentauros.actions.acts import ExportAction
+from kentauros.actions.acts import GetAction
+from kentauros.actions.acts import PrepareAction
+from kentauros.actions.acts import RefreshAction
+from kentauros.actions.acts import StatusAction
+from kentauros.actions.acts import UpdateAction
+from kentauros.actions.acts import UploadAction
+from kentauros.actions.acts import VerifyAction
 
-from kentauros.actions.config_action import ConfigAction
-from kentauros.actions.create_action import CreateAction
+from kentauros.actions.act_config import ConfigAction
+from kentauros.actions.act_create import CreateAction
+from kentauros.actions.act_dummy import DummyAction
 
 
 ACTION_DICT = dict()
@@ -33,7 +34,7 @@ ACTION_DICT = dict()
 :py:class:`Action` subclass constructors.
 """
 
-ACTION_DICT[ActionType.NONE] = Action
+ACTION_DICT[ActionType.NONE] = DummyAction
 ACTION_DICT[ActionType.BUILD] = BuildAction
 ACTION_DICT[ActionType.CHAIN] = ChainAction
 ACTION_DICT[ActionType.CLEAN] = CleanAction

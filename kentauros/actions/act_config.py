@@ -8,7 +8,8 @@ from kentauros.definitions import ActionType
 from kentauros.instance import log
 
 from kentauros.package import Package
-from kentauros.actions.action import Action, LOGPREFIX1
+from kentauros.actions.act_abstract import Action
+from kentauros.actions.act_common import LOGPREFIX1
 
 
 class ConfigAction(Action):

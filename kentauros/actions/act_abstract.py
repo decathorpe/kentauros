@@ -4,16 +4,12 @@ inherited by specific action implementations.
 """
 
 
+import abc
+
 from kentauros.package import Package
 
 
-LOGPREFIX1 = "ktr/actions: "
-"""This string specifies the prefix for log and error messages printed to
-``stdout`` or ``stderr`` from inside this subpackage.
-"""
-
-
-class Action:
+class Action(metaclass=abc.ABCMeta):
     """
     This class is the base class for all defined actions. For every action that
     can be specified at ktr command line, there is an Action subclass.
@@ -36,12 +32,11 @@ class Action:
         self.force = force
         self.atype = None
 
+    @abc.abstractmethod
     def execute(self):
         """
         This method runs the action corresponding to the :py:class:`Action`
         instance on the package specified at initialisation. It is overridden by
         subclasses to contain the real code for the action.
         """
-
-        pass
 
