@@ -8,20 +8,18 @@ according to configuration.
 """
 
 
-from configparser import ConfigParser, NoSectionError, NoOptionError
+from configparser import ConfigParser, NoOptionError
 import os
 
-from kentauros.definitions import KTR_SYSTEM_DATADIR
 from kentauros.definitions import BuilderType, ConstructorType
 from kentauros.definitions import SourceType, UploaderType
 
-from kentauros.instance import Kentauros, err, log
+from kentauros.instance import Kentauros, err
 
-from kentauros.build import BUILDER_TYPE_DICT, Builder
-from kentauros.construct import CONSTRUCTOR_TYPE_DICT, Constructor
+from kentauros.build import BUILDER_TYPE_DICT
+from kentauros.construct import CONSTRUCTOR_TYPE_DICT
 from kentauros.source import SOURCE_TYPE_DICT
-from kentauros.source.source import Source
-from kentauros.upload import UPLOADER_TYPE_DICT, Uploader
+from kentauros.upload import UPLOADER_TYPE_DICT
 
 
 LOGPREFIX1 = "ktr/package: "
