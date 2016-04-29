@@ -34,6 +34,8 @@
 - `bootstrap.py`
 - `conntest.py`
 - `definitions.py`
+- `instance.py`
+- `package.py`
 
 - `actions`
   - `acts.py`
@@ -60,12 +62,6 @@
   - `__init__.py`
   - `cli.py`
   - `env.py`
-
-- `instance`
-  - `__init__.py`
-
-- `package`
-  - `__init__.py`
 
 - `run`
   - `__init__.py`
