@@ -6,8 +6,10 @@ script.
 
 from kentauros.definitions import ActionType
 
+from kentauros.instance import Kentauros
 from kentauros.package import Package
 from kentauros.actions.act_abstract import Action
+from kentauros.actions.act_common import LOGPREFIX1
 
 
 class BuildAction(Action):
@@ -39,6 +41,12 @@ class BuildAction(Action):
         """
 
         success = self.kpkg.builder.build()
+
+        if not success:
+            Kentauros().log(
+                LOGPREFIX1 +
+                "Binary package building unsuccessful, aborting action.", 2)
+
         return success
 
 
@@ -83,24 +91,41 @@ class ChainAction(Action):
             bool:   ``True`` if chain went all the way through, ``False`` if not
         """
 
+        ktr = Kentauros()
+
+        def print_abort_msg():
+            "This function prints a standard abort message."
+            ktr.log(LOGPREFIX1 + "Sources not updated.", 2)
+
         verified = VerifyAction(self.kpkg, self.force).execute()
         if not verified:
+            print_abort_msg()
             return False
 
         get = GetAction(self.kpkg, self.force).execute()
+        if not get:
+            ktr.log(LOGPREFIX1 + "Sources not downloaded.", 2)
+
         update = UpdateAction(self.kpkg, self.force).execute()
+        if not update:
+            ktr.log(LOGPREFIX1 + "Sources not updated.", 2)
+
         if not (get or update or self.force):
+            ktr.log(LOGPREFIX1 +
+                    "No source changes were detected, aborting action.", 2)
             return False
 
         ExportAction(self.kpkg, self.force).execute()
 
-        success = ConstructAction(self.kpkg,
-                                  self.force or get or update).execute()
+        success = ConstructAction(self.kpkg, relreset=(get or update),
+                                  force=self.force).execute()
         if not success:
+            print_abort_msg()
             return False
 
         success = BuildAction(self.kpkg, self.force).execute()
         if not success:
+            print_abort_msg()
             return False
 
         UploadAction(self.kpkg, self.force).execute()
@@ -163,8 +188,9 @@ class ConstructAction(Action):
         ActionType atype:   here: stores ``ActionType.CONSTRUCT``
     """
 
-    def __init__(self, kpkg: Package, force: bool):
+    def __init__(self, kpkg: Package, force: bool, relreset: bool=False):
         super().__init__(kpkg, force)
+        self.relreset = relreset
         self.atype = ActionType.CONSTRUCT
 
     def execute(self) -> bool:
@@ -190,9 +216,12 @@ class ConstructAction(Action):
 
         self.kpkg.constructor.init()
 
-        success = self.kpkg.constructor.prepare(self.force)
+        success = self.kpkg.constructor.prepare(relreset=self.relreset,
+                                                force=self.force)
         if not success:
             self.kpkg.constructor.clean()
+            Kentauros().log(LOGPREFIX1 +
+                            "Source package assembly unsuccessful.", 2)
             return False
 
         self.kpkg.constructor.build()
@@ -222,16 +251,14 @@ class ExportAction(Action):
 
     def execute(self) -> bool:
         """
-        This method executes the
-        :py:meth:`Source.export()` method to execute the
-        source export, if possible / necessary.
+        This method executes the :py:meth:`Source.export()` method to execute
+        the source export, if possible / necessary.
 
         Returns:
             bool:           *True* when successful, *False* if file exists
         """
 
-        self.kpkg.source.export()
-        return True
+        return self.kpkg.source.export()
 
 
 class GetAction(Action):
@@ -453,5 +480,9 @@ class VerifyAction(Action):
         """
 
         # TODO: verify that package *.conf is valid
+
+        if not True:
+            Kentauros().log(LOGPREFIX1 + "Package could not be verified.", 2)
+
         return True
 

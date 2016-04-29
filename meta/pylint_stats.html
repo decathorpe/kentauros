@@ -128,31 +128,39 @@
 <td>warning</td>
 <td>kentauros.construct.rpm_spec</td>
 <td>&#160;</td>
-<td>305</td>
+<td>299</td>
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
 <tr class="odd">
-<td>warning</td>
-<td>kentauros.actions.acts</td>
-<td>&#160;</td>
-<td>359</td>
-<td>0</td>
-<td>TODO: output package configuration / status</td>
+<td>refactor</td>
+<td>kentauros.construct.srpm</td>
+<td>SrpmConstructor.prepare</td>
+<td>105</td>
+<td>4</td>
+<td>Too many statements (65/60)</td>
 </tr>
 <tr class="even">
 <td>warning</td>
 <td>kentauros.actions.acts</td>
 <td>&#160;</td>
-<td>425</td>
+<td>386</td>
 <td>0</td>
-<td>TODO: error handling</td>
+<td>TODO: output package configuration / status</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
 <td>kentauros.actions.acts</td>
 <td>&#160;</td>
-<td>455</td>
+<td>452</td>
+<td>0</td>
+<td>TODO: error handling</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.actions.acts</td>
+<td>&#160;</td>
+<td>482</td>
 <td>0</td>
 <td>TODO: verify that package *.conf is valid</td>
 </tr>
@@ -165,7 +173,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1866 statements analysed.</p><div>
+<p>1886 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -202,8 +210,8 @@
 </tr>
 <tr class="odd">
 <td>function</td>
-<td>43</td>
-<td>43</td>
+<td>44</td>
+<td>44</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -217,7 +225,7 @@
 kentauros 
   \-actions (kentauros.run.ktr_create)
   | \-act_abstract (kentauros.actions.acts)
-  | \-act_common (kentauros.actions.act_create)
+  | \-act_common (kentauros.actions.acts)
   | \-act_config (kentauros.actions)
   | \-act_create (kentauros.actions)
   | \-act_dummy (kentauros.actions)
@@ -265,30 +273,30 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2119</td>
-<td>39.56</td>
-<td>2123</td>
-<td>-4.00</td>
+<td>2140</td>
+<td>39.67</td>
+<td>2140</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1923</td>
-<td>35.90</td>
-<td>1923</td>
+<td>1925</td>
+<td>35.68</td>
+<td>1925</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>211</td>
-<td>3.94</td>
-<td>211</td>
+<td>218</td>
+<td>4.04</td>
+<td>218</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1103</td>
-<td>20.59</td>
-<td>1103</td>
+<td>1112</td>
+<td>20.61</td>
+<td>1112</td>
 <td>=</td>
 </tr>
 </table>
@@ -333,9 +341,9 @@ kentauros
 </tr>
 <tr class="odd">
 <td>refactor</td>
-<td>0</td>
 <td>1</td>
-<td>-1.00</td>
+<td>1</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -410,6 +418,13 @@ kentauros
 <td>0.00</td>
 <td>0.00</td>
 </tr>
+<tr class="odd">
+<td>kentauros.construct.srpm</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>100.00</td>
+<td>0.00</td>
+</tr>
 </table>
 </div>
 <div>
@@ -423,11 +438,15 @@ kentauros
 <td>fixme</td>
 <td>18</td>
 </tr>
+<tr class="odd">
+<td>too-many-statements</td>
+<td>1</td>
+</tr>
 </table>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.90/10 (previous run: 9.90/10, +0.01)</div>
+Your code has been rated at 9.90/10 (previous run: 9.90/10, +0.00)</div>
 </div>
 </body>
 </html>

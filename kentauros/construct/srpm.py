@@ -18,7 +18,7 @@ from kentauros.construct.rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT
 from kentauros.construct.rpm_spec import RPMSpecError
 from kentauros.construct.rpm_spec import spec_version_read, spec_release_read
 from kentauros.construct.rpm_spec import if_version, if_release, format_tagline
-from kentauros.construct.rpm_spec import bump_release, spec_bump
+from kentauros.construct.rpm_spec import reset_release, spec_bump
 
 
 LOGPREFIX1 = "ktr/construct/srpm: "
@@ -102,7 +102,7 @@ class SrpmConstructor(Constructor):
             "Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.", 1)
 
 
-    def prepare(self, relreset: bool=False) -> bool:
+    def prepare(self, relreset: bool=False, force: bool=False) -> bool:
         """
         This method prepares all files necessary for source package assembly.
 
@@ -201,7 +201,8 @@ class SrpmConstructor(Constructor):
             relreset = True
 
         # construct new release string
-        new_release = bump_release(old_release, relreset)
+        if relreset:
+            new_release = reset_release(old_release)
 
         # write preamble to new spec file
         new_specfile.write(preamble)
@@ -219,15 +220,28 @@ class SrpmConstructor(Constructor):
         old_specfile.close()
         new_specfile.close()
 
-        # if version has changed, put it into the changelog
+        # use "rpmdev-bumpspec" to increment release number and create
+        # changelog entries
+
+        # if major version has changed, put it into the changelog
         if old_version != new_version:
-            spec_bump(new_spec_file,
-                      comment="Update to version " + \
-                              self.pkg.conf.get("source", "version") + ".")
+            spec_bump(new_spec_file, comment="Update to version " +
+                      self.pkg.conf.get("source", "version") + ".")
+
+        # else if version has not changed, but snapshot has been updated:
+        # old_version =!= new_version
+        elif relreset:
+            spec_bump(new_spec_file, comment="Update to latest snapshot.")
+
+        # else if nothing changed but "force" was set (packaging changes)
+        # old_version =!= new_version, relreset !=!= True
+        elif force:
+            spec_bump(new_spec_file, comment="Update for packaging changes.")
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as
-        # backup) # BUT: remove preamble again, it would break things otherwise
+        # backup)
+        # BUT: remove preamble again, it would break things otherwise
         shutil.move(pkg_spec_file, pkg_spec_file + ".old")
 
         # open new and create old spec file

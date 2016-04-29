@@ -251,26 +251,20 @@ def format_tagline(tag: str, value: str) -> str:
     return tag + ":" + (16 - tag_len - 1) * " " + value + "\n"
 
 
-
-def bump_release(relstr_old: str, reset: bool=False) -> str:
+def reset_release(relstr_old: str) -> str:
     """
-    This function takes an old release string, processes it and returns a new
-    release string. By default, this does nothing to the string, because the
-    release string will be bumped by :py:func:`spec_bump` anyway.
+    This function takes an old release string, sets the leading digit to "0"
+    and returns the rest unchanged.
 
     Arguments:
         str relstr_old: old release string
-        bool reset:  switch to enable release reset to "0whatever" (for example
-                     after version changes)
-        bool change: switch to enable changes (incrementing first digit by 1)
+
+    Returns:
+        str:            new release string with leading digit 0
     """
 
     release_rest = relstr_old[1:]
-
-    if not reset:
-        return relstr_old
-    if reset:
-        return str(0) + release_rest
+    return str(0) + release_rest
 
 
 def spec_bump(specfile: str, comment: str=None):

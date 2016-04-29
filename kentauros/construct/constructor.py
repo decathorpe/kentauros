@@ -27,7 +27,7 @@ class Constructor:
         """
         pass
 
-    def prepare(self, relreset: bool=False):
+    def prepare(self, relreset: bool=False, force: bool=False):
         """
         This method prepares all files necessary for the actual assembly of the
         source package.
