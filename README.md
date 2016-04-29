@@ -1,5 +1,9 @@
 # kentauros
 
+[![Documentation Status](https://readthedocs.org/projects/kentauros/badge/?version=stable)](http://kentauros.readthedocs.io/en/stable/?badge=stable)
+[![Documentation Status](https://readthedocs.org/projects/kentauros/badge/?version=latest)](http://kentauros.readthedocs.io/en/latest/?badge=latest)
+
+
 kentauros is a small, automatable (e.g. systemd timers) build script.
 
 ## the following actions are supported at the moment:
