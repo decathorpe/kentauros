@@ -102,7 +102,7 @@ class SrpmConstructor(Constructor):
             "Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.", 1)
 
 
-    def prepare(self, force: bool=False) -> bool:
+    def prepare(self, relreset: bool=False) -> bool:
         """
         This method prepares all files necessary for source package assembly.
 
@@ -123,7 +123,7 @@ class SrpmConstructor(Constructor):
           added changelog entries.
 
         Arguments:
-            bool force:     force version reset (triggered e. g. by CVS update)
+            bool relreset:  force version reset (triggered e. g. by CVS update)
 
         Returns:
             bool:           returns `True` if the preparation was successful.
@@ -196,14 +196,12 @@ class SrpmConstructor(Constructor):
         preamble = SPEC_PREAMBLE_DICT[self.pkg.source.type](self.pkg.source)
         new_version = SPEC_VERSION_DICT[self.pkg.source.type](self.pkg.source)
 
-        relreset = force
         # if old version and new version are different, force release reset to 0
         if new_version != old_version:
             relreset = True
 
         # construct new release string
         new_release = bump_release(old_release, relreset)
-        new_release = old_release
 
         # write preamble to new spec file
         new_specfile.write(preamble)
@@ -226,8 +224,6 @@ class SrpmConstructor(Constructor):
             spec_bump(new_spec_file,
                       comment="Update to version " + \
                               self.pkg.conf.get("source", "version") + ".")
-        elif force:
-            spec_bump(new_spec_file)
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as
