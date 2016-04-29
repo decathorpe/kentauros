@@ -177,8 +177,8 @@ class ConstructAction(Action):
         - preparation (:py:meth:`Constructor.prepare()`): copy files to build
           directory, prepare build, determine version, release number, etc.
         - if the preparation stage is not successful, the action will terminate
-        - construction (:py:meth:`Constructor.build()`): build the source package
-          inside the build directory
+        - construction (:py:meth:`Constructor.build()`): build the source
+          package inside the build directory
         - export (:py:meth:`Constructor.export()`): copy the built source
           package to the kentauros package directory
         - cleanup (:py:meth:`Constructor.clean()`): remove temporary build
