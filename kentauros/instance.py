@@ -23,7 +23,7 @@ def __smaller_int__(int1: int, int2: int):
         return int2
 
 
-# TODO: make log, err, dbg methods of Kentauros
+# TODO: remove old log,dbg,err functions
 
 
 class Kentauros:
