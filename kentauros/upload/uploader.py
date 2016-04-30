@@ -3,6 +3,8 @@ This module contains the template / dummy :py:class:`Uploader` class, which
 is then inherited by actual uploaders.
 """
 
+# TODO: rename module to upl_abstract.py
+# TODO: make Uploader an abstract base class
 
 class Uploader:
     """

@@ -13,9 +13,6 @@ from kentauros.construct.constructor import Constructor
 from kentauros.construct.srpm import SrpmConstructor
 
 
-__all__ = ["rpm_spec", "constructor", "srpm"]
-
-
 CONSTRUCTOR_TYPE_DICT = dict()
 """ This dictionary maps `ConstructorType` enum members to their respective
 `Constructor` subclass constructors.

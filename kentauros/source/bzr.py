@@ -5,6 +5,7 @@ methods for handling sources that have `source.type=bzr` specified and
 package's configuration file.
 """
 
+# TODO: rename module to src_bzr.py
 
 import os
 import shutil

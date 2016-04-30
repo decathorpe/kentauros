@@ -3,6 +3,7 @@ This module contains the :py:class:`CoprUploader` class, which can be used
 to upload src.rpm packages to `copr <http://copr.fedorainfracloud.org>`_.
 """
 
+# TODO: rename module to upl_copr.py
 
 import glob
 import os

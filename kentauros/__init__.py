@@ -22,5 +22,3 @@ at the moment, the following is supported:
   * copr for fedora and rhel/epel packages
 """
 
-__all__ = []
-

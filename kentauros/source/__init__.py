@@ -7,6 +7,8 @@ file contains a dictioary which maps :py:class:`SourceType` enums to their
 respective class constructors.
 """
 
+# TODO: rename subpackage to sources
+# TODO: create src_dummy.py module
 
 from kentauros.definitions import SourceType
 
@@ -16,9 +18,6 @@ from kentauros.source.bzr import BzrSource
 from kentauros.source.git import GitSource
 from kentauros.source.local import LocalSource
 from kentauros.source.url import UrlSource
-
-
-__all__ = ["bzr", "git", "local", "source", "url"]
 
 
 SOURCE_TYPE_DICT = dict()

@@ -3,6 +3,10 @@ This module contains the template / dummy :py:class:`Source` class, which
 is then inherited by actual sources.
 """
 
+# TODO: rename module to src_abstract.py
+# TODO: remove Source.conf attribute
+# TODO: rename Source.package to Source.spkg
+# TODO: rename Source.type to Source.stype
 
 import os
 import shutil
@@ -14,11 +18,6 @@ LOGPREFIX1 = "ktr/source: "
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.
 """
-
-
-# TODO: remove Source.conf attribute
-# TODO: rename Source.package to Source.spkg
-# TODO: rename Source.type to Source.stype
 
 
 class Source():

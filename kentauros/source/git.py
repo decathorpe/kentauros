@@ -4,6 +4,7 @@ methods for handling sources that have ``source.type=git`` specified and
 ``source.orig`` set to a git repository URL in the package's configuration file.
 """
 
+# TODO: rename module to src_git.py
 
 import os
 import shutil

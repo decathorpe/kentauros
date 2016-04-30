@@ -29,12 +29,44 @@
 <td>TODO: error handling</td>
 </tr>
 <tr class="even">
+<td>warning</td>
+<td>kentauros.upload.copr</td>
+<td>&#160;</td>
+<td>6</td>
+<td>0</td>
+<td>TODO: rename module to upl_copr.py</td>
+</tr>
+<tr class="odd">
 <td>refactor</td>
 <td>kentauros.construct.srpm</td>
 <td>SrpmConstructor.prepare</td>
 <td>105</td>
 <td>4</td>
 <td>Too many statements (65/60)</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.upload.__init__</td>
+<td>&#160;</td>
+<td>9</td>
+<td>0</td>
+<td>TODO: introduce upl_dummy.py module</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.upload.uploader</td>
+<td>&#160;</td>
+<td>6</td>
+<td>0</td>
+<td>TODO: rename module to upl_abstract.py</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.upload.uploader</td>
+<td>&#160;</td>
+<td>7</td>
+<td>0</td>
+<td>TODO: make Uploader an abstract base class</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -62,9 +94,57 @@
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>kentauros.source.local</td>
+<td>&#160;</td>
+<td>8</td>
+<td>0</td>
+<td>TODO: rename module to src_local.py</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.source.bzr</td>
+<td>&#160;</td>
+<td>8</td>
+<td>0</td>
+<td>TODO: rename module to src_bzr.py</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.source.url</td>
+<td>&#160;</td>
+<td>7</td>
+<td>0</td>
+<td>TODO: rename module to src_url.py</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.source.__init__</td>
+<td>&#160;</td>
+<td>10</td>
+<td>0</td>
+<td>TODO: rename subpackage to sources</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.source.__init__</td>
+<td>&#160;</td>
+<td>11</td>
+<td>0</td>
+<td>TODO: create src_dummy.py module</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
 <td>kentauros.source.source</td>
 <td>&#160;</td>
-<td>19</td>
+<td>6</td>
+<td>0</td>
+<td>TODO: rename module to src_abstract.py</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.source.source</td>
+<td>&#160;</td>
+<td>7</td>
 <td>0</td>
 <td>TODO: remove Source.conf attribute</td>
 </tr>
@@ -72,7 +152,7 @@
 <td>warning</td>
 <td>kentauros.source.source</td>
 <td>&#160;</td>
-<td>20</td>
+<td>8</td>
 <td>0</td>
 <td>TODO: rename Source.package to Source.spkg</td>
 </tr>
@@ -80,7 +160,7 @@
 <td>warning</td>
 <td>kentauros.source.source</td>
 <td>&#160;</td>
-<td>21</td>
+<td>9</td>
 <td>0</td>
 <td>TODO: rename Source.type to Source.stype</td>
 </tr>
@@ -92,6 +172,14 @@
 <td>0</td>
 <td>TODO: export resulting packages to kentauros binary package directory</td>
 </tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.source.git</td>
+<td>&#160;</td>
+<td>7</td>
+<td>0</td>
+<td>TODO: rename module to src_git.py</td>
+</tr>
 </table>
 </div>
 </div>
@@ -101,7 +189,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1896 statements analysed.</p><div>
+<p>1889 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -201,31 +289,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
+<td>2148</td>
+<td>39.07</td>
 <td>2155</td>
-<td>39.12</td>
-<td>2155</td>
-<td>=</td>
+<td>-7.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>1997</td>
-<td>36.25</td>
+<td>36.32</td>
 <td>1997</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
+<td>229</td>
+<td>4.17</td>
 <td>218</td>
-<td>3.96</td>
-<td>218</td>
-<td>=</td>
+<td>+11.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
+<td>1124</td>
+<td>20.44</td>
 <td>1139</td>
-<td>20.68</td>
-<td>1139</td>
-<td>=</td>
+<td>-15.00</td>
 </tr>
 </table>
 </div>
@@ -275,15 +363,15 @@ kentauros
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>20</td>
 <td>9</td>
-<td>10</td>
-<td>-1.00</td>
+<td>+11.00</td>
 </tr>
 <tr class="odd">
 <td>error</td>
 <td>0</td>
-<td>2</td>
-<td>-2.00</td>
+<td>0</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -300,35 +388,91 @@ kentauros
 <tr class="even">
 <td>kentauros.source.source</td>
 <td>0.00</td>
-<td>33.33</td>
+<td>20.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.actions.acts</td>
 <td>0.00</td>
-<td>33.33</td>
+<td>15.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.upload.uploader</td>
+<td>0.00</td>
+<td>10.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>kentauros.source.__init__</td>
+<td>0.00</td>
+<td>10.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.upload.copr</td>
+<td>0.00</td>
+<td>5.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>kentauros.upload.__init__</td>
+<td>0.00</td>
+<td>5.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.source.url</td>
+<td>0.00</td>
+<td>5.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>kentauros.source.local</td>
+<td>0.00</td>
+<td>5.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.source.git</td>
+<td>0.00</td>
+<td>5.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>kentauros.source.bzr</td>
+<td>0.00</td>
+<td>5.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.instance</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>5.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.construct.rpm_spec</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>5.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.build.bld_mock</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>5.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
@@ -350,7 +494,7 @@ kentauros
 </tr>
 <tr class="even">
 <td>fixme</td>
-<td>9</td>
+<td>20</td>
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
@@ -360,7 +504,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.95/10 (previous run: 9.89/10, +0.06)</div>
+Your code has been rated at 9.89/10 (previous run: 9.95/10, -0.06)</div>
 </div>
 </body>
 </html>

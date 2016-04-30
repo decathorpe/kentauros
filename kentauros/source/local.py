@@ -5,6 +5,7 @@ has methods for handling sources that have `source.type=local` specified and
 configuration file.
 """
 
+# TODO: rename module to src_local.py
 
 import os
 import shutil

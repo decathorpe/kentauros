@@ -4,6 +4,3 @@ functions necessary for getting and parsing command line arguments, which are
 then held in the :py:class:`CLIArgs` class.
 """
 
-
-__all__ = ["cli", "env"]
-

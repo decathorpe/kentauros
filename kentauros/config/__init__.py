@@ -24,9 +24,6 @@ from kentauros.init.cli import CLI_ARGS_DICT
 from kentauros.init.env import get_env_home
 
 
-__all__ = ["cli", "common", "envvar", "fallback"]
-
-
 LOGPREFIX1 = "ktr/config: "
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.

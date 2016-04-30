@@ -4,6 +4,7 @@ has methods for handling sources that have ``source.type=url`` specified and
 ``source.orig`` set to a URL of a tarball in the package's configuration file.
 """
 
+# TODO: rename module to src_url.py
 
 import os
 import subprocess

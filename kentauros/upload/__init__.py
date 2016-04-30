@@ -6,14 +6,12 @@ Additionally, this file contains a dictioary which maps :py:class:`UploaderType`
 enums to their respective class constructors.
 """
 
+# TODO: introduce upl_dummy.py module
 
 from kentauros.definitions import UploaderType
 
 from kentauros.upload.uploader import Uploader
 from kentauros.upload.copr import CoprUploader
-
-
-__all__ = ["copr", "uploader"]
 
 
 UPLOADER_TYPE_DICT = dict()
