@@ -12,7 +12,7 @@ import subprocess
 import time
 
 from kentauros.instance import Kentauros, log, log_command
-from kentauros.build.builder import Builder
+from kentauros.build.bld_abstract import Builder
 
 
 LOGPREFIX1 = "ktr/build/mock: "
