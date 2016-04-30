@@ -28,8 +28,20 @@ def __smaller_int__(int1: int, int2: int):
 
 class Kentauros:
     """
-    # TODO: napoleon class docstring
-    instance class with dict class variable, as a "Borg", a quasi-singleton
+    This class stores settings and variables that must be the same during the
+    execution of code from the "kentauros" package. This is accomplished by
+    storing the critical data in a class variable, which is initialised only
+    once per execution.
+
+    It also provides methods for printing log, error and debug messages to
+    standard output or error output.
+
+    Attributes:
+        dict saved_state:   stores critical values during the kentauros python
+                            package execution
+
+    Arguments:
+        InstanceType itype: type of kentauros instance (normal, config, create)
     """
 
     saved_state = dict()
@@ -37,8 +49,10 @@ class Kentauros:
     def __getattr__(self, attr: str):
         return self.saved_state.__getitem__(attr)
 
+
     def __setattr__(self, attr: str, val):
         self.saved_state.__setitem__(attr, val)
+
 
     def __init__(self, itype: InstanceType=InstanceType.NORMAL):
         assert isinstance(itype, InstanceType)
@@ -57,6 +71,7 @@ class Kentauros:
         if "conf" not in self.saved_state:
             self.conf = ktr_get_conf(itype)
 
+
     def dbg(self, msg: str):
         """
         This method prints messages with a "DEBUG: " prefix to stdout, but
@@ -70,6 +85,7 @@ class Kentauros:
         if self.debug:
             print("DEBUG: " + str(msg))
 
+
     def err(self, msg: str):
         """
         This method prints messages with an "ERROR: " prefix to standard error
@@ -79,9 +95,10 @@ class Kentauros:
             str msg: error message to be printed
         """
 
-        self.log("ERROR: " + msg, 2)
+        self.log("ERROR: " + msg, 2, sys.stderr)
 
-    def log(self, msg: str, pri: int=2):
+
+    def log(self, msg: str, pri: int=2, outfile=sys.stdout):
         """
         This method prints messages to standard output, depending on the
         priority argument and the verbosity level determined from environment
@@ -101,7 +118,8 @@ class Kentauros:
         """
 
         if (pri >= self.verby) or self.debug:
-            print(msg)
+            print(msg, file=outfile)
+
 
     def log_command(self, prefix1: str, basename: str,
                     cmdlist: list, pri: int=2):

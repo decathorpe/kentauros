@@ -22,27 +22,43 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.instance</td>
+<td>kentauros.construct.rpm_spec</td>
 <td>&#160;</td>
-<td>31</td>
+<td>299</td>
 <td>0</td>
-<td>TODO: napoleon class docstring</td>
+<td>TODO: error handling</td>
 </tr>
 <tr class="even">
-<td>warning</td>
-<td>kentauros.source.url</td>
-<td>&#160;</td>
-<td>26</td>
-<td>0</td>
-<td>TODO: napoleon class docstring</td>
+<td>refactor</td>
+<td>kentauros.construct.srpm</td>
+<td>SrpmConstructor.prepare</td>
+<td>105</td>
+<td>4</td>
+<td>Too many statements (65/60)</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.source.url</td>
+<td>kentauros.actions.acts</td>
 <td>&#160;</td>
-<td>49</td>
+<td>386</td>
 <td>0</td>
-<td>TODO: napoleon method docstring</td>
+<td>TODO: output package configuration / status</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.actions.acts</td>
+<td>&#160;</td>
+<td>452</td>
+<td>0</td>
+<td>TODO: error handling</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.actions.acts</td>
+<td>&#160;</td>
+<td>482</td>
+<td>0</td>
+<td>TODO: verify that package *.conf is valid</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -70,99 +86,11 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.build.builder</td>
-<td>&#160;</td>
-<td>9</td>
-<td>0</td>
-<td>TODO: napoleon class docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.build.builder</td>
-<td>&#160;</td>
-<td>19</td>
-<td>0</td>
-<td>TODO: napoleon method docstring</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.build.builder</td>
-<td>&#160;</td>
-<td>27</td>
-<td>0</td>
-<td>TODO: napoleon method docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
 <td>kentauros.build.mock</td>
 <td>&#160;</td>
-<td>115</td>
-<td>0</td>
-<td>TODO: napoleon class docstring</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.build.mock</td>
-<td>&#160;</td>
-<td>140</td>
-<td>0</td>
-<td>TODO: napoleon method docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.build.mock</td>
-<td>&#160;</td>
-<td>214</td>
+<td>252</td>
 <td>0</td>
 <td>TODO: export resulting packages to kentauros binary package directory</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.build.mock</td>
-<td>&#160;</td>
-<td>215</td>
-<td>0</td>
-<td>TODO: napoleon method docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.construct.rpm_spec</td>
-<td>&#160;</td>
-<td>299</td>
-<td>0</td>
-<td>TODO: error handling</td>
-</tr>
-<tr class="odd">
-<td>refactor</td>
-<td>kentauros.construct.srpm</td>
-<td>SrpmConstructor.prepare</td>
-<td>105</td>
-<td>4</td>
-<td>Too many statements (65/60)</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.actions.acts</td>
-<td>&#160;</td>
-<td>386</td>
-<td>0</td>
-<td>TODO: output package configuration / status</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.actions.acts</td>
-<td>&#160;</td>
-<td>452</td>
-<td>0</td>
-<td>TODO: error handling</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.actions.acts</td>
-<td>&#160;</td>
-<td>482</td>
-<td>0</td>
-<td>TODO: verify that package *.conf is valid</td>
 </tr>
 </table>
 </div>
@@ -224,8 +152,8 @@
   \-parser (kentauros.source.git)
 kentauros 
   \-actions (kentauros.run.ktr_create)
-  | \-act_abstract (kentauros.actions.acts)
-  | \-act_common (kentauros.actions.acts)
+  | \-act_abstract (kentauros.actions.act_config)
+  | \-act_common (kentauros.actions.act_config)
   | \-act_config (kentauros.actions)
   | \-act_create (kentauros.actions)
   | \-act_dummy (kentauros.actions)
@@ -235,32 +163,31 @@ kentauros
   | \-builder (kentauros.build.mock)
   | \-mock (kentauros.build)
   \-config (kentauros.instance)
-  | \-cli (kentauros.config)
   | \-common (kentauros.config.cli)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
-  \-conntest (kentauros.upload.copr)
+  \-conntest (kentauros.source.git)
   \-construct (kentauros.package)
   | \-constructor (kentauros.construct.srpm)
   | \-rpm_spec (kentauros.construct.srpm)
   | \-srpm (kentauros.construct)
-  \-definitions (kentauros.run.ktr_create)
+  \-definitions (kentauros.config.cli)
   \-init 
-  | \-cli (kentauros.run.common)
-  | \-env (kentauros.config.common)
-  \-instance (kentauros.run.ktr_create)
-  \-package (kentauros.actions.acts)
+  | \-cli (kentauros.config.cli)
+  | \-env (kentauros.config)
+  \-instance (kentauros.build.mock)
+  \-package (kentauros.actions.act_config)
   \-run 
   | \-common (kentauros.run.ktr_create)
   \-source (kentauros.package)
   | \-bzr (kentauros.source)
   | \-git (kentauros.source)
   | \-local (kentauros.source)
-  | \-source (kentauros.construct.rpm_spec)
+  | \-source (kentauros.source.git)
   | \-url (kentauros.source)
   \-upload (kentauros.package)
     \-copr (kentauros.upload)
-    \-uploader (kentauros.upload.copr)</pre></div>
+    \-uploader (kentauros.upload)</pre></div>
 <div>
 <h2>Raw metrics</h2>
 <table>
@@ -273,30 +200,30 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2140</td>
-<td>39.67</td>
-<td>2140</td>
+<td>2142</td>
+<td>39.23</td>
+<td>2142</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1925</td>
-<td>35.68</td>
-<td>1925</td>
+<td>1973</td>
+<td>36.14</td>
+<td>1973</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>218</td>
-<td>4.04</td>
+<td>3.99</td>
 <td>218</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1112</td>
-<td>20.61</td>
-<td>1112</td>
+<td>1127</td>
+<td>20.64</td>
+<td>1127</td>
 <td>=</td>
 </tr>
 </table>
@@ -347,8 +274,8 @@ kentauros
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>18</td>
-<td>18</td>
+<td>9</td>
+<td>9</td>
 <td>=</td>
 </tr>
 <tr class="odd">
@@ -370,51 +297,37 @@ kentauros
 <th>convention</th>
 </tr>
 <tr class="even">
-<td>kentauros.build.mock</td>
-<td>0.00</td>
-<td>22.22</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="odd">
 <td>kentauros.source.source</td>
 <td>0.00</td>
-<td>16.67</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="even">
-<td>kentauros.build.builder</td>
-<td>0.00</td>
-<td>16.67</td>
+<td>33.33</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.actions.acts</td>
 <td>0.00</td>
-<td>16.67</td>
+<td>33.33</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.source.url</td>
-<td>0.00</td>
-<td>11.11</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="odd">
 <td>kentauros.instance</td>
 <td>0.00</td>
 <td>11.11</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>kentauros.construct.rpm_spec</td>
 <td>0.00</td>
-<td>5.56</td>
+<td>11.11</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.build.mock</td>
+<td>0.00</td>
+<td>11.11</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
@@ -436,7 +349,7 @@ kentauros
 </tr>
 <tr class="even">
 <td>fixme</td>
-<td>18</td>
+<td>9</td>
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
@@ -446,7 +359,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.90/10 (previous run: 9.90/10, +0.00)</div>
+Your code has been rated at 9.95/10 (previous run: 9.95/10, +0.00)</div>
 </div>
 </body>
 </html>

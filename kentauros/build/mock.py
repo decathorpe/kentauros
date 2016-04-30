@@ -84,7 +84,7 @@ class MockBuild:
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
 
-        # wait for builds occupying the specified build chroot
+        # wait 2 minutes for builds occupying the specified build chroot
         if os.path.isdir(dist_path):
             build_wait = True
 
@@ -112,10 +112,18 @@ class MockBuild:
 
 class MockBuilder(Builder):
     """
-    # TODO: napoleon class docstring
-    kentauros.build.MockBuilder:
-    class for .src.rpm source package preparator
+    This :py:class:`Builder` subclass is used to hold information and methods
+    for executing a local package build using ``mock``. At class instantiation,
+    it checks for existance of the ``mock`` binary. If it is not found in
+    ``$PATH``, this instance is set to inactive.
+
+    Arguments:
+        Package package:    package for which this mock/srpm builder is for
+
+    Attributes:
+        bool active:        determines if this instance is active
     """
+
     def __init__(self, package):
         super().__init__(package)
 
@@ -129,17 +137,39 @@ class MockBuilder(Builder):
             self.package.conf.set("mock", "active", "false")
             self.package.update_config()
 
+        self.active = self.package.conf.getboolean("mock", "active")
+
         # if mock is not installed: deactivate mock builder in conf file
         try:
             subprocess.check_output(["which", "mock"])
         except subprocess.CalledProcessError:
-            self.package.conf.set("mock", "active", "false")
-            self.package.update_config()
+            log(LOGPREFIX1 + \
+                "Install mock to use the specified builder.")
+            self.active = False
+
 
     def build(self) -> bool:
-        # TODO: napoleon method docstring
-        if not self.package.conf.getboolean("mock", "active"):
-            return True
+        """
+        This method constructs the :py:class:`MockBuilder` instances, which
+        contain the commands for executing the builds, and executes them in
+        turn. It also checks if the executing user is allowed to execute a mock
+        build by checking if ``$USER`` is "root" or if the user is in the "mock"
+        group.
+
+        If no source packages are found in the specified directory
+        (``PACKDIR``), the build terminates without executing mock. If SRPM
+        packages are found, only the most recent (biggest version number,
+        determined just by sorting!) is built, for all specified chroots.
+
+        After the last mock invocation, a list of successful and unsuccessful
+        builds is printed.
+
+        Returns:
+            bool:   ``True`` if all builds succeeded, ``False`` if not
+        """
+
+        if not self.active:
+            return False
 
         # check if user is in the "mock" group
         mock_group = grp.getgrnam("mock")
@@ -209,9 +239,16 @@ class MockBuilder(Builder):
 
         return not build_fail
 
+
     def export(self) -> bool:
         """
-        # TODO: export resulting packages to kentauros binary package directory
-        # TODO: napoleon method docstring
+        This method copies the build results (if any) from the mock result
+        directory to the directory specified for binary package exports.
+
+        Returns:
+            bool:   ``True`` if successful, ``False`` if not
         """
+
+        # TODO: export resulting packages to kentauros binary package directory
         pass
+

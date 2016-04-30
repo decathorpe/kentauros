@@ -1,32 +1,38 @@
 """
-This module contains the template / dummy :py:class:`Builder` class, which
+This module contains the abstract :py:class:`Builder` class, which
 is then inherited by actual builders.
 """
 
 
-class Builder:
+import abc
+
+
+class Builder(metaclass=abc.ABCMeta):
     """
-    # TODO: napoleon class docstring
-    kentauros.build.Builder:
-    base class for source package builders
+    This class is the base class for all builders. It's only real function is to
+    provide a unified API for builder classes and store the package to which the
+    builder belongs.
+
+    Arguments:
+        Package package:    package to which this builder belongs
+
+    Attributes:
+        Package package:    stores the package argument given at initialisation
     """
 
     def __init__(self, package):
         self.package = package
 
+    @abc.abstractmethod
     def build(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.build.Builder.build():
-        method that runs the package build
+        This method executes the builder commands.
         """
-        pass
 
+    @abc.abstractmethod
     def export(self):
         """
-        # TODO: napoleon method docstring
-        kentauros.build.Builder.export():
-        method that exports built packages
+        This method exports the built packages (if any) to the directory
+        specified for package exports.
         """
-        pass
 

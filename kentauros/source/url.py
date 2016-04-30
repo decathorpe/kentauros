@@ -23,11 +23,15 @@ stdout or stderr from inside this subpackage.
 
 class UrlSource(Source):
     """
-    # TODO: napoleon class docstring
-    kentauros.source.url.UrlSource:
-    Source subclass holding information and methods for handling URL sources
-    - if wget command is not found on system, self.active = False
-    - self.remote is set for checking connection to specified server
+    This Source subclass holds information and methods for handling URL sources.
+
+    * If the ``wget`` command is not found on the system, ``self.active`` is
+      automatically set to ``False``.
+    * For the purpose of checking connectivity to the remote server, the URL is
+      stored in ``self.remote``.
+
+    Arguments:
+        Package package:    package instance this `Source` belongs to
     """
 
     def __init__(self, package):
@@ -46,11 +50,11 @@ class UrlSource(Source):
 
     def get(self) -> bool:
         """
-        # TODO: napoleon method docstring
-        kentauros.source.url.UrlSource.get():
-        method that gets the correspondig file from URL (usually tarball)
-        - returns True if download is successful
-        - returns False if destination already exists
+        This method executes the download of the file specified by the URL to
+        the package source directory.
+
+        Returns:
+            bool:  `True` if successful, `False` if not or source already exists
         """
 
         if not self.active:
