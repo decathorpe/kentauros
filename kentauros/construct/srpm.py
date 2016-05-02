@@ -200,6 +200,7 @@ class SrpmConstructor(Constructor):
         if new_version != old_version:
             relreset = True
 
+        new_release = old_release
         # construct new release string
         if relreset:
             new_release = reset_release(old_release)
