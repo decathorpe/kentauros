@@ -31,15 +31,18 @@ class MockBuild:
     This helper class is used for the actual execution of mock.
 
     Arguments:
+        str mock:   path of the used mock binary
         str path:   path of the SRPM package that will be built
         str dist:   chroot that the package will be built in
 
     Attributes:
+        str mock:   stores the path of the used mock binary
         str path:   stores the path of the SRPM package that will be built
         str dist:   stores the chroot that the package will be built in
     """
 
-    def __init__(self, path: str, dist: str=None):
+    def __init__(self, mock: str, path: str, dist: str=None):
+        self.mock = mock
         self.path = path
         self.dist = dist
 
@@ -54,7 +57,7 @@ class MockBuild:
 
         ktr = Kentauros()
 
-        cmd = ["mock"]
+        cmd = [self.mock]
 
         # add --verbose or --quiet depending on settings
         if (ktr.verby == 2) and not ktr.debug:
@@ -139,13 +142,21 @@ class MockBuilder(Builder):
 
         self.active = self.package.conf.getboolean("mock", "active")
 
+        self.mock_cmd = None
         # if mock is not installed: deactivate mock builder in conf file
         try:
-            subprocess.check_output(["which", "mock"])
+            self.mock_cmd = subprocess.check_output(
+                ["which", "mock"]).decode().rstrip("\n")
         except subprocess.CalledProcessError:
             log(LOGPREFIX1 + \
                 "Install mock to use the specified builder.")
             self.active = False
+
+        # check if the right binary is used or if something is messing up $PATH
+        if self.mock_cmd == "/usr/sbin/mock":
+            Kentauros().log(LOGPREFIX1 +
+                            "Something is messing with your $PATH variable.", 2)
+            self.mock_cmd = "/usr/bin/mock"
 
 
     def build(self) -> bool:
@@ -207,10 +218,10 @@ class MockBuilder(Builder):
         build_queue = list()
 
         if not dists:
-            build_queue.append(MockBuild(srpm))
+            build_queue.append(MockBuild(self.mock_cmd, srpm))
         else:
             for dist in dists:
-                build_queue.append(MockBuild(srpm, dist))
+                build_queue.append(MockBuild(self.mock_cmd, srpm, dist))
 
         # run builds in queue
         build_succ = list()
