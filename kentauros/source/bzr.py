@@ -155,7 +155,7 @@ class BzrSource(Source):
             cmd.append("--verbose")
 
         # set origin
-        if not self.get("bzr", "branch"):
+        if not self.conf.get("bzr", "branch"):
             cmd.append(self.conf.get("source", "orig"))
         else:
             cmd.append(self.conf.get("source", "orig") + "/" + \
