@@ -69,7 +69,7 @@ class CoprUploader(Uploader):
         """
 
         if not self.active:
-            return False
+            return True
 
         # get all srpms in the package directory
         srpms = glob.glob(os.path.join(Kentauros().conf.packdir,

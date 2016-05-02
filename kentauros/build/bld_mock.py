@@ -182,7 +182,7 @@ class MockBuilder(Builder):
         """
 
         if not self.active:
-            return False
+            return True
 
         # check if user is in the "mock" group
         mock_group = grp.getgrnam("mock")
