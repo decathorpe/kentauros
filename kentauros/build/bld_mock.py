@@ -46,6 +46,8 @@ class MockBuild:
         self.path = path
         self.dist = dist
 
+        # TODO: get default dist if it is None. crash later on is fixed by this
+
     def get_command(self):
         """
         This method returns the argument list needed by the subprocess method
