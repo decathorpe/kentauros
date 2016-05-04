@@ -4,7 +4,7 @@
 
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.9.10.4
+Version:        0.9.10.5
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
@@ -59,6 +59,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed May 04 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.10.5-1
+- Update to version 0.9.10.5.
+
 * Mon May 02 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.10.4-1
 - Update to version 0.9.10.4.
 
