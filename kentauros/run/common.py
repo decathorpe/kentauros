@@ -37,6 +37,7 @@ def get_action_args(cli_args: CLIArgs,
     action_args_dict[ActionType.CONSTRUCT] = (cli_args.get_force(),)
     action_args_dict[ActionType.EXPORT] = (cli_args.get_force(),)
     action_args_dict[ActionType.GET] = (cli_args.get_force(),)
+    action_args_dict[ActionType.PREPARE] = (cli_args.get_force(),)
     action_args_dict[ActionType.REFRESH] = (cli_args.get_force(),)
     action_args_dict[ActionType.STATUS] = (cli_args.get_force(),)
     action_args_dict[ActionType.UPDATE] = (cli_args.get_force(),)
