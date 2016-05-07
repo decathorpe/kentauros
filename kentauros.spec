@@ -9,7 +9,7 @@ Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
-Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 
 
 BuildRequires:  python3-dateutil
