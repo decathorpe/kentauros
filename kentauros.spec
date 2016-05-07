@@ -1,16 +1,13 @@
-%if %{fedora} > 22
-%define debug_package %{nil}
-%endif
-
 Summary:        Small build system, written in python
 Name:           kentauros
 Version:        0.9.10.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
-Source0:        %{name}-%{version}.tar.gz
+Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
+BuildArch:      noarch
 
 BuildRequires:  python3-dateutil
 BuildRequires:  python3-devel
@@ -59,6 +56,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat May 07 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.10.6-2
+- Make package noarch.
+
 * Sat May 07 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.10.6-1
 - Update to version 0.9.10.6.
 
