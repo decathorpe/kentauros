@@ -79,7 +79,7 @@ class Source():
         directory after this method has been executed.
         """
 
-        pass
+        return True
 
 
     def formatver(self) -> str:
@@ -103,7 +103,7 @@ class Source():
         package's source directory after this method has been executed.
         """
 
-        pass
+        return True
 
 
     def refresh(self) -> bool:
@@ -129,7 +129,7 @@ class Source():
         except when package configuration specifies something else explicitely.
         """
 
-        pass
+        return True
 
 
     def prepare(self) -> bool:
