@@ -4,26 +4,26 @@ kentauros.construct package
 Submodules
 ----------
 
-kentauros.construct.constructor module
---------------------------------------
+kentauros.construct.con_abstract module
+---------------------------------------
 
-.. automodule:: kentauros.construct.constructor
+.. automodule:: kentauros.construct.con_abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.construct.rpm_spec module
+kentauros.construct.con_dummy module
+------------------------------------
+
+.. automodule:: kentauros.construct.con_dummy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.construct.con_srpm module
 -----------------------------------
 
-.. automodule:: kentauros.construct.rpm_spec
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.construct.srpm module
--------------------------------
-
-.. automodule:: kentauros.construct.srpm
+.. automodule:: kentauros.construct.con_srpm
     :members:
     :undoc-members:
     :show-inheritance:

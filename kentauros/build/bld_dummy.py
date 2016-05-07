@@ -31,20 +31,10 @@ class DummyBuilder(Builder):
 
 
     def build(self):
-        """
-        This method prints that it was tried to execute a
-        :py:class:`DummyBuilder`, which should not happen.
-        """
-
         Kentauros().log(LOGPREFIX1 + "Dummy Builder for package " +
                         self.package + " executed. Nothing happens.", 2)
 
     def export(self):
-        """
-        This method prints that it was tried to export from a
-        :py:class:`DummyBuilder`, which should not happen.
-        """
-
         Kentauros().log(LOGPREFIX1 + "Dummy Builder for package " +
                         self.package + " exported. Nothing happens.", 2)
 

@@ -22,21 +22,13 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.construct.rpm_spec</td>
-<td>&#160;</td>
-<td>299</td>
-<td>0</td>
-<td>TODO: error handling</td>
-</tr>
-<tr class="even">
-<td>warning</td>
 <td>kentauros.upload.copr</td>
 <td>&#160;</td>
 <td>6</td>
 <td>0</td>
 <td>TODO: rename module to upl_copr.py</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.upload.__init__</td>
 <td>&#160;</td>
@@ -44,7 +36,7 @@
 <td>0</td>
 <td>TODO: introduce upl_dummy.py module</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.upload.uploader</td>
 <td>&#160;</td>
@@ -52,7 +44,7 @@
 <td>0</td>
 <td>TODO: rename module to upl_abstract.py</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.upload.uploader</td>
 <td>&#160;</td>
@@ -60,15 +52,15 @@
 <td>0</td>
 <td>TODO: make Uploader an abstract base class</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>refactor</td>
-<td>kentauros.construct.srpm</td>
+<td>kentauros.construct.con_srpm</td>
 <td>SrpmConstructor.prepare</td>
-<td>105</td>
+<td>108</td>
 <td>4</td>
 <td>Too many statements (66/60)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.actions.acts</td>
 <td>&#160;</td>
@@ -76,7 +68,7 @@
 <td>0</td>
 <td>TODO: output package configuration / status</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.actions.acts</td>
 <td>&#160;</td>
@@ -84,13 +76,21 @@
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.actions.acts</td>
 <td>&#160;</td>
 <td>482</td>
 <td>0</td>
 <td>TODO: verify that package *.conf is valid</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.pkgformat.pkg_rpm_spec</td>
+<td>&#160;</td>
+<td>299</td>
+<td>0</td>
+<td>TODO: error handling</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -165,6 +165,30 @@
 <td>TODO: rename Source.type to Source.stype</td>
 </tr>
 <tr class="odd">
+<td>refactor</td>
+<td>kentauros.source.source</td>
+<td>Source.export</td>
+<td>75</td>
+<td>4</td>
+<td>Method could be a function</td>
+</tr>
+<tr class="even">
+<td>refactor</td>
+<td>kentauros.source.source</td>
+<td>Source.get</td>
+<td>99</td>
+<td>4</td>
+<td>Method could be a function</td>
+</tr>
+<tr class="odd">
+<td>refactor</td>
+<td>kentauros.source.source</td>
+<td>Source.update</td>
+<td>124</td>
+<td>4</td>
+<td>Method could be a function</td>
+</tr>
+<tr class="even">
 <td>warning</td>
 <td>kentauros.source.git</td>
 <td>&#160;</td>
@@ -172,7 +196,7 @@
 <td>0</td>
 <td>TODO: rename module to src_git.py</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.build.bld_mock</td>
 <td>&#160;</td>
@@ -180,7 +204,7 @@
 <td>0</td>
 <td>TODO: get default dist if it is None. crash later on is fixed by this</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.build.bld_mock</td>
 <td>&#160;</td>
@@ -197,7 +221,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1895 statements analysed.</p><div>
+<p>1912 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -210,24 +234,24 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>43</td>
-<td>43</td>
+<td>45</td>
+<td>45</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>44</td>
-<td>44</td>
+<td>45</td>
+<td>45</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>122</td>
-<td>122</td>
+<td>128</td>
+<td>128</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -256,7 +280,7 @@ kentauros
   | \-acts (kentauros.actions)
   \-bootstrap (kentauros.run.ktr_create)
   \-build (kentauros.package)
-  | \-bld_abstract (kentauros.build.bld_dummy)
+  | \-bld_abstract (kentauros.build.bld_mock)
   | \-bld_dummy (kentauros.build)
   | \-bld_mock (kentauros.build)
   \-config (kentauros.instance)
@@ -265,15 +289,17 @@ kentauros
   | \-fallback (kentauros.config)
   \-conntest (kentauros.source.git)
   \-construct (kentauros.package)
-  | \-constructor (kentauros.construct.srpm)
-  | \-rpm_spec (kentauros.construct.srpm)
-  | \-srpm (kentauros.construct)
+  | \-con_abstract (kentauros.construct.con_srpm)
+  | \-con_dummy (kentauros.construct)
+  | \-con_srpm (kentauros.construct)
   \-definitions (kentauros.config.cli)
   \-init 
   | \-cli (kentauros.config.cli)
-  | \-env (kentauros.config.common)
-  \-instance (kentauros.build.bld_dummy)
+  | \-env (kentauros.config)
+  \-instance (kentauros.build.bld_mock)
   \-package (kentauros.actions.act_config)
+  \-pkgformat 
+  | \-pkg_rpm_spec (kentauros.construct.con_srpm)
   \-run 
   | \-common (kentauros.run.ktr_create)
   \-source (kentauros.package)
@@ -297,30 +323,30 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2155</td>
-<td>39.10</td>
-<td>2155</td>
-<td>=</td>
+<td>2184</td>
+<td>39.21</td>
+<td>2181</td>
+<td>+3.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>2000</td>
-<td>36.28</td>
-<td>2000</td>
+<td>2013</td>
+<td>36.14</td>
+<td>2013</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>231</td>
-<td>4.19</td>
+<td>4.15</td>
 <td>231</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1126</td>
-<td>20.43</td>
-<td>1126</td>
+<td>1142</td>
+<td>20.50</td>
+<td>1142</td>
 <td>=</td>
 </tr>
 </table>
@@ -360,20 +386,20 @@ kentauros
 <tr class="even">
 <td>convention</td>
 <td>0</td>
-<td>0</td>
-<td>=</td>
+<td>3</td>
+<td>-3.00</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
-<td>1</td>
-<td>1</td>
+<td>4</td>
+<td>4</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>warning</td>
 <td>21</td>
-<td>21</td>
-<td>=</td>
+<td>22</td>
+<td>-1.00</td>
 </tr>
 <tr class="odd">
 <td>error</td>
@@ -397,7 +423,7 @@ kentauros
 <td>kentauros.source.source</td>
 <td>0.00</td>
 <td>19.05</td>
-<td>0.00</td>
+<td>75.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
@@ -471,24 +497,24 @@ kentauros
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.instance</td>
+<td>kentauros.pkgformat.pkg_rpm_spec</td>
 <td>0.00</td>
 <td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.construct.rpm_spec</td>
+<td>kentauros.instance</td>
 <td>0.00</td>
 <td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.construct.srpm</td>
+<td>kentauros.construct.con_srpm</td>
 <td>0.00</td>
 <td>0.00</td>
-<td>100.00</td>
+<td>25.00</td>
 <td>0.00</td>
 </tr>
 </table>
@@ -505,6 +531,10 @@ kentauros
 <td>21</td>
 </tr>
 <tr class="odd">
+<td>no-self-use</td>
+<td>3</td>
+</tr>
+<tr class="even">
 <td>too-many-statements</td>
 <td>1</td>
 </tr>
@@ -512,7 +542,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.88/10 (previous run: 9.88/10, +0.00)</div>
+Your code has been rated at 9.87/10 (previous run: 9.85/10, +0.02)</div>
 </div>
 </body>
 </html>

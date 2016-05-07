@@ -12,13 +12,16 @@ import tempfile
 
 from kentauros.instance import Kentauros, log, log_command
 
-from kentauros.construct.constructor import Constructor
+from kentauros.construct.con_abstract import Constructor
 
-from kentauros.construct.rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT
-from kentauros.construct.rpm_spec import RPMSpecError
-from kentauros.construct.rpm_spec import spec_version_read, spec_release_read
-from kentauros.construct.rpm_spec import if_version, if_release, format_tagline
-from kentauros.construct.rpm_spec import reset_release, spec_bump
+from kentauros.pkgformat.pkg_rpm_spec import SPEC_PREAMBLE_DICT
+from kentauros.pkgformat.pkg_rpm_spec import SPEC_VERSION_DICT
+from kentauros.pkgformat.pkg_rpm_spec import RPMSpecError
+from kentauros.pkgformat.pkg_rpm_spec import spec_version_read
+from kentauros.pkgformat.pkg_rpm_spec import spec_release_read
+from kentauros.pkgformat.pkg_rpm_spec import if_version, if_release
+from kentauros.pkgformat.pkg_rpm_spec import format_tagline
+from kentauros.pkgformat.pkg_rpm_spec import reset_release, spec_bump
 
 
 LOGPREFIX1 = "ktr/construct/srpm: "

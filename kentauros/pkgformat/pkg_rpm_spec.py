@@ -12,7 +12,7 @@ from kentauros.instance import Kentauros, log_command
 from kentauros.source.source import Source
 
 
-LOGPREFIX1 = "ktr/construct/rpm_spec: "
+LOGPREFIX1 = "ktr/pkgformat/rpm_spec: "
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.
 """

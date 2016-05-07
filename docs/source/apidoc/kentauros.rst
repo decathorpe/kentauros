@@ -11,6 +11,7 @@ Subpackages
     kentauros.config
     kentauros.construct
     kentauros.init
+    kentauros.pkgformat
     kentauros.run
     kentauros.source
     kentauros.upload
