@@ -5,7 +5,6 @@ has methods for handling sources that have `source.type=local` specified and
 configuration file.
 """
 
-# TODO: rename module to src_local.py
 
 import os
 import shutil
@@ -13,7 +12,7 @@ import shutil
 from kentauros.definitions import SourceType
 from kentauros.instance import log
 
-from kentauros.source.source import Source
+from kentauros.source.src_abstract import Source
 
 
 LOGPREFIX1 = "ktr/source/local: "
@@ -59,5 +58,11 @@ class LocalSource(Source):
         # copy file from orig to dest
         shutil.copy2(self.conf.get("source", "orig"), self.dest)
 
+        return True
+
+    def export(self) -> bool:
+        return True
+
+    def update(self) -> bool:
         return True
 

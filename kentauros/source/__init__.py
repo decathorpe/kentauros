@@ -8,26 +8,24 @@ respective class constructors.
 """
 
 # TODO: rename subpackage to sources
-# TODO: create src_dummy.py module
 
 from kentauros.definitions import SourceType
 
-from kentauros.source.source import Source
-
-from kentauros.source.bzr import BzrSource
-from kentauros.source.git import GitSource
-from kentauros.source.local import LocalSource
-from kentauros.source.url import UrlSource
+from kentauros.source.src_bzr import BzrSource
+from kentauros.source.src_dummy import DummySource
+from kentauros.source.src_git import GitSource
+from kentauros.source.src_local import LocalSource
+from kentauros.source.src_url import UrlSource
 
 
 SOURCE_TYPE_DICT = dict()
 """ This dictionary maps `SourceType` enum members to their respective
-`Source` subclass constructors.
+:py:class:`Source` subclass constructors.
 """
 
+SOURCE_TYPE_DICT[SourceType.NONE] = DummySource
 SOURCE_TYPE_DICT[SourceType.BZR] = BzrSource
 SOURCE_TYPE_DICT[SourceType.GIT] = GitSource
 SOURCE_TYPE_DICT[SourceType.LOCAL] = LocalSource
-SOURCE_TYPE_DICT[SourceType.NONE] = Source
 SOURCE_TYPE_DICT[SourceType.URL] = UrlSource
 

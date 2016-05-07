@@ -4,7 +4,6 @@ methods for handling sources that have ``source.type=git`` specified and
 ``source.orig`` set to a git repository URL in the package's configuration file.
 """
 
-# TODO: rename module to src_git.py
 
 import os
 import shutil
@@ -15,7 +14,7 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, err, log, log_command
 
-from kentauros.source.source import Source
+from kentauros.source.src_abstract import Source
 
 
 LOGPREFIX1 = "ktr/source/git: "

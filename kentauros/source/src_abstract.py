@@ -3,11 +3,12 @@ This module contains the template / dummy :py:class:`Source` class, which
 is then inherited by actual sources.
 """
 
-# TODO: rename module to src_abstract.py
 # TODO: remove Source.conf attribute
+# TODO: remove Source.name attribute
 # TODO: rename Source.package to Source.spkg
 # TODO: rename Source.type to Source.stype
 
+import abc
 import os
 import shutil
 
@@ -20,11 +21,12 @@ stdout or stderr from inside this subpackage.
 """
 
 
-class Source():
+class Source(metaclass=abc.ABCMeta):
     """
-    This class serves as a quasi-abstract base class for source package
-    uploaders. They are expected to override this class's methods as
-    necessary. It provides common infrastructure for all code sources.
+    This class serves as an abstract base class for source package
+    uploaders. They are expected to override this class's unimplemented methods.
+    It also provides common infrastructure for all code sources in the form of
+    generalised implementations of get, refresh and formatver methods.
 
     Attributes:
         str name:           package name
@@ -52,6 +54,31 @@ class Source():
         self.package = package
         self.type = None
 
+    @abc.abstractmethod
+    def export(self):
+        """
+        This dummy method will be overridden by subclasses. It is expected that
+        an appropriately named tarball is present within the package's source
+        directory after this method has been executed.
+        """
+
+    @abc.abstractmethod
+    def get(self):
+        """
+        This dummy method will be overridden by subclasses. It is expected that
+        an appropriately named source file or directory is present within the
+        package's source directory after this method has been executed.
+        """
+
+    @abc.abstractmethod
+    def update(self):
+        """
+        This dummy method will be overridden by subclasses. It is expected that
+        the source repository present within the package's source directory is
+        up-to-date with upstream sources after this method has been executed,
+        except when package configuration specifies something else explicitely.
+        """
+
     def clean(self) -> bool:
         """
         This method cleans up all of a package's sources (removes the source
@@ -71,17 +98,6 @@ class Source():
             shutil.rmtree(self.sdir)
             return True
 
-
-    def export(self):
-        """
-        This dummy method will be overridden by subclasses. It is expected that
-        an appropriately named tarball is present within the package's source
-        directory after this method has been executed.
-        """
-
-        return True
-
-
     def formatver(self) -> str:
         """
         This method provides a generic way of getting a package's version as
@@ -94,43 +110,6 @@ class Source():
         """
 
         return self.package.conf.get("source", "version")
-
-
-    def get(self):
-        """
-        This dummy method will be overridden by subclasses. It is expected that
-        an appropriately named source file or directory is present within the
-        package's source directory after this method has been executed.
-        """
-
-        return True
-
-
-    def refresh(self) -> bool:
-        """
-        This method provides a generic way of refreshing a package's sources.
-        This will invoke the generic :py:meth:`Source.clean()` method and the
-        :py:meth`Source.get()` method (as overridden by the subclass).
-
-        Returns:
-            bool:       success status of source getting
-        """
-
-        self.clean()
-        success = self.get()
-        return success
-
-
-    def update(self):
-        """
-        This dummy method will be overridden by subclasses. It is expected that
-        the source repository present within the package's source directory is
-        up-to-date with upstream sources after this method has been executed,
-        except when package configuration specifies something else explicitely.
-        """
-
-        return True
-
 
     def prepare(self) -> bool:
         """
@@ -157,4 +136,18 @@ class Source():
             return self.export()
 
         return False
+
+    def refresh(self) -> bool:
+        """
+        This method provides a generic way of refreshing a package's sources.
+        This will invoke the generic :py:meth:`Source.clean()` method and the
+        :py:meth`Source.get()` method (as overridden by the subclass).
+
+        Returns:
+            bool:       success status of source getting
+        """
+
+        self.clean()
+        success = self.get()
+        return success
 

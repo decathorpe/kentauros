@@ -29,7 +29,6 @@ class DummyBuilder(Builder):
     def __init__(self, package):
         super().__init__(package)
 
-
     def build(self):
         Kentauros().log(LOGPREFIX1 + "Dummy Builder for package " +
                         self.package + " executed. Nothing happens.", 2)

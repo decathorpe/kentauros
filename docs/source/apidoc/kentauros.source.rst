@@ -4,42 +4,50 @@ kentauros.source package
 Submodules
 ----------
 
-kentauros.source.bzr module
----------------------------
+kentauros.source.src_abstract module
+------------------------------------
 
-.. automodule:: kentauros.source.bzr
+.. automodule:: kentauros.source.src_abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.source.git module
----------------------------
+kentauros.source.src_bzr module
+-------------------------------
 
-.. automodule:: kentauros.source.git
+.. automodule:: kentauros.source.src_bzr
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.source.local module
------------------------------
+kentauros.source.src_dummy module
+---------------------------------
 
-.. automodule:: kentauros.source.local
+.. automodule:: kentauros.source.src_dummy
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.source.source module
-------------------------------
+kentauros.source.src_git module
+-------------------------------
 
-.. automodule:: kentauros.source.source
+.. automodule:: kentauros.source.src_git
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.source.url module
----------------------------
+kentauros.source.src_local module
+---------------------------------
 
-.. automodule:: kentauros.source.url
+.. automodule:: kentauros.source.src_local
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.source.src_url module
+-------------------------------
+
+.. automodule:: kentauros.source.src_url
     :members:
     :undoc-members:
     :show-inheritance:

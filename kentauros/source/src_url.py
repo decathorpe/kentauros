@@ -4,7 +4,6 @@ has methods for handling sources that have ``source.type=url`` specified and
 ``source.orig`` set to a URL of a tarball in the package's configuration file.
 """
 
-# TODO: rename module to src_url.py
 
 import os
 import subprocess
@@ -13,7 +12,7 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, log, log_command
 
-from kentauros.source.source import Source
+from kentauros.source.src_abstract import Source
 
 
 LOGPREFIX1 = "ktr/source/url: "
@@ -47,7 +46,6 @@ class UrlSource(Source):
         except subprocess.CalledProcessError:
             log(LOGPREFIX1 + "Install wget to use the specified source.")
             self.active = False
-
 
     def get(self) -> bool:
         """
@@ -96,5 +94,11 @@ class UrlSource(Source):
         log_command(LOGPREFIX1, "wget", cmd, 0)
         subprocess.call(cmd)
 
+        return True
+
+    def update(self) -> bool:
+        return True
+
+    def export(self) -> bool:
         return True
 

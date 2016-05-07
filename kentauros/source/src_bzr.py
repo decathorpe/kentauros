@@ -5,7 +5,6 @@ methods for handling sources that have `source.type=bzr` specified and
 package's configuration file.
 """
 
-# TODO: rename module to src_bzr.py
 
 import os
 import shutil
@@ -15,7 +14,7 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, err, log, log_command
 
-from kentauros.source.source import Source
+from kentauros.source.src_abstract import Source
 
 
 LOGPREFIX1 = "ktr/source/bzr: "
