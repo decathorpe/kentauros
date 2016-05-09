@@ -63,7 +63,7 @@ def run_config():
             ktr.conf.confdir, "*.conf"))
 
         for pkg_conf_path in pkg_conf_paths:
-            pkgs.append(os.path.basename(pkg_conf_path).rstrip(".conf"))
+            pkgs.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
 
     # log list of found packages
     log(LOGPREFIX1 + "Packages:", 2)

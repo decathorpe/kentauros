@@ -239,8 +239,8 @@ kentauros
   \-definitions (kentauros.config.cli)
   \-init 
   | \-cli (kentauros.config.cli)
-  | \-env (kentauros.config)
-  \-instance (kentauros.build.bld_dummy)
+  | \-env (kentauros.config.common)
+  \-instance (kentauros.source.src_git)
   \-package (kentauros.actions.act_config)
   \-pkgformat 
   | \-pkg_rpm_spec (kentauros.construct.con_srpm)
