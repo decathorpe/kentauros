@@ -1,6 +1,9 @@
 # TODO items for kentauros
 
 
+These TODO items complement those found within the code itself.
+
+
 ## ktr
 
 - add exports directory to configuration / initialisation. built binary packages
