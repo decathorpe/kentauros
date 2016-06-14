@@ -9,8 +9,6 @@ their respective class constructors.
 
 from kentauros.definitions import ActionType
 
-from kentauros.actions.act_abstract import Action
-
 from kentauros.actions.acts import BuildAction
 from kentauros.actions.acts import ChainAction
 from kentauros.actions.acts import CleanAction
