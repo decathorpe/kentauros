@@ -9,7 +9,7 @@ import subprocess
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, log_command
 
-from kentauros.source.src_abstract import Source
+from kentauros.sources.src_abstract import Source
 
 
 LOGPREFIX1 = "ktr/pkgformat/rpm_spec: "

@@ -18,7 +18,7 @@ from kentauros.instance import Kentauros, err
 
 from kentauros.build import BUILDER_TYPE_DICT
 from kentauros.construct import CONSTRUCTOR_TYPE_DICT
-from kentauros.source import SOURCE_TYPE_DICT
+from kentauros.sources import SOURCE_TYPE_DICT
 from kentauros.upload import UPLOADER_TYPE_DICT
 
 

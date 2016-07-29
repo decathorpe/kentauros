@@ -12,10 +12,10 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, log, log_command
 
-from kentauros.source.src_abstract import Source
+from kentauros.sources.src_abstract import Source
 
 
-LOGPREFIX1 = "ktr/source/url: "
+LOGPREFIX1 = "ktr/sources/url: "
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.
 """

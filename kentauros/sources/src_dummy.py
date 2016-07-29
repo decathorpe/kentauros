@@ -7,10 +7,10 @@ nothing and acts as a placeholder.
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros
 
-from kentauros.source.src_abstract import Source
+from kentauros.sources.src_abstract import Source
 
 
-LOGPREFIX1 = "ktr/source/dummy: "
+LOGPREFIX1 = "ktr/sources/dummy: "
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.
 """

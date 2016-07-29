@@ -12,10 +12,10 @@ import shutil
 from kentauros.definitions import SourceType
 from kentauros.instance import log
 
-from kentauros.source.src_abstract import Source
+from kentauros.sources.src_abstract import Source
 
 
-LOGPREFIX1 = "ktr/source/local: "
+LOGPREFIX1 = "ktr/sources/local: "
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.
 """

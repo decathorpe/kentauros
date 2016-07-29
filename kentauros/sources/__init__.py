@@ -7,15 +7,13 @@ file contains a dictioary which maps :py:class:`SourceType` enums to their
 respective class constructors.
 """
 
-# TODO: rename subpackage to sources
-
 from kentauros.definitions import SourceType
 
-from kentauros.source.src_bzr import BzrSource
-from kentauros.source.src_dummy import DummySource
-from kentauros.source.src_git import GitSource
-from kentauros.source.src_local import LocalSource
-from kentauros.source.src_url import UrlSource
+from kentauros.sources.src_bzr import BzrSource
+from kentauros.sources.src_dummy import DummySource
+from kentauros.sources.src_git import GitSource
+from kentauros.sources.src_local import LocalSource
+from kentauros.sources.src_url import UrlSource
 
 
 SOURCE_TYPE_DICT = dict()
