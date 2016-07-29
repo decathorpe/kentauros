@@ -3,8 +3,6 @@ This module contains the :py:class:`CoprUploader` class, which can be used
 to upload src.rpm packages to `copr <http://copr.fedorainfracloud.org>`_.
 """
 
-# TODO: rename module to upl_copr.py
-
 import glob
 import os
 import subprocess
@@ -12,7 +10,7 @@ import subprocess
 from kentauros.conntest import is_connected
 from kentauros.instance import Kentauros, log, log_command
 
-from kentauros.upload.uploader import Uploader
+from kentauros.upload.upl_abstract import Uploader
 
 
 LOGPREFIX1 = "ktr/upload/copr: "

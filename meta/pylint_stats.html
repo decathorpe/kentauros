@@ -30,27 +30,11 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.upload.uploader</td>
+<td>kentauros.upload.upl_abstract</td>
 <td>&#160;</td>
 <td>6</td>
-<td>0</td>
-<td>TODO: rename module to upl_abstract.py</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.upload.uploader</td>
-<td>&#160;</td>
-<td>7</td>
 <td>0</td>
 <td>TODO: make Uploader an abstract base class</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.upload.copr</td>
-<td>&#160;</td>
-<td>6</td>
-<td>0</td>
-<td>TODO: rename module to upl_copr.py</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
@@ -221,7 +205,7 @@ kentauros
   | \-bld_mock (kentauros.build)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
-  | \-common (kentauros.config.cli)
+  | \-common (kentauros.config.envvar)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
   \-conntest (kentauros.sources.src_git)
@@ -245,8 +229,8 @@ kentauros
   | \-src_local (kentauros.sources)
   | \-src_url (kentauros.sources)
   \-upload (kentauros.package)
-    \-copr (kentauros.upload)
-    \-uploader (kentauros.upload.copr)</pre></div>
+    \-upl_abstract (kentauros.upload.upl_copr)
+    \-upl_copr (kentauros.upload)</pre></div>
 <div>
 <h2>Raw metrics</h2>
 <table>
@@ -260,28 +244,28 @@ kentauros
 <tr class="even">
 <td>code</td>
 <td>2226</td>
-<td>39.54</td>
+<td>39.55</td>
 <td>2226</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>2030</td>
-<td>36.06</td>
+<td>36.07</td>
 <td>2030</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>226</td>
-<td>4.01</td>
-<td>226</td>
+<td>224</td>
+<td>3.98</td>
+<td>224</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
 <td>1148</td>
-<td>20.39</td>
+<td>20.40</td>
 <td>1148</td>
 <td>=</td>
 </tr>
@@ -333,15 +317,15 @@ kentauros
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>16</td>
-<td>16</td>
+<td>14</td>
+<td>14</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>error</td>
 <td>0</td>
-<td>4</td>
-<td>-4.00</td>
+<td>2</td>
+<td>-2.00</td>
 </tr>
 </table>
 </div>
@@ -358,67 +342,60 @@ kentauros
 <tr class="even">
 <td>kentauros.sources.src_abstract</td>
 <td>0.00</td>
-<td>25.00</td>
+<td>28.57</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.actions.acts</td>
 <td>0.00</td>
-<td>18.75</td>
+<td>21.43</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.upload.uploader</td>
-<td>0.00</td>
-<td>12.50</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="odd">
 <td>kentauros.build.bld_mock</td>
 <td>0.00</td>
-<td>12.50</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="even">
-<td>kentauros.upload.copr</td>
-<td>0.00</td>
-<td>6.25</td>
+<td>14.29</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
+<td>kentauros.upload.upl_abstract</td>
+<td>0.00</td>
+<td>7.14</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
 <td>kentauros.upload.__init__</td>
 <td>0.00</td>
-<td>6.25</td>
+<td>7.14</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>kentauros.pkgformat.pkg_rpm_spec</td>
 <td>0.00</td>
-<td>6.25</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="odd">
-<td>kentauros.instance</td>
-<td>0.00</td>
-<td>6.25</td>
+<td>7.14</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.build.bld_abstract</td>
+<td>kentauros.instance</td>
 <td>0.00</td>
-<td>6.25</td>
+<td>7.14</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
+<td>kentauros.build.bld_abstract</td>
+<td>0.00</td>
+<td>7.14</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
 <td>kentauros.construct.con_srpm</td>
 <td>0.00</td>
 <td>0.00</td>
@@ -436,7 +413,7 @@ kentauros
 </tr>
 <tr class="even">
 <td>fixme</td>
-<td>16</td>
+<td>14</td>
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
@@ -446,7 +423,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.91/10 (previous run: 9.81/10, +0.10)</div>
+Your code has been rated at 9.92/10 (previous run: 9.87/10, +0.05)</div>
 </div>
 </body>
 </html>
