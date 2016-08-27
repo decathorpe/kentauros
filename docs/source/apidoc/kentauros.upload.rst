@@ -4,18 +4,18 @@ kentauros.upload package
 Submodules
 ----------
 
-kentauros.upload.copr module
-----------------------------
+kentauros.upload.upl_abstract module
+------------------------------------
 
-.. automodule:: kentauros.upload.copr
+.. automodule:: kentauros.upload.upl_abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.upload.uploader module
+kentauros.upload.upl_copr module
 --------------------------------
 
-.. automodule:: kentauros.upload.uploader
+.. automodule:: kentauros.upload.upl_copr
     :members:
     :undoc-members:
     :show-inheritance:
