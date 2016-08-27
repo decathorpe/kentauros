@@ -3,8 +3,6 @@ This module contains the abstract :py:class:`Builder` class, which
 is then inherited by actual builders.
 """
 
-# TODO: rename package attribute to bpkg
-
 import abc
 
 
@@ -22,7 +20,7 @@ class Builder(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-        self.package = package
+        self.bpkg = package
 
     @abc.abstractmethod
     def build(self):

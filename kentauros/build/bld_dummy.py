@@ -31,9 +31,9 @@ class DummyBuilder(Builder):
 
     def build(self):
         Kentauros().log(LOGPREFIX1 + "Dummy Builder for package " +
-                        self.package + " executed. Nothing happens.", 2)
+                        self.bpkg + " executed. Nothing happens.", 2)
 
     def export(self):
         Kentauros().log(LOGPREFIX1 + "Dummy Builder for package " +
-                        self.package + " exported. Nothing happens.", 2)
+                        self.bpkg + " exported. Nothing happens.", 2)
 

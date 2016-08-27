@@ -133,16 +133,16 @@ class MockBuilder(Builder):
         super().__init__(package)
 
         # deactivate mock if section is not present in config file
-        if "mock" not in self.package.conf.sections():
-            self.package.conf.add_section("mock")
-            self.package.conf.set("mock", "active", "false")
-            self.package.update_config()
+        if "mock" not in self.bpkg.conf.sections():
+            self.bpkg.conf.add_section("mock")
+            self.bpkg.conf.set("mock", "active", "false")
+            self.bpkg.update_config()
 
-        if "active" not in self.package.conf.options("mock"):
-            self.package.conf.set("mock", "active", "false")
-            self.package.update_config()
+        if "active" not in self.bpkg.conf.options("mock"):
+            self.bpkg.conf.set("mock", "active", "false")
+            self.bpkg.update_config()
 
-        self.active = self.package.conf.getboolean("mock", "active")
+        self.active = self.bpkg.conf.getboolean("mock", "active")
 
         self.mock_cmd = None
         # if mock is not installed: deactivate mock builder in conf file
@@ -195,7 +195,7 @@ class MockBuilder(Builder):
 
         # get all srpms in the package directory
         srpms = glob.glob(os.path.join(ktr.conf.packdir,
-                                       self.package.name + "*.src.rpm"))
+                                       self.bpkg.name + "*.src.rpm"))
 
         if not srpms:
             log(LOGPREFIX1 +
@@ -207,7 +207,7 @@ class MockBuilder(Builder):
         srpm = srpms[0]
 
         # get dists to build for
-        dists = self.package.conf.get("mock", "dist").split(",")
+        dists = self.bpkg.conf.get("mock", "dist").split(",")
         if dists == [""]:
             dists = []
 
@@ -237,7 +237,7 @@ class MockBuilder(Builder):
                 build_succ.append((build.path, build.dist))
 
         # remove source package if keep=False is specified
-        if not self.package.conf.getboolean("mock", "keep"):
+        if not self.bpkg.conf.getboolean("mock", "keep"):
             os.remove(srpm)
 
         if build_succ:
