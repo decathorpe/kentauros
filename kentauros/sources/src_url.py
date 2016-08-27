@@ -71,7 +71,7 @@ class UrlSource(Source):
             return False
 
         # check for connectivity to server
-        if not is_connected(self.package.conf.get("source", "orig")):
+        if not is_connected(self.spkg.conf.get("source", "orig")):
             log("No connection to remote host detected. " + \
                 "Cancelling source checkout.", 2)
             return False
@@ -86,7 +86,7 @@ class UrlSource(Source):
             cmd.append("--verbose")
 
         # set origin and destination
-        cmd.append(self.package.conf.get("source", "orig"))
+        cmd.append(self.spkg.conf.get("source", "orig"))
         cmd.append("-O")
         cmd.append(self.dest)
 

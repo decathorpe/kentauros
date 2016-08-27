@@ -33,34 +33,34 @@ class DummySource(Source):
 
     def clean(self) -> bool:
         Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
-                        self.package + " cleaned. Nothing happens.", 2)
+                        self.spkg + " cleaned. Nothing happens.", 2)
         return True
 
     def export(self):
         Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
-                        self.package + " exported. Nothing happens.", 2)
+                        self.spkg + " exported. Nothing happens.", 2)
         return True
 
     def get(self):
         Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
-                        self.package + " got. Nothing happens.", 2)
+                        self.spkg + " got. Nothing happens.", 2)
         return True
 
     def update(self):
         Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
-                        self.package + " updated. Nothing happens.", 2)
+                        self.spkg + " updated. Nothing happens.", 2)
         return True
 
     def formatver(self) -> str:
-        return self.package.conf.get("source", "version")
+        return self.spkg.conf.get("source", "version")
 
     def prepare(self) -> bool:
         Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
-                        self.package + " prepared. Nothing happens.", 2)
+                        self.spkg + " prepared. Nothing happens.", 2)
         return True
 
     def refresh(self) -> bool:
         Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
-                        self.package + " refreshed. Nothing happens.", 2)
+                        self.spkg + " refreshed. Nothing happens.", 2)
         return True
 

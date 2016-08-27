@@ -59,14 +59,14 @@ class GitSource(Source):
         if self.conf.get("git", "branch") == "" and \
            self.conf.get("git", "commit") == "":
             self.conf.set("git", "branch", "master")
-            self.package.update_config()
+            self.spkg.update_config()
 
         # shallow clones and checking out a specific commit is not supported
         if self.conf.get("git", "commit") != "" and \
            self.conf.getboolean("git", "shallow"):
 
             self.conf.set("git", "shallow", "false")
-            self.package.update_config()
+            self.spkg.update_config()
 
         self.saved_rev = None
         self.saved_date = None

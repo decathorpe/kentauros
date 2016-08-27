@@ -13,7 +13,7 @@ Subpackages
     kentauros.init
     kentauros.pkgformat
     kentauros.run
-    kentauros.source
+    kentauros.sources
     kentauros.upload
 
 Submodules

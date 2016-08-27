@@ -5,8 +5,6 @@ is then inherited by actual sources.
 
 # TODO: remove Source.conf attribute
 # TODO: remove Source.name attribute
-# TODO: rename Source.package to Source.spkg
-# TODO: rename Source.type to Source.stype
 
 import abc
 import os
@@ -51,8 +49,8 @@ class Source(metaclass=abc.ABCMeta):
         self.orig = None
         self.keep = False
 
-        self.package = package
-        self.type = None
+        self.spkg = package
+        self.stype = None
 
     @abc.abstractmethod
     def export(self):
@@ -109,7 +107,7 @@ class Source(metaclass=abc.ABCMeta):
             str:        formatted version string
         """
 
-        return self.package.conf.get("source", "version")
+        return self.spkg.conf.get("source", "version")
 
     def prepare(self) -> bool:
         """
