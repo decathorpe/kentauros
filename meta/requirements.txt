@@ -1,2 +1,2 @@
-python-dataset
+dataset
 python-dateutil
