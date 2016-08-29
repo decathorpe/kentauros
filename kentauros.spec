@@ -9,9 +9,11 @@ Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
 BuildArch:      noarch
 
+BuildRequires:  python3-dataset
 BuildRequires:  python3-dateutil
 BuildRequires:  python3-devel
 
+Requires:       python3-dataset
 Requires:       python3-dateutil
 
 Recommends:     bzr
