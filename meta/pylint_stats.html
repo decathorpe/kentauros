@@ -109,7 +109,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1944 statements analysed.</p><div>
+<p>1959 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -122,24 +122,24 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>46</td>
-<td>46</td>
+<td>47</td>
+<td>47</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>46</td>
-<td>46</td>
+<td>47</td>
+<td>47</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>140</td>
-<td>140</td>
+<td>143</td>
+<td>143</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -156,7 +156,8 @@
 </div>
 <div>
 <h2>External dependencies</h2>
-<pre>dateutil 
+<pre>dataset (kentauros.state)
+dateutil 
   \-parser (kentauros.sources.src_git)
 kentauros 
   \-actions (kentauros.run.ktr_config)
@@ -173,7 +174,7 @@ kentauros
   | \-bld_mock (kentauros.build)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
-  | \-common (kentauros.config.envvar)
+  | \-common (kentauros.config.cli)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
   \-conntest (kentauros.sources.src_git)
@@ -185,8 +186,10 @@ kentauros
   \-init 
   | \-cli (kentauros.config.cli)
   | \-env (kentauros.config.common)
-  \-instance (kentauros.pkgformat.pkg_rpm_spec)
+  \-instance (kentauros.state)
   \-package (kentauros.actions.acts)
+  \-pkgformat 
+  | \-pkg_rpm_spec (kentauros.construct.con_srpm)
   \-run 
   | \-common (kentauros.run.ktr_config)
   \-sources (kentauros.package)
@@ -211,31 +214,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2227</td>
-<td>39.61</td>
-<td>2227</td>
+<td>2244</td>
+<td>39.49</td>
+<td>2244</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>2030</td>
-<td>36.10</td>
-<td>2030</td>
+<td>2060</td>
+<td>36.25</td>
+<td>2060</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>220</td>
-<td>3.91</td>
+<td>3.87</td>
 <td>220</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1146</td>
+<td>1158</td>
 <td>20.38</td>
-<td>1146</td>
-<td>=</td>
+<td>1159</td>
+<td>-1.00</td>
 </tr>
 </table>
 </div>

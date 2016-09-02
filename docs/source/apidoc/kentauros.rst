@@ -14,6 +14,7 @@ Subpackages
     kentauros.pkgformat
     kentauros.run
     kentauros.sources
+    kentauros.state
     kentauros.upload
 
 Submodules
