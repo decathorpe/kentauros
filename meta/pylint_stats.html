@@ -100,6 +100,14 @@
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.state.__init__</td>
+<td>&#160;</td>
+<td>93</td>
+<td>0</td>
+<td>TODO: public function for getting current release (from spec file)</td>
+</tr>
 </table>
 </div>
 </div>
@@ -109,7 +117,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1959 statements analysed.</p><div>
+<p>1993 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -130,24 +138,24 @@
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>47</td>
-<td>47</td>
+<td>48</td>
+<td>48</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>143</td>
-<td>143</td>
+<td>145</td>
+<td>145</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>function</td>
-<td>44</td>
-<td>44</td>
+<td>46</td>
+<td>46</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -162,7 +170,7 @@ dateutil
 kentauros 
   \-actions (kentauros.run.ktr_config)
   | \-act_abstract (kentauros.actions.acts)
-  | \-act_common (kentauros.actions.acts)
+  | \-act_common (kentauros.actions.act_create)
   | \-act_config (kentauros.actions)
   | \-act_create (kentauros.actions)
   | \-act_dummy (kentauros.actions)
@@ -174,7 +182,7 @@ kentauros
   | \-bld_mock (kentauros.build)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
-  | \-common (kentauros.config.cli)
+  | \-common (kentauros.config.envvar)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
   \-conntest (kentauros.sources.src_git)
@@ -185,9 +193,9 @@ kentauros
   \-definitions (kentauros.pkgformat.pkg_rpm_spec)
   \-init 
   | \-cli (kentauros.config.cli)
-  | \-env (kentauros.config.common)
+  | \-env (kentauros.config)
   \-instance (kentauros.state)
-  \-package (kentauros.actions.acts)
+  \-package (kentauros.state)
   \-pkgformat 
   | \-pkg_rpm_spec (kentauros.construct.con_srpm)
   \-run 
@@ -214,31 +222,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2244</td>
-<td>39.49</td>
-<td>2244</td>
+<td>2279</td>
+<td>39.55</td>
+<td>2279</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>2060</td>
-<td>36.25</td>
-<td>2060</td>
+<td>2086</td>
+<td>36.20</td>
+<td>2086</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>220</td>
-<td>3.87</td>
-<td>220</td>
+<td>221</td>
+<td>3.84</td>
+<td>221</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1158</td>
-<td>20.38</td>
-<td>1159</td>
-<td>-1.00</td>
+<td>1176</td>
+<td>20.41</td>
+<td>1176</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -288,8 +296,8 @@ kentauros
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>10</td>
-<td>10</td>
+<td>11</td>
+<td>11</td>
 <td>=</td>
 </tr>
 <tr class="odd">
@@ -313,46 +321,53 @@ kentauros
 <tr class="even">
 <td>kentauros.actions.acts</td>
 <td>0.00</td>
-<td>30.00</td>
+<td>27.27</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.sources.src_abstract</td>
 <td>0.00</td>
-<td>20.00</td>
+<td>18.18</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.build.bld_mock</td>
 <td>0.00</td>
-<td>20.00</td>
+<td>18.18</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.upload.__init__</td>
 <td>0.00</td>
-<td>10.00</td>
+<td>9.09</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.pkgformat.pkg_rpm_spec</td>
+<td>kentauros.state.__init__</td>
 <td>0.00</td>
-<td>10.00</td>
+<td>9.09</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.instance</td>
+<td>kentauros.pkgformat.pkg_rpm_spec</td>
 <td>0.00</td>
-<td>10.00</td>
+<td>9.09</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
+<td>kentauros.instance</td>
+<td>0.00</td>
+<td>9.09</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
 <td>kentauros.construct.con_srpm</td>
 <td>0.00</td>
 <td>0.00</td>
@@ -370,7 +385,7 @@ kentauros
 </tr>
 <tr class="even">
 <td>fixme</td>
-<td>10</td>
+<td>11</td>
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
