@@ -19,6 +19,7 @@ setup(
     keywords="development packaging",
     url="http://github.com/decathorpe/kentauros",
     packages=find_packages(),
+    install_requires=["dataset", "python-dateutil"],
     entry_points={'console_scripts': [
         'ktr = kentauros.run.ktr:run',
         'ktr-config = kentauros.run.ktr_config:run_config',
