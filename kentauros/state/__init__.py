@@ -92,6 +92,7 @@ class PackageState(dict):
 
 # TODO: public function for getting current release (from spec file)
 
+
 def pkg_state_from_package(pkg: Package) -> PackageState:
     """
     This function produces a :py:class:`PackageState` object from a given
@@ -105,9 +106,20 @@ def pkg_state_from_package(pkg: Package) -> PackageState:
     """
 
     status = PackageState()
-    status["name"] = pkg.name
-    status["version"] = pkg.conf.get("version")
-    status["release"] = None
+
+    for key in pkg.conf.get("package"):
+        status[key] = pkg.conf.get("package").get(key)
+
+    for section in pkg.conf:
+        if section == "package":
+            continue
+
+        for key in section:
+            status[section + "_" + key] = pkg.conf.get(section).get(key)
+
+    # TODO: get release string from pkgformat
+    status["release"] = "1"
+
     return status
 
 
@@ -130,8 +142,9 @@ def pkg_state_from_state(name: str) -> PackageState:
     if result is None:
         return None
 
+    for key in result:
+        status[key] = result[key]
+
     status["name"] = name
-    status["version"] = result["version"]
-    status["release"] = result["release"]
 
     return status

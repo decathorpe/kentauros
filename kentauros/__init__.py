@@ -22,3 +22,4 @@ at the moment, the following is supported:
   * copr for fedora and rhel/epel packages
 """
 
+# TODO: simplify configuration. remove everything except basedir

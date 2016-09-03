@@ -56,7 +56,6 @@ class BzrSource(Source):
         else:
             self.remote = self.conf.get("source", "orig")
 
-
     def rev(self) -> str:
         """
         This method determines which revision the bzr repository associated with
@@ -94,7 +93,6 @@ class BzrSource(Source):
         self.saved_rev = rev
         return rev
 
-
     def formatver(self) -> str:
         """
         This method returns a nicely formatted version string for bzr sources.
@@ -110,7 +108,6 @@ class BzrSource(Source):
         ver += "~rev"                               # bzr prefix
         ver += self.rev()                           # revision number as string
         return ver
-
 
     def get(self) -> bool:
         """
@@ -185,7 +182,6 @@ class BzrSource(Source):
         # return True if successful
         return True
 
-
     def update(self) -> bool:
         """
         This method executes a bzr repository update as specified in the package
@@ -245,7 +241,6 @@ class BzrSource(Source):
 
         # return True if update found, False if not
         return rev_new != rev_old
-
 
     def export(self) -> bool:
         """
@@ -326,4 +321,3 @@ class BzrSource(Source):
 
         os.chdir(prevdir)
         return True
-

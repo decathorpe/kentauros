@@ -10,6 +10,8 @@ from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros, log_command
 
 from kentauros.sources.src_abstract import Source
+from kentauros.sources.src_bzr import BzrSource
+from kentauros.sources.src_git import GitSource
 
 
 LOGPREFIX1 = "ktr/pkgformat/rpm_spec: "
@@ -30,11 +32,12 @@ class RPMSpecError(Exception):
     def __init__(self, value=""):
         super().__init__()
         self.value = value
+
     def __str__(self):
         return repr(self.value)
 
 
-def spec_preamble_bzr(source: Source) -> str:
+def spec_preamble_bzr(source: BzrSource) -> str:
     """
     This function returns the "%defines" necessary for packages built from *bzr*
     repositories. This includes a definition of "rev" just now.
@@ -46,12 +49,12 @@ def spec_preamble_bzr(source: Source) -> str:
         str: string containing the ``%defines rev $REV`` line
     """
 
-    assert isinstance(source, Source)
+    assert isinstance(source, BzrSource)
     rev_define = "%define rev " + source.rev() + "\n"
     return rev_define + "\n"
 
 
-def spec_preamble_git(source: Source) -> str:
+def spec_preamble_git(source: GitSource) -> str:
     """
     This function returns the "%defines" necessary for packages built from *git*
     repositories. This includes a definition of "rev" and "date" just now. The
@@ -65,7 +68,7 @@ def spec_preamble_git(source: Source) -> str:
         str: string with the "%defines rev $REV" and "%defines date $DATE" lines
     """
 
-    assert isinstance(source, Source)
+    assert isinstance(source, GitSource)
     date_define = "%define date " + source.date() + "\n"
     rev_define = "%define rev " + source.rev()[0:8] + "\n"
     return date_define + rev_define + "\n"
@@ -88,7 +91,7 @@ def spec_preamble_url(source: Source) -> str:
 
 
 SPEC_PREAMBLE_DICT = dict()
-""" This dictionary maps `SourceType` enum members to their respective
+"""This dictionary maps `SourceType` enum members to their respective
 RPM spec preamble generator functions.
 """
 
