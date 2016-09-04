@@ -37,4 +37,3 @@ class DummyAction(Action):
         """
 
         log(LOGPREFIX1 + "Dummy Action executed. Nothing happens.", 2)
-

@@ -63,4 +63,3 @@ class ConfigAction(Action):
             self.section + "/" + self.key + ": " + self.value, 2)
 
         return True
-

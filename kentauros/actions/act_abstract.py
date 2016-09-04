@@ -39,4 +39,3 @@ class Action(metaclass=abc.ABCMeta):
         instance on the package specified at initialisation. It is overridden by
         subclasses to contain the real code for the action.
         """
-

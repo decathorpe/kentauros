@@ -94,7 +94,7 @@ class ChainAction(Action):
         ktr = Kentauros()
 
         def print_abort_msg():
-            "This function prints a standard abort message."
+            """This function prints a standard abort message."""
             ktr.log(LOGPREFIX1 + "Sources not updated.", 2)
 
         verified = VerifyAction(self.kpkg, self.force).execute()
@@ -485,4 +485,3 @@ class VerifyAction(Action):
             Kentauros().log(LOGPREFIX1 + "Package could not be verified.", 2)
 
         return True
-

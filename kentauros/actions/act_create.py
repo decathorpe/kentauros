@@ -39,7 +39,6 @@ class CreateAction:
         self.name = name
         self.force = force
 
-
     def execute(self) -> bool:
         """
         This method copies the template package configuration file and template
@@ -87,4 +86,3 @@ class CreateAction:
             conf_template.write(conf_template_dest)
 
         return success
-

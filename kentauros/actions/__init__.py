@@ -47,4 +47,3 @@ ACTION_DICT[ActionType.STATUS] = StatusAction
 ACTION_DICT[ActionType.UPDATE] = UpdateAction
 ACTION_DICT[ActionType.UPLOAD] = UploadAction
 ACTION_DICT[ActionType.VERIFY] = VerifyAction
-
