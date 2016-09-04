@@ -99,8 +99,7 @@ def get_cli_parser_base() -> ArgumentParser:
         "--priconf",
         action="store",
         default=None,
-        help="specify preferred configuration to be used " +
-             "(cli, env, project, user, system, default, fallback)")
+        help="specify preferred configuration to be used")
 
     return cliparser
 
@@ -230,8 +229,7 @@ def get_cli_parser_normal(cliparser: ArgumentParser) -> ArgumentParser:
 
     verify_parser = parsers.add_parser(
         "verify",
-        description="verify that package *.conf and spec " +
-                    "are present and valid",
+        description="verify that package *.conf and spec are present and valid",
         help="verify package conf and spec",
         parents=[package_parser])
     verify_parser.set_defaults(action=ActionType.VERIFY)
