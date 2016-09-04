@@ -21,4 +21,3 @@ CONSTRUCTOR_TYPE_DICT = dict()
 
 CONSTRUCTOR_TYPE_DICT[ConstructorType.NONE] = DummyConstructor
 CONSTRUCTOR_TYPE_DICT[ConstructorType.SRPM] = SrpmConstructor
-

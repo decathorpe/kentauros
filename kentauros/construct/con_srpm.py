@@ -64,10 +64,9 @@ class SrpmConstructor(Constructor):
             subprocess.check_output(["which", "rpmbuild"])
             subprocess.check_output(["which", "rpmdev-bumpspec"])
         except subprocess.CalledProcessError:
-            log(LOGPREFIX1 + \
+            log(LOGPREFIX1 +
                 "Install rpmdevtools to use the specified constructor.")
             self.active = False
-
 
     def init(self):
         """
@@ -101,9 +100,8 @@ class SrpmConstructor(Constructor):
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
-        log(LOGPREFIX1 + \
+        log(LOGPREFIX1 +
             "Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.", 1)
-
 
     def prepare(self, relreset: bool=False, force: bool=False) -> bool:
         """
@@ -179,7 +177,7 @@ class SrpmConstructor(Constructor):
         try:
             old_version = spec_version_read(old_specfile)
         except RPMSpecError:
-            log(LOGPREFIX1 + \
+            log(LOGPREFIX1 +
                 "RPM spec file not valid. Version tag line not found.", 2)
             old_specfile.close()
             new_specfile.close()
@@ -189,7 +187,7 @@ class SrpmConstructor(Constructor):
         try:
             old_release = spec_release_read(old_specfile)
         except RPMSpecError:
-            log(LOGPREFIX1 + \
+            log(LOGPREFIX1 +
                 "RPM spec file not valid. Release tag line not found.", 2)
             old_specfile.close()
             new_specfile.close()
@@ -267,7 +265,6 @@ class SrpmConstructor(Constructor):
 
         return True
 
-
     def build(self):
         """
         This method executes the actual SRPM package assembly. It sets `$HOME`
@@ -302,7 +299,6 @@ class SrpmConstructor(Constructor):
 
         os.environ['HOME'] = old_home
 
-
     def export(self):
         """
         This method copies the assembled source packages from `rpmbuild/SRPMS`
@@ -319,10 +315,8 @@ class SrpmConstructor(Constructor):
             shutil.copy2(srpm, Kentauros().conf.packdir)
             log(LOGPREFIX1 + "File copied: " + srpm, 0)
 
-
     def clean(self):
         if not self.active:
             return None
 
         shutil.rmtree(self.tempdir)
-

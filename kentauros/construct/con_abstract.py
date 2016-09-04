@@ -55,4 +55,3 @@ class Constructor(metaclass=abc.ABCMeta):
         """
         This method cleans up all temporary files and directories.
         """
-

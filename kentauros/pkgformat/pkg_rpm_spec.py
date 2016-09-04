@@ -161,7 +161,7 @@ SPEC_VERSION_DICT[SourceType.GIT] = spec_version_git
 SPEC_VERSION_DICT[SourceType.URL] = spec_version_url
 
 
-def spec_version_read(file_obj: io.IOBase) -> str:
+def spec_version_read(file_obj: io.TextIOWrapper) -> str:
     """
     This function reads and parses an RPM spec file for its "Version" tag.
 
@@ -172,7 +172,7 @@ def spec_version_read(file_obj: io.IOBase) -> str:
         str: version string found on the line containing the "Version:" tag
     """
 
-    assert isinstance(file_obj, io.IOBase)
+    assert isinstance(file_obj, io.TextIOWrapper)
 
     file_obj.seek(0)
     for line in file_obj:
@@ -184,7 +184,7 @@ def spec_version_read(file_obj: io.IOBase) -> str:
     raise RPMSpecError("No Version tag was found in the file.")
 
 
-def spec_release_read(file_obj: io.IOBase) -> str:
+def spec_release_read(file_obj: io.TextIOWrapper) -> str:
     """
     This function reads and parses an RPM spec file for its "Release:" tag.
 
@@ -195,7 +195,7 @@ def spec_release_read(file_obj: io.IOBase) -> str:
         str: release string found on the line containing the "Release:" tag
     """
 
-    assert isinstance(file_obj, io.IOBase)
+    assert isinstance(file_obj, io.TextIOWrapper)
 
     file_obj.seek(0)
     for line in file_obj:
@@ -300,4 +300,3 @@ def spec_bump(specfile: str, comment: str=None):
     subprocess.call(cmd)
 
     # TODO: error handling
-

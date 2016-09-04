@@ -48,4 +48,3 @@ class DummyConstructor(Constructor):
     def clean(self):
         Kentauros().log(LOGPREFIX1 + "Dummy Constructor for package " +
                         self.pkg + " cleaned up. Nothing happens.", 2)
-
