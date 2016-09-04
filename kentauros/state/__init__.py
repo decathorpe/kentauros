@@ -74,7 +74,7 @@ class PackageState(dict):
         self["version"] = str()
         self["release"] = str()
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: 'PackageState') -> bool:
         for key in self:
             if key not in other:
                 return False

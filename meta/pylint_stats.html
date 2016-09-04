@@ -53,6 +53,26 @@
 <td>TODO: error handling</td>
 </tr>
 <tr class="odd">
+<td>convention</td>
+<td>kentauros.init.cli</td>
+<td>&#160;</td>
+<td>103</td>
+<td>0</td>
+<td>Wrong hanging indentation (remove 5 spaces).
+             "(cli, env, project, user, system, default, fallback)")
+        |    ^</td>
+</tr>
+<tr class="even">
+<td>convention</td>
+<td>kentauros.init.cli</td>
+<td>&#160;</td>
+<td>234</td>
+<td>0</td>
+<td>Wrong hanging indentation (remove 12 spaces).
+                    "are present and valid",
+        |           ^</td>
+</tr>
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.actions.acts</td>
 <td>&#160;</td>
@@ -80,25 +100,9 @@
 <td>refactor</td>
 <td>kentauros.construct.con_srpm</td>
 <td>SrpmConstructor.prepare</td>
-<td>108</td>
+<td>106</td>
 <td>4</td>
 <td>Too many statements (66/60)</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.state.__init__</td>
-<td>&#160;</td>
-<td>93</td>
-<td>0</td>
-<td>TODO: public function for getting current release (from spec file)</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.state.__init__</td>
-<td>&#160;</td>
-<td>120</td>
-<td>0</td>
-<td>TODO: get release string from pkgformat</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -107,6 +111,22 @@
 <td>9</td>
 <td>0</td>
 <td>TODO: introduce upl_dummy.py module</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.state.__init__</td>
+<td>&#160;</td>
+<td>93</td>
+<td>0</td>
+<td>TODO: public function for getting current release (from spec file)</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.state.__init__</td>
+<td>&#160;</td>
+<td>120</td>
+<td>0</td>
+<td>TODO: get release string from pkgformat</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -120,7 +140,7 @@
 <td>warning</td>
 <td>kentauros.build.bld_mock</td>
 <td>&#160;</td>
-<td>265</td>
+<td>263</td>
 <td>0</td>
 <td>TODO: export resulting packages to kentauros binary package directory</td>
 </tr>
@@ -133,7 +153,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2000 statements analysed.</p><div>
+<p>2001 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -205,7 +225,7 @@ kentauros
   | \-con_abstract (kentauros.construct.con_srpm)
   | \-con_dummy (kentauros.construct)
   | \-con_srpm (kentauros.construct)
-  \-definitions (kentauros.build)
+  \-definitions (kentauros.config)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
@@ -223,7 +243,7 @@ kentauros
   | \-src_local (kentauros.sources)
   | \-src_url (kentauros.sources)
   \-upload (kentauros.package)
-    \-upl_abstract (kentauros.upload.upl_copr)
+    \-upl_abstract (kentauros.upload)
     \-upl_copr (kentauros.upload)</pre></div>
 <div>
 <h2>Raw metrics</h2>
@@ -238,30 +258,30 @@ kentauros
 <tr class="even">
 <td>code</td>
 <td>2286</td>
-<td>39.60</td>
+<td>39.87</td>
 <td>2286</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
+<td>2081</td>
+<td>36.30</td>
 <td>2086</td>
-<td>36.13</td>
-<td>2086</td>
-<td>=</td>
+<td>-5.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>223</td>
-<td>3.86</td>
-<td>222</td>
-<td>+1.00</td>
+<td>3.89</td>
+<td>223</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
+<td>1143</td>
+<td>19.94</td>
 <td>1178</td>
-<td>20.41</td>
-<td>1178</td>
-<td>=</td>
+<td>-35.00</td>
 </tr>
 </table>
 </div>
@@ -299,9 +319,9 @@ kentauros
 </tr>
 <tr class="even">
 <td>convention</td>
+<td>2</td>
 <td>0</td>
-<td>0</td>
-<td>=</td>
+<td>+2.00</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
@@ -312,8 +332,8 @@ kentauros
 <tr class="even">
 <td>warning</td>
 <td>13</td>
-<td>12</td>
-<td>+1.00</td>
+<td>13</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>error</td>
@@ -396,6 +416,13 @@ kentauros
 <td>100.00</td>
 <td>0.00</td>
 </tr>
+<tr class="odd">
+<td>kentauros.init.cli</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>100.00</td>
+</tr>
 </table>
 </div>
 <div>
@@ -410,6 +437,10 @@ kentauros
 <td>13</td>
 </tr>
 <tr class="odd">
+<td>bad-continuation</td>
+<td>2</td>
+</tr>
+<tr class="even">
 <td>too-many-statements</td>
 <td>1</td>
 </tr>
@@ -417,7 +448,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.93/10 (previous run: 9.94/10, -0.01)</div>
+Your code has been rated at 9.92/10 (previous run: 9.93/10, -0.01)</div>
 </div>
 </body>
 </html>
