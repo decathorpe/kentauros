@@ -43,4 +43,3 @@ def get_env_verby() -> int:
         return int(os.environ.get("KTR_VERBOSITY"))
     else:
         return 2
-

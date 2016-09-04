@@ -99,7 +99,7 @@ def get_cli_parser_base() -> ArgumentParser:
         "--priconf",
         action="store",
         default=None,
-        help="specify preferred configuration to be used " +\
+        help="specify preferred configuration to be used " +
              "(cli, env, project, user, system, default, fallback)")
 
     return cliparser
@@ -230,7 +230,7 @@ def get_cli_parser_normal(cliparser: ArgumentParser) -> ArgumentParser:
 
     verify_parser = parsers.add_parser(
         "verify",
-        description="verify that package *.conf and spec " + \
+        description="verify that package *.conf and spec " +
                     "are present and valid",
         help="verify package conf and spec",
         parents=[package_parser])
@@ -389,15 +389,15 @@ class CLIArgs:
     It also provides simple method calls for getting settings from the parsed
     CLI.
 
-    Attributes:
-        args: permanent (instance-independent) storage of parsed CLI arguments
-              (``None`` at first and set later - at first initialisation)
-
     Arguments:
         InstanceType itype: type of CLI to be created, parsed and stored
     """
 
     args = None
+    """ArgumentParser: This class variable contains the permanent (instance-
+    independent) storage of parsed CLI arguments. It is initially set to `None`
+    and generated at the time of the first class initialisation.
+    """
 
     def __init__(self, itype: InstanceType=InstanceType.NORMAL):
         if self.args is None:
@@ -577,10 +577,6 @@ class CLIArgsConfig(CLIArgs):
     the parsed CLI arguments between class instantiations (in a class variable),
     so the CLI will be parsed only once. It also provides simple method calls
     for getting settings from the parsed CLI.
-
-    Attributes:
-        args: permanent (instance-independent) storage of parsed CLI arguments
-              (``None`` at first and set later - at first initialisation)
     """
 
     def __init__(self, itype: InstanceType=InstanceType.CONFIG):
@@ -644,4 +640,3 @@ their respective :py:class:`CLIArgs` class or subclass constructors.
 CLI_ARGS_DICT[InstanceType.NORMAL] = CLIArgs
 CLI_ARGS_DICT[InstanceType.CREATE] = CLIArgs
 CLI_ARGS_DICT[InstanceType.CONFIG] = CLIArgsConfig
-
