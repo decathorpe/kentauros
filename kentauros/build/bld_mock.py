@@ -150,7 +150,7 @@ class MockBuilder(Builder):
             self.mock_cmd = subprocess.check_output(
                 ["which", "mock"]).decode().rstrip("\n")
         except subprocess.CalledProcessError:
-            log(LOGPREFIX1 + \
+            log(LOGPREFIX1 +
                 "Install mock to use the specified builder.")
             self.active = False
 
@@ -159,7 +159,6 @@ class MockBuilder(Builder):
             Kentauros().log(LOGPREFIX1 +
                             "Something is messing with your $PATH variable.", 2)
             self.mock_cmd = "/usr/bin/mock"
-
 
     def build(self) -> bool:
         """
@@ -252,7 +251,6 @@ class MockBuilder(Builder):
 
         return not build_fail
 
-
     def export(self) -> bool:
         """
         This method copies the build results (if any) from the mock result
@@ -264,4 +262,3 @@ class MockBuilder(Builder):
 
         # TODO: export resulting packages to kentauros binary package directory
         pass
-
