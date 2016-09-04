@@ -44,7 +44,7 @@ def get_env_config() -> KtrConf:
         return None
 
     # if at least basedir has been set, construct KtrConf from CLI switches
-    if env_basedir != None:
+    if env_basedir is not None:
         result = KtrConf(KtrConfType.ENV,
                          basedir=os.path.abspath(env_basedir))
 
@@ -68,7 +68,7 @@ def get_env_config() -> KtrConf:
     if result.validate():
         return result
     else:
-        print(LOGPREFIX1 + \
-            "Not all neccessary config values have been set by env variables.")
+        print(LOGPREFIX1 +
+              "Not all neccessary config values " +
+              "have been set by env variables.")
         return None
-

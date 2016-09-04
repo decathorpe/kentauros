@@ -32,6 +32,7 @@ class ConfigException(Exception):
     def __init__(self, value: str):
         super().__init__()
         self.value = value
+
     def __str__(self):
         return repr(self.value)
 
@@ -77,8 +78,7 @@ class KtrConf:
     Arguments:
         KtrConfType conftype:   type of this configuration (where it was read
                                 from)
-        str basedir:            optional string specifying `basedir` at class
-                                initialisation
+        str basedir:            optional string specifying `basedir`
     """
 
     def __init__(self, conftype: KtrConfType, basedir: str=None):
@@ -104,7 +104,6 @@ class KtrConf:
         self.file = None
         self.conf = None
 
-
     def validate(self) -> bool:
         """
         This method contains a simple and stupid, fast verification that the
@@ -127,7 +126,6 @@ class KtrConf:
             return False
         else:
             return True
-
 
     def succby(self, other):
         """
@@ -156,10 +154,9 @@ class KtrConf:
             self.type = other.type
 
         if not self.validate():
-            print(LOGPREFIX1 + \
-                "Last attempted action was overriding default values.")
+            print(LOGPREFIX1 +
+                  "Last attempted action was overriding default values.")
             raise ConfigException("Error occured during configuration parsing.")
-
 
     def from_file(self, filepath: str, errmsg: str=None):
         """
@@ -230,10 +227,9 @@ class KtrConf:
             self.specdir = os.path.join(self.basedir, "specs")
 
         if not self.validate():
-            print(LOGPREFIX1 + \
-                "Not all neccessary configuration options have been set.")
+            print(LOGPREFIX1 +
+                  "Not all neccessary configuration options have been set.")
             print(LOGPREFIX2 + self.file)
             return None
         else:
             return self
-

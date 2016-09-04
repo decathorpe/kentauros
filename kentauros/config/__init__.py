@@ -100,7 +100,6 @@ def ktr_get_conf(itype: InstanceType) -> KtrConf:
     ktr_confs[KtrConfType.ENV] = get_env_config()
     ktr_confs[KtrConfType.CLI] = get_cli_config(itype)
 
-
     ktr_conf = None
 
     cli_args = CLI_ARGS_DICT[itype]()
@@ -125,4 +124,3 @@ def ktr_get_conf(itype: InstanceType) -> KtrConf:
             ktr_conf.succby(conf)
 
     return ktr_conf
-
