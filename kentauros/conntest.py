@@ -34,4 +34,3 @@ def is_connected(host_url: str) -> bool:
         return False
 
     return True
-

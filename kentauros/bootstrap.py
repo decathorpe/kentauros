@@ -64,4 +64,3 @@ def ktr_bootstrap() -> bool:
             return False
 
     return True
-

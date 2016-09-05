@@ -58,12 +58,9 @@ class Package:
     Attributes:
         ConfigParser conf:          parser for package.conf file
         Source source:              handling of upstream source code
-        Constructor constructor:    handling of building compilable source
-                                    packages
-        Builder builder:            handling of building binary packages from
-                                    source
-        Uploader uploader:          handling of uploading source/binary packages
-                                    to remote location
+        Constructor constructor:    handling of building compilable source packages
+        Builder builder:            handling of building binary packages from source
+        Uploader uploader:          handling of uploading source/binary packages to remote location
 
     Raises:
         PackageError:               error if package.conf file is invalid
@@ -79,7 +76,7 @@ class Package:
         self.conf = ConfigParser()
 
         result = self.conf.read(self.file)
-        if result == []:
+        if not result:
             self.conf = None
             err(LOGPREFIX1 + "Package configuration could not be read.")
             err(LOGPREFIX1 + "Path: " + self.file)
@@ -88,14 +85,12 @@ class Package:
         try:
             self.conf["package"]
         except KeyError:
-            raise PackageError(
-                "Package config file does not have a 'package' section.")
+            raise PackageError("Package config file does not have a 'package' section.")
 
         try:
             self.conf["source"]
         except KeyError:
-            raise PackageError(
-                "Package config file does not have a 'source' section.")
+            raise PackageError("Package config file does not have a 'source' section.")
 
         bld_type, con_type, src_type, upl_type = "", "", "", ""
 
@@ -131,15 +126,10 @@ class Package:
             if upl_type == "":
                 upl_type = "NONE"
 
-        self.source = SOURCE_TYPE_DICT[
-            SourceType[src_type]](self)
-        self.constructor = CONSTRUCTOR_TYPE_DICT[
-            ConstructorType[con_type]](self)
-        self.builder = BUILDER_TYPE_DICT[
-            BuilderType[bld_type]](self)
-        self.uploader = UPLOADER_TYPE_DICT[
-            UploaderType[upl_type]](self)
-
+        self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self)
+        self.constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self)
+        self.builder = BUILDER_TYPE_DICT[BuilderType[bld_type]](self)
+        self.uploader = UPLOADER_TYPE_DICT[UploaderType[upl_type]](self)
 
     def update_config(self):
         """
@@ -154,4 +144,3 @@ class Package:
         except OSError:
             err(LOGPREFIX1 + "Package configuration file could not be written.")
             err(LOGPREFIX1 + "Path: " + self.file)
-

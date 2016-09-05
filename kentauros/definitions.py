@@ -156,4 +156,3 @@ class UploaderType(Enum):
     NONE = 0
     DUMMY = 1
     COPR = 2
-
