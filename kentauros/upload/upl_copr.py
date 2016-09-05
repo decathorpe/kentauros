@@ -47,12 +47,10 @@ class CoprUploader(Uploader):
         try:
             subprocess.check_output(["which", "copr-cli"])
         except subprocess.CalledProcessError:
-            log(LOGPREFIX1 + \
-                "Install copr-cli to use the specified uploader.")
+            log(LOGPREFIX1 + "Install copr-cli to use the specified uploader.")
             self.active = False
 
         self.remote = "https://copr.fedorainfracloud.org"
-
 
     def upload(self) -> bool:
         """
@@ -73,9 +71,8 @@ class CoprUploader(Uploader):
         srpms = glob.glob(os.path.join(Kentauros().conf.packdir,
                                        self.upkg.name + "*.src.rpm"))
 
-        if srpms == []:
-            log(LOGPREFIX1 + \
-                "No source packages were found. Construct them first.", 2)
+        if not srpms:
+            log(LOGPREFIX1 + "No source packages were found. Construct them first.", 2)
             return False
 
         # figure out which srpm to build
@@ -124,4 +121,3 @@ class CoprUploader(Uploader):
             os.remove(srpm)
 
         return True
-
