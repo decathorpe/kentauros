@@ -13,25 +13,15 @@ from kentauros.definitions import ActionType, KtrConfType, InstanceType
 
 def get_cli_parser_base() -> ArgumentParser:
     """
-    This function constructs and returns a basic parser for command line
-    arguments, which will be further processed and added to by other functions.
+    This function constructs and returns a basic parser for command line arguments, which will be
+    further processed and added to by other functions.
 
     The arguments parsed by this basic parser include:
 
-    * ``--debug`` (``-d``) switch to enable debug messages in kentauros and for
-      subprocesses
-    * ``--verbose`` (``-v``, ``-vv``) switch to control how many informational
-      messages will be printed (twice for extra verbosity)
-    * ``--basedir=BASEDIR`` argument to set base directory for kentauros files
-      (optional)
-    * ``--confdir=CONFDIR`` argument for directly specifying the directory which
-      contains package configuration files (optional)
-    * ``--datadir=DATADIR`` argument for directly specifying the directory which
-      contains package sources (optional)
-    * ``--packdir=PACKDIR`` argument for directly specifying the directory which
-      contains constructed buildable pre-packages (optional)
-    * ``--specdir=SPECDIR`` argument for directly specifying the directory which
-      contains instructions for building binaries from source (optional)
+    * ``--debug`` (``-d``) switch to enable debug messages in kentauros and for subprocesses
+    * ``--verbose`` (``-v``, ``-vv``) switch to control how many informational messages will be
+      printed (twice for extra verbosity)
+    * ``--basedir=BASEDIR`` argument to set base directory for kentauros files (optional)
 
     Returns:
         ArgumentParser: basic CLI argument parser
@@ -65,41 +55,6 @@ def get_cli_parser_base() -> ArgumentParser:
         action="store",
         default=None,
         help="specify base directory for kentauros data")
-
-    # --confdir switch
-    cliparser.add_argument(
-        "--confdir",
-        action="store",
-        default=None,
-        help="specify configuration directory to be used")
-
-    # --datadir switch
-    cliparser.add_argument(
-        "--datadir",
-        action="store",
-        default=None,
-        help="specify source directory to be used")
-
-    # --packdir switch
-    cliparser.add_argument(
-        "--packdir",
-        action="store",
-        default=None,
-        help="specify .src.rpm directory to be used")
-
-    # --specdir switch
-    cliparser.add_argument(
-        "--specdir",
-        action="store",
-        default=None,
-        help="specify rpm .spec directory to be used")
-
-    # --priconf switch
-    cliparser.add_argument(
-        "--priconf",
-        action="store",
-        default=None,
-        help="specify preferred configuration to be used")
 
     return cliparser
 
@@ -253,8 +208,7 @@ def get_cli_parser_config(cliparser: ArgumentParser) -> ArgumentParser:
     * ``--value`` (``-V``) argument to specify the value to be written
 
     Arguments:
-        ArgumentParser cliparser: basic argument parser got from
-                                           :py:func:`get_cli_parser_base()`
+        ArgumentParser cliparser: basic argument parser got from :py:func:`get_cli_parser_base()`
 
     Returns:
         ArgumentParser: CLI argument parser for ``ktr-config`` script
@@ -458,58 +412,6 @@ class CLIArgs:
         """
 
         return self.args.basedir
-
-    def get_ktr_confdir(self) -> str:
-        """
-        This method returns kentauros CONFDIR specified by CLI argument.
-
-        Returns:
-            str:  specified CONFDIR
-
-        Returns:
-            None: no CONFDIR specified
-        """
-
-        return self.args.confdir
-
-    def get_ktr_datadir(self) -> str:
-        """
-        This method returns kentauros DATADIR specified by CLI argument.
-
-        Returns:
-            str:  specified DATADIR
-
-        Returns:
-            None: no DATADIR specified
-        """
-
-        return self.args.datadir
-
-    def get_ktr_packdir(self) -> str:
-        """
-        This method returns kentauros PACKDIR specified by CLI argument.
-
-        Returns:
-            str:  specified PACKDIR
-
-        Returns:
-            None: no PACKDIR specified
-        """
-
-        return self.args.packdir
-
-    def get_ktr_specdir(self) -> str:
-        """
-        This method returns kentauros SPECDIR specified by CLI argument.
-
-        Returns:
-            str:  specified SPECDIR
-
-        Returns:
-            None: no SPECDIR specified
-        """
-
-        return self.args.specdir
 
     def get_action(self) -> ActionType:
         """

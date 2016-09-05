@@ -25,13 +25,7 @@ def get_fallback_config() -> KtrConf:
         KtrConf: fallback settings
     """
 
-    result = KtrConf(KtrConfType.FALLBACK,
-                     basedir=os.path.abspath("./"))
-
-    result.confdir = os.path.join(result.basedir, "./")
-    result.datadir = os.path.join(result.basedir, "./")
-    result.packdir = os.path.join(result.basedir, "./")
-    result.specdir = os.path.join(result.basedir, "./")
+    result = KtrConf(KtrConfType.FALLBACK, basedir=os.path.abspath("./"))
 
     if result.validate():
         return result

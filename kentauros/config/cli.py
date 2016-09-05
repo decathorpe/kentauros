@@ -13,7 +13,7 @@ import os
 from kentauros.definitions import KtrConfType, InstanceType
 
 from kentauros.config.common import KtrConf
-from kentauros.init.cli import CLI_ARGS_DICT
+from kentauros.init.cli import CLI_ARGS_DICT, CLIArgs
 
 
 LOGPREFIX1 = "ktr/config/cli: "
@@ -34,36 +34,13 @@ def get_cli_config(itype: InstanceType) -> KtrConf:
     assert isinstance(itype, InstanceType)
 
     cli_args = CLI_ARGS_DICT[itype]()
+    assert isinstance(cli_args, CLIArgs)
 
     # if no settings were set at command line, return None
-    if (cli_args.get_ktr_basedir() is None) and \
-       (cli_args.get_ktr_confdir() is None) and \
-       (cli_args.get_ktr_datadir() is None) and \
-       (cli_args.get_ktr_packdir() is None) and \
-       (cli_args.get_ktr_specdir() is None):
+    if cli_args.get_ktr_basedir() is None:
         return None
 
-    # if at least basedir has been set, construct KtrConf from CLI switches
-    if cli_args.get_ktr_basedir() is not None:
-        result = KtrConf(KtrConfType.CLI,
-                         basedir=os.path.abspath(cli_args.get_ktr_basedir()))
-
-        if cli_args.get_ktr_confdir() is not None:
-            result.confdir = os.path.abspath(cli_args.get_ktr_confdir())
-        if cli_args.get_ktr_datadir() is not None:
-            result.datadir = os.path.abspath(cli_args.get_ktr_datadir())
-        if cli_args.get_ktr_packdir() is not None:
-            result.packdir = os.path.abspath(cli_args.get_ktr_packdir())
-        if cli_args.get_ktr_specdir() is not None:
-            result.specdir = os.path.abspath(cli_args.get_ktr_specdir())
-
-    # basedir not set: all other dirs must be specified
-    else:
-        result = KtrConf(KtrConfType.CLI)
-        result.confdir = os.path.abspath(cli_args.get_ktr_confdir())
-        result.datadir = os.path.abspath(cli_args.get_ktr_datadir())
-        result.packdir = os.path.abspath(cli_args.get_ktr_packdir())
-        result.specdir = os.path.abspath(cli_args.get_ktr_specdir())
+    result = KtrConf(KtrConfType.CLI, basedir=os.path.abspath(cli_args.get_ktr_basedir()))
 
     if result.validate():
         return result

@@ -30,45 +30,21 @@ def get_env_config() -> KtrConf:
     """
 
     env_basedir = os.environ.get("KTR_BASE_DIR")
-    env_confdir = os.environ.get("KTR_CONF_DIR")
-    env_datadir = os.environ.get("KTR_DATA_DIR")
-    env_packdir = os.environ.get("KTR_PACK_DIR")
-    env_specdir = os.environ.get("KTR_SPEC_DIR")
 
     # if no settings were set by env variables, return None
-    if (env_basedir is None) and \
-       (env_confdir is None) and \
-       (env_datadir is None) and \
-       (env_packdir is None) and \
-       (env_specdir is None):
+    if env_basedir is None:
         return None
 
     # if at least basedir has been set, construct KtrConf from CLI switches
+    result = None
     if env_basedir is not None:
-        result = KtrConf(KtrConfType.ENV,
-                         basedir=os.path.abspath(env_basedir))
+        result = KtrConf(KtrConfType.ENV, basedir=os.path.abspath(env_basedir))
 
-        if env_confdir is not None:
-            result.confdir = os.path.abspath(env_confdir)
-        if env_datadir is not None:
-            result.datadir = os.path.abspath(env_datadir)
-        if env_packdir is not None:
-            result.packdir = os.path.abspath(env_packdir)
-        if env_specdir is not None:
-            result.specdir = os.path.abspath(env_specdir)
-
-    # basedir not set: all other dirs must be specified
-    else:
-        result = KtrConf(KtrConfType.ENV)
-        result.confdir = os.path.abspath(env_confdir)
-        result.datadir = os.path.abspath(env_datadir)
-        result.packdir = os.path.abspath(env_packdir)
-        result.specdir = os.path.abspath(env_specdir)
+    if result is None:
+        return None
 
     if result.validate():
         return result
     else:
-        print(LOGPREFIX1 +
-              "Not all neccessary config values " +
-              "have been set by env variables.")
+        print(LOGPREFIX1 + "Something went wrong during configuration parsing.")
         return None

@@ -49,10 +49,8 @@ class Kentauros:
     def __getattr__(self, attr: str):
         return self.saved_state.__getitem__(attr)
 
-
     def __setattr__(self, attr: str, val):
         self.saved_state.__setitem__(attr, val)
-
 
     def __init__(self, itype: InstanceType=InstanceType.NORMAL):
         assert isinstance(itype, InstanceType)
@@ -71,7 +69,6 @@ class Kentauros:
         if "conf" not in self.saved_state:
             self.conf = ktr_get_conf(itype)
 
-
     def dbg(self, msg: str):
         """
         This method prints messages with a "DEBUG: " prefix to stdout, but
@@ -85,7 +82,6 @@ class Kentauros:
         if self.debug:
             print("DEBUG: " + str(msg))
 
-
     def err(self, msg: str):
         """
         This method prints messages with an "ERROR: " prefix to standard error
@@ -96,7 +92,6 @@ class Kentauros:
         """
 
         self.log("ERROR: " + msg, 2, sys.stderr)
-
 
     def log(self, msg: str, pri: int=2, outfile=sys.stdout):
         """
@@ -120,7 +115,6 @@ class Kentauros:
         if (pri >= self.verby) or self.debug:
             print(msg, file=outfile)
 
-
     def log_command(self, prefix1: str, basename: str,
                     cmdlist: list, pri: int=2):
         """
@@ -132,8 +126,7 @@ class Kentauros:
         Arguments:
             str prefix1:    module-wide prefix string
             str basename:   command base name
-            list cmdlist:   list of strings, as passed to :py:mod:``subprocess``
-                            functions
+            list cmdlist:   list of strings, as passed to :py:mod:``subprocess`` functions
             int pri:        message priority (0-2, where 0 is lowest and 2 is
                             highest)
         """
@@ -142,6 +135,7 @@ class Kentauros:
         prefix2 = " " * len(prefix1)
 
         for cmd in cmdlist:
+            assert isinstance(cmd, str)
             cmdstr += (cmd + " ")
 
         self.log(prefix1 + basename + " command:", pri)
@@ -205,8 +199,7 @@ def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):
     Arguments:
         str prefix1:  module-wide prefix string
         str basename: command base name
-        list cmdlist: list of strings, as passed to :py:mod:``subprocess``
-                      functions
+        list cmdlist: list of strings, as passed to :py:mod:``subprocess`` functions
         int pri:      message priority (0-2, where 0 is lowest and 2 is highest)
     """
 
@@ -214,8 +207,8 @@ def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):
     prefix2 = " " * len(prefix1)
 
     for cmd in cmdlist:
+        assert isinstance(cmd, str)
         cmdstr += (cmd + " ")
 
     log(prefix1 + basename + " command:", pri)
     log(prefix2 + cmdstr, pri)
-

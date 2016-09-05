@@ -45,6 +45,8 @@ def __replace_home__(string: str) -> str:
 
     if "$HOME" in string:
         return string.replace("$HOME", home)
+    elif "$(HOME)" in string:
+        return string.replace("$(HOME)", home)
     elif "~" in string:
         return string.replace("~", home)
     else:
@@ -60,49 +62,91 @@ class KtrConf:
 
     - system-wide default configuration, installed with kentauros:
       `/usr/share/kentauros/default.conf`
-    - system-wide custom configuration, created by the user:
-      `/etc/kentaurosrc`
+    - system-wide custom configuration, created by the user: `/etc/kentaurosrc`
     - user-wide configuration: `$HOME/.config/kentaurosrc`
     - project-specific configuration: `./kentaurosrc`
-    - environment variables: `KTR_BASEDIR`, `KTR_CONFDIR`, etc.
-    - command-line switches: `--basedir=BASEDIR`, etc.
+    - environment variables: `KTR_BASEDIR`
+    - command-line switches: `--basedir=BASEDIR`
 
-    The settings stored in attributes of this class include:
+    At the moment, the settings stored in attributes of this class include:
 
-    - location of kentauros base directory (`basedir`)
-    - location of package configuration directory (`confdir`)
-    - location of package source directories (`datadir`)
-    - location of package specification directory (`specdir`)
-    - location of directory containing built packages (`packdir`)
+    - the location of kentauros base directory (`basedir`)
 
     Arguments:
-        KtrConfType conftype:   type of this configuration (where it was read
-                                from)
+        KtrConfType conftype:   type of this configuration (where it was read from)
         str basedir:            optional string specifying `basedir`
     """
 
     def __init__(self, conftype: KtrConfType, basedir: str=None):
         assert isinstance(conftype, KtrConfType)
 
-        if basedir is None:
-            self.basedir = None
-            self.confdir = None
-            self.datadir = None
-            self.packdir = None
-            self.specdir = None
-
-        else:
-            self.basedir = basedir
-            self.confdir = os.path.join(self.basedir, "configs")
-            self.datadir = os.path.join(self.basedir, "sources")
-            self.packdir = os.path.join(self.basedir, "packages")
-            self.specdir = os.path.join(self.basedir, "specs")
-
+        self.basedir = os.path.abspath(__replace_home__(basedir))
         self.type = conftype
 
         # if values are read from config file, remember where from
         self.file = None
         self.conf = None
+
+    def get_basedir(self):
+        """
+        This method returns the kentauros basedir.
+
+        Returns:
+            str:    base directory
+        """
+        return self.basedir
+
+    def get_confdir(self):
+        """
+        This method returns the kentauros directory for config files.
+
+        Returns:
+            str:    config directory
+        """
+
+        if self.basedir is None:
+            return None
+        else:
+            return os.path.join(self.basedir, "configs")
+
+    def get_datadir(self):
+        """
+        This method returns the kentauros directory for sources.
+
+        Returns:
+            str:    source directory
+        """
+
+        if self.basedir is None:
+            return None
+        else:
+            return os.path.join(self.basedir, "sources")
+
+    def get_packdir(self):
+        """
+        This method returns the kentauros directory for source packages.
+
+        Returns:
+            str:    source package directory
+        """
+
+        if self.basedir is None:
+            return None
+        else:
+            return os.path.join(self.basedir, "packages")
+
+    def get_specdir(self):
+        """
+        This method returns the kentauros directory for package specs.
+
+        Returns:
+            str:    package spec directory
+        """
+
+        if self.basedir is None:
+            return None
+        else:
+            return os.path.join(self.basedir, "specs")
 
     def validate(self) -> bool:
         """
@@ -113,16 +157,13 @@ class KtrConf:
             bool: `True` if a basic test is passed, `False` if not
         """
 
-        # basedir does not have to be checked, because:
-        # - it is either set at initialisation and
-        #   defines all other values, or
-        # - it is not set at initialisation and
-        #   all other values have been defined manually
+        if self.get_basedir() is None:
+            return False
 
-        if (self.confdir is None) or \
-           (self.datadir is None) or \
-           (self.packdir is None) or \
-           (self.specdir is None):
+        if (self.get_confdir() is None) or \
+           (self.get_datadir() is None) or \
+           (self.get_packdir() is None) or \
+           (self.get_specdir() is None):
             return False
         else:
             return True
@@ -146,16 +187,11 @@ class KtrConf:
         # if basedir is not set: all other values have been explicitly set,
         # so override all of them
         if other.validate():
-            self.basedir = __replace_home__(other.basedir)
-            self.confdir = other.confdir
-            self.datadir = other.datadir
-            self.packdir = other.packdir
-            self.specdir = other.specdir
+            self.basedir = other.basedir
             self.type = other.type
 
         if not self.validate():
-            print(LOGPREFIX1 +
-                  "Last attempted action was overriding default values.")
+            print(LOGPREFIX1 + "Last attempted action was overriding default values.")
             raise ConfigException("Error occured during configuration parsing.")
 
     def from_file(self, filepath: str, errmsg: str=None):
@@ -194,42 +230,70 @@ class KtrConf:
             return None
 
         try:
-            self.basedir = os.path.abspath(
-                __replace_home__(self.conf.get("main", "basedir")))
+            self.basedir = os.path.abspath(__replace_home__(self.conf.get("main", "basedir")))
         except NoOptionError:
             self.basedir = None
         finally:
             if self.basedir == "":
                 self.basedir = None
 
-        if "confdir" in self.conf.options("main"):
-            self.confdir = os.path.abspath(
-                __replace_home__(self.conf.get("main", "confdir")))
-        else:
-            self.confdir = os.path.join(self.basedir, "configs")
-
-        if "datadir" in self.conf.options("main"):
-            self.datadir = os.path.abspath(
-                __replace_home__(self.conf.get("main", "datadir")))
-        else:
-            self.datadir = os.path.join(self.basedir, "sources")
-
-        if "packdir" in self.conf.options("main"):
-            self.packdir = os.path.abspath(
-                __replace_home__(self.conf.get("main", "packdir")))
-        else:
-            self.packdir = os.path.join(self.basedir, "packages")
-
-        if "specdir" in self.conf.options("main"):
-            self.specdir = os.path.abspath(
-                __replace_home__(self.conf.get("main", "specdir")))
-        else:
-            self.specdir = os.path.join(self.basedir, "specs")
-
         if not self.validate():
-            print(LOGPREFIX1 +
-                  "Not all neccessary configuration options have been set.")
+            print(LOGPREFIX1 + "Not all neccessary configuration options have been set.")
             print(LOGPREFIX2 + self.file)
             return None
         else:
             return self
+
+
+def ktr_conf_from_file(conftype: KtrConfType, filepath: str, errmsg: str=None) -> KtrConf:
+    """
+    This factory method is used to create a :py:class:`KtrConf` instance with values that are read
+    from an `ini`-style configuration file and store the results in the instance's attributes.
+
+    It also stores the :py:class:`ConfigParser` object and file path, in
+    case they are needed later.
+
+    Arguments:
+        KtrConfType conftype:   type of configuration
+        str filepath:           path to configuration file
+        str errmsg:             error message that will be printed in case the file is not found
+
+    Returns:
+        KtrConf:                resulting configuration object
+    """
+
+    if not os.path.exists(filepath):
+        if get_env_debug():
+            print(LOGPREFIX1 + errmsg)
+        return None
+
+    config = ConfigParser()
+
+    successful = config.read(filepath)
+    if not successful:
+        if errmsg:
+            print(LOGPREFIX1 + errmsg)
+            return None
+
+    if "main" not in config.sections():
+        print(LOGPREFIX1 + "Configuration file invalid (no 'main' section).")
+        print(LOGPREFIX2 + filepath)
+        return None
+
+    basedir = None
+
+    try:
+        basedir = config.get("main", "basedir")
+    except NoOptionError:
+        return None
+    finally:
+        if basedir == "":
+            basedir = None
+
+    result = KtrConf(conftype=conftype, basedir=basedir)
+
+    if not result.validate():
+        print(LOGPREFIX1 + "Something went wrong during configuration verification.")
+        return None
+    else:
+        return result
