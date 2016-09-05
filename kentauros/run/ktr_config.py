@@ -82,4 +82,3 @@ def run_config():
             log(LOGPREFIX1 + name + ": Not successful.")
 
     print()
-

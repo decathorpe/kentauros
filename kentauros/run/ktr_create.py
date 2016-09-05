@@ -72,4 +72,3 @@ def run_create():
             log(LOGPREFIX1 + name + ": Not successful.")
 
     print()
-

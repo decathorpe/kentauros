@@ -6,7 +6,7 @@ only includes the :py:func:`get_action_args` function.
 
 from kentauros.definitions import ActionType
 
-from kentauros.init.cli import CLIArgs
+from kentauros.init.cli import CLIArgs, CLIArgsConfig
 from kentauros.package import Package
 
 
@@ -45,6 +45,7 @@ def get_action_args(cli_args: CLIArgs,
     action_args_dict[ActionType.VERIFY] = (cli_args.get_force(),)
 
     if action_type_enum == ActionType.CONFIG:
+        assert isinstance(cli_args, CLIArgsConfig)
         action_args_dict[ActionType.CONFIG] = (cli_args.get_force(),
                                                cli_args.get_config_section(),
                                                cli_args.get_config_key(),
@@ -56,4 +57,3 @@ def get_action_args(cli_args: CLIArgs,
         return (pkgname,) + action_args_dict[ActionType.CREATE]
     else:
         return (Package(pkgname),) + action_args_dict[action_type_enum]
-
