@@ -15,4 +15,3 @@ sys.path.insert(0, os.getcwd())
 from kentauros.run.ktr import run
 
 run()
-

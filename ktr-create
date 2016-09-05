@@ -17,4 +17,3 @@ sys.path.insert(0, os.getcwd())
 from kentauros.run.ktr_create import run_create
 
 run_create()
-

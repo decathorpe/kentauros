@@ -8,4 +8,3 @@ pushd docs
 make clean
 make html
 popd
-

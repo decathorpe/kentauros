@@ -18,4 +18,3 @@ mv *.rpm $HOME/
 
 cd $HOME
 rm -r rpmbuild
-
