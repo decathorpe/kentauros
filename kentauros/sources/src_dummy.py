@@ -63,4 +63,3 @@ class DummySource(Source):
         Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
                         self.spkg + " refreshed. Nothing happens.", 2)
         return True
-

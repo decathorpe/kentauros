@@ -72,8 +72,7 @@ class UrlSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.spkg.conf.get("source", "orig")):
-            log("No connection to remote host detected. " + \
-                "Cancelling source checkout.", 2)
+            log("No connection to remote host detected. Cancelling source download.", 2)
             return False
 
         # construct wget commands
@@ -101,4 +100,3 @@ class UrlSource(Source):
 
     def export(self) -> bool:
         return True
-

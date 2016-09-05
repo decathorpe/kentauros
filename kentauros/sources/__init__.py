@@ -26,4 +26,3 @@ SOURCE_TYPE_DICT[SourceType.BZR] = BzrSource
 SOURCE_TYPE_DICT[SourceType.GIT] = GitSource
 SOURCE_TYPE_DICT[SourceType.LOCAL] = LocalSource
 SOURCE_TYPE_DICT[SourceType.URL] = UrlSource
-

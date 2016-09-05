@@ -28,11 +28,9 @@ class Source(metaclass=abc.ABCMeta):
 
     Attributes:
         str name:           package name
-        str sdir:           source directory of the package this source belongs
-                            to
+        str sdir:           source directory of the package this source belongs to
         str dest:           destination path when downloading / copying sources
-        str orig:           origin of the source, as specified in the package
-                            configuration file
+        str orig:           origin of the source, as specified in the package configuration file
         bool keep:          determines wheather sources are kept between actions
         ConfigParser conf:  package configuration object
         Package package:    mother package
@@ -148,4 +146,3 @@ class Source(metaclass=abc.ABCMeta):
         self.clean()
         success = self.get()
         return success
-

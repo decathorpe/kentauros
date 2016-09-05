@@ -65,4 +65,3 @@ class LocalSource(Source):
 
     def update(self) -> bool:
         return True
-

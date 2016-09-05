@@ -137,8 +137,7 @@ class BzrSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            log("No connection to remote host detected. " + \
-                "Cancelling source checkout.", 2)
+            log("No connection to remote host detected. Cancelling source checkout.", 2)
             return False
 
         # construct bzr command
@@ -154,8 +153,7 @@ class BzrSource(Source):
         if not self.conf.get("bzr", "branch"):
             cmd.append(self.conf.get("source", "orig"))
         else:
-            cmd.append(self.conf.get("source", "orig") + "/" + \
-                       self.conf.get("bzr", "branch"))
+            cmd.append(self.conf.get("source", "orig") + "/" + self.conf.get("bzr", "branch"))
 
         # set revision is specified
         if self.conf.get("bzr", "rev"):
@@ -175,8 +173,7 @@ class BzrSource(Source):
         # check if checkout worked
         if self.conf.get("bzr", "rev"):
             if self.conf.get("bzr", "rev") != rev:
-                err(LOGPREFIX1 + \
-                    "Something went wrong, requested commit not available.")
+                err(LOGPREFIX1 + "Something went wrong, requested commit not available.")
                 return False
 
         # return True if successful
@@ -184,9 +181,9 @@ class BzrSource(Source):
 
     def update(self) -> bool:
         """
-        This method executes a bzr repository update as specified in the package
-        configuration file. If a specific revision has been set in the config
-        file, this method will not attempt to execute an update.
+        This method executes a bzr repository update as specified in the package configuration file.
+        If a specific revision has been set in the config file, this method will not attempt to
+        execute an update.
 
         Returns:
             bool: `True` if update available and successful, `False` otherwise
@@ -203,8 +200,7 @@ class BzrSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            log("No connection to remote host detected. " + \
-                "Cancelling source checkout.", 2)
+            log("No connection to remote host detected. Cancelling source checkout.", 2)
             return False
 
         # construct bzr command
@@ -218,8 +214,7 @@ class BzrSource(Source):
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            err(LOGPREFIX1 + \
-                "Sources need to be .get() before .update() can be run.")
+            err(LOGPREFIX1 + "Sources need to be .get() before .update() can be run.")
             return None
 
         # get old commit ID
@@ -259,13 +254,13 @@ class BzrSource(Source):
         ktr = Kentauros()
 
         def remove_notkeep():
-            "local function for removing bzr repo after export if not keep"
+            """local function for removing bzr repo after export "if not keep" """
             if not self.conf.getboolean("bzr", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
                 assert ktr.conf.datadir in self.dest
                 shutil.rmtree(self.dest)
-                log(LOGPREFIX1 + "bzr repo deleted after export to tarball", 1)
+                log(LOGPREFIX1 + "bzr repository deleted after export to tarball", 1)
 
         # construct bzr command
         cmd = ["bzr", "export"]
@@ -283,16 +278,13 @@ class BzrSource(Source):
 
         # check if bzr repo exists
         if not os.access(self.dest, os.R_OK):
-            err(LOGPREFIX1 + \
-                "Sources need to be get before they can be exported.")
+            err(LOGPREFIX1 + "Sources need to be get before they can be exported.")
             return False
 
         version = self.formatver()
         name_version = self.name + "-" + version
 
-        file_name = os.path.join(ktr.conf.datadir,
-                                 self.name,
-                                 name_version + ".tar.gz")
+        file_name = os.path.join(ktr.conf.datadir, self.name, name_version + ".tar.gz")
 
         cmd.append(file_name)
 

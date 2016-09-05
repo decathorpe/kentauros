@@ -71,7 +71,6 @@ class GitSource(Source):
         self.saved_rev = None
         self.saved_date = None
 
-
     def date(self) -> str:
         """
         This method provides an easy way of getting the date and time of the
@@ -87,7 +86,7 @@ class GitSource(Source):
             return None
 
         def prepend_zero(string):
-            "This local function prepends '0' to one-digit time value strings."
+            """This local function prepends '0' to one-digit time value strings."""
             if len(string) == 1:
                 return "0" + string
             else:
@@ -126,7 +125,6 @@ class GitSource(Source):
         self.saved_date = date
         return date
 
-
     def rev(self) -> str:
         """
         This method provides an easy way of getting the commit hash of the
@@ -160,7 +158,6 @@ class GitSource(Source):
         self.saved_rev = rev
         return rev
 
-
     def formatver(self) -> str:
         """
         This method assembles a standardised version string for git sources.
@@ -187,7 +184,6 @@ class GitSource(Source):
         ver += self.rev()[0:8]
 
         return ver
-
 
     def get(self) -> bool:
         """
@@ -217,8 +213,7 @@ class GitSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.conf.get("source", "orig")):
-            log("No connection to remote host detected. " +
-                "Cancelling source checkout.", 2)
+            log("No connection to remote host detected. Cancelling source checkout.", 2)
             return False
 
         # construct git commands
@@ -276,13 +271,11 @@ class GitSource(Source):
         # check if checkout worked
         if self.conf.get("git", "commit"):
             if self.conf.get("git", "commit") != rev:
-                err(LOGPREFIX1 + \
-                    "Something went wrong, requested commit not in repo.")
+                err(LOGPREFIX1 + "Something went wrong, requested commit not in repo.")
                 return False
 
         # return True if successful
         return True
-
 
     def update(self) -> bool:
         """
@@ -305,12 +298,11 @@ class GitSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.conf.get("source", "orig")):
-            log("No connection to remote host detected. " + \
-                "Cancelling source update.", 2)
+            log("No connection to remote host detected. Cancelling source update.", 2)
             return False
 
         # construct git command
-        cmd = ["git"]
+        cmd = list("git")
 
         cmd.append("pull")
         cmd.append("--rebase")
@@ -323,8 +315,7 @@ class GitSource(Source):
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            err(LOGPREFIX1 +
-                "Sources need to be get before an update can be run.")
+            err(LOGPREFIX1 + "Sources need to be get before an update can be run.")
             return False
 
         # get old commit ID
@@ -347,7 +338,6 @@ class GitSource(Source):
 
         # return True if update found, False if not
         return rev_new != rev_old
-
 
     def export(self) -> bool:
         """
@@ -376,12 +366,10 @@ class GitSource(Source):
                 assert os.path.isabs(self.dest)
                 assert ktr.conf.datadir in self.dest
                 shutil.rmtree(self.dest)
-                log(LOGPREFIX1 +
-                    "git repository has been deleted " +
-                    "after exporting to tarball.", 1)
+                log(LOGPREFIX1 + "git repository has been deleted after exporting to tarball.", 1)
 
         # construct git command
-        cmd = ["git"]
+        cmd = list("git")
 
         cmd.append("archive")
 
@@ -397,8 +385,7 @@ class GitSource(Source):
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
-            err(LOGPREFIX1 + \
-                "Sources need to be get before they can be exported.")
+            err(LOGPREFIX1 + "Sources need to be get before they can be exported.")
             return False
 
         version = self.formatver()
@@ -440,4 +427,3 @@ class GitSource(Source):
 
         os.chdir(prevdir)
         return True
-
