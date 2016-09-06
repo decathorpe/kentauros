@@ -68,7 +68,6 @@ class ActionType(Enum):
 
     NONE = 0
     DUMMY = 1
-    CREATE = 10
     STATUS = 11
     VERIFY = 13
     GET = 20
@@ -122,7 +121,6 @@ class InstanceType(Enum):
     """
 
     NORMAL = 0
-    CREATE = 2
 
 
 @unique

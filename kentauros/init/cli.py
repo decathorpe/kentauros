@@ -192,43 +192,6 @@ def get_cli_parser_normal(cliparser: ArgumentParser) -> ArgumentParser:
     return cliparser
 
 
-def get_cli_parser_create(cliparser: ArgumentParser) -> ArgumentParser:
-    """
-    This function constructs and returns a parser for command line arguments,
-    which is used when creating a new package from template (not used yet).
-
-    The arguments parsed by this parser include those from the basic parser,
-    and, additionally:
-
-    * package name(s) to specify which packages to create
-    * ``--force`` (``-f``) switch to force action
-
-    Arguments:
-        ArgumentParser cliparser: basic argument parser got from
-                                  :py:func:`get_cli_parser_base()`
-
-    Returns:
-        ArgumentParser: CLI argument parser for ``ktr-create`` script
-    """
-
-    assert isinstance(cliparser, ArgumentParser)
-
-    cliparser.add_argument(
-        "package",
-        action="store",
-        nargs="*",
-        help="package name")
-    cliparser.set_defaults(action=ActionType.CREATE)
-    cliparser.add_argument(
-        "-f", "--force",
-        action="store_const",
-        const=True,
-        default=False,
-        help="force actions, even if no updates were available")
-
-    return cliparser
-
-
 def get_cli_parser(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
     """
     This function returns a parser for command line arguments with certain
@@ -248,7 +211,6 @@ def get_cli_parser(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
 
     parser_dict = dict()
     parser_dict[InstanceType.NORMAL] = get_cli_parser_normal
-    parser_dict[InstanceType.CREATE] = get_cli_parser_create
 
     cliparser = parser_dict[itype](get_cli_parser_base())
 
@@ -419,4 +381,3 @@ their respective :py:class:`CLIArgs` class or subclass constructors.
 """
 
 CLI_ARGS_DICT[InstanceType.NORMAL] = CLIArgs
-CLI_ARGS_DICT[InstanceType.CREATE] = CLIArgs

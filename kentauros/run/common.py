@@ -44,9 +44,4 @@ def get_action_args(cli_args: CLIArgs,
     action_args_dict[ActionType.UPLOAD] = (cli_args.get_force(),)
     action_args_dict[ActionType.VERIFY] = (cli_args.get_force(),)
 
-    action_args_dict[ActionType.CREATE] = (cli_args.get_force(),)
-
-    if action_type_enum == ActionType.CREATE:
-        return (pkgname,) + action_args_dict[ActionType.CREATE]
-    else:
-        return (Package(pkgname),) + action_args_dict[action_type_enum]
+    return (Package(pkgname),) + action_args_dict[action_type_enum]
