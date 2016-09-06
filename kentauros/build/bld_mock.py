@@ -193,7 +193,7 @@ class MockBuilder(Builder):
         ktr = Kentauros()
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(ktr.conf.packdir,
+        srpms = glob.glob(os.path.join(ktr.conf.get_packdir(),
                                        self.bpkg.name + "*.src.rpm"))
 
         if not srpms:

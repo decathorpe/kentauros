@@ -302,8 +302,9 @@ class GitSource(Source):
             return False
 
         # construct git command
-        cmd = list("git")
+        cmd = list()
 
+        cmd.append("git")
         cmd.append("pull")
         cmd.append("--rebase")
 
@@ -364,13 +365,14 @@ class GitSource(Source):
             if not self.conf.getboolean("git", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
-                assert ktr.conf.datadir in self.dest
+                assert ktr.conf.get_datadir() in self.dest
                 shutil.rmtree(self.dest)
                 log(LOGPREFIX1 + "git repository has been deleted after exporting to tarball.", 1)
 
         # construct git command
-        cmd = list("git")
+        cmd = list()
 
+        cmd.append("git")
         cmd.append("archive")
 
         # add --verbose or --quiet depending on settings
@@ -394,7 +396,7 @@ class GitSource(Source):
         # add prefix
         cmd.append("--prefix=" + name_version + "/")
 
-        file_name = os.path.join(ktr.conf.datadir,
+        file_name = os.path.join(ktr.conf.get_datadir(),
                                  self.name,
                                  name_version + ".tar.gz")
 

@@ -80,7 +80,11 @@ class KtrConf:
     def __init__(self, conftype: KtrConfType, basedir: str=None):
         assert isinstance(conftype, KtrConfType)
 
-        self.basedir = os.path.abspath(__replace_home__(basedir))
+        if basedir is None:
+            self.basedir = None
+        else:
+            self.basedir = os.path.abspath(__replace_home__(basedir))
+
         self.type = conftype
 
         # if values are read from config file, remember where from

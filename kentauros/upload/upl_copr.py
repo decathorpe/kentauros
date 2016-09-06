@@ -68,7 +68,7 @@ class CoprUploader(Uploader):
             return True
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(Kentauros().conf.packdir,
+        srpms = glob.glob(os.path.join(Kentauros().conf.get_packdir(),
                                        self.upkg.name + "*.src.rpm"))
 
         if not srpms:

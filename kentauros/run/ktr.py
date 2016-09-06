@@ -40,10 +40,10 @@ def run():
     log(LOGPREFIX1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
 
     dbg(LOGPREFIX1 + "BASEDIR: " + ktr.conf.basedir)
-    dbg(LOGPREFIX1 + "CONFDIR: " + ktr.conf.confdir)
-    dbg(LOGPREFIX1 + "DATADIR: " + ktr.conf.datadir)
-    dbg(LOGPREFIX1 + "PACKDIR: " + ktr.conf.packdir)
-    dbg(LOGPREFIX1 + "SPECDIR: " + ktr.conf.specdir)
+    dbg(LOGPREFIX1 + "CONFDIR: " + ktr.conf.get_confdir())
+    dbg(LOGPREFIX1 + "DATADIR: " + ktr.conf.get_datadir())
+    dbg(LOGPREFIX1 + "PACKDIR: " + ktr.conf.get_packdir())
+    dbg(LOGPREFIX1 + "SPECDIR: " + ktr.conf.get_specdir())
 
     # if no action is specified: exit
     if ktr.cli.get_action() is None:
@@ -67,7 +67,7 @@ def run():
     # get package configs present in CONFDIR
     else:
         pkg_conf_paths = glob.glob(os.path.join(
-            ktr.conf.confdir, "*.conf"))
+            ktr.conf.get_confdir(), "*.conf"))
 
         for pkg_conf_path in pkg_conf_paths:
             pkgs.append(os.path.basename(pkg_conf_path).replace(".conf", ""))

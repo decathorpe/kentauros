@@ -42,7 +42,7 @@ class Source(metaclass=abc.ABCMeta):
 
         self.name = self.conf['package']['name']
 
-        self.sdir = os.path.join(Kentauros().conf.datadir, self.name)
+        self.sdir = os.path.join(Kentauros().conf.get_datadir(), self.name)
         self.dest = None
         self.orig = None
         self.keep = False
@@ -90,7 +90,7 @@ class Source(metaclass=abc.ABCMeta):
         else:
             # try to be careful with "rm -r"
             assert os.path.isabs(self.sdir)
-            assert Kentauros().conf.datadir in self.sdir
+            assert Kentauros().conf.get_datadir() in self.sdir
             shutil.rmtree(self.sdir)
             return True
 

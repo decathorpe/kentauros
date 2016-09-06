@@ -139,9 +139,9 @@ class SrpmConstructor(Constructor):
             self.init()
 
         # calculate absolute paths of files
-        pkg_data_dir = os.path.join(ktr.conf.datadir, self.pkg.name)
-        pkg_conf_file = os.path.join(ktr.conf.confdir, self.pkg.name + ".conf")
-        pkg_spec_file = os.path.join(ktr.conf.specdir, self.pkg.name + ".spec")
+        pkg_data_dir = os.path.join(ktr.conf.get_datadir(), self.pkg.name)
+        pkg_conf_file = os.path.join(ktr.conf.get_confdir(), self.pkg.name + ".conf")
+        pkg_spec_file = os.path.join(ktr.conf.get_specdir(), self.pkg.name + ".spec")
 
         # copy sources to rpmbuild/SOURCES
         for entry in os.listdir(pkg_data_dir):
@@ -312,7 +312,7 @@ class SrpmConstructor(Constructor):
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
         for srpm in srpms:
-            shutil.copy2(srpm, Kentauros().conf.packdir)
+            shutil.copy2(srpm, Kentauros().conf.get_packdir())
             log(LOGPREFIX1 + "File copied: " + srpm, 0)
 
     def clean(self):

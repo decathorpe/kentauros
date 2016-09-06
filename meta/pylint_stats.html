@@ -69,6 +69,14 @@
 <td>TODO: verify that package *.conf is valid</td>
 </tr>
 <tr class="odd">
+<td>refactor</td>
+<td>kentauros.construct.con_srpm</td>
+<td>SrpmConstructor.prepare</td>
+<td>106</td>
+<td>4</td>
+<td>Too many statements (66/60)</td>
+</tr>
+<tr class="even">
 <td>warning</td>
 <td>kentauros.state.__init__</td>
 <td>&#160;</td>
@@ -76,21 +84,13 @@
 <td>0</td>
 <td>TODO: public function for getting current release (from spec file)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.state.__init__</td>
 <td>&#160;</td>
 <td>120</td>
 <td>0</td>
 <td>TODO: get release string from pkgformat</td>
-</tr>
-<tr class="odd">
-<td>refactor</td>
-<td>kentauros.construct.con_srpm</td>
-<td>SrpmConstructor.prepare</td>
-<td>106</td>
-<td>4</td>
-<td>Too many statements (66/60)</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -125,7 +125,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1808 statements analysed.</p><div>
+<p>1812 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -195,7 +195,7 @@ kentauros
   | \-con_abstract (kentauros.construct.con_srpm)
   | \-con_dummy (kentauros.construct)
   | \-con_srpm (kentauros.construct)
-  \-definitions (kentauros.config)
+  \-definitions (kentauros.build)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
@@ -206,14 +206,14 @@ kentauros
   \-run 
   | \-common (kentauros.run.ktr)
   \-sources (kentauros.package)
-  | \-src_abstract (kentauros.sources.src_git)
+  | \-src_abstract (kentauros.pkgformat.pkg_rpm_spec)
   | \-src_bzr (kentauros.pkgformat.pkg_rpm_spec)
   | \-src_dummy (kentauros.sources)
   | \-src_git (kentauros.pkgformat.pkg_rpm_spec)
   | \-src_local (kentauros.sources)
   | \-src_url (kentauros.sources)
   \-upload (kentauros.package)
-    \-upl_abstract (kentauros.upload.upl_copr)
+    \-upl_abstract (kentauros.upload)
     \-upl_copr (kentauros.upload)</pre></div>
 <div>
 <h2>Raw metrics</h2>
@@ -227,30 +227,30 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2008</td>
-<td>39.51</td>
-<td>2008</td>
-<td>=</td>
+<td>2013</td>
+<td>39.56</td>
+<td>2011</td>
+<td>+2.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>1869</td>
-<td>36.78</td>
+<td>36.73</td>
 <td>1869</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>197</td>
-<td>3.88</td>
+<td>3.87</td>
 <td>197</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1008</td>
+<td>1009</td>
 <td>19.83</td>
-<td>1008</td>
+<td>1009</td>
 <td>=</td>
 </tr>
 </table>

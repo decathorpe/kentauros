@@ -22,7 +22,7 @@ class KtrStater:
     """
 
     def __init__(self):
-        self.db_path = os.path.join(Kentauros().conf.basedir,
+        self.db_path = os.path.join(Kentauros().conf.get_basedir(),
                                     STATE_DB_FILE_NAME)
         self.db_conn = dataset.connect("sqlite:///" + self.db_path)
         self.pkg_tbl = self.db_conn["packages"]

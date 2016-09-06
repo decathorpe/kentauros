@@ -70,7 +70,7 @@ class Package:
         assert isinstance(name, str)
 
         self.name = name
-        self.file = os.path.join(Kentauros().conf.confdir,
+        self.file = os.path.join(Kentauros().conf.get_confdir(),
                                  self.name + ".conf")
 
         self.conf = ConfigParser()

@@ -258,7 +258,7 @@ class BzrSource(Source):
             if not self.conf.getboolean("bzr", "keep"):
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
-                assert ktr.conf.datadir in self.dest
+                assert ktr.conf.get_datadir() in self.dest
                 shutil.rmtree(self.dest)
                 log(LOGPREFIX1 + "bzr repository deleted after export to tarball", 1)
 
@@ -284,7 +284,7 @@ class BzrSource(Source):
         version = self.formatver()
         name_version = self.name + "-" + version
 
-        file_name = os.path.join(ktr.conf.datadir, self.name, name_version + ".tar.gz")
+        file_name = os.path.join(ktr.conf.get_datadir(), self.name, name_version + ".tar.gz")
 
         cmd.append(file_name)
 
