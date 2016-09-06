@@ -20,14 +20,6 @@ kentauros.run.ktr module
     :undoc-members:
     :show-inheritance:
 
-kentauros.run.ktr_config module
--------------------------------
-
-.. automodule:: kentauros.run.ktr_config
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.run.ktr_create module
 -------------------------------
 

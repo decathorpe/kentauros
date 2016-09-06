@@ -70,7 +70,6 @@ class ActionType(Enum):
     DUMMY = 1
     CREATE = 10
     STATUS = 11
-    CONFIG = 12
     VERIFY = 13
     GET = 20
     UPDATE = 21
@@ -123,7 +122,6 @@ class InstanceType(Enum):
     """
 
     NORMAL = 0
-    CONFIG = 1
     CREATE = 2
 
 

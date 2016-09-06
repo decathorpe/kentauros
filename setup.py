@@ -22,7 +22,6 @@ setup(
     install_requires=["dataset", "python-dateutil"],
     entry_points={'console_scripts': [
         'ktr = kentauros.run.ktr:run',
-        'ktr-config = kentauros.run.ktr_config:run_config',
         'ktr-create = kentauros.run.ktr_create:run_create']},
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.conf']),

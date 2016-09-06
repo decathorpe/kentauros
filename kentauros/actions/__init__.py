@@ -22,7 +22,6 @@ from kentauros.actions.acts import UpdateAction
 from kentauros.actions.acts import UploadAction
 from kentauros.actions.acts import VerifyAction
 
-from kentauros.actions.act_config import ConfigAction
 from kentauros.actions.act_create import CreateAction
 from kentauros.actions.act_dummy import DummyAction
 
@@ -36,7 +35,6 @@ ACTION_DICT[ActionType.NONE] = DummyAction
 ACTION_DICT[ActionType.BUILD] = BuildAction
 ACTION_DICT[ActionType.CHAIN] = ChainAction
 ACTION_DICT[ActionType.CLEAN] = CleanAction
-ACTION_DICT[ActionType.CONFIG] = ConfigAction
 ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
 ACTION_DICT[ActionType.CREATE] = CreateAction
 ACTION_DICT[ActionType.EXPORT] = ExportAction

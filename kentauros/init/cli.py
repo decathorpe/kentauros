@@ -192,62 +192,6 @@ def get_cli_parser_normal(cliparser: ArgumentParser) -> ArgumentParser:
     return cliparser
 
 
-def get_cli_parser_config(cliparser: ArgumentParser) -> ArgumentParser:
-    """
-    This function constructs and returns a parser for command line arguments,
-    which is used when changing package settings (e.g. by invoking the
-    ``ktr-config`` script).
-
-    The arguments parsed by this parser include those from the basic parser,
-    and, additionally:
-
-    * package name(s) to specify which packages to process explicitly
-    * ``--all`` (``-a``) switch to enable processing all packages in ``CONFDIR``
-    * ``--section`` (``-s``) argument to specify section of config file
-    * ``--key`` (``-k``) argument to specify key in section of config file
-    * ``--value`` (``-V``) argument to specify the value to be written
-
-    Arguments:
-        ArgumentParser cliparser: basic argument parser got from :py:func:`get_cli_parser_base()`
-
-    Returns:
-        ArgumentParser: CLI argument parser for ``ktr-config`` script
-    """
-
-    assert isinstance(cliparser, ArgumentParser)
-
-    cliparser.add_argument(
-        "package",
-        action="store",
-        nargs="*",
-        help="package name")
-    cliparser.add_argument(
-        "-a", "--all",
-        action="store_const",
-        const=True,
-        default=False,
-        help="apply action to every package with valid configuration")
-
-    cliparser.add_argument(
-        "-s", "--section",
-        action="store",
-        default=None,
-        help="specify section of config file")
-    cliparser.add_argument(
-        "-k", "--key",
-        action="store",
-        default=None,
-        help="specify key of config file in section specified by --section")
-    cliparser.add_argument(
-        "-V", "--value",
-        action="store",
-        default=None,
-        help="specify value to be written to --section/--key")
-    cliparser.set_defaults(action=ActionType.CONFIG)
-
-    return cliparser
-
-
 def get_cli_parser_create(cliparser: ArgumentParser) -> ArgumentParser:
     """
     This function constructs and returns a parser for command line arguments,
@@ -304,7 +248,6 @@ def get_cli_parser(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
 
     parser_dict = dict()
     parser_dict[InstanceType.NORMAL] = get_cli_parser_normal
-    parser_dict[InstanceType.CONFIG] = get_cli_parser_config
     parser_dict[InstanceType.CREATE] = get_cli_parser_create
 
     cliparser = parser_dict[itype](get_cli_parser_base())
@@ -470,68 +413,6 @@ class CLIArgs:
             return False
 
 
-class CLIArgsConfig(CLIArgs):
-    """
-    This class represents the parsed command line arguments and switches used
-    with a kentauros script (in this case: the ``ktr-config`` script). It stores
-    the parsed CLI arguments between class instantiations (in a class variable),
-    so the CLI will be parsed only once. It also provides simple method calls
-    for getting settings from the parsed CLI.
-    """
-
-    def __init__(self, itype: InstanceType=InstanceType.CONFIG):
-        super().__init__(itype)
-
-        if self.args is None:
-            CLIArgs.args = get_parsed_cli(itype)
-
-    def get_config_section(self) -> str:
-        """
-        This method returns the configuration file section as specified by
-        CLI argument.
-
-        Returns:
-            str:  specified section
-        """
-
-        return self.args.section
-
-    def get_config_key(self) -> str:
-        """
-        This method returns the configuration file key as specified by CLI
-        argument.
-
-        Returns:
-            str:  specified key
-        """
-
-        return self.args.key
-
-    def get_config_value(self) -> str:
-        """
-        This method returns the configuration file value as specified by CLI
-        argument.
-
-        Returns:
-            str:  specified value
-        """
-
-        return self.args.value
-
-    def get_confedit(self) -> bool:
-        """
-        This method returns whether everything necessary for editing a config
-        file has been supplied at CLI (section, key, value).
-
-        Returns:
-            bool: ``True`` if everything was specified, ``False`` if not
-        """
-
-        return ("section" in self.args) and \
-               ("key" in self.args) and \
-               ("value" in self.args)
-
-
 CLI_ARGS_DICT = dict()
 """ This dictionary contains a mapping from :py:class:`InstanceType` members to
 their respective :py:class:`CLIArgs` class or subclass constructors.
@@ -539,4 +420,3 @@ their respective :py:class:`CLIArgs` class or subclass constructors.
 
 CLI_ARGS_DICT[InstanceType.NORMAL] = CLIArgs
 CLI_ARGS_DICT[InstanceType.CREATE] = CLIArgs
-CLI_ARGS_DICT[InstanceType.CONFIG] = CLIArgsConfig

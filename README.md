@@ -17,7 +17,6 @@ kentauros is a small, automatable (e.g. systemd timers) build script.
 - build locally (mock supported): ```build``` action
 - upload source packages to cloud build services (copr supported): ```upload``` action
 - execute them consecutively, depending on present updates: ```chain``` action
-- change package configuration values by command line: ```ktr-config``` script
 - create package configuration files from template: ```ktr-create``` script
 
 To test out ktr with the provided examples, run in the project base directory
@@ -25,7 +24,5 @@ To test out ktr with the provided examples, run in the project base directory
 
 ```sh
 ./ktr $ACTION --all
-./ktr-config --section=mock --key=active --value=True --all
 ./ktr-create test
 ```
-
