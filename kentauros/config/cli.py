@@ -10,10 +10,10 @@ packages (`--packdir`) and the package specification directory (`--specdir`).
 
 import os
 
-from kentauros.definitions import KtrConfType, InstanceType
+from kentauros.definitions import KtrConfType
 
 from kentauros.config.common import KtrConf
-from kentauros.init.cli import CLI_ARGS_DICT, CLIArgs
+from kentauros.init.cli import CLIArgs
 
 
 LOGPREFIX1 = "ktr/config/cli: "
@@ -22,7 +22,7 @@ stdout or stderr from inside this subpackage.
 """
 
 
-def get_cli_config(itype: InstanceType) -> KtrConf:
+def get_cli_config() -> KtrConf:
     """
     This function reads and parses command line settings and switches and puts
     them into a :py:class:`KtrConf` instance for further processing.
@@ -31,10 +31,7 @@ def get_cli_config(itype: InstanceType) -> KtrConf:
         KtrConf: settings parsed from command line settings or switches
     """
 
-    assert isinstance(itype, InstanceType)
-
-    cli_args = CLI_ARGS_DICT[itype]()
-    assert isinstance(cli_args, CLIArgs)
+    cli_args = CLIArgs()
 
     # if no settings were set at command line, return None
     if cli_args.get_ktr_basedir() is None:

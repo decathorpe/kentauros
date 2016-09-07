@@ -9,7 +9,7 @@ from collections import OrderedDict
 import dataset
 
 from kentauros.instance import Kentauros
-from kentauros.package import Package
+# from kentauros.package import Package
 
 
 STATE_DB_FILE_NAME = "state.sqlite"
@@ -93,34 +93,34 @@ class PackageState(dict):
 # TODO: public function for getting current release (from spec file)
 
 
-def pkg_state_from_package(pkg: Package) -> PackageState:
-    """
-    This function produces a :py:class:`PackageState` object from a given
-    :py:class:`Package` object.
-
-    Arguments:
-        Package pkg:    package to get the state from
-
-    Returns:
-        PackageState:   state of the package at the time of the function call
-    """
-
-    status = PackageState()
-
-    for key in pkg.conf.get("package"):
-        status[key] = pkg.conf.get("package").get(key)
-
-    for section in pkg.conf:
-        if section == "package":
-            continue
-
-        for key in section:
-            status[section + "_" + key] = pkg.conf.get(section).get(key)
-
-    # TODO: get release string from pkgformat
-    status["release"] = "1"
-
-    return status
+# def pkg_state_from_package(pkg: Package) -> PackageState:
+#     """
+#     This function produces a :py:class:`PackageState` object from a given
+#     :py:class:`Package` object.
+#
+#     Arguments:
+#         Package pkg:    package to get the state from
+#
+#     Returns:
+#         PackageState:   state of the package at the time of the function call
+#     """
+#
+#     status = PackageState()
+#
+#     for key in pkg.conf.get("package"):
+#         status[key] = pkg.conf.get("package").get(key)
+#
+#     for section in pkg.conf:
+#         if section == "package":
+#             continue
+#
+#         for key in section:
+#             status[section + "_" + key] = pkg.conf.get(section).get(key)
+#
+#     # TODO: get release string from pkgformat
+#     status["release"] = "1"
+#
+#     return status
 
 
 def pkg_state_from_state(name: str) -> PackageState:

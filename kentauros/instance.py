@@ -10,10 +10,8 @@ run. Additionally, this subpackage holds logging and error printing functions.
 import sys
 from warnings import warn
 
-from kentauros.definitions import InstanceType
-
 from kentauros.config import ktr_get_conf
-from kentauros.init.cli import CLI_ARGS_DICT
+from kentauros.init.cli import CLIArgs
 from kentauros.init.env import get_env_debug, get_env_verby
 
 
@@ -53,13 +51,9 @@ class Kentauros:
     def __setattr__(self, attr: str, val):
         self.saved_state.__setitem__(attr, val)
 
-    def __init__(self, itype: InstanceType=InstanceType.NORMAL):
-        assert isinstance(itype, InstanceType)
-
-        self.itype = itype
-
+    def __init__(self):
         if "cli" not in self.saved_state:
-            self.cli = CLI_ARGS_DICT[itype](itype)
+            self.cli = CLIArgs()
 
         if "debug" not in self.saved_state:
             self.debug = get_env_debug() or self.cli.get_debug()
@@ -68,7 +62,7 @@ class Kentauros:
             self.verby = __smaller_int__(get_env_verby(), self.cli.get_verby())
 
         if "conf" not in self.saved_state:
-            self.conf = ktr_get_conf(itype)
+            self.conf = ktr_get_conf()
 
     def dbg(self, msg: str):
         """

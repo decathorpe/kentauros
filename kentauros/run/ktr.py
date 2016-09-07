@@ -6,7 +6,6 @@ from the ``ktr`` script.
 import glob
 import os
 
-from kentauros.definitions import InstanceType
 from kentauros.instance import Kentauros, dbg, log
 
 from kentauros.actions import ACTION_DICT
@@ -32,7 +31,7 @@ def run():
     git and the script installed by setuptools at installation.
     """
 
-    ktr = Kentauros(itype=InstanceType.NORMAL)
+    ktr = Kentauros()
 
     print()
 

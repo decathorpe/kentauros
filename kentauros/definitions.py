@@ -4,10 +4,8 @@ used by nearly every other module / subpackage.
 
 It includes these globally used variables:
 
-* ``KTR_SYSTEM_DATADIR``:       directory where kentauros data is installed to /
-  resides when installed
-* ``KTR_VERSION``:              this version string is used when installing and
-  packaging kentauros
+* ``KTR_SYSTEM_DATADIR``:   directory where kentauros data is installed to resides when installed
+* ``KTR_VERSION``:          this version string is used when installing and packaging kentauros
 
 The following Enums are defined here:
 
@@ -15,7 +13,6 @@ The following Enums are defined here:
 * :py:class:`ActionType`:       types of actions that can be executed
 * :py:class:`BuilderType`:      types of supported binary package builders
 * :py:class:`ConstructorType`:  types of supported source package constructors
-* :py:class:`InstanceType`:     types of kentauros instances
 * :py:class:`SourceType`:       types of supported package sources
 * :py:class:`UploaderType`:     types of supported package uploaders
 """
@@ -108,19 +105,6 @@ class ConstructorType(Enum):
     NONE = 0
     DUMMY = 1
     SRPM = 2
-
-
-@unique
-class InstanceType(Enum):
-    """
-    This Enum defines the different modes in which kentauros can be run (as
-    imported from different scripts). This includes ``NORMAL`` invocation for
-    most standard actions, ``CONFIG`` for changing package-specific
-    configuration values and ``CREATE`` for creating package configuration files
-    from templates.
-    """
-
-    NORMAL = 0
 
 
 @unique

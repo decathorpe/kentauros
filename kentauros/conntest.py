@@ -21,6 +21,8 @@ def is_connected(host_url: str) -> bool:
         bool:   ``True`` if connection setup successful, ``False`` if not
     """
 
+    # TODO: with socket.create_connection((host, 80), 2) as sock:
+
     hostname = urlparse(host_url).hostname
 
     try:

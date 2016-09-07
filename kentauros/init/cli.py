@@ -8,7 +8,7 @@ depending on where the `kentauros` module is used from.
 
 from argparse import ArgumentParser
 
-from kentauros.definitions import ActionType, KtrConfType, InstanceType
+from kentauros.definitions import ActionType, KtrConfType
 
 
 def get_cli_parser_base() -> ArgumentParser:
@@ -192,7 +192,7 @@ def get_cli_parser_normal(cliparser: ArgumentParser) -> ArgumentParser:
     return cliparser
 
 
-def get_cli_parser(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
+def get_cli_parser() -> ArgumentParser:
     """
     This function returns a parser for command line arguments with certain
     switches and arguments, depending on which kentauros instance it is used
@@ -207,17 +207,10 @@ def get_cli_parser(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
         ArgumentParser: CLI argument parser for the specified instance
     """
 
-    assert isinstance(itype, InstanceType)
-
-    parser_dict = dict()
-    parser_dict[InstanceType.NORMAL] = get_cli_parser_normal
-
-    cliparser = parser_dict[itype](get_cli_parser_base())
-
-    return cliparser
+    return get_cli_parser_normal(get_cli_parser_base())
 
 
-def get_parsed_cli(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
+def get_parsed_cli() -> ArgumentParser:
     """
     This function returns a `Namespace` object which contains the parsed CLI
     switches and arguments, as specified in the
@@ -233,7 +226,7 @@ def get_parsed_cli(itype: InstanceType=InstanceType.NORMAL) -> ArgumentParser:
         Namespace: parsed CLI arguments and switches
     """
 
-    cli_args = get_cli_parser(itype).parse_args()
+    cli_args = get_cli_parser().parse_args()
 
     return cli_args
 
@@ -256,9 +249,9 @@ class CLIArgs:
     and generated at the time of the first class initialisation.
     """
 
-    def __init__(self, itype: InstanceType=InstanceType.NORMAL):
+    def __init__(self):
         if self.args is None:
-            CLIArgs.args = get_parsed_cli(itype)
+            CLIArgs.args = get_parsed_cli()
 
     def get_debug(self) -> bool:
         """
@@ -373,11 +366,3 @@ class CLIArgs:
             return self.args.force
         else:
             return False
-
-
-CLI_ARGS_DICT = dict()
-""" This dictionary contains a mapping from :py:class:`InstanceType` members to
-their respective :py:class:`CLIArgs` class or subclass constructors.
-"""
-
-CLI_ARGS_DICT[InstanceType.NORMAL] = CLIArgs

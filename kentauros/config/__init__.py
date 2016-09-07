@@ -9,7 +9,7 @@ configuration found or the configuration location specified at command line.
 from collections import OrderedDict
 import os
 
-from kentauros.definitions import KTR_SYSTEM_DATADIR, InstanceType
+from kentauros.definitions import KTR_SYSTEM_DATADIR
 
 from kentauros.config.cli import get_cli_config
 from kentauros.config.envvar import get_env_config
@@ -18,7 +18,7 @@ from kentauros.config.fallback import get_fallback_config
 from kentauros.config.common import KtrConf
 from kentauros.definitions import KtrConfType
 
-from kentauros.init.cli import CLI_ARGS_DICT
+from kentauros.init.cli import CLIArgs
 from kentauros.init.env import get_env_home
 
 
@@ -66,7 +66,7 @@ def get_conf_from_file_args(conf_type: KtrConfType) -> tuple:
     return conf_from_file_args[conf_type]
 
 
-def ktr_get_conf(itype: InstanceType) -> KtrConf:
+def ktr_get_conf() -> KtrConf:
     """
     This function gets and parses :py:class:`KtrConf` instances for
     configuration values.
@@ -78,19 +78,13 @@ def ktr_get_conf(itype: InstanceType) -> KtrConf:
         KtrConf:  highest-priority or requested :py:class:`KtrConf` instance
     """
 
-    assert isinstance(itype, InstanceType)
-
     # configurations, in ascending priority
     ktr_confs = OrderedDict()
 
-    def_config = KtrConf(KtrConfType.DEF).from_file(
-        *get_conf_from_file_args(KtrConfType.DEF))
-    sys_config = KtrConf(KtrConfType.SYS).from_file(
-        *get_conf_from_file_args(KtrConfType.SYS))
-    usr_config = KtrConf(KtrConfType.USR).from_file(
-        *get_conf_from_file_args(KtrConfType.USR))
-    prj_config = KtrConf(KtrConfType.PRJ).from_file(
-        *get_conf_from_file_args(KtrConfType.PRJ))
+    def_config = KtrConf(KtrConfType.DEF).from_file(*get_conf_from_file_args(KtrConfType.DEF))
+    sys_config = KtrConf(KtrConfType.SYS).from_file(*get_conf_from_file_args(KtrConfType.SYS))
+    usr_config = KtrConf(KtrConfType.USR).from_file(*get_conf_from_file_args(KtrConfType.USR))
+    prj_config = KtrConf(KtrConfType.PRJ).from_file(*get_conf_from_file_args(KtrConfType.PRJ))
 
     ktr_confs[KtrConfType.FBK] = get_fallback_config()
     ktr_confs[KtrConfType.DEF] = def_config
@@ -98,11 +92,11 @@ def ktr_get_conf(itype: InstanceType) -> KtrConf:
     ktr_confs[KtrConfType.USR] = usr_config
     ktr_confs[KtrConfType.PRJ] = prj_config
     ktr_confs[KtrConfType.ENV] = get_env_config()
-    ktr_confs[KtrConfType.CLI] = get_cli_config(itype)
+    ktr_confs[KtrConfType.CLI] = get_cli_config()
 
     ktr_conf = None
 
-    cli_args = CLI_ARGS_DICT[itype]()
+    cli_args = CLIArgs()
 
     if cli_args.get_priconf():
         ktr_conf = ktr_confs[cli_args.get_priconf()]

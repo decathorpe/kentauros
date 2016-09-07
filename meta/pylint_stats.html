@@ -16,7 +16,7 @@
 <td>warning</td>
 <td>kentauros.instance</td>
 <td>&#160;</td>
-<td>27</td>
+<td>25</td>
 <td>0</td>
 <td>TODO: remove old log,dbg,err functions</td>
 </tr>
@@ -69,14 +69,6 @@
 <td>TODO: verify that package *.conf is valid</td>
 </tr>
 <tr class="odd">
-<td>refactor</td>
-<td>kentauros.construct.con_srpm</td>
-<td>SrpmConstructor.prepare</td>
-<td>106</td>
-<td>4</td>
-<td>Too many statements (66/60)</td>
-</tr>
-<tr class="even">
 <td>warning</td>
 <td>kentauros.state.__init__</td>
 <td>&#160;</td>
@@ -84,13 +76,21 @@
 <td>0</td>
 <td>TODO: public function for getting current release (from spec file)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.state.__init__</td>
 <td>&#160;</td>
 <td>120</td>
 <td>0</td>
 <td>TODO: get release string from pkgformat</td>
+</tr>
+<tr class="odd">
+<td>refactor</td>
+<td>kentauros.construct.con_srpm</td>
+<td>SrpmConstructor.prepare</td>
+<td>106</td>
+<td>4</td>
+<td>Too many statements (66/60)</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -117,7 +117,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1904 statements analysed.</p><div>
+<p>1876 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -138,8 +138,8 @@
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>47</td>
-<td>47</td>
+<td>46</td>
+<td>46</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -154,9 +154,9 @@
 </tr>
 <tr class="odd">
 <td>function</td>
+<td>51</td>
 <td>52</td>
-<td>52</td>
-<td>=</td>
+<td>-1.00</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -187,7 +187,7 @@ kentauros
   | \-con_abstract (kentauros.construct.con_srpm)
   | \-con_dummy (kentauros.construct)
   | \-con_srpm (kentauros.construct)
-  \-definitions (kentauros.config)
+  \-definitions (kentauros.build)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
@@ -209,7 +209,7 @@ kentauros
   | \-src_local (kentauros.pkgformat.rpm.spec_version_out)
   | \-src_url (kentauros.pkgformat.rpm.spec_version_out)
   \-upload (kentauros.package)
-    \-upl_abstract (kentauros.upload)
+    \-upl_abstract (kentauros.upload.upl_copr)
     \-upl_copr (kentauros.upload)</pre></div>
 <div>
 <h2>Raw metrics</h2>
@@ -223,31 +223,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2110</td>
-<td>39.03</td>
-<td>2110</td>
-<td>=</td>
+<td>2079</td>
+<td>38.79</td>
+<td>2091</td>
+<td>-12.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>2024</td>
-<td>37.44</td>
-<td>2024</td>
-<td>=</td>
+<td>2001</td>
+<td>37.34</td>
+<td>2011</td>
+<td>-10.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
+<td>225</td>
+<td>4.20</td>
 <td>197</td>
-<td>3.64</td>
-<td>197</td>
-<td>=</td>
+<td>+28.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1075</td>
-<td>19.89</td>
-<td>1075</td>
-<td>=</td>
+<td>1054</td>
+<td>19.67</td>
+<td>1060</td>
+<td>-6.00</td>
 </tr>
 </table>
 </div>
@@ -396,7 +396,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.94/10 (previous run: 9.94/10, +0.00)</div>
+Your code has been rated at 9.94/10 (previous run: 9.94/10, -0.00)</div>
 </div>
 </body>
 </html>
