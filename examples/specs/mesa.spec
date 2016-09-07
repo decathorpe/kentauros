@@ -452,6 +452,7 @@ popd
 %{_includedir}/GLES3/gl3.h
 %{_includedir}/GLES3/gl3ext.h
 %{_includedir}/GLES3/gl31.h
+%{_includedir}/GLES3/gl32.h
 %{_libdir}/pkgconfig/glesv2.pc
 %{_libdir}/libGLESv2.so
 
