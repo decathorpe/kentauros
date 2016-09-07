@@ -25,6 +25,8 @@ LOGPREFIX2 = " " * len(LOGPREFIX1) + "- "
 functions, printed to stdout or stderr from inside this subpackage.
 """
 
+DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
+
 
 class MockBuild:
     """
@@ -44,9 +46,12 @@ class MockBuild:
     def __init__(self, mock: str, path: str, dist: str=None):
         self.mock = mock
         self.path = path
-        self.dist = dist
 
-        # TODO: get default dist if it is None. crash later on is fixed by this
+        if dist is None:
+            # determine which dist is pointed to by the "default.cfg" link
+            self.dist = os.path.basename(os.path.realpath(DEFAULT_CFG_PATH)).replace(".cfg", "")
+        else:
+            self.dist = dist
 
     def get_command(self):
         """

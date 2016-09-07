@@ -78,6 +78,22 @@
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>kentauros.state.__init__</td>
+<td>&#160;</td>
+<td>93</td>
+<td>0</td>
+<td>TODO: public function for getting current release (from spec file)</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.state.__init__</td>
+<td>&#160;</td>
+<td>120</td>
+<td>0</td>
+<td>TODO: get release string from pkgformat</td>
+</tr>
+<tr class="even">
+<td>warning</td>
 <td>kentauros.upload.__init__</td>
 <td>&#160;</td>
 <td>9</td>
@@ -86,33 +102,9 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.state.__init__</td>
-<td>&#160;</td>
-<td>93</td>
-<td>0</td>
-<td>TODO: public function for getting current release (from spec file)</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.state.__init__</td>
-<td>&#160;</td>
-<td>120</td>
-<td>0</td>
-<td>TODO: get release string from pkgformat</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
 <td>kentauros.build.bld_mock</td>
 <td>&#160;</td>
-<td>49</td>
-<td>0</td>
-<td>TODO: get default dist if it is None. crash later on is fixed by this</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.build.bld_mock</td>
-<td>&#160;</td>
-<td>263</td>
+<td>268</td>
 <td>0</td>
 <td>TODO: export resulting packages to kentauros binary package directory</td>
 </tr>
@@ -125,7 +117,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1902 statements analysed.</p><div>
+<p>1907 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -200,7 +192,7 @@ kentauros
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
   \-instance (kentauros.build.bld_mock)
-  \-package (kentauros.run.common)
+  \-package (kentauros.build.bld_abstract)
   \-pkgformat 
   | \-pkg_rpm_spec (kentauros.construct.con_srpm)
   | \-rpm 
@@ -231,15 +223,15 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2107</td>
-<td>38.98</td>
-<td>2107</td>
+<td>2113</td>
+<td>39.01</td>
+<td>2113</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>2029</td>
-<td>37.53</td>
+<td>37.46</td>
 <td>2029</td>
 <td>=</td>
 </tr>
@@ -252,9 +244,9 @@ kentauros
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1073</td>
-<td>19.85</td>
-<td>1073</td>
+<td>1077</td>
+<td>19.89</td>
+<td>1077</td>
 <td>=</td>
 </tr>
 </table>
@@ -305,8 +297,8 @@ kentauros
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>12</td>
-<td>12</td>
+<td>11</td>
+<td>11</td>
 <td>=</td>
 </tr>
 <tr class="odd">
@@ -330,49 +322,49 @@ kentauros
 <tr class="even">
 <td>kentauros.actions.acts</td>
 <td>0.00</td>
-<td>25.00</td>
+<td>27.27</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.state.__init__</td>
 <td>0.00</td>
-<td>16.67</td>
+<td>18.18</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.sources.src_abstract</td>
 <td>0.00</td>
-<td>16.67</td>
+<td>18.18</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.build.bld_mock</td>
-<td>0.00</td>
-<td>16.67</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="even">
 <td>kentauros.upload.__init__</td>
 <td>0.00</td>
-<td>8.33</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="odd">
-<td>kentauros.pkgformat.pkg_rpm_spec</td>
-<td>0.00</td>
-<td>8.33</td>
+<td>9.09</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
+<td>kentauros.pkgformat.pkg_rpm_spec</td>
+<td>0.00</td>
+<td>9.09</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
 <td>kentauros.instance</td>
 <td>0.00</td>
-<td>8.33</td>
+<td>9.09</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.build.bld_mock</td>
+<td>0.00</td>
+<td>9.09</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
@@ -394,7 +386,7 @@ kentauros
 </tr>
 <tr class="even">
 <td>fixme</td>
-<td>12</td>
+<td>11</td>
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
@@ -404,7 +396,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.93/10 (previous run: 9.93/10, +0.00)</div>
+Your code has been rated at 9.94/10 (previous run: 9.94/10, +0.00)</div>
 </div>
 </body>
 </html>
