@@ -8,6 +8,7 @@ run. Additionally, this subpackage holds logging and error printing functions.
 
 
 import sys
+from warnings import warn
 
 from kentauros.definitions import InstanceType
 
@@ -144,16 +145,11 @@ class Kentauros:
 
 def dbg(msg: str):
     """
-    This function prints messages with a "DEBUG: " prefix to standard output,
-    but only if the ``KTR_DEBUG`` environment variable has been set or the
-    ``--debug`` or ``-d`` has been supplied to the calling script.
-
-    Arguments:
-        str msg: debug message to be printed
+    Legacy debug message function.
     """
 
-    if Kentauros().debug:
-        print("DEBUG: " + str(msg))
+    warn("The kentauros.instance.dbg() function is deprecated.", DeprecationWarning)
+    Kentauros().dbg(msg)
 
 
 def err(msg: str):
@@ -165,7 +161,8 @@ def err(msg: str):
         str msg: error message to be printed
     """
 
-    print("ERROR: " + msg, file=sys.stderr)
+    warn("The kentauros.instance.err() function is deprecated.", DeprecationWarning)
+    Kentauros().err(msg)
 
 
 def log(msg: str, pri: int=2):
@@ -186,8 +183,8 @@ def log(msg: str, pri: int=2):
         int pri: message priority (0-2, where 0 is lowest and 2 is highest)
     """
 
-    if (pri >= Kentauros().verby) or Kentauros().debug:
-        print(msg)
+    warn("The kentauros.instance.log() function is deprecated.", DeprecationWarning)
+    Kentauros().log(msg, pri)
 
 
 def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):
@@ -203,12 +200,5 @@ def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):
         int pri:      message priority (0-2, where 0 is lowest and 2 is highest)
     """
 
-    cmdstr = ""
-    prefix2 = " " * len(prefix1)
-
-    for cmd in cmdlist:
-        assert isinstance(cmd, str)
-        cmdstr += (cmd + " ")
-
-    log(prefix1 + basename + " command:", pri)
-    log(prefix2 + cmdstr, pri)
+    warn("The kentauros.instance.log_command() function is deprecated.", DeprecationWarning)
+    Kentauros().log_command(prefix1, basename, cmdlist, pri)
