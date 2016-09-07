@@ -1,5 +1,6 @@
 """
 This module contains many helper functions for handling RPM .spec files.
+At the moment, it is being reworked into the new "rpm" submodule.
 """
 
 

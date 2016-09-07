@@ -40,7 +40,7 @@
 <td>warning</td>
 <td>kentauros.pkgformat.pkg_rpm_spec</td>
 <td>&#160;</td>
-<td>302</td>
+<td>303</td>
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
@@ -78,27 +78,27 @@
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>kentauros.upload.__init__</td>
+<td>&#160;</td>
+<td>9</td>
+<td>0</td>
+<td>TODO: introduce upl_dummy.py module</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
 <td>kentauros.state.__init__</td>
 <td>&#160;</td>
 <td>93</td>
 <td>0</td>
 <td>TODO: public function for getting current release (from spec file)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.state.__init__</td>
 <td>&#160;</td>
 <td>120</td>
 <td>0</td>
 <td>TODO: get release string from pkgformat</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.upload.__init__</td>
-<td>&#160;</td>
-<td>9</td>
-<td>0</td>
-<td>TODO: introduce upl_dummy.py module</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -125,7 +125,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1812 statements analysed.</p><div>
+<p>1902 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -138,32 +138,32 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>43</td>
-<td>43</td>
+<td>47</td>
+<td>47</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>45</td>
-<td>45</td>
+<td>47</td>
+<td>47</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>137</td>
-<td>137</td>
+<td>144</td>
+<td>144</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>function</td>
-<td>43</td>
-<td>43</td>
+<td>52</td>
+<td>52</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -203,15 +203,19 @@ kentauros
   \-package (kentauros.run.common)
   \-pkgformat 
   | \-pkg_rpm_spec (kentauros.construct.con_srpm)
+  | \-rpm 
+  |   \-spec_common (kentauros.pkgformat.rpm)
+  |   \-spec_preamble_out (kentauros.pkgformat.rpm)
+  |   \-spec_version_out (kentauros.pkgformat.rpm)
   \-run 
   | \-common (kentauros.run.ktr)
   \-sources (kentauros.package)
-  | \-src_abstract (kentauros.pkgformat.pkg_rpm_spec)
-  | \-src_bzr (kentauros.pkgformat.pkg_rpm_spec)
+  | \-src_abstract (kentauros.pkgformat.rpm)
+  | \-src_bzr (kentauros.pkgformat.rpm.spec_version_out)
   | \-src_dummy (kentauros.sources)
-  | \-src_git (kentauros.pkgformat.pkg_rpm_spec)
-  | \-src_local (kentauros.sources)
-  | \-src_url (kentauros.sources)
+  | \-src_git (kentauros.pkgformat.rpm.spec_version_out)
+  | \-src_local (kentauros.pkgformat.rpm.spec_version_out)
+  | \-src_url (kentauros.pkgformat.rpm.spec_version_out)
   \-upload (kentauros.package)
     \-upl_abstract (kentauros.upload)
     \-upl_copr (kentauros.upload)</pre></div>
@@ -227,30 +231,30 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2013</td>
-<td>39.56</td>
-<td>2011</td>
-<td>+2.00</td>
+<td>2107</td>
+<td>38.98</td>
+<td>2107</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1869</td>
-<td>36.73</td>
-<td>1869</td>
+<td>2029</td>
+<td>37.53</td>
+<td>2029</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>197</td>
-<td>3.87</td>
+<td>3.64</td>
 <td>197</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1009</td>
-<td>19.83</td>
-<td>1009</td>
+<td>1073</td>
+<td>19.85</td>
+<td>1073</td>
 <td>=</td>
 </tr>
 </table>
