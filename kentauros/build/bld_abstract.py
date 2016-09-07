@@ -3,7 +3,10 @@ This module contains the abstract :py:class:`Builder` class, which
 is then inherited by actual builders.
 """
 
+
 import abc
+
+from kentauros.package import Package
 
 
 class Builder(metaclass=abc.ABCMeta):
@@ -19,7 +22,9 @@ class Builder(metaclass=abc.ABCMeta):
         Package package:    stores the package argument given at initialisation
     """
 
-    def __init__(self, package):
+    def __init__(self, package: Package):
+        assert isinstance(package, Package)
+
         self.bpkg = package
 
     @abc.abstractmethod
