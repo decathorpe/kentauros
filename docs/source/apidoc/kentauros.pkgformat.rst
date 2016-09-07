@@ -1,6 +1,13 @@
 kentauros.pkgformat package
 ===========================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    kentauros.pkgformat.rpm
+
 Submodules
 ----------
 
