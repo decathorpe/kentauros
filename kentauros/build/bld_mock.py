@@ -1,6 +1,6 @@
 """
-This module contains the :py:class:`MockBuilder` class, which can be used
-to build binary packages from src.rpm packages.
+This module contains the :py:class:`MockBuilder` class, which can be used to build binary packages
+from src.rpm packages.
 """
 
 
@@ -11,7 +11,7 @@ import os
 import subprocess
 import time
 
-from kentauros.instance import Kentauros, log, log_command
+from kentauros.instance import Kentauros
 from kentauros.build.bld_abstract import Builder
 
 
@@ -55,14 +55,14 @@ class MockBuild:
 
     def get_command(self):
         """
-        This method returns the argument list needed by the subprocess method
-        call, assembled from dist and path.
+        This method returns the argument list needed by the subprocess method call, assembled from
+        dist and path.
 
         Returns:
             list:   argument list for consumption by subprocess methods
         """
 
-        ktr = Kentauros()
+        ktr = Kentauros(LOGPREFIX1)
 
         cmd = [self.mock]
 
@@ -84,12 +84,14 @@ class MockBuild:
 
     def build(self):
         """
-        This method starts the mock build (and waits for already running builds
-        with the same chroot to finish before that).
+        This method starts the mock build (and waits for already running builds with the same
+        chroot to finish before that).
 
         Returns:
             int:    return code of the subprocess call
         """
+
+        ktr = Kentauros(LOGPREFIX1)
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
@@ -102,11 +104,9 @@ class MockBuild:
                 lock_file = open(lock_path, "a+")
 
                 try:
-                    fcntl.lockf(lock_file.fileno(),
-                                fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    fcntl.lockf(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 except IOError:
-                    log(LOGPREFIX1 +
-                        "The specified build chroot is busy, waiting.", 2)
+                    ktr.log("The specified build chroot is busy, waiting.", 2)
                     time.sleep(120)
                 else:
                     build_wait = False
@@ -114,7 +114,7 @@ class MockBuild:
                     lock_file.close()
 
         cmd = self.get_command()
-        log_command(LOGPREFIX1, "mock", cmd, 2)
+        ktr.log_command(LOGPREFIX1, "mock", cmd, 2)
 
         ret = subprocess.call(cmd)
         return ret
@@ -122,10 +122,9 @@ class MockBuild:
 
 class MockBuilder(Builder):
     """
-    This :py:class:`Builder` subclass is used to hold information and methods
-    for executing a local package build using ``mock``. At class instantiation,
-    it checks for existance of the ``mock`` binary. If it is not found in
-    ``$PATH``, this instance is set to inactive.
+    This :py:class:`Builder` subclass is used to hold information and methods for executing a local
+    package build using ``mock``. At class instantiation, it checks for existance of the ``mock``
+    binary. If it is not found in ``$PATH``, this instance is set to inactive.
 
     Arguments:
         Package package:    package for which this mock/srpm builder is for
@@ -136,6 +135,8 @@ class MockBuilder(Builder):
 
     def __init__(self, package):
         super().__init__(package)
+
+        ktr = Kentauros(LOGPREFIX1)
 
         # deactivate mock if section is not present in config file
         if "mock" not in self.bpkg.conf.sections():
@@ -152,34 +153,28 @@ class MockBuilder(Builder):
         self.mock_cmd = None
         # if mock is not installed: deactivate mock builder in conf file
         try:
-            self.mock_cmd = subprocess.check_output(
-                ["which", "mock"]).decode().rstrip("\n")
+            self.mock_cmd = subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
         except subprocess.CalledProcessError:
-            log(LOGPREFIX1 +
-                "Install mock to use the specified builder.")
+            ktr.log("Install mock to use the specified builder.")
             self.active = False
 
         # check if the right binary is used or if something is messing up $PATH
         if self.mock_cmd == "/usr/sbin/mock":
-            Kentauros().log(LOGPREFIX1 +
-                            "Something is messing with your $PATH variable.", 2)
+            ktr.log("Something is messing with your $PATH variable.", 2)
             self.mock_cmd = "/usr/bin/mock"
 
     def build(self) -> bool:
         """
-        This method constructs the :py:class:`MockBuilder` instances, which
-        contain the commands for executing the builds, and executes them in
-        turn. It also checks if the executing user is allowed to execute a mock
-        build by checking if ``$USER`` is "root" or if the user is in the "mock"
-        group.
+        This method constructs the :py:class:`MockBuilder` instances, which contain the commands
+        for executing the builds, and executes them in turn. It also checks if the executing user is
+        allowed to execute a mock build by checking if ``$USER`` is "root" or if the user is in the
+        "mock" group.
 
-        If no source packages are found in the specified directory
-        (``PACKDIR``), the build terminates without executing mock. If SRPM
-        packages are found, only the most recent (biggest version number,
-        determined just by sorting!) is built, for all specified chroots.
+        If no source packages are found in the specified directory (``PACKDIR``), the build
+        terminates without executing mock. If SRPM packages are found, only the most recent
+        (biggest version number, determined just by sorting!) is built, for all specified chroots.
 
-        After the last mock invocation, a list of successful and unsuccessful
-        builds is printed.
+        After the last mock invocation, a list of successful and unsuccessful builds is printed.
 
         Returns:
             bool:   ``True`` if all builds succeeded, ``False`` if not
@@ -188,22 +183,20 @@ class MockBuilder(Builder):
         if not self.active:
             return True
 
+        ktr = Kentauros(LOGPREFIX1)
+
         # check if user is in the "mock" group
         mock_group = grp.getgrnam("mock")
         mock_user = os.getenv("USER")
         if not ((mock_user in mock_group.gr_mem) or (mock_user == "root")):
-            log(LOGPREFIX1 + "This user is not allowed to build in mock.", 2)
+            ktr.log("This user is not allowed to build in mock.", 2)
             return False
 
-        ktr = Kentauros()
-
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(ktr.conf.get_packdir(),
-                                       self.bpkg.name + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(ktr.conf.get_packdir(), self.bpkg.name + "*.src.rpm"))
 
         if not srpms:
-            log(LOGPREFIX1 +
-                "No source packages were found. Construct them first.", 2)
+            ktr.log("No source packages were found. Construct them first.", 2)
             return False
 
         # figure out which srpm to build
@@ -216,9 +209,9 @@ class MockBuilder(Builder):
             dists = []
 
         if dists:
-            log(LOGPREFIX1 + "Specified chroots:", 2)
+            ktr.log("Specified chroots:", 2)
             for dist in dists:
-                log(LOGPREFIX2 + dist, 2)
+                ktr.log(dist, prefix=LOGPREFIX2, pri=2)
 
         # generate build queue
         build_queue = list()
@@ -245,21 +238,21 @@ class MockBuilder(Builder):
             os.remove(srpm)
 
         if build_succ:
-            log(LOGPREFIX1 + "Build successes:", 2)
+            ktr.log("Build successes:", 2)
             for success in build_succ:
-                log(LOGPREFIX2 + str(success), 2)
+                ktr.log(str(success), prefix=LOGPREFIX2, pri=2)
 
         if build_fail:
-            log(LOGPREFIX1 + "Build failures:", 2)
+            ktr.log("Build failures:", 2)
             for fails in build_fail:
-                log(LOGPREFIX2 + str(fails), 2)
+                ktr.log(str(fails), prefix=LOGPREFIX2, pri=2)
 
         return not build_fail
 
     def export(self) -> bool:
         """
-        This method copies the build results (if any) from the mock result
-        directory to the directory specified for binary package exports.
+        This method copies the build results (if any) from the mock result directory to the
+        directory specified for binary package exports.
 
         Returns:
             bool:   ``True`` if successful, ``False`` if not
