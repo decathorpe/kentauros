@@ -93,6 +93,19 @@ class BzrSource(Source):
         self.saved_rev = rev
         return rev
 
+    def status(self) -> dict:
+        """
+        This method returns statistics describing this BzrSource object and its associated file(s).
+        At the moment, this only includes the revision the repository is at.
+
+        Returns:
+            dict:   key-value pairs (property: value)
+        """
+
+        status = dict()
+        status["last-rev"] = self.rev()
+        return status
+
     def formatver(self) -> str:
         """
         This method returns a nicely formatted version string for bzr sources.

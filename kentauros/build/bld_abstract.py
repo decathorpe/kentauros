@@ -21,7 +21,6 @@ class Builder(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-
         self.bpkg = package
 
     @abc.abstractmethod

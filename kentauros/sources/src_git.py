@@ -158,6 +158,21 @@ class GitSource(Source):
         self.saved_rev = rev
         return rev
 
+    def status(self) -> dict:
+        """
+        This method returns statistics describing this GitSource object and its associated file(s).
+        At the moment, this only includes the current commit hash and the date and time of the last
+        current commit.
+
+        Returns:
+            dict:   key-value pairs (property: value)
+        """
+
+        status = dict()
+        status["last-commit"] = self.rev()
+        status["last-date"] = self.date()
+        return status
+
     def formatver(self) -> str:
         """
         This method assembles a standardised version string for git sources.

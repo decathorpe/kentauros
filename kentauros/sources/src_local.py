@@ -35,6 +35,9 @@ class LocalSource(Source):
             self.conf.get("source", "orig")))
         self.type = SourceType.LOCAL
 
+    def status(self) -> dict:
+        return dict()
+
     def get(self) -> bool:
         """
         This method attempts to copy the specified source from the location

@@ -53,26 +53,30 @@ class Source(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def export(self):
         """
-        This dummy method will be overridden by subclasses. It is expected that
-        an appropriately named tarball is present within the package's source
+        It is expected that an appropriately named tarball is present within the package's source
         directory after this method has been executed.
         """
 
     @abc.abstractmethod
     def get(self):
         """
-        This dummy method will be overridden by subclasses. It is expected that
-        an appropriately named source file or directory is present within the
+        It is expected that an appropriately named source file or directory is present within the
         package's source directory after this method has been executed.
         """
 
     @abc.abstractmethod
     def update(self):
         """
-        This dummy method will be overridden by subclasses. It is expected that
-        the source repository present within the package's source directory is
-        up-to-date with upstream sources after this method has been executed,
-        except when package configuration specifies something else explicitely.
+        It is expected that the source repository present within the package's source directory is
+        up-to-date with upstream sources after this method has been executed, except when package
+        configuration explicitely specifies something else.
+        """
+
+    @abc.abstractmethod
+    def status(self) -> dict:
+        """
+        This method is expected to return a dictionary of statistics about the source, which
+        includes, for example, the current git commit hash, bzr revision number, etc.
         """
 
     def clean(self) -> bool:

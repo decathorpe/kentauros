@@ -47,6 +47,9 @@ class UrlSource(Source):
             log(LOGPREFIX1 + "Install wget to use the specified source.")
             self.active = False
 
+    def status(self) -> dict:
+        return dict()
+
     def get(self) -> bool:
         """
         This method executes the download of the file specified by the URL to

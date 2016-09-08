@@ -41,6 +41,11 @@ class DummySource(Source):
                         self.spkg + " exported. Nothing happens.", 2)
         return True
 
+    def status(self) -> dict:
+        Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
+                        self.spkg + " queried. Nothing happens.", 2)
+        return dict()
+
     def get(self):
         Kentauros().log(LOGPREFIX1 + "Dummy Source for package " +
                         self.spkg + " got. Nothing happens.", 2)
