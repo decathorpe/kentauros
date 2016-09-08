@@ -12,14 +12,6 @@ kentauros.construct.con_abstract module
     :undoc-members:
     :show-inheritance:
 
-kentauros.construct.con_dummy module
-------------------------------------
-
-.. automodule:: kentauros.construct.con_dummy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.construct.con_srpm module
 -----------------------------------
 

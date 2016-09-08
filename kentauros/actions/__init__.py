@@ -22,15 +22,12 @@ from kentauros.actions.acts import UpdateAction
 from kentauros.actions.acts import UploadAction
 from kentauros.actions.acts import VerifyAction
 
-from kentauros.actions.act_dummy import DummyAction
-
 
 ACTION_DICT = dict()
 """This dictionary maps :py:class:`ActionType` enum members to their respective
 :py:class:`Action` subclass constructors.
 """
 
-ACTION_DICT[ActionType.NONE] = DummyAction
 ACTION_DICT[ActionType.BUILD] = BuildAction
 ACTION_DICT[ActionType.CHAIN] = ChainAction
 ACTION_DICT[ActionType.CLEAN] = CleanAction

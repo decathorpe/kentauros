@@ -10,7 +10,6 @@ respective class constructors.
 from kentauros.definitions import SourceType
 
 from kentauros.sources.src_bzr import BzrSource
-from kentauros.sources.src_dummy import DummySource
 from kentauros.sources.src_git import GitSource
 from kentauros.sources.src_local import LocalSource
 from kentauros.sources.src_url import UrlSource
@@ -21,7 +20,6 @@ SOURCE_TYPE_DICT = dict()
 :py:class:`Source` subclass constructors.
 """
 
-SOURCE_TYPE_DICT[SourceType.NONE] = DummySource
 SOURCE_TYPE_DICT[SourceType.BZR] = BzrSource
 SOURCE_TYPE_DICT[SourceType.GIT] = GitSource
 SOURCE_TYPE_DICT[SourceType.LOCAL] = LocalSource

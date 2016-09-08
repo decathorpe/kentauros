@@ -51,7 +51,12 @@ class Kentauros:
     def __setattr__(self, attr: str, val):
         self.saved_state.__setitem__(attr, val)
 
-    def __init__(self):
+    def __init__(self, log_prefix: str=None):
+        if log_prefix is not None:
+            assert isinstance(log_prefix, str)
+
+        self.log_prefix = log_prefix
+
         if "cli" not in self.saved_state:
             self.cli = CLIArgs()
 
@@ -64,7 +69,7 @@ class Kentauros:
         if "conf" not in self.saved_state:
             self.conf = ktr_get_conf()
 
-    def dbg(self, msg: str):
+    def dbg(self, msg: str, prefix: str=None):
         """
         This method prints messages with a "DEBUG: " prefix to stdout, but
         only if the ``KTR_DEBUG`` environment variable has been set or the
@@ -74,10 +79,22 @@ class Kentauros:
             str msg: debug message to be printed
         """
 
-        if self.debug:
-            print("DEBUG: " + str(msg))
+        if not self.debug:
+            return
 
-    def err(self, msg: str):
+        assert isinstance(msg, str)
+
+        if prefix is not None:
+            print("DEBUG: " + prefix + " " + msg)
+            return
+
+        if self.log_prefix is not None:
+            print("DEBUG: " + self.log_prefix + " " + msg)
+            return
+
+        print("DEBUG: " + msg)
+
+    def err(self, msg: str, prefix: str=None):
         """
         This method prints messages with an "ERROR: " prefix to standard error
         output, regardless of environment variables and CLI settings supplied.
@@ -86,9 +103,9 @@ class Kentauros:
             str msg: error message to be printed
         """
 
-        self.log("ERROR: " + msg, 2, sys.stderr)
+        self.log(msg, prefix="ERROR: " + prefix, outfile=sys.stderr)
 
-    def log(self, msg: str, pri: int=2, outfile=sys.stdout):
+    def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout):
         """
         This method prints messages to standard output, depending on the
         priority argument and the verbosity level determined from environment
@@ -96,11 +113,9 @@ class Kentauros:
 
         Invocation with
 
-        * ``pri=2`` (which is the default) will always print the attached
-          message
+        * ``pri=2`` (which is the default) will always print the attached message
         * ``pri=1`` will print messages when verbosity is set to 1
-        * ``pri=0`` will print messages when verbosity is set to 0 or when
-          debugging is enabled
+        * ``pri=0`` will print messages when verbosity is set to 0 or when debugging is enabled
 
         Arguments:
             str msg: message that will be printed
@@ -108,10 +123,18 @@ class Kentauros:
         """
 
         if (pri >= self.verby) or self.debug:
+
+            if prefix is not None:
+                print(prefix + " " + msg, file=outfile)
+                return
+
+            if self.log_prefix is not None:
+                print(self.log_prefix + " " + msg, file=outfile)
+                return
+
             print(msg, file=outfile)
 
-    def log_command(self, prefix1: str, basename: str,
-                    cmdlist: list, pri: int=2):
+    def log_command(self, prefix1: str, basename: str, cmdlist: list, pri: int=2):
         """
         This method prints commands that are then executed by use of the
         :py:func:`subprocess.call` or :py:func:`subprocess.check_output`

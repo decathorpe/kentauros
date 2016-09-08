@@ -12,14 +12,6 @@ kentauros.build.bld_abstract module
     :undoc-members:
     :show-inheritance:
 
-kentauros.build.bld_dummy module
---------------------------------
-
-.. automodule:: kentauros.build.bld_dummy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.build.bld_mock module
 -------------------------------
 

@@ -11,7 +11,6 @@ constructors.
 
 from kentauros.definitions import BuilderType
 
-from kentauros.build.bld_dummy import DummyBuilder
 from kentauros.build.bld_mock import MockBuilder
 
 
@@ -21,4 +20,3 @@ BUILDER_TYPE_DICT = dict()
 """
 
 BUILDER_TYPE_DICT[BuilderType.MOCK] = MockBuilder
-BUILDER_TYPE_DICT[BuilderType.NONE] = DummyBuilder

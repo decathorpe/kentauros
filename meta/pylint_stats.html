@@ -77,20 +77,20 @@
 <td>TODO: verify that package *.conf is valid</td>
 </tr>
 <tr class="even">
+<td>warning</td>
+<td>kentauros.construct.con_srpm</td>
+<td>&#160;</td>
+<td>325</td>
+<td>0</td>
+<td>TODO: arguments need to be passed through (force, relreset, etc)</td>
+</tr>
+<tr class="odd">
 <td>refactor</td>
 <td>kentauros.construct.con_srpm</td>
 <td>SrpmConstructor.prepare</td>
 <td>106</td>
 <td>4</td>
 <td>Too many statements (66/60)</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.upload.__init__</td>
-<td>&#160;</td>
-<td>9</td>
-<td>0</td>
-<td>TODO: introduce upl_dummy.py module</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -109,7 +109,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1865 statements analysed.</p><div>
+<p>1798 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -122,24 +122,24 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>47</td>
-<td>47</td>
+<td>43</td>
+<td>43</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>45</td>
-<td>45</td>
+<td>41</td>
+<td>41</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>148</td>
-<td>148</td>
+<td>129</td>
+<td>129</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -163,12 +163,10 @@ kentauros
   \-actions (kentauros.run.ktr)
   | \-act_abstract (kentauros.actions.acts)
   | \-act_common (kentauros.actions.acts)
-  | \-act_dummy (kentauros.actions)
   | \-acts (kentauros.actions)
   \-bootstrap (kentauros.run.ktr)
   \-build (kentauros.package)
   | \-bld_abstract (kentauros.build.bld_mock)
-  | \-bld_dummy (kentauros.build)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
   | \-common (kentauros.config)
@@ -177,9 +175,8 @@ kentauros
   \-conntest (kentauros.upload.upl_copr)
   \-construct (kentauros.package)
   | \-con_abstract (kentauros.construct.con_srpm)
-  | \-con_dummy (kentauros.construct)
   | \-con_srpm (kentauros.construct)
-  \-definitions (kentauros.build)
+  \-definitions (kentauros.config)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
@@ -196,7 +193,6 @@ kentauros
   \-sources (kentauros.package)
   | \-src_abstract (kentauros.pkgformat.rpm)
   | \-src_bzr (kentauros.pkgformat.rpm.spec_version_out)
-  | \-src_dummy (kentauros.sources)
   | \-src_git (kentauros.pkgformat.rpm.spec_version_out)
   | \-src_local (kentauros.pkgformat.rpm.spec_version_out)
   | \-src_url (kentauros.pkgformat.rpm.spec_version_out)
@@ -215,31 +211,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2070</td>
-<td>39.00</td>
-<td>2070</td>
-<td>=</td>
+<td>1985</td>
+<td>38.63</td>
+<td>1984</td>
+<td>+1.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>2000</td>
-<td>37.68</td>
-<td>2000</td>
+<td>1936</td>
+<td>37.67</td>
+<td>1936</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>196</td>
-<td>3.69</td>
-<td>196</td>
+<td>209</td>
+<td>4.07</td>
+<td>209</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1042</td>
+<td>1009</td>
 <td>19.63</td>
-<td>1042</td>
-<td>=</td>
+<td>1008</td>
+<td>+1.00</td>
 </tr>
 </table>
 </div>
@@ -326,10 +322,10 @@ kentauros
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.upload.__init__</td>
+<td>kentauros.construct.con_srpm</td>
 <td>0.00</td>
 <td>10.00</td>
-<td>0.00</td>
+<td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
@@ -358,13 +354,6 @@ kentauros
 <td>0.00</td>
 <td>10.00</td>
 <td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="odd">
-<td>kentauros.construct.con_srpm</td>
-<td>0.00</td>
-<td>0.00</td>
-<td>100.00</td>
 <td>0.00</td>
 </tr>
 </table>

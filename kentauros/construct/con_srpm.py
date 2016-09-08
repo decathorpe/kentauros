@@ -320,3 +320,11 @@ class SrpmConstructor(Constructor):
             return None
 
         shutil.rmtree(self.tempdir)
+
+    # def construct(self):
+    #     # TODO: arguments need to be passed through (force, relreset, etc)
+    #     self.init()
+    #     self.prepare()
+    #     self.build()
+    #     self.export()
+    #     self.clean()

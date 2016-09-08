@@ -10,7 +10,6 @@ class constructors.
 
 from kentauros.definitions import ConstructorType
 
-from kentauros.construct.con_dummy import DummyConstructor
 from kentauros.construct.con_srpm import SrpmConstructor
 
 
@@ -19,5 +18,4 @@ CONSTRUCTOR_TYPE_DICT = dict()
 `Constructor` subclass constructors.
 """
 
-CONSTRUCTOR_TYPE_DICT[ConstructorType.NONE] = DummyConstructor
 CONSTRUCTOR_TYPE_DICT[ConstructorType.SRPM] = SrpmConstructor

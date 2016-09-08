@@ -20,14 +20,6 @@ kentauros.actions.act_common module
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_dummy module
-----------------------------------
-
-.. automodule:: kentauros.actions.act_dummy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.actions.acts module
 -----------------------------
 

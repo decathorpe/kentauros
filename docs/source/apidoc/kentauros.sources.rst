@@ -20,14 +20,6 @@ kentauros.sources.src_bzr module
     :undoc-members:
     :show-inheritance:
 
-kentauros.sources.src_dummy module
-----------------------------------
-
-.. automodule:: kentauros.sources.src_dummy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.sources.src_git module
 --------------------------------
 

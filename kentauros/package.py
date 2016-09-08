@@ -1,20 +1,18 @@
 """
-This subpackage contains the :py:class:`Package` class, which holds package
-configuration parsed from the corresponding `package.conf` file (errors that
-occur during parsing are probably not handled correctly yet). After parsing the
-package configuration, :py:class:`Source`, :py:class:`Constructor`,
-:py:class:`Builder` and :py:class:`Uploader` instances are set as attributes
-according to configuration.
+This subpackage contains the :py:class:`Package` class, which holds package configuration parsed
+from the corresponding `package.conf` file (errors that occur during parsing are probably not
+handled correctly yet). After parsing the package configuration, :py:class:`Source`,
+:py:class:`Constructor`, :py:class:`Builder` and :py:class:`Uploader` instances are set as
+attributes according to configuration.
 """
 
 
-from configparser import ConfigParser, NoOptionError
+from configparser import ConfigParser
 import os
 
-from kentauros.definitions import BuilderType, ConstructorType
-from kentauros.definitions import SourceType, UploaderType
+from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
 
-from kentauros.instance import Kentauros, err
+from kentauros.instance import Kentauros
 
 from kentauros.build import BUILDER_TYPE_DICT
 from kentauros.construct import CONSTRUCTOR_TYPE_DICT
@@ -30,8 +28,7 @@ stdout or stderr from inside this subpackage.
 
 class PackageError(Exception):
     """
-    This custom exception will be raised when errors occur during parsing of a
-    package configuration file.
+    This custom exception will be raised when errors occur during parsing of a package .conf file.
 
     Arguments:
         str value: informational string accompanying the exception
@@ -47,13 +44,11 @@ class PackageError(Exception):
 
 class Package:
     """
-    This class envelops all things necessary to perform actions on a specific
-    "package" of software.
+    This class envelops all things necessary to perform actions on a specific "package" of software.
 
     Arguments:
-        str name:                   Base name of software package - reading
-                                    $NAME.conf will be attempted for further
-                                    information about the package.
+        str name:                   Base name of software package - reading $NAME.conf will be
+                                    attempted for further information about the package.
 
     Attributes:
         ConfigParser conf:          parser for package.conf file
@@ -69,67 +64,90 @@ class Package:
     def __init__(self, name: str):
         assert isinstance(name, str)
 
-        self.name = name
-        self.file = os.path.join(Kentauros().conf.get_confdir(),
-                                 self.name + ".conf")
+        ktr = Kentauros(LOGPREFIX1)
 
+        self.name = name
+        self.file = os.path.join(ktr.conf.get_confdir(), self.name + ".conf")
         self.conf = ConfigParser()
 
-        result = self.conf.read(self.file)
-        if not result:
-            self.conf = None
-            err(LOGPREFIX1 + "Package configuration could not be read.")
-            err(LOGPREFIX1 + "Path: " + self.file)
+        if not os.path.exists(self.file):
+            raise FileNotFoundError("Package configuration file does not exist.")
+
+        success = self.conf.read(self.file)
+        if not success:
+            ktr.err("Package configuration could not be read.")
+            ktr.err("Path: " + self.file)
             raise PackageError("Package configuration could not be read.")
 
-        try:
-            self.conf["package"]
-        except KeyError:
-            raise PackageError("Package config file does not have a 'package' section.")
+        if not self.verify():
+            raise PackageError("Package configuration file is invalid.")
 
-        try:
-            self.conf["source"]
-        except KeyError:
-            raise PackageError("Package config file does not have a 'source' section.")
-
-        bld_type, con_type, src_type, upl_type = "", "", "", ""
-
-        try:
+        if "builder" not in self.conf["package"]:
+            # self.build = lambda *args: None
+            raise PackageError("No builder has been specified in the configuration file.")
+        else:
             bld_type = str(self.conf.get("package", "builder")).upper()
-        except NoOptionError:
-            bld_type = "NONE"
-        finally:
-            if bld_type == "":
-                bld_type = "NONE"
+            try:
+                self.builder = BUILDER_TYPE_DICT[BuilderType[bld_type]](self)
+                # self.build = BUILDER_TYPE_DICT[BuilderType[bld_type]](self).build
+            except KeyError:
+                raise PackageError("The specified builder type is not supported.")
 
-        try:
+        if "constructor" not in self.conf["package"]:
+            # self.construct = lambda *args: None
+            raise PackageError("No constrctor has been specified in the configuration file.")
+        else:
             con_type = str(self.conf.get("package", "constructor")).upper()
-        except NoOptionError:
-            con_type = "NONE"
-        finally:
-            if con_type == "":
-                con_type = "NONE"
+            try:
+                self.constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self)
+                # self.construct = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self).construct
+            except KeyError:
+                raise PackageError("The specified constructor type is not supported.")
 
+        src_type = str(self.conf.get("source", "type")).upper()
         try:
-            src_type = str(self.conf.get("source", "type")).upper()
-        except NoOptionError:
-            src_type = "NONE"
-        finally:
-            if src_type == "":
-                src_type = "NONE"
+            self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self)
+            # self.upstream_source = SOURCE_TYPE_DICT[SourceType[src_type]](self).source
+        except KeyError:
+            raise PackageError("The specified source type is not supported.")
 
-        try:
+        if "uploader" not in self.conf["package"]:
+            # self.upload = lambda *args: None
+            raise PackageError("No uploader has been specified in the configuration file.")
+        else:
             upl_type = str(self.conf.get("package", "uploader")).upper()
-        except NoOptionError:
-            upl_type = "NONE"
-        finally:
-            if upl_type == "":
-                upl_type = "NONE"
+            try:
+                self.uploader = UPLOADER_TYPE_DICT[UploaderType[upl_type]](self)
+                # self.upload = UPLOADER_TYPE_DICT[UploaderType[upl_type]](self).upload
+            except KeyError:
+                raise PackageError("The specified uploader type is not supported.")
 
-        self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self)
-        self.constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self)
-        self.builder = BUILDER_TYPE_DICT[BuilderType[bld_type]](self)
-        self.uploader = UPLOADER_TYPE_DICT[UploaderType[upl_type]](self)
+    def verify(self) -> bool:
+        """
+        This method verifies that the absolute minimum for proceeding with package initialisation
+        is set.
+
+        Returns:
+            bool:   *True* if configuration is minimally valid, *False* if entries are missing
+        """
+
+        assert isinstance(self.conf, ConfigParser)
+
+        ktr = Kentauros(LOGPREFIX1)
+
+        if "package" not in self.conf.sections():
+            ktr.err("Package configuration file does not have a 'package' section.")
+            return False
+
+        if "source" not in self.conf.sections():
+            ktr.err("Package configuration file does not have a 'source' section.")
+            return False
+
+        if "type" not in self.conf["source"]:
+            ktr.err("Package configuration file does not specify the type of source.")
+            return False
+
+        return True
 
     def update_config(self):
         """
@@ -137,10 +155,12 @@ class Package:
         configuration file for permanent changes.
         """
 
+        ktr = Kentauros(LOGPREFIX1)
+
         try:
             conf_file = open(self.file, "w")
             self.conf.write(conf_file)
             conf_file.close()
         except OSError:
-            err(LOGPREFIX1 + "Package configuration file could not be written.")
-            err(LOGPREFIX1 + "Path: " + self.file)
+            ktr.err("Package configuration file could not be written.")
+            ktr.err("Path: " + self.file)

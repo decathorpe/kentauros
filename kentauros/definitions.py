@@ -64,7 +64,6 @@ class ActionType(Enum):
     """
 
     NONE = 0
-    DUMMY = 1
     STATUS = 11
     VERIFY = 13
     GET = 20
@@ -89,8 +88,7 @@ class BuilderType(Enum):
     """
 
     NONE = 0
-    DUMMY = 1
-    MOCK = 2
+    MOCK = 1
 
 
 @unique
@@ -103,8 +101,7 @@ class ConstructorType(Enum):
     """
 
     NONE = 0
-    DUMMY = 1
-    SRPM = 2
+    SRPM = 1
 
 
 @unique
@@ -117,11 +114,10 @@ class SourceType(Enum):
     """
 
     NONE = 0
-    DUMMY = 1
-    URL = 2
-    GIT = 3
-    BZR = 4
-    LOCAL = 5
+    URL = 10
+    GIT = 20
+    BZR = 21
+    LOCAL = 30
 
 
 @unique
@@ -134,5 +130,4 @@ class UploaderType(Enum):
     """
 
     NONE = 0
-    DUMMY = 1
-    COPR = 2
+    COPR = 1
