@@ -54,27 +54,27 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.actions.acts</td>
+<td>kentauros.actions.act_upload</td>
 <td>&#160;</td>
-<td>386</td>
-<td>0</td>
-<td>TODO: output package configuration / status</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.actions.acts</td>
-<td>&#160;</td>
-<td>452</td>
+<td>40</td>
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
-<td>kentauros.actions.acts</td>
+<td>kentauros.actions.act_verify</td>
 <td>&#160;</td>
-<td>482</td>
+<td>40</td>
 <td>0</td>
 <td>TODO: verify that package *.conf is valid</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.actions.act_status</td>
+<td>&#160;</td>
+<td>37</td>
+<td>0</td>
+<td>TODO: output package configuration / status</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -109,7 +109,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1798 statements analysed.</p><div>
+<p>1847 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -122,8 +122,8 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>43</td>
-<td>43</td>
+<td>54</td>
+<td>54</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -161,9 +161,20 @@ dateutil
   \-parser (kentauros.sources.src_git)
 kentauros 
   \-actions (kentauros.run.ktr)
-  | \-act_abstract (kentauros.actions.acts)
-  | \-act_common (kentauros.actions.acts)
-  | \-acts (kentauros.actions)
+  | \-act_abstract (kentauros.actions.act_construct)
+  | \-act_build (kentauros.actions)
+  | \-act_chain (kentauros.actions)
+  | \-act_clean (kentauros.actions)
+  | \-act_common (kentauros.actions.act_construct)
+  | \-act_construct (kentauros.actions)
+  | \-act_export (kentauros.actions)
+  | \-act_get (kentauros.actions)
+  | \-act_prepare (kentauros.actions)
+  | \-act_refresh (kentauros.actions)
+  | \-act_status (kentauros.actions)
+  | \-act_update (kentauros.actions)
+  | \-act_upload (kentauros.actions)
+  | \-act_verify (kentauros.actions)
   \-bootstrap (kentauros.run.ktr)
   \-build (kentauros.package)
   | \-bld_abstract (kentauros.build.bld_mock)
@@ -211,31 +222,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>1985</td>
-<td>38.63</td>
-<td>1984</td>
-<td>+1.00</td>
+<td>2054</td>
+<td>39.06</td>
+<td>2054</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1936</td>
-<td>37.67</td>
-<td>1936</td>
+<td>1941</td>
+<td>36.91</td>
+<td>1941</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>209</td>
-<td>4.07</td>
+<td>3.97</td>
 <td>209</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1009</td>
-<td>19.63</td>
-<td>1008</td>
-<td>+1.00</td>
+<td>1055</td>
+<td>20.06</td>
+<td>1055</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -308,49 +319,63 @@ kentauros
 <th>convention</th>
 </tr>
 <tr class="even">
-<td>kentauros.actions.acts</td>
-<td>0.00</td>
-<td>30.00</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="odd">
 <td>kentauros.sources.src_abstract</td>
 <td>0.00</td>
 <td>20.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>kentauros.construct.con_srpm</td>
 <td>0.00</td>
 <td>10.00</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>kentauros.pkgformat.pkg_rpm_spec</td>
 <td>0.00</td>
 <td>10.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>kentauros.instance</td>
 <td>0.00</td>
 <td>10.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>kentauros.conntest</td>
 <td>0.00</td>
 <td>10.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>kentauros.build.bld_mock</td>
+<td>0.00</td>
+<td>10.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.actions.act_verify</td>
+<td>0.00</td>
+<td>10.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>kentauros.actions.act_upload</td>
+<td>0.00</td>
+<td>10.00</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.actions.act_status</td>
 <td>0.00</td>
 <td>10.00</td>
 <td>0.00</td>
