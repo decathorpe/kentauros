@@ -1,10 +1,7 @@
 """
-This module contains :py:func:`get_env_config` function, which parses
-environment variables for settings. Those settings include - at the moment -
-the base directory for kentauros data (`KTR_BASEDIR`), the directory for package
-configuration files (`KTR_CONFDIR`), the directory for package sources
-(`KTR_DATADIR`), the directory for buildable source packages (`KTR_PACKDIR`)
-and the package specification directory (`KTR_SPECDIR`).
+This module contains :py:func:`get_env_config` function, which parses environment variables for
+settings. Those settings include - at the moment - the base directory for kentauros data
+(`KTR_BASEDIR`).
 """
 
 
@@ -15,15 +12,15 @@ from kentauros.config.common import KtrConf
 
 
 LOGPREFIX1 = "ktr/config/envvar: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
 """
 
 
 def get_env_config() -> KtrConf:
     """
-    This function reads and parses environment variables and puts them into a
-    :py:class:`KtrConf` instance for further processing.
+    This function reads and parses environment variables and puts them into a :py:class:`KtrConf`
+    instance for further processing.
 
     Returns:
         KtrConf: settings parsed from environment variables

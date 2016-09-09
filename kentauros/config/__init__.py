@@ -1,8 +1,7 @@
 """
-This subpackage contains definitions of the default kentauros configuration
-files' locations, error messages if they are not found, and a function that
-returns the configuration values determined from the highest priority
-configuration found or the configuration location specified at command line.
+This subpackage contains definitions of the default kentauros configuration files' locations, error
+messages if they are not found, and a function that returns the configuration values determined from
+the highest priority onfiguration found or the configuration location specified at command line.
 """
 
 
@@ -22,21 +21,10 @@ from kentauros.init.cli import CLIArgs
 from kentauros.init.env import get_env_home
 
 
-LOGPREFIX1 = "ktr/config: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
-"""
-
-LOGPREFIX2 = "            - "
-"""This string specifies the prefix for lists printed through log and error
-functions, printed to stdout or stderr from inside this subpackage.
-"""
-
-
 def get_conf_from_file_args(conf_type: KtrConfType) -> tuple:
     """
-    This function returns the arguments for :py:meth:`KtrConf.from_file`
-    method calls, depending on the type of configuration file location.
+    This function returns the arguments for :py:meth:`KtrConf.from_file` method calls, depending on
+    the type of configuration file location.
 
     Arguments:
         KtrConfType conf_type: type of configuration arguments will be built for
@@ -68,8 +56,7 @@ def get_conf_from_file_args(conf_type: KtrConfType) -> tuple:
 
 def ktr_get_conf() -> KtrConf:
     """
-    This function gets and parses :py:class:`KtrConf` instances for
-    configuration values.
+    This function gets and parses :py:class:`KtrConf` instances for configuration values.
 
     Arguments:
         InstanceType itype: instance type CLI configuration will be parsed for

@@ -11,19 +11,20 @@ from kentauros.init.env import get_env_debug
 
 
 LOGPREFIX1 = "ktr/config/common: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
 """
+
 LOGPREFIX2 = "                   - "
-"""This string specifies the prefix for lists printed through log and error
-functions, printed to stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for lists printed through log and error functions, printed to
+stdout or stderr from inside this subpackage.
 """
 
 
 class ConfigException(Exception):
     """
-    This custom exception will be raised when errors occur during parsing of a
-    kentauros configuration file.
+    This custom exception will be raised when errors occur during parsing of a kentauros
+    configuration file.
 
     Arguments:
         str value: informational string accompanying the exception
@@ -55,8 +56,7 @@ def __replace_home__(string: str) -> str:
 
 class KtrConf:
     """
-    This class is used to get and store kentauros configuration from one of the
-    valid sources.
+    This class is used to get and store kentauros configuration from one of the valid sources.
 
     Valid configuration file locations include (in ascending priority):
 
@@ -154,8 +154,8 @@ class KtrConf:
 
     def validate(self) -> bool:
         """
-        This method contains a simple and stupid, fast verification that the
-        stored configuration does not contain missing values (`None`).
+        This method contains a simple and stupid, fast verification that the stored configuration
+        does not contain missing values (`None`).
 
         Returns:
             bool: `True` if a basic test is passed, `False` if not
@@ -174,46 +174,39 @@ class KtrConf:
 
     def succby(self, other):
         """
-        This method overrides attributes with those from another
-        :py:class:`KtrConf` instance and does basic verification of the
-        resulting configuration values.
+        This method overrides attributes with those from another :py:class:`KtrConf` instance and
+        does basic verification of the resulting configuration values.
 
         Arguments:
             KtrConf other:      configuration from which values are read
 
         Raises:
-            ConfigException:    This exception is raised when an error occurs
-                                during configuration verification.
+            ConfigException:    raised when an error occurs during config verification
         """
 
         assert isinstance(other, KtrConf)
 
-        # if basedir is not set: all other values have been explicitly set,
-        # so override all of them
         if other.validate():
             self.basedir = other.basedir
             self.type = other.type
 
         if not self.validate():
-            print(LOGPREFIX1 + "Last attempted action was overriding default values.")
             raise ConfigException("Error occured during configuration parsing.")
 
     def from_file(self, filepath: str, errmsg: str=None):
         """
-        This method is used to read values from an `ini`-style configuration
-        file and store the results in the instance's attributes.
+        This method is used to read values from an `ini`-style configuration file and store the
+        results in the instance's attributes.
 
-        It also stores the :py:class:`ConfigParser` object and file path, in
-        case they were needed along the line.
+        It also stores the :py:class:`ConfigParser` object and file path, in case they were needed
+        along the line.
 
         Arguments:
             str filepath:   path to configuration file
-            str errmsg:     error message that will be printed in case the file
-                            is not found at the specified location
+            str errmsg:     error message that will be printed in case the file is not found
 
         Returns:
-            KtrConf:        returns instance itself for prettier code later on,\
-                            or `None` if file is not found.
+            KtrConf:        returns instance itself or *None* if file is not found.
         """
 
         if not os.path.exists(filepath):
