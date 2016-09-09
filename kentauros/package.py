@@ -7,6 +7,9 @@ attributes according to configuration.
 """
 
 
+# TODO: rework ktr/package submodule
+
+
 from configparser import ConfigParser
 import os
 

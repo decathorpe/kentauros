@@ -116,6 +116,8 @@ class CoprUploader(Uploader):
         log_command(LOGPREFIX1, "copr-cli", cmd, 1)
         subprocess.call(cmd)
 
+        # TODO: error handling
+
         # remove source package if keep=False is specified
         if not self.upkg.conf.getboolean("copr", "keep"):
             os.remove(srpm)

@@ -6,6 +6,9 @@ should be.
 """
 
 
+# TODO: rework ktr/bootstrap submodule
+
+
 import os
 
 from kentauros.instance import Kentauros, log

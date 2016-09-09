@@ -18,6 +18,9 @@ The following Enums are defined here:
 """
 
 
+# TODO: rework ktr/definitions submodule
+
+
 from enum import Enum, unique
 
 

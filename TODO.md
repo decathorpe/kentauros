@@ -1,9 +1,5 @@
 # TODO items for kentauros
 
-
-These TODO items complement those found within the code itself.
-
-
 ## ktr
 
 - add exports directory to initialisation (for built binary packages)
@@ -15,15 +11,23 @@ These TODO items complement those found within the code itself.
 - status: implementation missing
 - upload: missing error handling
 - verify: implementation missing
+- remove unnecessary action classes
 
 
-## builder:
+## bootstrap:
+
+- rework submodule
+- add exports directory
+
+
+## build:
 
 - mock: export successfully built RPM packages to basedir/exports
 
 
 ## conntest:
 
+- rework submodule
 - close socket after use
 - try connecting at least 3 times within 10 seconds or something
 
@@ -33,18 +37,55 @@ These TODO items complement those found within the code itself.
 - srpm: move .spec.old back into place if builds fail
 
 
+## construct:
+
+- rework relreset / force code so it actually works as intended
+
+
+## definitions:
+
+- rework submodule
+
+
 ## init:
 
+- rework subpackage
 - cli: add --message argument for supplying changelog messages
+
+
+## instance:
+
+- rework submodule
+- remove old log,err,dbg,log_command functions
 
 
 ## package:
 
+- rework submodule
 - at initialisation, replace hyphens in source/version with tilde
 - allow variables in package configuration file: `$(VERSION)`, `$(NAME)`
 
 
+## pkgformat:
+
+- rework subpackage
+- finish RPM spec handling rewrite
+
+
 ## source:
 
+- rework subpackage
+- remove Source.conf attribute -> Source.spkg.conf
+- remove Source.name attribute -> Source.spkg.name
 - bzr: lightweight checkouts are not supported yet
 
+
+## state:
+
+- rework subpackage
+
+
+## upload:
+
+- rework subpackage
+- copr: missing error handling

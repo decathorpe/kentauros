@@ -5,6 +5,9 @@ to a specific URL.
 """
 
 
+# TODO: rework ktr/conntest submodule
+
+
 import socket
 from urllib.parse import urlparse
 
@@ -22,6 +25,7 @@ def is_connected(host_url: str) -> bool:
     """
 
     # TODO: with socket.create_connection((host, 80), 2) as sock:
+    # TODO: try three? times within 10? seconds
 
     hostname = urlparse(host_url).hostname
 
