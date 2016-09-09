@@ -3,6 +3,8 @@ This subpackage contains classes and functions for reading and writing state to
 the project's database.
 """
 
+# TODO: rework ktr/state subpackage
+
 import os
 from collections import OrderedDict
 

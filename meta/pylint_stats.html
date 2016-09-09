@@ -30,13 +30,21 @@
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>kentauros.sources.__init__</td>
+<td>&#160;</td>
+<td>10</td>
+<td>0</td>
+<td>TODO: rework ktr/sources subpackage</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
 <td>kentauros.sources.src_abstract</td>
 <td>&#160;</td>
 <td>6</td>
 <td>0</td>
 <td>TODO: remove Source.conf attribute</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.sources.src_abstract</td>
 <td>&#160;</td>
@@ -44,7 +52,7 @@
 <td>0</td>
 <td>TODO: remove Source.name attribute</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.pkgformat.pkg_rpm_spec</td>
 <td>&#160;</td>
@@ -52,7 +60,23 @@
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.pkgformat.__init__</td>
+<td>&#160;</td>
+<td>6</td>
+<td>0</td>
+<td>TODO: rework ktr/pkgformat subpackage</td>
+</tr>
 <tr class="odd">
+<td>warning</td>
+<td>kentauros.init.__init__</td>
+<td>&#160;</td>
+<td>7</td>
+<td>0</td>
+<td>TODO: rework ktr/init subpackage</td>
+</tr>
+<tr class="even">
 <td>warning</td>
 <td>kentauros.actions.act_upload</td>
 <td>&#160;</td>
@@ -60,7 +84,7 @@
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.actions.act_verify</td>
 <td>&#160;</td>
@@ -68,7 +92,7 @@
 <td>0</td>
 <td>TODO: verify that package *.conf is valid</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.actions.act_status</td>
 <td>&#160;</td>
@@ -76,7 +100,7 @@
 <td>0</td>
 <td>TODO: output package configuration / status</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.construct.con_srpm</td>
 <td>&#160;</td>
@@ -84,7 +108,7 @@
 <td>0</td>
 <td>TODO: rework the release resetting / incrementing logic so it actually works</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.construct.con_srpm</td>
 <td>&#160;</td>
@@ -92,13 +116,37 @@
 <td>0</td>
 <td>TODO: arguments need to be passed through (force, relreset, etc)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>refactor</td>
 <td>kentauros.construct.con_srpm</td>
 <td>SrpmConstructor.prepare</td>
 <td>107</td>
 <td>4</td>
 <td>Too many statements (66/60)</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.state.__init__</td>
+<td>&#160;</td>
+<td>6</td>
+<td>0</td>
+<td>TODO: rework ktr/state subpackage</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.upload.__init__</td>
+<td>&#160;</td>
+<td>9</td>
+<td>0</td>
+<td>TODO: rework ktr/upload subpackage</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.run.__init__</td>
+<td>&#160;</td>
+<td>6</td>
+<td>0</td>
+<td>TODO: rework ktr/run subpackage</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -231,30 +279,30 @@ kentauros
 <tr class="even">
 <td>code</td>
 <td>2052</td>
-<td>39.33</td>
-<td>2050</td>
-<td>+2.00</td>
+<td>39.24</td>
+<td>2052</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>1899</td>
-<td>36.39</td>
-<td>1912</td>
-<td>-13.00</td>
+<td>36.31</td>
+<td>1899</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
+<td>214</td>
+<td>4.09</td>
 <td>208</td>
-<td>3.99</td>
-<td>207</td>
-<td>+1.00</td>
+<td>+6.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
+<td>1065</td>
+<td>20.36</td>
 <td>1059</td>
-<td>20.30</td>
-<td>1055</td>
-<td>+4.00</td>
+<td>+6.00</td>
 </tr>
 </table>
 </div>
@@ -304,9 +352,9 @@ kentauros
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>17</td>
 <td>11</td>
-<td>10</td>
-<td>+1.00</td>
+<td>+6.00</td>
 </tr>
 <tr class="odd">
 <td>error</td>
@@ -329,63 +377,105 @@ kentauros
 <tr class="even">
 <td>kentauros.construct.con_srpm</td>
 <td>0.00</td>
-<td>18.18</td>
+<td>11.76</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.sources.src_abstract</td>
 <td>0.00</td>
-<td>18.18</td>
+<td>11.76</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.upload.__init__</td>
+<td>0.00</td>
+<td>5.88</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>kentauros.state.__init__</td>
+<td>0.00</td>
+<td>5.88</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.sources.__init__</td>
+<td>0.00</td>
+<td>5.88</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>kentauros.run.__init__</td>
+<td>0.00</td>
+<td>5.88</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.pkgformat.pkg_rpm_spec</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>5.88</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
+<td>kentauros.pkgformat.__init__</td>
+<td>0.00</td>
+<td>5.88</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
 <td>kentauros.instance</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>5.88</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
+<td>kentauros.init.__init__</td>
+<td>0.00</td>
+<td>5.88</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.conntest</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>5.88</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.build.bld_mock</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>5.88</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.actions.act_verify</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>5.88</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.actions.act_upload</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>5.88</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.actions.act_status</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>5.88</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
@@ -400,7 +490,7 @@ kentauros
 </tr>
 <tr class="even">
 <td>fixme</td>
-<td>11</td>
+<td>17</td>
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
@@ -410,7 +500,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.93/10 (previous run: 9.94/10, -0.01)</div>
+Your code has been rated at 9.90/10 (previous run: 9.93/10, -0.03)</div>
 </div>
 </body>
 </html>

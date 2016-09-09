@@ -6,6 +6,8 @@ Additionally, this file contains a dictioary which maps :py:class:`UploaderType`
 enums to their respective class constructors.
 """
 
+# TODO: rework ktr/upload subpackage
+
 from kentauros.definitions import UploaderType
 
 from kentauros.upload.upl_copr import CoprUploader

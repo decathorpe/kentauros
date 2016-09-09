@@ -7,6 +7,8 @@ file contains a dictioary which maps :py:class:`SourceType` enums to their
 respective class constructors.
 """
 
+# TODO: rework ktr/sources subpackage
+
 from kentauros.definitions import SourceType
 
 from kentauros.sources.src_bzr import BzrSource
