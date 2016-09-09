@@ -12,6 +12,6 @@ import sys
 
 sys.path.insert(0, os.getcwd())
 
-from kentauros.run.ktr import run
+from kentauros.run.run_ktr import run
 
 run()

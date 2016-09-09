@@ -1,16 +1,17 @@
 """
-This module contains the :py:func:`run` function that is called as entry point
-from the ``ktr`` script.
+This module contains the :py:func:`run` function that is called as entry point from the ``ktr``
+script.
 """
+
 
 import glob
 import os
 
-from kentauros.instance import Kentauros, dbg, log
+from kentauros.instance import Kentauros
 
 from kentauros.actions import ACTION_DICT
 from kentauros.bootstrap import ktr_bootstrap
-from kentauros.run.common import get_action_args
+from kentauros.package import Package
 
 
 LOGPREFIX1 = "ktr: "
@@ -31,23 +32,23 @@ def run():
     git and the script installed by setuptools at installation.
     """
 
-    ktr = Kentauros()
+    ktr = Kentauros(LOGPREFIX1)
 
     print()
 
-    log(LOGPREFIX1 + "DEBUG set: " + str(ktr.debug), 0)
-    log(LOGPREFIX1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
+    ktr.log("DEBUG set: " + str(ktr.debug), 0)
+    ktr.log("VERBOSITY: " + str(ktr.verby) + "/2", 1)
 
-    dbg(LOGPREFIX1 + "BASEDIR: " + ktr.conf.basedir)
-    dbg(LOGPREFIX1 + "CONFDIR: " + ktr.conf.get_confdir())
-    dbg(LOGPREFIX1 + "DATADIR: " + ktr.conf.get_datadir())
-    dbg(LOGPREFIX1 + "PACKDIR: " + ktr.conf.get_packdir())
-    dbg(LOGPREFIX1 + "SPECDIR: " + ktr.conf.get_specdir())
+    ktr.dbg("BASEDIR: " + ktr.conf.basedir)
+    ktr.dbg("CONFDIR: " + ktr.conf.get_confdir())
+    ktr.dbg("DATADIR: " + ktr.conf.get_datadir())
+    ktr.dbg("PACKDIR: " + ktr.conf.get_packdir())
+    ktr.dbg("SPECDIR: " + ktr.conf.get_specdir())
 
     # if no action is specified: exit
     if ktr.cli.get_action() is None:
-        log(LOGPREFIX1 + "No action specified. Exiting.", 2)
-        log(LOGPREFIX1 + "Use 'ktr --help' for more information.", 2)
+        ktr.log("No action specified. Exiting.", 2)
+        ktr.log("Use 'ktr --help' for more information.", 2)
         print()
         return
 
@@ -72,21 +73,22 @@ def run():
             pkgs.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
 
     # log list of found packages
-    log(LOGPREFIX1 + "Packages:", 2)
+    ktr.log("Packages:", 2)
     for package in pkgs:
-        log(LOGPREFIX2 + package, 2)
+        assert isinstance(package, str)
+        ktr.log(package, pri=2, prefix=LOGPREFIX2)
 
     # run action for every specified package
     for name in pkgs:
+        assert isinstance(name, str)
+
         action_type = ktr.cli.get_action()
-        action = ACTION_DICT[action_type](*get_action_args(ktr.cli,
-                                                           name,
-                                                           action_type))
+        action = ACTION_DICT[action_type](Package(name), ktr.cli.get_force())
         success = action.execute()
 
         if success:
-            log(LOGPREFIX1 + name + ": Success!")
+            ktr.log(name + ": Success!")
         else:
-            log(LOGPREFIX1 + name + ": Not successful.")
+            ktr.log(name + ": Not successful.")
 
     print()

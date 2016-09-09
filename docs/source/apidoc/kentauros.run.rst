@@ -4,18 +4,10 @@ kentauros.run package
 Submodules
 ----------
 
-kentauros.run.common module
----------------------------
+kentauros.run.run_ktr module
+----------------------------
 
-.. automodule:: kentauros.run.common
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.run.ktr module
-------------------------
-
-.. automodule:: kentauros.run.ktr
+.. automodule:: kentauros.run.run_ktr
     :members:
     :undoc-members:
     :show-inheritance:
