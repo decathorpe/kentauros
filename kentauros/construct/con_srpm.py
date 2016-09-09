@@ -1,6 +1,6 @@
 """
-This module contains the :py:class:`SrpmConstructor` class, which can be used
-to construct src.rpm packages.
+This module contains the :py:class:`SrpmConstructor` class, which can be used to construct .src.rpm
+packages.
 """
 
 
@@ -10,7 +10,7 @@ import shutil
 import subprocess
 import tempfile
 
-from kentauros.instance import Kentauros, log, log_command
+from kentauros.instance import Kentauros
 
 from kentauros.construct.con_abstract import Constructor
 
@@ -25,32 +25,34 @@ from kentauros.pkgformat.pkg_rpm_spec import reset_release, spec_bump
 
 
 LOGPREFIX1 = "ktr/construct/srpm: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
 """
 
 
 class SrpmConstructor(Constructor):
     """
-    This :py:class:`Constructor` subclass implements methods for all stages of
-    building and exporting source packages. At class instantiation, it checks
-    for existance of ``rpmbuild`` and ``rpmdev-bumpspec`` binaries. If they are
-    not found in ``$PATH``, this instance is set to inactive.
+    This :py:class:`Constructor` subclass implements methods for all stages of building and
+    exporting source packages. At class instantiation, it checks for existance of ``rpmbuild`` and
+    ``rpmdev-bumpspec`` binaries. If they are not found in ``$PATH``, this instance is rendered
+    inactive.
 
     Arguments:
-        Package package: package for which this src.rpm constructor is for
+        Package package:    package for which this src.rpm constructor is for
 
     Attributes:
-        bool active: determines if this instance is active
-        str tempdir: absolute path of temporary "HOME" directory
-        str rpmbdir: absolute path of ``rpmbuild`` directory
-        str specdir: absolute path of ``rpmbuild/SPECS`` directory
-        str srpmdir: absolute path of ``rpmbuild/SRPMS`` directory
-        str srcsdir: absolute path of ``rpmbuild/SOURCES`` directory
+        bool active:        determines if this instance is active
+        str tempdir:        absolute path of temporary "HOME" directory
+        str rpmbdir:        absolute path of ``rpmbuild`` directory
+        str specdir:        absolute path of ``rpmbuild/SPECS`` directory
+        str srpmdir:        absolute path of ``rpmbuild/SRPMS`` directory
+        str srcsdir:        absolute path of ``rpmbuild/SOURCES`` directory
     """
 
     def __init__(self, package):
         super().__init__(package)
+
+        ktr = Kentauros(LOGPREFIX1)
 
         self.tempdir = None
         self.rpmbdir = None
@@ -64,24 +66,25 @@ class SrpmConstructor(Constructor):
             subprocess.check_output(["which", "rpmbuild"])
             subprocess.check_output(["which", "rpmdev-bumpspec"])
         except subprocess.CalledProcessError:
-            log(LOGPREFIX1 +
-                "Install rpmdevtools to use the specified constructor.")
+            ktr.log("Install rpmdevtools to use the specified constructor.")
             self.active = False
 
     def init(self):
         """
-        This method creates a temporary directory (which is then set to `$HOME`
-        in the :py:meth:`SrpmConstructor.build()` method) and other necessary
-        subdirectores (here: `SOURCES`, `SRPMS`, `SPECS`).
+        This method creates a temporary directory (which is then set to `$HOME` in the
+        :py:meth:`SrpmConstructor.build()` method) and other necessary subdirectores (here:
+        `SOURCES`, `SRPMS`, `SPECS`).
         """
 
         if not self.active:
             return
 
+        ktr = Kentauros(LOGPREFIX1)
+
         # make sure to finally call self.clean()!
         self.tempdir = tempfile.mkdtemp()
 
-        log(LOGPREFIX1 + "Temporary directory " + self.tempdir + " created.", 1)
+        ktr.log("Temporary directory " + self.tempdir + " created.", 1)
 
         self.rpmbdir = os.path.join(self.tempdir, "rpmbuild")
         self.specdir = os.path.join(self.tempdir, "rpmbuild", "SPECS")
@@ -92,16 +95,14 @@ class SrpmConstructor(Constructor):
         if not os.path.exists(self.rpmbdir):
             os.mkdir(self.rpmbdir)
 
-        log(LOGPREFIX1 + "Temporary rpmbuild directory created:", 1)
-        log(LOGPREFIX1 + self.tempdir, 1)
+        ktr.log("Temporary rpmbuild directory created: " + self.tempdir, 1)
 
         # create $TEMPDIR/rpmbuild/{SPECS,SRPMS,SOURCES}
         for directory in [self.specdir, self.srpmdir, self.srcsdir]:
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
-        log(LOGPREFIX1 +
-            "Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.", 1)
+        ktr.log("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.", 1)
 
     def prepare(self, relreset: bool=False, force: bool=False) -> bool:
         """
@@ -109,22 +110,18 @@ class SrpmConstructor(Constructor):
 
         This includes
 
-        - copying every file (not directories) from package source directory to
-          `rpmbuild/SOURCES` directory,
-        - removing the latest tarball from the package source directory if it
-          should not be kept,
-        - copying the package configuration file to `rpmbuild/SOURCES` in case
-          it will be included in the source package
-        - preparing the `package.spec` file in `rpmbuild/SPECS` from the
-          template in the spec directory,
+        - copying every file (not directories) from package source directory to `rpmbuild/SOURCES`,
+        - removing the latest tarball from the package source directory if it should not be kept,
+        - copying the package configuration file to `rpmbuild/SOURCES`
+        - preparing the `package.spec` file in `rpmbuild/SPECS` from the file in the spec directory,
         - defining macros for git and bzr version string additions,
         - setting `Version:` and `Release:` tags according to configuration,
         - appending a changelog entry automatically for every different build,
-        - copying back the modified spec file (sans macros) to preserve newly
-          added changelog entries.
+        - copying back the modified spec file to preserve added changelog entries.
 
         Arguments:
-            bool relreset:  force version reset (triggered e. g. by CVS update)
+            bool relreset:  force release reset (triggered by major version or VCS update)
+            bool force:     force release increment (triggered by packaging-only changes)
 
         Returns:
             bool:           returns `True` if the preparation was successful.
@@ -133,7 +130,7 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return False
 
-        ktr = Kentauros()
+        ktr = Kentauros(LOGPREFIX1)
 
         if not os.path.exists(self.rpmbdir):
             self.init()
@@ -148,7 +145,7 @@ class SrpmConstructor(Constructor):
             entry_path = os.path.join(pkg_data_dir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.srcsdir)
-                log(LOGPREFIX1 + "File copied: " + entry_path, 0)
+                ktr.log("File copied: " + entry_path, 0)
 
         # remove tarballs if they should not be kept
         if not self.pkg.conf.getboolean("source", "keep"):
@@ -160,11 +157,11 @@ class SrpmConstructor(Constructor):
             if os.path.isfile(tarballs[0]):
                 assert pkg_data_dir in tarballs[0]
                 os.remove(tarballs[0])
-                log(LOGPREFIX1 + "File removed: " + tarballs[0], 0)
+                ktr.log("File removed: " + tarballs[0], 0)
 
         # copy package.conf to rpmbuild/SOURCES
         shutil.copy2(pkg_conf_file, self.srcsdir)
-        log(LOGPREFIX1 + "File copied: " + pkg_conf_file, 0)
+        ktr.log("File copied: " + pkg_conf_file, 0)
 
         # calculate absolute path of new spec file
         new_spec_file = os.path.join(self.specdir, self.pkg.name + ".spec")
@@ -177,8 +174,7 @@ class SrpmConstructor(Constructor):
         try:
             old_version = spec_version_read(old_specfile)
         except RPMSpecError:
-            log(LOGPREFIX1 +
-                "RPM spec file not valid. Version tag line not found.", 2)
+            ktr.log("RPM spec file not valid. Version tag line not found.", 2)
             old_specfile.close()
             new_specfile.close()
             return False
@@ -187,8 +183,7 @@ class SrpmConstructor(Constructor):
         try:
             old_release = spec_release_read(old_specfile)
         except RPMSpecError:
-            log(LOGPREFIX1 +
-                "RPM spec file not valid. Release tag line not found.", 2)
+            ktr.log("RPM spec file not valid. Release tag line not found.", 2)
             old_specfile.close()
             new_specfile.close()
             return False
@@ -196,6 +191,8 @@ class SrpmConstructor(Constructor):
         # construct preamble and new version string
         preamble = SPEC_PREAMBLE_DICT[self.pkg.source.type](self.pkg.source)
         new_version = SPEC_VERSION_DICT[self.pkg.source.type](self.pkg.source)
+
+        # TODO: rework the release resetting / incrementing logic so it actually works
 
         # if old version and new version are different, force release reset to 0
         if new_version != old_version:
@@ -230,15 +227,15 @@ class SrpmConstructor(Constructor):
             spec_bump(new_spec_file, comment="Update to version " +
                       self.pkg.conf.get("source", "version") + ".")
 
-        # else if version has not changed, but snapshot has been updated:
-        # old_version =!= new_version
-        elif relreset:
-            spec_bump(new_spec_file, comment="Update to latest snapshot.")
-
         # else if nothing changed but "force" was set (packaging changes)
         # old_version =!= new_version, relreset !=!= True
         elif force:
             spec_bump(new_spec_file, comment="Update for packaging changes.")
+
+        # else if version has not changed, but snapshot has been updated:
+        # old_version =!= new_version
+        elif relreset:
+            spec_bump(new_spec_file, comment="Update to latest snapshot.")
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as
@@ -276,7 +273,7 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return
 
-        ktr = Kentauros()
+        ktr = Kentauros(LOGPREFIX1)
 
         old_home = os.environ['HOME']
         os.environ['HOME'] = self.tempdir
@@ -294,7 +291,7 @@ class SrpmConstructor(Constructor):
 
         cmd.append(os.path.join(self.specdir, self.pkg.name + ".spec"))
 
-        log_command(LOGPREFIX1, "rpmbuild", cmd, 1)
+        ktr.log_command(LOGPREFIX1, "rpmbuild", cmd, 1)
         subprocess.call(cmd)
 
         os.environ['HOME'] = old_home
@@ -309,11 +306,13 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return None
 
+        ktr = Kentauros(LOGPREFIX1)
+
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
         for srpm in srpms:
             shutil.copy2(srpm, Kentauros().conf.get_packdir())
-            log(LOGPREFIX1 + "File copied: " + srpm, 0)
+            ktr.log("File copied: " + srpm, 0)
 
     def clean(self):
         if not self.active:
