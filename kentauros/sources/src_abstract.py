@@ -3,14 +3,12 @@ This module contains the template / dummy :py:class:`Source` class, which
 is then inherited by actual sources.
 """
 
-# TODO: remove Source.conf attribute
-# TODO: remove Source.name attribute
 
 import abc
 import os
 import shutil
 
-from kentauros.instance import Kentauros, log
+from kentauros.instance import Kentauros
 
 
 LOGPREFIX1 = "ktr/sources: "
@@ -27,27 +25,24 @@ class Source(metaclass=abc.ABCMeta):
     generalised implementations of get, refresh and formatver methods.
 
     Attributes:
-        str name:           package name
         str sdir:           source directory of the package this source belongs to
         str dest:           destination path when downloading / copying sources
         str orig:           origin of the source, as specified in the package configuration file
         bool keep:          determines wheather sources are kept between actions
-        ConfigParser conf:  package configuration object
+
         Package package:    mother package
         SourceType type:    type of source
     """
 
     def __init__(self, package):
-        self.conf = package.conf
+        self.spkg = package
+        self.sdir = os.path.join(Kentauros().conf.get_datadir(), self.spkg.name)
 
-        self.name = self.conf['package']['name']
+        # TODO: some attributes (e.g. self.keep) are never set and never used
 
-        self.sdir = os.path.join(Kentauros().conf.get_datadir(), self.name)
         self.dest = None
         self.orig = None
         self.keep = False
-
-        self.spkg = package
         self.stype = None
 
     @abc.abstractmethod
@@ -81,29 +76,46 @@ class Source(metaclass=abc.ABCMeta):
 
     def clean(self) -> bool:
         """
-        This method cleans up all of a package's sources (removes the source
-        directory completely).
+        This method cleans up all of a package's sources - excluding other files in the packages's
+        source directory, which may include patches or other, additional files - they are preserved.
 
         Returns:
-            bool:   `True` if successful, `False` if directory doesn't exist
+            bool:   *True* if successful
         """
 
+        ktr = Kentauros(LOGPREFIX1)
+
         if not os.path.exists(self.sdir):
-            log(LOGPREFIX1 + "Nothing here to be cleaned.", 0)
-            return False
-        else:
-            # try to be careful with "rm -r"
-            assert os.path.isabs(self.sdir)
-            assert Kentauros().conf.get_datadir() in self.sdir
-            shutil.rmtree(self.sdir)
+            ktr.log("Nothing here to be cleaned.", 0)
             return True
+
+        # try to be careful with "rm -r"
+        assert os.path.isabs(self.dest)
+        assert ktr.conf.get_datadir() in self.dest
+
+        # remove source destination first:
+        # destination is a file (tarball)
+        if os.path.isfile(self.dest):
+            os.remove(self.dest)
+
+        # destination is a directory (VCS repo)
+        if os.path.isdir(self.dest):
+            shutil.rmtree(self.dest)
+
+        # if source directory is empty now (no patches, additional files, etc. left:
+        # remove whole directory
+        if not os.listdir(self.sdir):
+            assert os.path.isabs(self.sdir)
+            assert ktr.conf.get_datadir() in self.sdir
+            os.rmdir(self.sdir)
+
+        return True
 
     def formatver(self) -> str:
         """
-        This method provides a generic way of getting a package's version as
-        string. Subclasses are expected to override this method with their own
-        version string generators, which then might include git commit hashes,
-        git commit date and time, bzr revision, etc..
+        This method provides a generic way of getting a package's version as string. Subclasses are
+        expected to override this method with their own version string generators, which then might
+        include git commit hashes, git commit date and time, bzr revision, etc..
 
         Returns:
             str:        formatted version string
@@ -113,15 +125,13 @@ class Source(metaclass=abc.ABCMeta):
 
     def prepare(self) -> bool:
         """
-        This method provides a generic way of preparing a package's sources.
-        This will invoke the :py:meth`Source.get()` method or the
-        :py:meth`Source.update()` method and the :py:meth`Source.export()`
-        method (as overridden by the subclass, respectively).
+        This method provides a generic way of preparing a package's sources. This will invoke the
+        :py:meth`Source.get()` method or the :py:meth`Source.update()` method and the
+        :py:meth`Source.export()` method (as overridden by the subclass, respectively).
 
-        If sources can be downloaded / copied into place successfully, an
-        update for them will not be attempted. Otherwise (sources are already
-        present within the package directory), an update will be attempted
-        before exporting.
+        If sources can be downloaded / copied into place successfully, an update for them will not
+        be attempted. Otherwise (sources are already present within the package directory), an
+        update will be attempted before exporting.
 
         Returns:
             bool:       success status of source getting or updating
@@ -139,9 +149,9 @@ class Source(metaclass=abc.ABCMeta):
 
     def refresh(self) -> bool:
         """
-        This method provides a generic way of refreshing a package's sources.
-        This will invoke the generic :py:meth:`Source.clean()` method and the
-        :py:meth`Source.get()` method (as overridden by the subclass).
+        This method provides a generic way of refreshing a package's sources. This will invoke the
+        generic :py:meth:`Source.clean()` method and the :py:meth`Source.get()` method (as
+        overridden by the subclass).
 
         Returns:
             bool:       success status of source getting

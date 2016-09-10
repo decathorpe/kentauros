@@ -74,9 +74,6 @@
 
 ## source:
 
-- rework subpackage
-- remove Source.conf attribute -> Source.spkg.conf
-- remove Source.name attribute -> Source.spkg.name
 - bzr: lightweight checkouts are not supported yet
 
 

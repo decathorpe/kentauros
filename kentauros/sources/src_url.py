@@ -1,7 +1,7 @@
 """
-This submodule contains only contains the :py:class:`UrlSource` class, which
-has methods for handling sources that have ``source.type=url`` specified and
-``source.orig`` set to a URL of a tarball in the package's configuration file.
+This submodule contains only contains the :py:class:`UrlSource` class, which has methods for
+handling sources that have `source.type=url` specified and `source.orig` set to a URL of a tarball
+in the package's configuration file.
 """
 
 
@@ -10,14 +10,14 @@ import subprocess
 
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
-from kentauros.instance import Kentauros, log, log_command
+from kentauros.instance import Kentauros
 
 from kentauros.sources.src_abstract import Source
 
 
 LOGPREFIX1 = "ktr/sources/url: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
 """
 
 
@@ -25,26 +25,28 @@ class UrlSource(Source):
     """
     This Source subclass holds information and methods for handling URL sources.
 
-    * If the ``wget`` command is not found on the system, ``self.active`` is
-      automatically set to ``False``.
-    * For the purpose of checking connectivity to the remote server, the URL is
-      stored in ``self.remote``.
+    * If the `wget` command is not found on the system, `self.active` is automatically set to
+      *False*.
+    * For the purpose of checking connectivity to the remote server, the URL is stored in
+      `self.remote`.
 
     Arguments:
-        Package package:    package instance this `Source` belongs to
+        Package package:    package instance this `UrlSource` belongs to
     """
 
     def __init__(self, package):
         super().__init__(package)
         self.dest = os.path.join(self.sdir, os.path.basename(
-            self.conf.get("source", "orig")))
+            self.spkg.conf.get("source", "orig")))
         self.type = SourceType.URL
+
+        ktr = Kentauros(LOGPREFIX1)
 
         try:
             self.active = True
             subprocess.check_output(["which", "wget"])
         except subprocess.CalledProcessError:
-            log(LOGPREFIX1 + "Install wget to use the specified source.")
+            ktr.log("Install wget to use the specified source.")
             self.active = False
 
     def status(self) -> dict:
@@ -52,17 +54,17 @@ class UrlSource(Source):
 
     def get(self) -> bool:
         """
-        This method executes the download of the file specified by the URL to
-        the package source directory.
+        This method executes the download of the file specified by the URL to the package source
+        directory.
 
         Returns:
-            bool:  `True` if successful, `False` if not or source already exists
+            bool:  *True* if successful, *False* if not or source already exists
         """
 
         if not self.active:
             return False
 
-        ktr = Kentauros()
+        ktr = Kentauros(LOGPREFIX1)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -70,12 +72,12 @@ class UrlSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            log(LOGPREFIX1 + "Sources already downloaded.", 1)
+            ktr.log("Sources already downloaded.", 1)
             return False
 
         # check for connectivity to server
         if not is_connected(self.spkg.conf.get("source", "orig")):
-            log("No connection to remote host detected. Cancelling source download.", 2)
+            ktr.log("No connection to remote host detected. Cancelling source download.", 2)
             return False
 
         # construct wget commands
@@ -93,7 +95,7 @@ class UrlSource(Source):
         cmd.append(self.dest)
 
         # wget source from orig to dest
-        log_command(LOGPREFIX1, "wget", cmd, 0)
+        ktr.log_command(LOGPREFIX1, "wget", cmd, 0)
         subprocess.call(cmd)
 
         return True

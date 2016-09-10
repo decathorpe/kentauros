@@ -69,8 +69,7 @@ class Package:
 
         ktr = Kentauros(LOGPREFIX1)
 
-        self.name = name
-        self.file = os.path.join(ktr.conf.get_confdir(), self.name + ".conf")
+        self.file = os.path.join(ktr.conf.get_confdir(), name + ".conf")
         self.conf = ConfigParser()
 
         if not os.path.exists(self.file):
@@ -84,6 +83,8 @@ class Package:
 
         if not self.verify():
             raise PackageError("Package configuration file is invalid.")
+
+        self.name = self.conf.get("package", "name")
 
         if "builder" not in self.conf["package"]:
             # self.build = lambda *args: None
