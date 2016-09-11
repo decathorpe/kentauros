@@ -1,37 +1,32 @@
 """
-This module contains one function (:py:func:`is_connected`), which is used for
-basic connectivity checks before actions that require internet access / access
-to a specific URL.
+This module contains one function (:py:func:`is_connected`), which is used for basic connectivity
+checks before actions that require internet access / access to a specific URL.
 """
-
-
-# TODO: rework ktr/conntest submodule
 
 
 import socket
 from urllib.parse import urlparse
 
 
-def is_connected(host_url: str) -> bool:
+MAX_TRIES = 3
+WAIT_SECS = 5
+
+
+def trial(address: str) -> bool:
     """
-    This function tries to create a connection to the hostname specified by the
-    URL argument. If any error occurs during connecting, ``False`` is returned.
+    This helper function attempts to connect to a remote host exactly once.
 
     Arguments:
-        str host_url:   URL of the host connectivity will checked to
+        str address:    URL string
 
     Returns:
-        bool:   ``True`` if connection setup successful, ``False`` if not
+        bool:           *True* if successful, *False* if not
     """
 
-    # TODO: with socket.create_connection((host, 80), 2) as sock:
-    # TODO: try three? times within 10? seconds
-
-    hostname = urlparse(host_url).hostname
-
     try:
-        host = socket.gethostbyname(hostname)
-        socket.create_connection((host, 80), 2)
+        host = socket.gethostbyname(address)
+        with socket.create_connection((host, 80), 2):
+            pass
     except socket.herror:
         return False
     except socket.gaierror:
@@ -40,3 +35,29 @@ def is_connected(host_url: str) -> bool:
         return False
 
     return True
+
+
+def is_connected(host_url: str) -> bool:
+    """
+    This function tries to create a connection to the hostname specified by the URL argument. If any
+    error occurs during connecting, *False* is returned.
+
+    Arguments:
+        str host_url:   URL of the host connectivity will checked to
+
+    Returns:
+        bool:           *True* if connection setup successful, *False* if not
+    """
+
+    hostname = urlparse(host_url).hostname
+
+    tries = MAX_TRIES
+
+    while tries:
+        success = trial(hostname)
+        if success:
+            return True
+        else:
+            tries -= 1
+
+    return False

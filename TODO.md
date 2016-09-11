@@ -13,13 +13,6 @@
 - remove unnecessary action classes
 
 
-## conntest:
-
-- rework submodule
-- close socket after use
-- try connecting at least 3 times within 10 seconds or something
-
-
 ## construct+build:
 
 - srpm: move .spec.old back into place if builds fail
