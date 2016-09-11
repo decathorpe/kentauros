@@ -106,7 +106,13 @@ class Kentauros:
             str msg: error message to be printed
         """
 
-        self.log(msg, prefix="ERROR: " + prefix, outfile=sys.stderr)
+        if prefix is None:
+            if self.log_prefix is None:
+                self.log(msg, prefix="ERROR: ", outfile=sys.stderr)
+            else:
+                self.log(msg, prefix="ERROR: " + self.log_prefix, outfile=sys.stderr)
+        else:
+            self.log(msg, prefix="ERROR: " + prefix, outfile=sys.stderr)
 
     def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout):
         """

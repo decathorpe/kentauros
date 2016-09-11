@@ -126,6 +126,19 @@ class KtrConf:
         else:
             return os.path.join(self.basedir, "sources")
 
+    def get_expodir(self):
+        """
+        This method returns the kentauros directory for built binary packages.
+
+        Returns:
+            str:    binary package directory
+        """
+
+        if self.basedir is None:
+            return None
+        else:
+            return os.path.join(self.basedir, "exports")
+
     def get_packdir(self):
         """
         This method returns the kentauros directory for source packages.

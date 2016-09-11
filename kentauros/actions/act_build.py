@@ -39,9 +39,18 @@ class BuildAction(Action):
             bool:   ``True`` if all builds were successful, ``False`` otherwise
         """
 
+        ktr = Kentauros(LOGPREFIX1)
+
         success = self.kpkg.builder.build()
 
         if not success:
-            Kentauros(LOGPREFIX1).log("Binary package building unsuccessful, aborting action.", 2)
+            ktr.log("Binary package building unsuccessful, aborting action.")
+            return False
+
+        success = self.kpkg.builder.export()
+
+        if not success:
+            ktr.log("Binary package exporting unsuccessful, aborting action.")
+            return False
 
         return success

@@ -8,6 +8,7 @@ import fcntl
 import glob
 import grp
 import os
+import shutil
 import subprocess
 import time
 
@@ -16,16 +17,65 @@ from kentauros.build.bld_abstract import Builder
 
 
 LOGPREFIX1 = "ktr/build/mock: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
 """
 
 LOGPREFIX2 = " " * len(LOGPREFIX1) + "- "
-"""This string specifies the prefix for lists printed through log and error
-functions, printed to stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for lists printed through log and error functions, printed to
+stdout or stderr from inside this subpackage.
 """
 
 DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
+DEFAULT_VAR_PATH = "/var/lib/mock"
+
+
+def get_default_mock_dist() -> str:
+    """
+    This helper function tries to figure out which dist is the default one.
+
+    Returns:
+        str:    dist string in default format
+    """
+
+    return os.path.basename(os.path.realpath(DEFAULT_CFG_PATH)).replace(".cfg", "")
+
+
+def get_dist_from_mock_config(dist: str) -> str:
+    """
+    This helper function tries to read the "real" dist string from a custom dist config file.
+
+    Arguments:
+        str dist:   name of the custom dist
+
+    Returns:
+        str:        name of the underlying "standard" dist
+    """
+
+    cfg_dir = os.path.dirname(DEFAULT_CFG_PATH)
+    cfg_dist = os.path.join(cfg_dir, dist + ".cfg")
+
+    with open(cfg_dist, "r") as cfg_file:
+        for line in cfg_file:
+            if "config_opts['root']" in line:
+                real_dist = line.replace("config_opts['root'] = ", "").lstrip("'").rstrip("'\n")
+                return real_dist
+
+        return None
+
+
+def get_dist_result_path(dist: str) -> str:
+    """
+    This helper function cunstructs the mock result path for a given dist string.
+
+    Arguments:
+        str dist:   name of the standard dist
+
+    Returns:
+        str:        path pointing to the mock result directory for this dist
+    """
+
+    return os.path.join(DEFAULT_VAR_PATH, dist, "result")
 
 
 class MockBuild:
@@ -49,7 +99,7 @@ class MockBuild:
 
         if dist is None:
             # determine which dist is pointed to by the "default.cfg" link
-            self.dist = os.path.basename(os.path.realpath(DEFAULT_CFG_PATH)).replace(".cfg", "")
+            self.dist = get_default_mock_dist()
         else:
             self.dist = dist
 
@@ -148,7 +198,12 @@ class MockBuilder(Builder):
             self.bpkg.conf.set("mock", "active", "false")
             self.bpkg.update_config()
 
+        if "export" not in self.bpkg.conf.options("mock"):
+            self.bpkg.conf.set("mock", "export", "false")
+            self.bpkg.update_config()
+
         self.active = self.bpkg.conf.getboolean("mock", "active")
+        self.exporting = self.bpkg.conf.getboolean("mock", "export")
 
         self.mock_cmd = None
         # if mock is not installed: deactivate mock builder in conf file
@@ -162,6 +217,11 @@ class MockBuilder(Builder):
         if self.mock_cmd == "/usr/sbin/mock":
             ktr.log("Something is messing with your $PATH variable.", 2)
             self.mock_cmd = "/usr/bin/mock"
+
+        # get dists to build for
+        self.dists = self.bpkg.conf.get("mock", "dist").split(",")
+        if self.dists == [""]:
+            self.dists = []
 
     def build(self) -> bool:
         """
@@ -203,23 +263,18 @@ class MockBuilder(Builder):
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        # get dists to build for
-        dists = self.bpkg.conf.get("mock", "dist").split(",")
-        if dists == [""]:
-            dists = []
-
-        if dists:
+        if self.dists:
             ktr.log("Specified chroots:", 2)
-            for dist in dists:
+            for dist in self.dists:
                 ktr.log(dist, prefix=LOGPREFIX2, pri=2)
 
         # generate build queue
         build_queue = list()
 
-        if not dists:
+        if not self.dists:
             build_queue.append(MockBuild(self.mock_cmd, srpm))
         else:
-            for dist in dists:
+            for dist in self.dists:
                 build_queue.append(MockBuild(self.mock_cmd, srpm, dist))
 
         # run builds in queue
@@ -255,8 +310,47 @@ class MockBuilder(Builder):
         directory specified for binary package exports.
 
         Returns:
-            bool:   ``True`` if successful, ``False`` if not
+            bool:   *True* if successful, *False* if not
         """
 
-        # TODO: export resulting packages to kentauros binary package directory
-        pass
+        if not self.active:
+            return True
+
+        if not self.exporting:
+            return True
+
+        ktr = Kentauros(LOGPREFIX1)
+
+        pkg_expo_dir = os.path.join(ktr.conf.get_expodir(), self.bpkg.name)
+        os.makedirs(pkg_expo_dir, exist_ok=True)
+
+        if not os.path.exists(pkg_expo_dir):
+            ktr.err("Package exports directory could not be created.")
+            return False
+
+        if not os.access(pkg_expo_dir, os.W_OK):
+            ktr.err("Package exports directory can not be written to.")
+            return False
+
+        mock_result_dirs = list()
+
+        if not self.dists:
+            self.dists.append(get_default_mock_dist())
+
+        for dist in self.dists:
+            path = get_dist_result_path(dist)
+            if os.path.exists(path):
+                mock_result_dirs.append(path)
+            else:
+                corrected_path = get_dist_result_path(get_dist_from_mock_config(dist))
+                mock_result_dirs.append(corrected_path)
+
+        file_results = list()
+
+        for result_dir in mock_result_dirs:
+            file_results += glob.glob(os.path.join(result_dir, "*.rpm"))
+
+        for file in file_results:
+            shutil.copy2(file, pkg_expo_dir)
+
+        return True
