@@ -2,7 +2,6 @@
 
 ## ktr
 
-- add exports directory to initialisation (for built binary packages)
 - add assertions for type checks (if debug: assert isinstance)
 
 
@@ -12,17 +11,6 @@
 - upload: missing error handling
 - verify: implementation missing
 - remove unnecessary action classes
-
-
-## bootstrap:
-
-- rework submodule
-- add exports directory
-
-
-## build:
-
-- mock: export successfully built RPM packages to basedir/exports
 
 
 ## conntest:
