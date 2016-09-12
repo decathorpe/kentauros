@@ -36,7 +36,6 @@
 
 ## package:
 
-- rework submodule
 - at initialisation, replace hyphens in source/version with tilde
 - allow variables in package configuration file: `$(VERSION)`, `$(NAME)`
 

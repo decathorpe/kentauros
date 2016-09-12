@@ -7,9 +7,6 @@ attributes according to configuration.
 """
 
 
-# TODO: rework ktr/package submodule
-
-
 from configparser import ConfigParser
 import os
 
@@ -24,8 +21,8 @@ from kentauros.upload import UPLOADER_TYPE_DICT
 
 
 LOGPREFIX1 = "ktr/package: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
 """
 
 
@@ -50,8 +47,7 @@ class Package:
     This class envelops all things necessary to perform actions on a specific "package" of software.
 
     Arguments:
-        str name:                   Base name of software package - reading $NAME.conf will be
-                                    attempted for further information about the package.
+        str conf_name:              name of the configuration file, without the ".conf" suffix
 
     Attributes:
         ConfigParser conf:          parser for package.conf file
@@ -64,12 +60,12 @@ class Package:
         PackageError:               error if package.conf file is invalid
     """
 
-    def __init__(self, name: str):
-        assert isinstance(name, str)
+    def __init__(self, conf_name: str):
+        assert isinstance(conf_name, str)
 
         ktr = Kentauros(LOGPREFIX1)
 
-        self.file = os.path.join(ktr.conf.get_confdir(), name + ".conf")
+        self.file = os.path.join(ktr.conf.get_confdir(), conf_name + ".conf")
         self.conf = ConfigParser()
 
         if not os.path.exists(self.file):
@@ -128,8 +124,8 @@ class Package:
 
     def verify(self) -> bool:
         """
-        This method verifies that the absolute minimum for proceeding with package initialisation
-        is set.
+        This method verifies that the absolute minimum for proceeding with package initialisation is
+        set.
 
         Returns:
             bool:   *True* if configuration is minimally valid, *False* if entries are missing
@@ -155,8 +151,8 @@ class Package:
 
     def update_config(self):
         """
-        This method writes a changes package configuration back to the
-        configuration file for permanent changes.
+        This method writes a changes package configuration back to the configuration file for
+        permanent changes.
         """
 
         ktr = Kentauros(LOGPREFIX1)
@@ -168,3 +164,4 @@ class Package:
         except OSError:
             ktr.err("Package configuration file could not be written.")
             ktr.err("Path: " + self.file)
+            raise PackageError("Package configuration file could not be written.")
