@@ -50,6 +50,8 @@ class Package:
         str conf_name:              name of the configuration file, without the ".conf" suffix
 
     Attributes:
+        str conf_name:              name of the configuration
+        str name:                   name of the package
         ConfigParser conf:          parser for package.conf file
         Source source:              handling of upstream source code
         Constructor constructor:    handling of building compilable source packages
@@ -67,6 +69,7 @@ class Package:
 
         self.file = os.path.join(ktr.conf.get_confdir(), conf_name + ".conf")
         self.conf = ConfigParser()
+        self.conf_name = conf_name
 
         if not os.path.exists(self.file):
             raise FileNotFoundError("Package configuration file does not exist.")

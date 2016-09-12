@@ -46,6 +46,7 @@
 
 ## source:
 
+- rework subpackage
 - bzr: lightweight checkouts are not supported yet
 
 
