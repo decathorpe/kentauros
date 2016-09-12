@@ -1,6 +1,6 @@
 """
-This module contains all definitions of types and global variables that are
-used by nearly every other module / subpackage.
+This module contains all definitions of types and global variables that are used by nearly every
+other module / subpackage.
 
 It includes these globally used variables:
 
@@ -16,9 +16,6 @@ The following Enums are defined here:
 * :py:class:`SourceType`:       types of supported package sources
 * :py:class:`UploaderType`:     types of supported package uploaders
 """
-
-
-# TODO: rework ktr/definitions submodule
 
 
 from enum import Enum, unique
@@ -38,9 +35,9 @@ time and ``make-srpm.sh`` when building an srpm package. The version in
 
 class KtrConfType(Enum):
     """
-    This Enum defines the types of configuration file locations kentauros
-    supports and tries to read from. For all of them, their full qualifier and
-    a 3-letter abbreviation (if longer than 3 letters) is given for comfort.
+    This Enum defines the types of configuration file locations kentauros supports and tries to read
+    from. For all of them, their full qualifier and a 3-letter abbreviation (if longer than 3
+    letters) is given for comfort.
     """
 
     CLI = 0
@@ -61,14 +58,13 @@ class KtrConfType(Enum):
 @unique
 class ActionType(Enum):
     """
-    This Enum defines the different types of actions that are supported by
-    kentauros. This includes a default ``NONE`` type and a fallback ``DUMMY``
-    type.
+    This Enum defines the different types of actions that are supported by kentauros. This includes
+    a default *NONE* type.
     """
 
     NONE = 0
     STATUS = 11
-    VERIFY = 13
+    VERIFY = 12
     GET = 20
     UPDATE = 21
     EXPORT = 22
@@ -84,10 +80,8 @@ class ActionType(Enum):
 @unique
 class BuilderType(Enum):
     """
-    This Enum defines the different types of binary package builders that are
-    supported by kentauros. At the moment, only ``mock`` is supported for
-    building binary packages locally. It also includes a default ``NONE`` type
-    and a fallback ``DUMMY`` type.
+    This Enum defines the different types of binary package builders that are supported by
+    kentauros. It also includes a default *NONE* type.
     """
 
     NONE = 0
@@ -97,10 +91,8 @@ class BuilderType(Enum):
 @unique
 class ConstructorType(Enum):
     """
-    This Enum defines the different types of source package builders that are
-    supported by kentauros. At the moment, only ``srpm`` packages are supported
-    as source packages. It also includes a default ``NONE`` type and a fallback
-    ``DUMMY`` type.
+    This Enum defines the different types of source package builders that are supported by
+    kentauros. It also includes a default *NONE* type.
     """
 
     NONE = 0
@@ -110,10 +102,8 @@ class ConstructorType(Enum):
 @unique
 class SourceType(Enum):
     """
-    This Enum defines the different types of package source sources that are
-    supported by kentauros. At the moment, ``local``, ``url``, ``git`` and
-    ``bzr`` sources are supported. It also includes a default ``NONE`` type and
-    a fallback ``DUMMY`` type.
+    This Enum defines the different types of package source sources that are supported by kentauros.
+    It also includes a default *NONE* type.
     """
 
     NONE = 0
@@ -126,10 +116,8 @@ class SourceType(Enum):
 @unique
 class UploaderType(Enum):
     """
-    This Enum defines the different types of (source) package uploaders that are
-    supported by kentauros. At the moment, only source packages can be uploaded,
-    and only to ``copr``. It also includes a default ``NONE`` type and a
-    fallback ``DUMMY`` type.
+    This Enum defines the different types of (source) package uploaders that are supported by
+    kentauros. It also includes a default *NONE* type.
     """
 
     NONE = 0

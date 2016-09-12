@@ -23,11 +23,6 @@
 - rework relreset / force code so it actually works as intended
 
 
-## definitions:
-
-- rework submodule
-
-
 ## init:
 
 - rework subpackage
