@@ -1,13 +1,9 @@
 """
-This submodule contains the :py:class:`Kentauros` class, which holds
-configuration values parsed from CLI arguments, environment variables and
-configuration files. The implementation makes sure that command line arguments,
-environment variables and configuration files are parsed only once per program
-run. Additionally, this subpackage holds logging and error printing functions.
+This submodule contains the :py:class:`Kentauros` class, which holds configuration values parsed
+from CLI arguments, environment variables and configuration files. The implementation makes sure
+that command line arguments, environment variables and configuration files are parsed only once per
+program run. Additionally, this subpackage holds logging and error printing functions.
 """
-
-
-# TODO: rework ktr/instance submodule
 
 
 import sys
@@ -30,17 +26,14 @@ def __smaller_int__(int1: int, int2: int):
 
 class Kentauros:
     """
-    This class stores settings and variables that must be the same during the
-    execution of code from the "kentauros" package. This is accomplished by
-    storing the critical data in a class variable, which is initialised only
-    once per execution.
+    This class stores settings and variables that must be the same during the execution of code from
+    the "kentauros" package. This is accomplished by storing the critical data in a class variable,
+    which is initialised only once per execution.
 
-    It also provides methods for printing log, error and debug messages to
-    standard output or error output.
+    It also provides methods for printing log, error and debug messages to stdout or stderr.
 
     Attributes:
-        dict saved_state:   stores critical values during the kentauros python
-                            package execution
+        dict saved_state:   stores critical values during the kentauros python package execution
 
     Arguments:
         InstanceType itype: type of kentauros instance (normal, config, create)
@@ -74,9 +67,9 @@ class Kentauros:
 
     def dbg(self, msg: str, prefix: str=None):
         """
-        This method prints messages with a "DEBUG: " prefix to stdout, but
-        only if the ``KTR_DEBUG`` environment variable has been set or the
-        ``--debug`` or ``-d`` flag has been supplied to the CLI.
+        This method prints messages with a "DEBUG: " prefix to stdout, but only if the *KTR_DEBUG*
+        environment variable has been set or the `--debug` or `-d` flag has been supplied at the
+        command line.
 
         Arguments:
             str msg: debug message to be printed
@@ -99,8 +92,8 @@ class Kentauros:
 
     def err(self, msg: str, prefix: str=None):
         """
-        This method prints messages with an "ERROR: " prefix to standard error
-        output, regardless of environment variables and CLI settings supplied.
+        This method prints messages with an "ERROR: " prefix to standard error output, regardless
+        of environment variables and CLI settings supplied.
 
         Arguments:
             str msg: error message to be printed
@@ -116,15 +109,14 @@ class Kentauros:
 
     def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout):
         """
-        This method prints messages to standard output, depending on the
-        priority argument and the verbosity level determined from environment
-        variables and CLI switches.
+        This method prints messages to standard output, depending on the priority argument and the
+        verbosity level determined from environment variables and CLI switches.
 
         Invocation with
 
-        * ``pri=2`` (which is the default) will always print the attached message
-        * ``pri=1`` will print messages when verbosity is set to 1
-        * ``pri=0`` will print messages when verbosity is set to 0 or when debugging is enabled
+        * `pri=2` (which is the default) will always print the attached message
+        * `pri=1` will print messages when verbosity is set to 1
+        * `pri=0` will print messages when verbosity is set to 0 or when debugging is enabled
 
         Arguments:
             str msg: message that will be printed
@@ -145,17 +137,15 @@ class Kentauros:
 
     def log_command(self, prefix1: str, basename: str, cmdlist: list, pri: int=2):
         """
-        This method prints commands that are then executed by use of the
-        :py:func:`subprocess.call` or :py:func:`subprocess.check_output`
-        functions. Its priority behaviour is the same as the :py:func:`log`
-        function's.
+        This method prints commands that are then executed by use of the :py:func:`subprocess.call`
+        or :py:func:`subprocess.check_output` functions. Its priority behaviour is the same as the
+        :py:meth:`Kentauros.log` function's.
 
         Arguments:
             str prefix1:    module-wide prefix string
             str basename:   command base name
-            list cmdlist:   list of strings, as passed to :py:mod:``subprocess`` functions
-            int pri:        message priority (0-2, where 0 is lowest and 2 is
-                            highest)
+            list cmdlist:   list of strings, as passed to :py:mod:`subprocess` functions
+            int pri:        message priority (0-2, where 0 is lowest and 2 is highest)
         """
 
         cmdstr = ""
@@ -180,11 +170,7 @@ def dbg(msg: str):
 
 def err(msg: str):
     """
-    This function prints messages with an "ERROR: " prefix to standard error
-    output, regardless of environment variables and CLI settings supplied.
-
-    Arguments:
-        str msg: error message to be printed
+    Legacy error message function.
     """
 
     warn("The kentauros.instance.err() function is deprecated.", DeprecationWarning)
@@ -193,20 +179,7 @@ def err(msg: str):
 
 def log(msg: str, pri: int=2):
     """
-    This function prints messages to standard output, depending on the priority
-    argument and the verbosity level determined from environment variables and
-    CLI switches.
-
-    Invocation with
-
-    * ``pri=2`` (which is the default) will always print the attached message
-    * ``pri=1`` will print messages when verbosity is set to 1
-    * ``pri=0`` will print messages when verbosity is set to 0 or when debugging
-      is enabled
-
-    Arguments:
-        str msg: message that will be printed
-        int pri: message priority (0-2, where 0 is lowest and 2 is highest)
+    Legacy log message function.
     """
 
     warn("The kentauros.instance.log() function is deprecated.", DeprecationWarning)
@@ -215,15 +188,7 @@ def log(msg: str, pri: int=2):
 
 def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):
     """
-    This function prints commands that are then executed by use of the
-    :py:func:`subprocess.call` or :py:func:`subprocess.check_output` functions.
-    Its priority behaviour is the same as the :py:func:`log` function's.
-
-    Arguments:
-        str prefix1:  module-wide prefix string
-        str basename: command base name
-        list cmdlist: list of strings, as passed to :py:mod:``subprocess`` functions
-        int pri:      message priority (0-2, where 0 is lowest and 2 is highest)
+    Legacy command log message function.
     """
 
     warn("The kentauros.instance.log_command() function is deprecated.", DeprecationWarning)

@@ -31,7 +31,6 @@
 
 ## instance:
 
-- rework submodule
 - remove old log,err,dbg,log_command functions
 
 
