@@ -58,5 +58,4 @@
 
 ## upload:
 
-- rework subpackage
 - copr: missing error handling

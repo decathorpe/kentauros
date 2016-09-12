@@ -1,30 +1,32 @@
 """
-This module contains the :py:class:`CoprUploader` class, which can be used
-to upload src.rpm packages to `copr <http://copr.fedorainfracloud.org>`_.
+This module contains the :py:class:`CoprUploader` class, which can be used to upload .src.rpm
+packages to `copr <http://copr.fedorainfracloud.org>`_.
 """
+
 
 import glob
 import os
 import subprocess
 
 from kentauros.conntest import is_connected
-from kentauros.instance import Kentauros, log, log_command
+from kentauros.instance import Kentauros
 
 from kentauros.upload.upl_abstract import Uploader
 
 
 LOGPREFIX1 = "ktr/upload/copr: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
 """
+
+DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
 
 
 class CoprUploader(Uploader):
     """
-    This :py:class:`Uploader` subclass implements methods for all stages of
-    uploading source packages. At class instantiation, it checks for existance
-    of the ``copr-cli`` binary. If it is not found in ``$PATH``, this instance
-    is set to inactive.
+    This :py:class:`Uploader` subclass implements methods for all stages of uploading source
+    packages. At class instantiation, it checks for existance of the `copr-cli` binary. If it is
+    not found in `$PATH`, this instance is set to inactive.
 
     Arguments:
         Package package:    package for which this src.rpm uploader is for
@@ -47,32 +49,32 @@ class CoprUploader(Uploader):
         try:
             subprocess.check_output(["which", "copr-cli"])
         except subprocess.CalledProcessError:
-            log(LOGPREFIX1 + "Install copr-cli to use the specified uploader.")
+            Kentauros(LOGPREFIX1).log("Install copr-cli to use the specified uploader.")
             self.active = False
 
-        self.remote = "https://copr.fedorainfracloud.org"
+        self.remote = DEFAULT_COPR_URL
 
     def upload(self) -> bool:
         """
-        This method executes the upload of the newest SRPM package found in the
-        package directory. The invocation of `copr-cli` also includes the chroot
-        settings set in the package configuration file.
-
-        Errors during execution of the `copr-cli` command are currently ignored.
+        This method executes the upload of the newest SRPM package found in the package directory.
+        The invocation of `copr-cli` also includes the chroot settings set in the package
+        configuration file.
 
         Returns:
-            bool:       returns `False` if anything goes wrong, `True` otherwise
+            bool:       returns *False* if anything goes wrong, *True* otherwise
         """
 
         if not self.active:
             return True
+
+        ktr = Kentauros(LOGPREFIX1)
 
         # get all srpms in the package directory
         srpms = glob.glob(os.path.join(Kentauros().conf.get_packdir(),
                                        self.upkg.name + "*.src.rpm"))
 
         if not srpms:
-            log(LOGPREFIX1 + "No source packages were found. Construct them first.", 2)
+            ktr.log("No source packages were found. Construct them first.")
             return False
 
         # figure out which srpm to build
@@ -110,10 +112,10 @@ class CoprUploader(Uploader):
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            log("No connection to remote host detected. Cancelling upload.", 2)
+            ktr.log("No connection to remote host detected. Cancelling upload.", 2)
             return False
 
-        log_command(LOGPREFIX1, "copr-cli", cmd, 1)
+        ktr.log_command(LOGPREFIX1, "copr-cli", cmd, 1)
         subprocess.call(cmd)
 
         # TODO: error handling
