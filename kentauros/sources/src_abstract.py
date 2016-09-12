@@ -1,6 +1,6 @@
 """
-This module contains the template / dummy :py:class:`Source` class, which
-is then inherited by actual sources.
+This module contains the template / dummy :py:class:`Source` class, which is then inherited by
+actual sources.
 """
 
 
@@ -12,17 +12,16 @@ from kentauros.instance import Kentauros
 
 
 LOGPREFIX1 = "ktr/sources: "
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
 """
 
 
 class Source(metaclass=abc.ABCMeta):
     """
-    This class serves as an abstract base class for source package
-    uploaders. They are expected to override this class's unimplemented methods.
-    It also provides common infrastructure for all code sources in the form of
-    generalised implementations of get, refresh and formatver methods.
+    This class serves as an abstract base class for source handlers. They are expected to override
+    this class's unimplemented methods. It also provides common infrastructure for all code sources
+    in the form of generalised implementations of get, refresh and formatver methods.
 
     Attributes:
         str sdir:           source directory of the package this source belongs to
@@ -36,7 +35,7 @@ class Source(metaclass=abc.ABCMeta):
 
     def __init__(self, package):
         self.spkg = package
-        self.sdir = os.path.join(Kentauros().conf.get_datadir(), self.spkg.name)
+        self.sdir = os.path.join(Kentauros(LOGPREFIX1).conf.get_datadir(), self.spkg.name)
 
         # TODO: some attributes (e.g. self.keep) are never set and never used
 

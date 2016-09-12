@@ -15,8 +15,8 @@ from kentauros.sources.src_url import UrlSource
 
 
 SOURCE_TYPE_DICT = dict()
-""" This dictionary maps `SourceType` enum members to their respective :py:class:`Source` subclass
-constructors.
+""" This dictionary maps :py:class:`SourceType` enum members to their respective :py:class:`Source`
+subclass constructors.
 """
 
 SOURCE_TYPE_DICT[SourceType.BZR] = BzrSource

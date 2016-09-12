@@ -31,7 +31,7 @@ class UrlSource(Source):
       `self.remote`.
 
     Arguments:
-        Package package:    package instance this `UrlSource` belongs to
+        Package package:    package instance this :py:class:`UrlSource` belongs to
     """
 
     def __init__(self, package):

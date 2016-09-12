@@ -26,14 +26,14 @@ class BzrSource(Source):
     """
     This Source subclass holds information and methods for handling bzr sources.
 
-    * If the `bzr` command is not found on the system, `self.active` is automatically set to `False`
+    * If the `bzr` command is not found on the system, `self.active` is automatically set to *False*
     * For the purpose of checking connectivity to the remote server, the URL is stored in
       `self.remote`. If the specified repository is hosted on
       `launchpad.net <https://launchpad.net>`_, `lp:` will be substituted with launchpad's URL
       automatically.
 
     Arguments:
-        Package package:    package instance this `Source` belongs to
+        Package package:    package instance this :py:class:`Source` belongs to
     """
 
     def __init__(self, package):
