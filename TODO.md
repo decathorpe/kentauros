@@ -25,7 +25,6 @@
 
 ## init:
 
-- rework subpackage
 - cli: add --message argument for supplying changelog messages
 
 

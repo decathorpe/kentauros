@@ -1,8 +1,7 @@
 """
-This module contains functions for constructing an `argparse` command line
-argument parser, and parsing the determined command line arguments. It also
-contains classes which provide methods that return parsed CLI arguments,
-depending on where the `kentauros` module is used from.
+This module contains functions for constructing an `argparse` command line argument parser, and
+parsing the determined command line arguments. It also contains classes which provide methods that
+return parsed CLI arguments, depending on where the `kentauros` module is used from.
 """
 
 
@@ -18,10 +17,10 @@ def get_cli_parser_base() -> ArgumentParser:
 
     The arguments parsed by this basic parser include:
 
-    * ``--debug`` (``-d``) switch to enable debug messages in kentauros and for subprocesses
-    * ``--verbose`` (``-v``, ``-vv``) switch to control how many informational messages will be
-      printed (twice for extra verbosity)
-    * ``--basedir=BASEDIR`` argument to set base directory for kentauros files (optional)
+    * `--debug` (`-d`) switch to enable debug messages in kentauros and for subprocesses
+    * `--verbose` (`-v`, `-vv`) switch to control how many informational messages will be printed
+      (twice for extra verbosity)
+    * `--basedir=BASEDIR` argument to set base directory for kentauros files (optional)
 
     Returns:
         ArgumentParser: basic CLI argument parser
@@ -59,24 +58,22 @@ def get_cli_parser_base() -> ArgumentParser:
     return cliparser
 
 
-def get_cli_parser_normal(cliparser: ArgumentParser) -> ArgumentParser:
+def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
     """
-    This function constructs and returns a parser for command line arguments,
-    which is used for "normal" execution (e.g. invoking the ``ktr`` script).
+    This function constructs and returns a parser for command line arguments, which is used for
+    "normal" execution (e.g. invoking the `ktr` script).
 
-    The arguments parsed by this parser include those from the basic parser,
-    and, additionally:
+    The arguments parsed by this parser include those from the basic parser, and, additionally:
 
     * package name(s) to specify which packages to process explicitly
-    * ``--all`` (``-a``) switch to enable processing all packages in ``CONFDIR``
-    * ``--force`` (``-f``) switch to force actions which would not be executed
+    * `--all` (`-a`) switch to enable processing all packages in `CONFDIR`
+    * `--force` (`-f`) switch to force actions which would not be executed
 
     Arguments:
-        ArgumentParser cliparser: basic argument parser got from
-                                  :py:func:`get_cli_parser_base()`
+        ArgumentParser cliparser:   basic argument parser got from :py:func:`get_cli_parser_base`
 
     Returns:
-        ArgumentParser: CLI argument parser for ``ktr`` script
+        ArgumentParser:             CLI argument parser for `ktr` script
     """
 
     assert isinstance(cliparser, ArgumentParser)
@@ -192,61 +189,33 @@ def get_cli_parser_normal(cliparser: ArgumentParser) -> ArgumentParser:
     return cliparser
 
 
-def get_cli_parser() -> ArgumentParser:
-    """
-    This function returns a parser for command line arguments with certain
-    switches and arguments, depending on which kentauros instance it is used
-    for.
-
-    Arguments:
-        InstanceType itype: invocation type (which script) - this determines
-                            which CLI switches and arguments will be available
-                            and defaults to normal invocation
-
-    Returns:
-        ArgumentParser: CLI argument parser for the specified instance
-    """
-
-    return get_cli_parser_normal(get_cli_parser_base())
-
-
 def get_parsed_cli() -> ArgumentParser:
     """
-    This function returns a `Namespace` object which contains the parsed CLI
-    switches and arguments, as specified in the
-    :py:class:`ArgumentParser` constructing functions in this module -
-    and also depending on the instance type specified.
-
-    Arguments:
-        InstanceType itype: invocation type (which script) - this determines
-                            which CLI switches and arguments will be available
-                            and defaults to normal invocation
+    This function returns a `Namespace` object which contains the parsed CLI switches and arguments,
+    as specified in the :py:class:`ArgumentParser` constructing functions in this module - and also
+    depending on the instance type specified.
 
     Returns:
-        Namespace: parsed CLI arguments and switches
+        Namespace:      parsed CLI arguments and switches
     """
 
-    cli_args = get_cli_parser().parse_args()
+    cli_args = get_cli_parser(get_cli_parser_base()).parse_args()
 
     return cli_args
 
 
 class CLIArgs:
     """
-    This class represents the parsed command line arguments and switches used
-    with a kentauros script. It stores the parsed CLI arguments between class
-    instantiations (in a class variable), so the CLI will be parsed only once.
-    It also provides simple method calls for getting settings from the parsed
-    CLI.
-
-    Arguments:
-        InstanceType itype: type of CLI to be created, parsed and stored
+    This class represents the parsed command line arguments and switches used with a kentauros
+    script. It stores the parsed CLI arguments between class instantiations (in a class variable),
+    so the CLI will be parsed only once. It also provides simple method calls for getting settings
+    from the parsed CLI.
     """
 
     args = None
-    """ArgumentParser: This class variable contains the permanent (instance-
-    independent) storage of parsed CLI arguments. It is initially set to `None`
-    and generated at the time of the first class initialisation.
+    """ArgumentParser: This class variable contains the permanent (instance-independent) storage
+    of parsed CLI arguments. It is initially set to `None` and generated at the time of the first
+    class initialisation.
     """
 
     def __init__(self):
@@ -255,25 +224,24 @@ class CLIArgs:
 
     def get_debug(self) -> bool:
         """
-        This method simply returns whether the ``--debug`` or ``-d`` switch has
-        been set at the command line.
+        This method simply returns whether the `--debug` or `-d` switch has been set at the
+        command line.
 
         Returns:
-            bool: debug *on* or *off*
+            bool:   debug *on* or *off*
         """
 
         return self.args.debug
 
     def get_verby(self) -> int:
         """
-        This method returns how often the ``--verbose`` or ``-v`` switch has
-        been set at the command line, subtracted from 2. This results in a
-        lowest verbosity level of *2* (comparable to ``--quiet``), a medium
-        verbosity level of *1* (normal verbosity) and a high verbosity level of
+        This method returns how often the `--verbose` or `-v` switch has been set at the command
+        line, subtracted from 2. This results in a lowest verbosity level of *2* (comparable to
+        `--quiet`), a medium verbosity level of *1* (normal verbosity) and a high verbosity level of
         *0* (very verbose).
 
         Returns:
-            int: verbosity level (0 to 2)
+            int:    verbosity level (0 to 2)
         """
 
         if (2 - self.args.verby) >= 0:
@@ -284,11 +252,11 @@ class CLIArgs:
 
     def get_priconf(self) -> KtrConfType:
         """
-        This method returns the preferred configuration file location (as an
-        instance of :py:class:`KtrConfType`).
+        This method returns the preferred configuration file location (as an instance of
+        :py:class:`KtrConfType`).
 
         Returns:
-            KtrConfType: type of the preferred configuration
+            KtrConfType:    type of the preferred configuration
         """
 
         try:
@@ -300,25 +268,21 @@ class CLIArgs:
 
     def get_ktr_basedir(self) -> str:
         """
-        This method returns kentauros BASEDIR specified by CLI argument.
+        This method returns kentauros `BASEDIR` specified by command line argument.
 
         Returns:
-            str:  specified BASEDIR
-
-        Returns:
-            None: no BASEDIR specified
+            str:  specified `BASEDIR`
         """
 
         return self.args.basedir
 
     def get_action(self) -> ActionType:
         """
-        This method returns which package action has been specified at CLI.
-        If this is ``None``, something went wrong and no action type will be
-        returned.
+        This method returns which package action has been specified at the command line. If this is
+        `None`, something went wrong and no action type will be returned.
 
         Returns:
-            ActionType: type of action that will be executed
+            ActionType:     type of action that will be executed
         """
 
         if 'action' in self.args:
@@ -327,11 +291,10 @@ class CLIArgs:
 
     def get_packages(self) -> list:
         """
-        This method returns all the package names which were collected from
-        the CLI arguments.
+        This method returns all the package names which were collected from the CLI arguments.
 
         Returns:
-            list: specified packages in a list
+            list:   specified packages in a list
         """
 
         if 'package' in self.args:
@@ -341,11 +304,11 @@ class CLIArgs:
 
     def get_packages_all(self) -> bool:
         """
-        This method simply returns whether the ``--all`` or ``-a`` switch has
-        been set at the command line.
+        This method simply returns whether the `--all` or `-a` switch has been set at the command
+        line.
 
         Returns:
-            bool: parse all packages *on* or *off*
+            bool:   parse all packages *on* or *off*
         """
 
         if 'all' in self.args:
@@ -355,11 +318,11 @@ class CLIArgs:
 
     def get_force(self) -> bool:
         """
-        This method simply returns whether the ``--force`` or ``-f`` switch has
-        been set at the command line.
+        This method simply returns whether the `--force` or `-f` switch has been set at the command
+        line.
 
         Returns:
-            bool: force package actions *on* or *off*
+            bool:   force package actions *on* or *off*
         """
 
         if 'force' in self.args:

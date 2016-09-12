@@ -1,6 +1,6 @@
 """
-This module contains simple functions for parsing environment variables needed
-for basic functions and determining debug and verbosity level.
+This module contains simple functions for parsing environment variables needed for basic functions
+and determining debug and verbosity level.
 """
 
 
@@ -9,8 +9,11 @@ import os
 
 def get_env_home() -> str:
     """
-    This function tries to get the home directory of the user running ktr.
-    If the "*HOME*" variable is not set, the current directory is used.
+    This function tries to get the home directory of the user running ktr. If the `HOME` variable is
+    not set, the current directory is used.
+
+    Returns:
+        str:    environment varible for `HOME` or the current directory
     """
 
     if "HOME" in os.environ:
@@ -21,9 +24,11 @@ def get_env_home() -> str:
 
 def get_env_debug() -> bool:
     """
-    This function returns *True* if the "*KTR_DEBUG*" environment variable was
-    set to anything parseable to *True* by python. If not (or the variable has
-    not been set), it returns *False*.
+    This function returns *True* if the "*KTR_DEBUG*" environment variable was set to anything
+    parseable to *True* by python. If not (or the variable has not been set), it returns *False*.
+
+    Returns:
+        bool:   debug *on* or *off*
     """
 
     if "KTR_DEBUG" in os.environ:
@@ -34,9 +39,12 @@ def get_env_debug() -> bool:
 
 def get_env_verby() -> int:
     """
-    This function returns the parsed value of the "*KTR_VERBOSITY*" environment
-    variable (anything parseable to an :py:class:`int`). If it has not been set,
-    it will return *2* (the lowest verbosity level).
+    This function returns the parsed value of the `KTR_VERBOSITY` environment variable (anything
+    parseable to an `int` by python. If it has not been set, it will return *2* (the lowest
+    verbosity level).
+
+    Returns:
+        int:    verbosity level
     """
 
     if "KTR_VERBOSITY" in os.environ:
