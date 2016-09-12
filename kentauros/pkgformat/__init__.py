@@ -1,6 +1,4 @@
 """
-This subpackage contains helper classes and functions for manipulating
-strings, files, and other things according to different packaging formats.
+This subpackage contains helper classes and functions for manipulating strings, files, and other
+things according to different packaging formats.
 """
-
-# TODO: rework ktr/pkgformat subpackage

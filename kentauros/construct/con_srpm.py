@@ -14,14 +14,10 @@ from kentauros.instance import Kentauros
 
 from kentauros.construct.con_abstract import Constructor
 
-from kentauros.pkgformat.pkg_rpm_spec import SPEC_PREAMBLE_DICT
-from kentauros.pkgformat.pkg_rpm_spec import SPEC_VERSION_DICT
-from kentauros.pkgformat.pkg_rpm_spec import RPMSpecError
-from kentauros.pkgformat.pkg_rpm_spec import spec_version_read
-from kentauros.pkgformat.pkg_rpm_spec import spec_release_read
+from kentauros.pkgformat.pkg_rpm_spec import SPEC_PREAMBLE_DICT, SPEC_VERSION_DICT, RPMSpecError
+from kentauros.pkgformat.pkg_rpm_spec import spec_version_read, spec_release_read
 from kentauros.pkgformat.pkg_rpm_spec import if_version, if_release
-from kentauros.pkgformat.pkg_rpm_spec import format_tagline
-from kentauros.pkgformat.pkg_rpm_spec import reset_release, spec_bump
+from kentauros.pkgformat.pkg_rpm_spec import format_tagline, reset_release, spec_bump
 
 
 LOGPREFIX1 = "ktr/construct/srpm: "
@@ -170,9 +166,11 @@ class SrpmConstructor(Constructor):
         old_specfile = open(pkg_spec_file, "r")
         new_specfile = open(new_spec_file, "x")
 
+        old_specfile_contents = old_specfile.read()
+
         # try to read old Version string from old specfile (resets seek=0)
         try:
-            old_version = spec_version_read(old_specfile)
+            old_version = spec_version_read(old_specfile_contents)
         except RPMSpecError:
             ktr.log("RPM spec file not valid. Version tag line not found.", 2)
             old_specfile.close()
@@ -181,7 +179,7 @@ class SrpmConstructor(Constructor):
 
         # try to read old Release string from old specfile (resets seek=0)
         try:
-            old_release = spec_release_read(old_specfile)
+            old_release = spec_release_read(old_specfile_contents)
         except RPMSpecError:
             ktr.log("RPM spec file not valid. Release tag line not found.", 2)
             old_specfile.close()

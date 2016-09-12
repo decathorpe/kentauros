@@ -27,7 +27,7 @@ class RPMSpec:
         assert isinstance(source, Source)
 
         if not os.path.exists(path):
-            raise FileNotFoundError
+            raise FileNotFoundError()
 
         self.path = path
         self.source = source

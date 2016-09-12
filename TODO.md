@@ -41,7 +41,6 @@
 
 ## pkgformat:
 
-- rework subpackage
 - finish RPM spec handling rewrite
 
 
