@@ -13,12 +13,12 @@
 <th>msg</th>
 </tr>
 <tr class="even">
-<td>warning</td>
-<td>kentauros.sources.src_abstract</td>
-<td>&#160;</td>
-<td>46</td>
-<td>0</td>
-<td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
+<td>refactor</td>
+<td>kentauros.package</td>
+<td>Package.__init__</td>
+<td>65</td>
+<td>4</td>
+<td>Too many statements (45/40)</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -30,13 +30,21 @@
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>kentauros.sources.src_abstract</td>
+<td>&#160;</td>
+<td>46</td>
+<td>0</td>
+<td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
 <td>kentauros.actions.act_upload</td>
 <td>&#160;</td>
 <td>40</td>
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.actions.act_verify</td>
 <td>&#160;</td>
@@ -44,7 +52,7 @@
 <td>0</td>
 <td>TODO: verify that package *.conf is valid</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.actions.act_status</td>
 <td>&#160;</td>
@@ -52,7 +60,7 @@
 <td>0</td>
 <td>TODO: output package configuration / status</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.construct.con_srpm</td>
 <td>&#160;</td>
@@ -60,7 +68,7 @@
 <td>0</td>
 <td>TODO: rework the release resetting / incrementing logic so it actually works</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.construct.con_srpm</td>
 <td>&#160;</td>
@@ -68,13 +76,21 @@
 <td>0</td>
 <td>TODO: arguments need to be passed through (force, relreset, etc)</td>
 </tr>
+<tr class="even">
+<td>refactor</td>
+<td>kentauros.construct.con_srpm</td>
+<td>SrpmConstructor.prepare</td>
+<td>103</td>
+<td>4</td>
+<td>Too many local variables (21/15)</td>
+</tr>
 <tr class="odd">
 <td>refactor</td>
 <td>kentauros.construct.con_srpm</td>
 <td>SrpmConstructor.prepare</td>
 <td>103</td>
 <td>4</td>
-<td>Too many local variables (21/20)</td>
+<td>Too many branches (19/15)</td>
 </tr>
 <tr class="even">
 <td>refactor</td>
@@ -82,7 +98,7 @@
 <td>SrpmConstructor.prepare</td>
 <td>103</td>
 <td>4</td>
-<td>Too many statements (71/60)</td>
+<td>Too many statements (71/40)</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -91,6 +107,14 @@
 <td>113</td>
 <td>0</td>
 <td>TODO: error handling</td>
+</tr>
+<tr class="even">
+<td>refactor</td>
+<td>kentauros.run.run_ktr</td>
+<td>run</td>
+<td>23</td>
+<td>0</td>
+<td>Too many statements (44/40)</td>
 </tr>
 </table>
 </div>
@@ -280,8 +304,8 @@ kentauros
 </tr>
 <tr class="odd">
 <td>refactor</td>
-<td>2</td>
-<td>2</td>
+<td>5</td>
+<td>5</td>
 <td>=</td>
 </tr>
 <tr class="even">
@@ -312,7 +336,7 @@ kentauros
 <td>kentauros.construct.con_srpm</td>
 <td>0.00</td>
 <td>25.00</td>
-<td>100.00</td>
+<td>60.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
@@ -357,6 +381,20 @@ kentauros
 <td>0.00</td>
 <td>0.00</td>
 </tr>
+<tr class="odd">
+<td>kentauros.run.run_ktr</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>20.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td>kentauros.package</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>20.00</td>
+<td>0.00</td>
+</tr>
 </table>
 </div>
 <div>
@@ -372,17 +410,21 @@ kentauros
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
-<td>1</td>
+<td>3</td>
 </tr>
 <tr class="even">
 <td>too-many-locals</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>too-many-branches</td>
 <td>1</td>
 </tr>
 </table>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.95/10 (previous run: 9.95/10, +0.00)</div>
+Your code has been rated at 9.93/10 (previous run: 9.93/10, +0.00)</div>
 </div>
 </body>
 </html>
