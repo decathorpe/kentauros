@@ -34,8 +34,14 @@ class Source(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
+        ktr = Kentauros(LOGPREFIX1)
+
+        if ktr.debug:
+            from kentauros.package import Package
+            assert isinstance(package, Package)
+
         self.spkg = package
-        self.sdir = os.path.join(Kentauros(LOGPREFIX1).conf.get_datadir(), self.spkg.name)
+        self.sdir = os.path.join(ktr.conf.get_datadir(), self.spkg.conf_name)
 
         # TODO: some attributes (e.g. self.keep) are never set and never used
 
@@ -92,16 +98,17 @@ class Source(metaclass=abc.ABCMeta):
         assert os.path.isabs(self.dest)
         assert ktr.conf.get_datadir() in self.dest
 
-        # remove source destination first:
-        # destination is a file (tarball)
+        # remove source destination first
+
+        # if destination is a file (tarball):
         if os.path.isfile(self.dest):
             os.remove(self.dest)
 
-        # destination is a directory (VCS repo)
+        # if destination is a directory (VCS repo):
         if os.path.isdir(self.dest):
             shutil.rmtree(self.dest)
 
-        # if source directory is empty now (no patches, additional files, etc. left:
+        # if source directory is empty now (no patches, additional files, etc. left):
         # remove whole directory
         if not os.listdir(self.sdir):
             assert os.path.isabs(self.sdir)

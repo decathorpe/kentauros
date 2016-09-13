@@ -6,6 +6,8 @@ uploaders.
 
 import abc
 
+from kentauros.instance import Kentauros
+
 
 class Uploader(metaclass=abc.ABCMeta):
     """
@@ -20,6 +22,12 @@ class Uploader(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
+        ktr = Kentauros()
+
+        if ktr.debug:
+            from kentauros.package import Package
+            assert isinstance(package, Package)
+
         self.upkg = package
 
     @abc.abstractmethod

@@ -38,6 +38,7 @@ class BzrSource(Source):
 
     def __init__(self, package):
         super().__init__(package)
+
         self.dest = os.path.join(self.sdir, self.spkg.name)
         self.type = SourceType.BZR
         self.saved_rev = None
@@ -73,21 +74,22 @@ class BzrSource(Source):
 
         ktr = Kentauros(LOGPREFIX1)
 
-        cmd = ["bzr", "revno"]
-
-        prevdir = os.getcwd()
-
         # if sources are not accessible (anymore), return "" or last saved rev
         if not os.access(self.dest, os.R_OK):
-            if self.saved_rev == "":
+            if self.saved_rev is None:
                 ktr.err("Sources need to be get before rev can be determined.")
                 return ""
             else:
                 return self.saved_rev
 
+        cmd = ["bzr", "revno"]
+
+        prevdir = os.getcwd()
         os.chdir(self.dest)
+
         ktr.log_command(LOGPREFIX1, "bzr", cmd, 0)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
+
         os.chdir(prevdir)
 
         self.saved_rev = rev
@@ -297,7 +299,7 @@ class BzrSource(Source):
         version = self.formatver()
         name_version = self.spkg.name + "-" + version
 
-        file_name = os.path.join(ktr.conf.get_datadir(), self.spkg.name, name_version + ".tar.gz")
+        file_name = os.path.join(self.sdir, name_version + ".tar.gz")
 
         cmd.append(file_name)
 

@@ -69,9 +69,10 @@ class CoprUploader(Uploader):
 
         ktr = Kentauros(LOGPREFIX1)
 
+        packdir = os.path.join(ktr.conf.get_packdir(), self.upkg.conf_name)
+
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(Kentauros().conf.get_packdir(),
-                                       self.upkg.name + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(packdir, self.upkg.name + "*.src.rpm"))
 
         if not srpms:
             ktr.log("No source packages were found. Construct them first.")
@@ -89,7 +90,7 @@ class CoprUploader(Uploader):
         # construct copr-cli command
         cmd = ["copr-cli"]
 
-        if Kentauros().debug:
+        if ktr.debug:
             cmd.append("--debug")
 
         # append build command

@@ -5,6 +5,15 @@ constructors.
 
 
 import abc
+import os
+
+from kentauros.instance import Kentauros
+
+
+LOGPREFIX = "ktr/construct: "
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
+"""
 
 
 class Constructor(metaclass=abc.ABCMeta):
@@ -20,7 +29,14 @@ class Constructor(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-        self.pkg = package
+        ktr = Kentauros(LOGPREFIX)
+
+        if ktr.debug:
+            from kentauros.package import Package
+            assert isinstance(package, Package)
+
+        self.cpkg = package
+        self.pdir = os.path.join(ktr.conf.get_packdir(), self.cpkg.conf_name)
 
     @abc.abstractmethod
     def init(self):

@@ -29,8 +29,8 @@ inside this subpackage.
 class SrpmConstructor(Constructor):
     """
     This :py:class:`Constructor` subclass implements methods for all stages of building and
-    exporting source packages. At class instantiation, it checks for existance of ``rpmbuild`` and
-    ``rpmdev-bumpspec`` binaries. If they are not found in ``$PATH``, this instance is rendered
+    exporting source packages. At class instantiation, it checks for existance of `rpmbuild` and
+    `rpmdev-bumpspec` binaries. If they are not found in ``$PATH``, this instance is rendered
     inactive.
 
     Arguments:
@@ -132,41 +132,49 @@ class SrpmConstructor(Constructor):
             self.init()
 
         # calculate absolute paths of files
-        pkg_data_dir = os.path.join(ktr.conf.get_datadir(), self.pkg.name)
-        pkg_conf_file = os.path.join(ktr.conf.get_confdir(), self.pkg.name + ".conf")
-        pkg_spec_file = os.path.join(ktr.conf.get_specdir(), self.pkg.name + ".spec")
+        pkg_data_dir = self.cpkg.source.sdir
+        pkg_conf_file = os.path.join(ktr.conf.get_confdir(),
+                                     self.cpkg.conf_name + ".conf")
+        pkg_spec_file = os.path.join(ktr.conf.get_specdir(),
+                                     self.cpkg.conf_name,
+                                     self.cpkg.name + ".spec")
 
         # copy sources to rpmbuild/SOURCES
         for entry in os.listdir(pkg_data_dir):
             entry_path = os.path.join(pkg_data_dir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.srcsdir)
-                ktr.log("File copied: " + entry_path, 0)
+                ktr.log("File copied: " + entry_path, 1)
 
         # remove tarballs if they should not be kept
-        if not self.pkg.conf.getboolean("source", "keep"):
-            # remove $DATADIR/$PKGNAME/$PKGNAME*.tar.gz
-            tarballs = glob.glob(
-                os.path.join(pkg_data_dir, self.pkg.name) + "*.tar.gz")
-            # remove only the newest one to be safe
-            tarballs.sort(reverse=True)
-            if os.path.isfile(tarballs[0]):
-                assert pkg_data_dir in tarballs[0]
-                os.remove(tarballs[0])
-                ktr.log("File removed: " + tarballs[0], 0)
+        if not self.cpkg.conf.getboolean("source", "keep"):
+            # if source is a tarball (or similar) from the beginning:
+            if os.path.isfile(self.cpkg.source.dest):
+                os.remove(self.cpkg.source.dest)
+
+            # otherwise it is in kentauros' standard .tar.gz format:
+            else:
+                tarballs = glob.glob(os.path.join(pkg_data_dir, self.cpkg.name) + "*.tar.gz")
+                # remove only the newest one to be safe
+                tarballs.sort(reverse=True)
+                if os.path.isfile(tarballs[0]):
+                    assert pkg_data_dir in tarballs[0]
+                    os.remove(tarballs[0])
+                    ktr.log("File removed: " + tarballs[0], 1)
 
         # copy package.conf to rpmbuild/SOURCES
         shutil.copy2(pkg_conf_file, self.srcsdir)
-        ktr.log("File copied: " + pkg_conf_file, 0)
+        ktr.log("File copied: " + pkg_conf_file, 1)
 
         # calculate absolute path of new spec file
-        new_spec_file = os.path.join(self.specdir, self.pkg.name + ".spec")
+        new_spec_file = os.path.join(self.specdir, self.cpkg.name + ".spec")
 
         # open old and create new spec file
         old_specfile = open(pkg_spec_file, "r")
         new_specfile = open(new_spec_file, "x")
 
         old_specfile_contents = old_specfile.read()
+        old_specfile.seek(0)
 
         # try to read old Version string from old specfile (resets seek=0)
         try:
@@ -187,8 +195,8 @@ class SrpmConstructor(Constructor):
             return False
 
         # construct preamble and new version string
-        preamble = SPEC_PREAMBLE_DICT[self.pkg.source.type](self.pkg.source)
-        new_version = SPEC_VERSION_DICT[self.pkg.source.type](self.pkg.source)
+        preamble = SPEC_PREAMBLE_DICT[self.cpkg.source.type](self.cpkg.source)
+        new_version = SPEC_VERSION_DICT[self.cpkg.source.type](self.cpkg.source)
 
         # TODO: rework the release resetting / incrementing logic so it actually works
 
@@ -217,13 +225,12 @@ class SrpmConstructor(Constructor):
         old_specfile.close()
         new_specfile.close()
 
-        # use "rpmdev-bumpspec" to increment release number and create
-        # changelog entries
+        # use "rpmdev-bumpspec" to increment release number and create changelog entries
 
         # if major version has changed, put it into the changelog
         if old_version != new_version:
             spec_bump(new_spec_file, comment="Update to version " +
-                      self.pkg.conf.get("source", "version") + ".")
+                      self.cpkg.conf.get("source", "version") + ".")
 
         # else if nothing changed but "force" was set (packaging changes)
         # old_version =!= new_version, relreset !=!= True
@@ -236,8 +243,7 @@ class SrpmConstructor(Constructor):
             spec_bump(new_spec_file, comment="Update to latest snapshot.")
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
-        # release number and changelog consistency (keep old version once as
-        # backup)
+        # release number and changelog consistency (keep old version once as backup)
         # BUT: remove preamble again, it would break things otherwise
         shutil.move(pkg_spec_file, pkg_spec_file + ".old")
 
@@ -262,10 +268,9 @@ class SrpmConstructor(Constructor):
 
     def build(self):
         """
-        This method executes the actual SRPM package assembly. It sets `$HOME`
-        to the created temporary directory and executes `rpmbuild -bs` with the
-        copy of the package spec file in `rpmbuild/SPECS`. After that, `$HOME`
-        is reset to the old value.
+        This method executes the actual SRPM package assembly. It sets `$HOME` to the created
+        temporary directory and executes `rpmbuild -bs` with the copy of the package spec file in
+        `rpmbuild/SPECS`. After that, `$HOME` is reset to the old value.
         """
 
         if not self.active:
@@ -287,12 +292,14 @@ class SrpmConstructor(Constructor):
 
         cmd.append("-bs")
 
-        cmd.append(os.path.join(self.specdir, self.pkg.name + ".spec"))
+        cmd.append(os.path.join(self.specdir, self.cpkg.name + ".spec"))
 
         ktr.log_command(LOGPREFIX1, "rpmbuild", cmd, 1)
-        subprocess.call(cmd)
 
-        os.environ['HOME'] = old_home
+        try:
+            subprocess.call(cmd)
+        finally:
+            os.environ['HOME'] = old_home
 
     def export(self):
         """
@@ -308,8 +315,12 @@ class SrpmConstructor(Constructor):
 
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
+        packdir = os.path.join(ktr.conf.get_packdir(), self.cpkg.conf_name)
+
+        os.makedirs(packdir, exist_ok=True)
+
         for srpm in srpms:
-            shutil.copy2(srpm, Kentauros().conf.get_packdir())
+            shutil.copy2(srpm, packdir)
             ktr.log("File copied: " + srpm, 0)
 
     def clean(self):

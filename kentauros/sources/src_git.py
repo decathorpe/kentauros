@@ -90,11 +90,25 @@ class GitSource(Source):
             else:
                 return string
 
+        def datestr_from_raw(raw_date: str):
+            """This local function parses a datetime object and returns a simple string."""
+            assert isinstance(raw_date, str)
+
+            dateobj = dateutil.parser.parse(raw_date)
+
+            year_str = str(dateobj.year)[2:]
+            month_str = prepend_zero(str(dateobj.month))
+            day_str = prepend_zero(str(dateobj.day))
+
+            hour_str = prepend_zero(str(dateobj.hour))
+            minute_str = prepend_zero(str(dateobj.minute))
+            second_str = prepend_zero(str(dateobj.second))
+
+            date_str = year_str + month_str + day_str + "." + hour_str + minute_str + second_str
+
+            return date_str
+
         ktr = Kentauros(LOGPREFIX1)
-
-        cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
-
-        prevdir = os.getcwd()
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
@@ -104,22 +118,17 @@ class GitSource(Source):
             else:
                 return self.saved_date
 
+        prevdir = os.getcwd()
         os.chdir(self.dest)
+
+        cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
+
         ktr.log_command(LOGPREFIX1, "git", cmd, 0)
         date_raw = subprocess.check_output(cmd).decode().rstrip('\r\n')
+
         os.chdir(prevdir)
 
-        dateobj = dateutil.parser.parse(date_raw)
-
-        year_str = str(dateobj.year)[2:]
-        month_str = prepend_zero(str(dateobj.month))
-        day_str = prepend_zero(str(dateobj.day))
-
-        hour_str = prepend_zero(str(dateobj.hour))
-        minute_str = prepend_zero(str(dateobj.minute))
-        second_str = prepend_zero(str(dateobj.second))
-
-        date = year_str + month_str + day_str + "." + hour_str + minute_str + second_str
+        date = datestr_from_raw(date_raw)
 
         self.saved_date = date
         return date
@@ -400,9 +409,7 @@ class GitSource(Source):
         # add prefix
         cmd.append("--prefix=" + name_version + "/")
 
-        file_name = os.path.join(ktr.conf.get_datadir(),
-                                 self.spkg.name,
-                                 name_version + ".tar.gz")
+        file_name = os.path.join(self.sdir, name_version + ".tar.gz")
 
         cmd.append("--output")
         cmd.append(file_name)

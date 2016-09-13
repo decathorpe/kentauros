@@ -252,8 +252,10 @@ class MockBuilder(Builder):
             ktr.log("This user is not allowed to build in mock.", 2)
             return False
 
+        packdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.conf_name)
+
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(ktr.conf.get_packdir(), self.bpkg.name + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(packdir, self.bpkg.name + "*.src.rpm"))
 
         if not srpms:
             ktr.log("No source packages were found. Construct them first.", 2)
@@ -321,7 +323,7 @@ class MockBuilder(Builder):
 
         ktr = Kentauros(LOGPREFIX1)
 
-        pkg_expo_dir = os.path.join(ktr.conf.get_expodir(), self.bpkg.name)
+        pkg_expo_dir = os.path.join(ktr.conf.get_expodir(), self.bpkg.conf_name)
         os.makedirs(pkg_expo_dir, exist_ok=True)
 
         if not os.path.exists(pkg_expo_dir):
@@ -335,7 +337,7 @@ class MockBuilder(Builder):
         mock_result_dirs = list()
 
         if not self.dists:
-            self.dists.append(get_default_mock_dist())
+            self.dists = [get_default_mock_dist()]
 
         for dist in self.dists:
             path = get_dist_result_path(dist)
