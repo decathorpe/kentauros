@@ -21,9 +21,6 @@ def __smaller_int__(int1: int, int2: int):
         return int2
 
 
-# TODO: remove old log,dbg,err functions
-
-
 class Kentauros:
     """
     This class stores settings and variables that must be the same during the execution of code from
@@ -148,6 +145,8 @@ class Kentauros:
             int pri:        message priority (0-2, where 0 is lowest and 2 is highest)
         """
 
+        warn("The Kentauros().log_command_old() function is deprecated.", DeprecationWarning)
+
         cmdstr = ""
         prefix2 = " " * len(prefix1)
 
@@ -157,39 +156,3 @@ class Kentauros:
 
         self.log(prefix1 + basename + " command:", pri)
         self.log(prefix2 + cmdstr, pri)
-
-
-def dbg(msg: str):
-    """
-    Legacy debug message function.
-    """
-
-    warn("The kentauros.instance.dbg() function is deprecated.", DeprecationWarning)
-    Kentauros().dbg(msg)
-
-
-def err(msg: str):
-    """
-    Legacy error message function.
-    """
-
-    warn("The kentauros.instance.err() function is deprecated.", DeprecationWarning)
-    Kentauros().err(msg)
-
-
-def log(msg: str, pri: int=2):
-    """
-    Legacy log message function.
-    """
-
-    warn("The kentauros.instance.log() function is deprecated.", DeprecationWarning)
-    Kentauros().log(msg, pri)
-
-
-def log_command_old(prefix1: str, basename: str, cmdlist: list, pri: int=2):
-    """
-    Legacy command log message function.
-    """
-
-    warn("The kentauros.instance.log_command() function is deprecated.", DeprecationWarning)
-    Kentauros().log_command_old(prefix1, basename, cmdlist, pri)
