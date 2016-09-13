@@ -289,7 +289,7 @@ def spec_bump(specfile: str, comment: str=None):
 
     cmd.append('--comment=' + comment)
 
-    ktr.log_command(LOGPREFIX1, "rpmdev-bumpspec", cmd, 1)
+    ktr.log_command_old(LOGPREFIX1, "rpmdev-bumpspec", cmd, 1)
     subprocess.call(cmd)
 
     # TODO: error handling

@@ -135,7 +135,7 @@ class Kentauros:
 
             print(msg, file=outfile)
 
-    def log_command(self, prefix1: str, basename: str, cmdlist: list, pri: int=2):
+    def log_command_old(self, prefix1: str, basename: str, cmdlist: list, pri: int=2):
         """
         This method prints commands that are then executed by use of the :py:func:`subprocess.call`
         or :py:func:`subprocess.check_output` functions. Its priority behaviour is the same as the
@@ -186,10 +186,10 @@ def log(msg: str, pri: int=2):
     Kentauros().log(msg, pri)
 
 
-def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):
+def log_command_old(prefix1: str, basename: str, cmdlist: list, pri: int=2):
     """
     Legacy command log message function.
     """
 
     warn("The kentauros.instance.log_command() function is deprecated.", DeprecationWarning)
-    Kentauros().log_command(prefix1, basename, cmdlist, pri)
+    Kentauros().log_command_old(prefix1, basename, cmdlist, pri)

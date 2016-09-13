@@ -162,7 +162,7 @@ class MockBuild:
                     lock_file.close()
 
         cmd = self.get_command()
-        ktr.log_command(LOGPREFIX1, "mock", cmd, 2)
+        ktr.log_command_old(LOGPREFIX1, "mock", cmd, 2)
 
         ret = subprocess.call(cmd)
         return ret

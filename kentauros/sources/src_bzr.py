@@ -87,7 +87,7 @@ class BzrSource(Source):
         prevdir = os.getcwd()
         os.chdir(self.dest)
 
-        ktr.log_command(LOGPREFIX1, "bzr", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "bzr", cmd, 0)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
 
         os.chdir(prevdir)
@@ -180,7 +180,7 @@ class BzrSource(Source):
         cmd.append(self.dest)
 
         # branch bzr repo from orig to dest
-        ktr.log_command(LOGPREFIX1, "bzr", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "bzr", cmd, 0)
         subprocess.call(cmd)
 
         # get commit ID
@@ -241,7 +241,7 @@ class BzrSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        ktr.log_command(LOGPREFIX1, "bzr", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "bzr", cmd, 0)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -317,7 +317,7 @@ class BzrSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        ktr.log_command(LOGPREFIX1, "bzr", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "bzr", cmd, 0)
         subprocess.call(cmd)
 
         # update saved rev

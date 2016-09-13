@@ -123,7 +123,7 @@ class GitSource(Source):
 
         cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
 
-        ktr.log_command(LOGPREFIX1, "git", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "git", cmd, 0)
         date_raw = subprocess.check_output(cmd).decode().rstrip('\r\n')
 
         os.chdir(prevdir)
@@ -161,7 +161,7 @@ class GitSource(Source):
                 return self.saved_rev
 
         os.chdir(self.dest)
-        ktr.log_command(LOGPREFIX1, "git", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "git", cmd, 0)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
         os.chdir(prevdir)
 
@@ -262,7 +262,7 @@ class GitSource(Source):
         cmd_clone.append(self.dest)
 
         # clone git repo from orig to dest
-        ktr.log_command(LOGPREFIX1, "git", cmd_clone, 0)
+        ktr.log_command_old(LOGPREFIX1, "git", cmd_clone, 0)
         subprocess.call(cmd_clone)
 
         # if commit is specified: checkout commit
@@ -275,7 +275,7 @@ class GitSource(Source):
             os.chdir(self.dest)
 
             # checkout commit
-            ktr.log_command(LOGPREFIX1, "git", cmd_checkout, 0)
+            ktr.log_command_old(LOGPREFIX1, "git", cmd_checkout, 0)
             subprocess.call(cmd_checkout)
 
             # go to previous dir
@@ -344,7 +344,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        ktr.log_command(LOGPREFIX1, "git", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "git", cmd, 0)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -428,7 +428,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        ktr.log_command(LOGPREFIX1, "git", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "git", cmd, 0)
         subprocess.call(cmd)
 
         # update saved rev and date

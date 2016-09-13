@@ -95,7 +95,7 @@ class UrlSource(Source):
         cmd.append(self.dest)
 
         # wget source from orig to dest
-        ktr.log_command(LOGPREFIX1, "wget", cmd, 0)
+        ktr.log_command_old(LOGPREFIX1, "wget", cmd, 0)
         subprocess.call(cmd)
 
         return True

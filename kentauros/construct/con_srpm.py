@@ -294,7 +294,7 @@ class SrpmConstructor(Constructor):
 
         cmd.append(os.path.join(self.specdir, self.cpkg.name + ".spec"))
 
-        ktr.log_command(LOGPREFIX1, "rpmbuild", cmd, 1)
+        ktr.log_command_old(LOGPREFIX1, "rpmbuild", cmd, 1)
 
         try:
             subprocess.call(cmd)

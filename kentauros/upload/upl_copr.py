@@ -116,7 +116,7 @@ class CoprUploader(Uploader):
             ktr.log("No connection to remote host detected. Cancelling upload.", 2)
             return False
 
-        ktr.log_command(LOGPREFIX1, "copr-cli", cmd, 1)
+        ktr.log_command_old(LOGPREFIX1, "copr-cli", cmd, 1)
         subprocess.call(cmd)
 
         # TODO: error handling
