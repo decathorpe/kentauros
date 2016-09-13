@@ -7,7 +7,6 @@ program run. Additionally, this subpackage holds logging and error printing func
 
 
 import sys
-from warnings import warn
 
 from kentauros.config import ktr_get_conf
 from kentauros.init.cli import CLIArgs
@@ -134,34 +133,6 @@ class Kentauros:
                 return
 
             print(msg, file=outfile)
-
-    def log_command_old(self, prefix1: str, basename: str, cmdlist: list, pri: int=2):
-        """
-        This method prints commands that are then executed by use of the :py:func:`subprocess.call`
-        or :py:func:`subprocess.check_output` functions. Its priority behaviour is the same as the
-        :py:meth:`Kentauros.log` function's.
-
-        This version of the method is deprecated now, in favor of the shiny new implementation
-        below.
-
-        Arguments:
-            str prefix1:    module-wide prefix string
-            str basename:   command base name
-            list cmdlist:   list of strings, as passed to :py:mod:`subprocess` functions
-            int pri:        message priority (0-2, where 0 is lowest and 2 is highest)
-        """
-
-        warn("The Kentauros().log_command_old() function is deprecated.", DeprecationWarning)
-
-        cmdstr = ""
-        prefix2 = " " * len(prefix1)
-
-        for cmd in cmdlist:
-            assert isinstance(cmd, str)
-            cmdstr += (cmd + " ")
-
-        self.log(prefix1 + basename + " command:", pri)
-        self.log(prefix2 + cmdstr, pri)
 
     def log_command(self, cmdlist: list, pri: int=2, prefix: str=None):
         """
