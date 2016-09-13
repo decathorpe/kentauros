@@ -16,7 +16,7 @@ from kentauros.instance import Kentauros
 from kentauros.sources.src_abstract import Source
 
 
-LOGPREFIX1 = "ktr/sources/bzr: "
+LOGPREFIX = "ktr/sources/bzr"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -43,7 +43,7 @@ class BzrSource(Source):
         self.type = SourceType.BZR
         self.saved_rev = None
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         try:
             self.active = True
@@ -72,7 +72,7 @@ class BzrSource(Source):
         if not self.active:
             return ""
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # if sources are not accessible (anymore), return "" or last saved rev
         if not os.access(self.dest, os.R_OK):
@@ -87,7 +87,7 @@ class BzrSource(Source):
         prevdir = os.getcwd()
         os.chdir(self.dest)
 
-        ktr.log_command_old(LOGPREFIX1, "bzr", cmd, 0)
+        ktr.log_command(cmd, 0)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
 
         os.chdir(prevdir)
@@ -137,7 +137,7 @@ class BzrSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -180,7 +180,7 @@ class BzrSource(Source):
         cmd.append(self.dest)
 
         # branch bzr repo from orig to dest
-        ktr.log_command_old(LOGPREFIX1, "bzr", cmd, 0)
+        ktr.log_command(cmd, 1)
         subprocess.call(cmd)
 
         # get commit ID
@@ -208,7 +208,7 @@ class BzrSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # if specific revision is requested, do not pull updates (obviously)
         if self.spkg.conf.get("bzr", "rev"):
@@ -241,7 +241,7 @@ class BzrSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        ktr.log_command_old(LOGPREFIX1, "bzr", cmd, 0)
+        ktr.log_command(cmd, 1)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -266,7 +266,7 @@ class BzrSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         def remove_notkeep():
             """local function for removing bzr repo after export "if not keep" """
@@ -317,7 +317,7 @@ class BzrSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        ktr.log_command_old(LOGPREFIX1, "bzr", cmd, 0)
+        ktr.log_command(cmd, 1)
         subprocess.call(cmd)
 
         # update saved rev

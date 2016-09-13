@@ -17,7 +17,7 @@ from kentauros.instance import Kentauros
 from kentauros.sources.src_abstract import Source
 
 
-LOGPREFIX1 = "ktr/sources/git: "
+LOGPREFIX = "ktr/sources/git"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -44,7 +44,7 @@ class GitSource(Source):
         self.dest = os.path.join(self.sdir, self.spkg.name)
         self.type = SourceType.GIT
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # if git is not installed: mark GitSource instance as inactive
         try:
@@ -108,7 +108,7 @@ class GitSource(Source):
 
             return date_str
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
@@ -118,12 +118,12 @@ class GitSource(Source):
             else:
                 return self.saved_date
 
+        cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
+
         prevdir = os.getcwd()
         os.chdir(self.dest)
 
-        cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
-
-        ktr.log_command_old(LOGPREFIX1, "git", cmd, 0)
+        ktr.log_command(cmd, 1)
         date_raw = subprocess.check_output(cmd).decode().rstrip('\r\n')
 
         os.chdir(prevdir)
@@ -146,11 +146,7 @@ class GitSource(Source):
         if not self.active:
             return None
 
-        ktr = Kentauros(LOGPREFIX1)
-
-        cmd = ["git", "rev-parse", "HEAD"]
-
-        prevdir = os.getcwd()
+        ktr = Kentauros(LOGPREFIX)
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
@@ -160,9 +156,14 @@ class GitSource(Source):
             else:
                 return self.saved_rev
 
+        cmd = ["git", "rev-parse", "HEAD"]
+
+        prevdir = os.getcwd()
         os.chdir(self.dest)
-        ktr.log_command_old(LOGPREFIX1, "git", cmd, 0)
+
+        ktr.log_command(cmd, 1)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
+
         os.chdir(prevdir)
 
         self.saved_rev = rev
@@ -221,7 +222,7 @@ class GitSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -262,7 +263,7 @@ class GitSource(Source):
         cmd_clone.append(self.dest)
 
         # clone git repo from orig to dest
-        ktr.log_command_old(LOGPREFIX1, "git", cmd_clone, 0)
+        ktr.log_command(cmd_clone, 1)
         subprocess.call(cmd_clone)
 
         # if commit is specified: checkout commit
@@ -275,7 +276,7 @@ class GitSource(Source):
             os.chdir(self.dest)
 
             # checkout commit
-            ktr.log_command_old(LOGPREFIX1, "git", cmd_checkout, 0)
+            ktr.log_command(cmd_checkout, 1)
             subprocess.call(cmd_checkout)
 
             # go to previous dir
@@ -307,7 +308,7 @@ class GitSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # if specific commit is requested, do not pull updates (obviously)
         if self.spkg.conf.get("git", "commit"):
@@ -319,11 +320,7 @@ class GitSource(Source):
             return False
 
         # construct git command
-        cmd = list()
-
-        cmd.append("git")
-        cmd.append("pull")
-        cmd.append("--rebase")
+        cmd = ["git", "pull", "--rebase"]
 
         # add --verbose or --quiet depending on settings
         if (ktr.verby == 2) and not ktr.debug:
@@ -344,7 +341,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        ktr.log_command_old(LOGPREFIX1, "git", cmd, 0)
+        ktr.log_command(cmd, 1)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -370,12 +367,12 @@ class GitSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         def remove_notkeep():
             """
-            This local function removes the git repository after it has been
-            exported to a tarball, if ``git.keep=false`` is set.
+            This local function removes the git repository after it has been exported to a tarball,
+            if `git.keep=false` is set.
             """
 
             if not self.spkg.conf.getboolean("git", "keep"):
@@ -387,10 +384,6 @@ class GitSource(Source):
 
         # construct git command
         cmd = ["git", "archive"]
-
-        # add --verbose or --quiet depending on settings
-        if (ktr.verby == 0) or ktr.debug:
-            cmd.append("--verbose")
 
         # export HEAD or specified commit
         if self.spkg.conf.get("git", "commit") == "":
@@ -428,7 +421,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        ktr.log_command_old(LOGPREFIX1, "git", cmd, 0)
+        ktr.log_command(cmd, 1)
         subprocess.call(cmd)
 
         # update saved rev and date

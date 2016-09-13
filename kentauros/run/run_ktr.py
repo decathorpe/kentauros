@@ -1,5 +1,5 @@
 """
-This module contains the :py:func:`run` function that is called as entry point from the ``ktr``
+This module contains the :py:func:`run` function that is called as entry point from the `ktr`
 script.
 """
 
@@ -14,25 +14,20 @@ from kentauros.bootstrap import ktr_bootstrap
 from kentauros.package import Package
 
 
-LOGPREFIX1 = "ktr: "
+LOGPREFIX = "ktr"
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.
-"""
-
-LOGPREFIX2 = "     - "
-"""This string specifies the prefix for lists printed through log and error
-functions, printed to stdout or stderr from inside this subpackage.
 """
 
 
 def run():
     """
-    This function is corresponding to (one of) the "main" function of the
-    `kentauros` package and is the entry point used by the ``ktr`` script from
-    git and the script installed by setuptools at installation.
+    This function is corresponding to (one of) the "main" function of the `kentauros` package and is
+    the entry point used by the ``ktr`` script from git and the script installed by setuptools at
+    installation.
     """
 
-    ktr = Kentauros(LOGPREFIX1)
+    ktr = Kentauros(LOGPREFIX)
 
     print()
 
@@ -42,41 +37,40 @@ def run():
     ktr.dbg("BASEDIR: " + ktr.conf.basedir)
     ktr.dbg("CONFDIR: " + ktr.conf.get_confdir())
     ktr.dbg("DATADIR: " + ktr.conf.get_datadir())
+    ktr.dbg("EXPODIR: " + ktr.conf.get_expodir())
     ktr.dbg("PACKDIR: " + ktr.conf.get_packdir())
     ktr.dbg("SPECDIR: " + ktr.conf.get_specdir())
 
+    print()
+
     # if no action is specified: exit
     if ktr.cli.get_action() is None:
-        ktr.log("No action specified. Exiting.", 2)
-        ktr.log("Use 'ktr --help' for more information.", 2)
+        ktr.log("No action specified. Exiting.")
+        ktr.log("Use 'ktr --help' for more information.")
         print()
         return
 
     if not ktr_bootstrap():
-        raise SystemExit
+        raise SystemExit()
 
     pkgs = list()
 
-    # if only specified packages are to be processed:
-    # process packages only
+    # if only specified packages are to be processed: process packages from CLI only
     if not ktr.cli.get_packages_all():
-        for name in ktr.cli.get_packages():
-            pkgs.append(name)
+        pkgs = ktr.cli.get_packages().copy()
 
-    # if all package are to be processed:
-    # get package configs present in CONFDIR
+    # if all package are to be processed: get package configs present in CONFDIR
     else:
-        pkg_conf_paths = glob.glob(os.path.join(
-            ktr.conf.get_confdir(), "*.conf"))
+        pkg_conf_paths = glob.glob(os.path.join(ktr.conf.get_confdir(), "*.conf"))
 
         for pkg_conf_path in pkg_conf_paths:
             pkgs.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
 
     # log list of found packages
-    ktr.log("Packages:", 2)
-    for package in pkgs:
-        assert isinstance(package, str)
-        ktr.log(package, pri=2, prefix=LOGPREFIX2)
+    ktr.log_list("Packages", pkgs)
+
+    action_succ = list()
+    action_fail = list()
 
     # run action for every specified package
     for name in pkgs:
@@ -88,7 +82,19 @@ def run():
 
         if success:
             ktr.log(name + ": Success!")
+            action_succ.append(name)
         else:
             ktr.log(name + ": Not successful.")
+            action_fail.append(name)
 
     print()
+
+    if action_succ:
+        ktr.log_list("Successful actions", action_succ)
+
+    if action_fail:
+        ktr.log_list("Failed actions", action_fail)
+
+    print()
+
+    raise SystemExit()

@@ -9,7 +9,7 @@ from kentauros.instance import Kentauros
 from kentauros.package import Package
 
 from kentauros.actions.act_abstract import Action
-from kentauros.actions.act_common import LOGPREFIX1
+from kentauros.actions.act_common import LOGPREFIX
 
 
 class BuildAction(Action):
@@ -39,7 +39,7 @@ class BuildAction(Action):
             bool:   ``True`` if all builds were successful, ``False`` otherwise
         """
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         success = self.kpkg.builder.build()
 

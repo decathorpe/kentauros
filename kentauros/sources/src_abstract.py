@@ -11,7 +11,7 @@ import shutil
 from kentauros.instance import Kentauros
 
 
-LOGPREFIX1 = "ktr/sources: "
+LOGPREFIX = "ktr/sources"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -34,7 +34,7 @@ class Source(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         if ktr.debug:
             from kentauros.package import Package
@@ -88,7 +88,7 @@ class Source(metaclass=abc.ABCMeta):
             bool:   *True* if successful
         """
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         if not os.path.exists(self.sdir):
             ktr.log("Nothing here to be cleaned.", 0)

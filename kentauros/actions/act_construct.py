@@ -9,7 +9,7 @@ from kentauros.instance import Kentauros
 from kentauros.package import Package
 
 from kentauros.actions.act_abstract import Action
-from kentauros.actions.act_common import LOGPREFIX1
+from kentauros.actions.act_common import LOGPREFIX
 
 
 class ConstructAction(Action):
@@ -65,7 +65,7 @@ class ConstructAction(Action):
         success = self.kpkg.constructor.prepare(relreset=self.relreset, force=self.force)
         if not success:
             self.kpkg.constructor.clean()
-            Kentauros(LOGPREFIX1).log("Source package assembly unsuccessful.", 2)
+            Kentauros(LOGPREFIX).log("Source package assembly unsuccessful.", 2)
             return False
 
         self.kpkg.constructor.build()

@@ -14,7 +14,7 @@ from kentauros.instance import Kentauros
 from kentauros.sources.src_abstract import Source
 
 
-LOGPREFIX1 = "ktr/sources/local: "
+LOGPREFIX = "ktr/sources/local"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -46,7 +46,7 @@ class LocalSource(Source):
             bool:   *True* if source was copied successfully, *False* if not
         """
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):

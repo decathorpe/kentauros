@@ -104,7 +104,7 @@ class Kentauros:
         else:
             self.log(msg, prefix="ERROR: " + prefix, outfile=sys.stderr)
 
-    def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout):
+    def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout, sep: str=":"):
         """
         This method prints messages to standard output, depending on the priority argument and the
         verbosity level determined from environment variables and CLI switches.
@@ -120,14 +120,17 @@ class Kentauros:
             int pri: message priority (0-2, where 0 is lowest and 2 is highest)
         """
 
+        if sep != ":":
+            assert isinstance(sep, str)
+
         if (pri >= self.verby) or self.debug:
 
             if prefix is not None:
-                print(prefix + " " + msg, file=outfile)
+                print(prefix + sep + " " + msg, file=outfile)
                 return
 
             if self.log_prefix is not None:
-                print(self.log_prefix + " " + msg, file=outfile)
+                print(self.log_prefix + sep + " " + msg, file=outfile)
                 return
 
             print(msg, file=outfile)
@@ -137,6 +140,9 @@ class Kentauros:
         This method prints commands that are then executed by use of the :py:func:`subprocess.call`
         or :py:func:`subprocess.check_output` functions. Its priority behaviour is the same as the
         :py:meth:`Kentauros.log` function's.
+
+        This version of the method is deprecated now, in favor of the shiny new implementation
+        below.
 
         Arguments:
             str prefix1:    module-wide prefix string
@@ -156,3 +162,78 @@ class Kentauros:
 
         self.log(prefix1 + basename + " command:", pri)
         self.log(prefix2 + cmdstr, pri)
+
+    def log_command(self, cmdlist: list, pri: int=2, prefix: str=None):
+        """
+        This method prints commands that are then executed by use of the :py:func:`subprocess.call`
+        or :py:func:`subprocess.check_output` functions. Its priority behaviour is the same as the
+        :py:meth:`Kentauros.log` function's.
+
+        Arguments:
+            list cmdlist:   list of strings, as passed to :py:mod:`subprocess` functions
+            int pri:        message priority (0-2, where 0 is lowest and 2 is highest)
+            str prefix:     custom module-wide prefix string
+        """
+
+        assert isinstance(cmdlist, list)
+        assert isinstance(pri, int)
+
+        if prefix is not None:
+            assert isinstance(prefix, str)
+
+        cmdstring = ""
+
+        for cmd in cmdlist:
+            assert isinstance(cmd, str)
+            cmdstring += (cmd + " ")
+
+        basename = str(cmdlist[0])
+
+        if prefix is not None:
+            spacing = " " * len(prefix)
+            self.log(basename + " command:", pri, prefix)
+            self.log(cmdstring, pri, spacing)
+            return
+
+        if self.log_prefix is not None:
+            spacing = " " * len(self.log_prefix)
+            self.log(basename + " command:", pri)
+            self.log(cmdstring, pri, spacing)
+            return
+
+    def log_list(self, header: str, lst: list, pri: int=2, prefix: str=None):
+        """
+        This method prints lists, with one element on each line. Its priority behaviour is the same
+        as the :py:meth:`Kentauros.log` function's.
+
+        Arguments:
+            str header: header for the list
+            list lst:   list of objects that are parseable to str()s by python
+            int pri:    message priority (0-2, where 0 is lowest and 2 is highest)
+            str prefix: custom module-wide prefix string
+        """
+
+        assert isinstance(header, str)
+        assert isinstance(lst, list)
+        assert isinstance(pri, int)
+
+        if prefix is not None:
+            assert isinstance(prefix, str)
+
+        if prefix is not None:
+            spacing = " " * len(prefix)
+            self.log(header + ":", pri, prefix)
+
+            for element in lst:
+                self.log(str(element), pri, spacing, sep="  -")
+
+            return
+
+        if self.log_prefix is not None:
+            spacing = " " * len(self.log_prefix)
+            self.log(header + ":", pri)
+
+            for element in lst:
+                self.log(str(element), pri, spacing, sep="  -")
+
+            return

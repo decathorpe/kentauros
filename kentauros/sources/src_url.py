@@ -15,7 +15,7 @@ from kentauros.instance import Kentauros
 from kentauros.sources.src_abstract import Source
 
 
-LOGPREFIX1 = "ktr/sources/url: "
+LOGPREFIX = "ktr/sources/url"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -40,7 +40,7 @@ class UrlSource(Source):
             self.spkg.conf.get("source", "orig")))
         self.type = SourceType.URL
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         try:
             self.active = True
@@ -64,7 +64,7 @@ class UrlSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -95,7 +95,7 @@ class UrlSource(Source):
         cmd.append(self.dest)
 
         # wget source from orig to dest
-        ktr.log_command_old(LOGPREFIX1, "wget", cmd, 0)
+        ktr.log_command(cmd, 1)
         subprocess.call(cmd)
 
         return True

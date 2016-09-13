@@ -20,7 +20,7 @@ from kentauros.pkgformat.pkg_rpm_spec import if_version, if_release
 from kentauros.pkgformat.pkg_rpm_spec import format_tagline, reset_release, spec_bump
 
 
-LOGPREFIX1 = "ktr/construct/srpm: "
+LOGPREFIX = "ktr/construct/srpm"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -48,7 +48,7 @@ class SrpmConstructor(Constructor):
     def __init__(self, package):
         super().__init__(package)
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         self.tempdir = None
         self.rpmbdir = None
@@ -75,7 +75,7 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # make sure to finally call self.clean()!
         self.tempdir = tempfile.mkdtemp()
@@ -126,7 +126,7 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         if not os.path.exists(self.rpmbdir):
             self.init()
@@ -276,7 +276,7 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         old_home = os.environ['HOME']
         os.environ['HOME'] = self.tempdir
@@ -291,10 +291,9 @@ class SrpmConstructor(Constructor):
             cmd.append("--verbose")
 
         cmd.append("-bs")
-
         cmd.append(os.path.join(self.specdir, self.cpkg.name + ".spec"))
 
-        ktr.log_command_old(LOGPREFIX1, "rpmbuild", cmd, 1)
+        ktr.log_command(cmd)
 
         try:
             subprocess.call(cmd)
@@ -311,7 +310,7 @@ class SrpmConstructor(Constructor):
         if not self.active:
             return None
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 

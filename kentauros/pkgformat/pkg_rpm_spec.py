@@ -14,7 +14,7 @@ from kentauros.sources.src_git import GitSource
 from kentauros.sources.src_url import UrlSource
 
 
-LOGPREFIX1 = "ktr/pkgformat/rpm_spec: "
+LOGPREFIX = "ktr/pkgformat/rpm_spec"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -273,7 +273,7 @@ def spec_bump(specfile: str, comment: str=None):
         str comment:    comment to be added to the changelog entry
     """
 
-    ktr = Kentauros(LOGPREFIX1)
+    ktr = Kentauros(LOGPREFIX)
 
     if comment is None:
         comment = "Automatic build by kentauros."
@@ -286,10 +286,9 @@ def spec_bump(specfile: str, comment: str=None):
         cmd.append("--verbose")
 
     cmd.append(specfile)
-
     cmd.append('--comment=' + comment)
 
-    ktr.log_command_old(LOGPREFIX1, "rpmdev-bumpspec", cmd, 1)
+    ktr.log_command(cmd)
     subprocess.call(cmd)
 
     # TODO: error handling

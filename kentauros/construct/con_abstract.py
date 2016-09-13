@@ -10,7 +10,7 @@ import os
 from kentauros.instance import Kentauros
 
 
-LOGPREFIX = "ktr/construct: "
+LOGPREFIX = "ktr/construct"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """

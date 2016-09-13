@@ -10,7 +10,7 @@ import os
 from kentauros.instance import Kentauros
 
 
-LOGPREFIX1 = "ktr/bootstrap: "
+LOGPREFIX = "ktr/bootstrap"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -28,7 +28,7 @@ def ktr_mkdirp(path: str) -> bool:
         bool:       success (or not)
     """
 
-    ktr = Kentauros(LOGPREFIX1)
+    ktr = Kentauros(LOGPREFIX)
 
     if os.path.exists(path):
         if os.access(path, os.W_OK):
@@ -56,7 +56,7 @@ def ktr_bootstrap() -> bool:
         bool:       success (or not)
     """
 
-    ktr = Kentauros(LOGPREFIX1)
+    ktr = Kentauros(LOGPREFIX)
 
     for path in [ktr.conf.get_basedir(), ktr.conf.get_confdir(), ktr.conf.get_datadir(),
                  ktr.conf.get_expodir(), ktr.conf.get_packdir(), ktr.conf.get_specdir()]:

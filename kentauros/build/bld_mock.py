@@ -16,14 +16,9 @@ from kentauros.instance import Kentauros
 from kentauros.build.bld_abstract import Builder
 
 
-LOGPREFIX1 = "ktr/build/mock: "
+LOGPREFIX = "ktr/build/mock"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
-"""
-
-LOGPREFIX2 = " " * len(LOGPREFIX1) + "- "
-"""This string specifies the prefix for lists printed through log and error functions, printed to
-stdout or stderr from inside this subpackage.
 """
 
 DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
@@ -112,7 +107,7 @@ class MockBuild:
             list:   argument list for consumption by subprocess methods
         """
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         cmd = [self.mock]
 
@@ -139,7 +134,7 @@ class MockBuild:
             int:    return code of the subprocess call
         """
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
@@ -162,7 +157,7 @@ class MockBuild:
                     lock_file.close()
 
         cmd = self.get_command()
-        ktr.log_command_old(LOGPREFIX1, "mock", cmd, 2)
+        ktr.log_command(cmd)
 
         ret = subprocess.call(cmd)
         return ret
@@ -184,7 +179,7 @@ class MockBuilder(Builder):
     def __init__(self, package):
         super().__init__(package)
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # deactivate mock if section is not present in config file
         if "mock" not in self.bpkg.conf.sections():
@@ -241,7 +236,7 @@ class MockBuilder(Builder):
         if not self.active:
             return True
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         # check if user is in the "mock" group
         mock_group = grp.getgrnam("mock")
@@ -263,10 +258,7 @@ class MockBuilder(Builder):
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        if self.dists:
-            ktr.log("Specified chroots:", 2)
-            for dist in self.dists:
-                ktr.log(dist, prefix=LOGPREFIX2, pri=2)
+        ktr.log_list("Specified chroots", self.dists)
 
         # generate build queue
         build_queue = list()
@@ -293,14 +285,10 @@ class MockBuilder(Builder):
             os.remove(srpm)
 
         if build_succ:
-            ktr.log("Build successes:", 2)
-            for success in build_succ:
-                ktr.log(str(success), prefix=LOGPREFIX2, pri=2)
+            ktr.log_list("Build successes", build_succ)
 
         if build_fail:
-            ktr.log("Build failures:", 2)
-            for fails in build_fail:
-                ktr.log(str(fails), prefix=LOGPREFIX2, pri=2)
+            ktr.log_list("Build failures", build_fail)
 
         return not build_fail
 
@@ -319,7 +307,7 @@ class MockBuilder(Builder):
         if not self.exporting:
             return True
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         pkg_expo_dir = os.path.join(ktr.conf.get_expodir(), self.bpkg.conf_name)
         os.makedirs(pkg_expo_dir, exist_ok=True)

@@ -9,7 +9,7 @@ from kentauros.instance import Kentauros
 from kentauros.package import Package
 
 from kentauros.actions.act_abstract import Action
-from kentauros.actions.act_common import LOGPREFIX1
+from kentauros.actions.act_common import LOGPREFIX
 from kentauros.actions.act_build import BuildAction
 from kentauros.actions.act_construct import ConstructAction
 from kentauros.actions.act_export import ExportAction
@@ -54,7 +54,7 @@ class ChainAction(Action):
             bool:   ``True`` if chain went all the way through, ``False`` if not
         """
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         def print_abort_msg():
             """This function prints a standard abort message."""

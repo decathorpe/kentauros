@@ -14,19 +14,19 @@
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>kentauros.pkgformat.pkg_rpm_spec</td>
+<td>&#160;</td>
+<td>294</td>
+<td>0</td>
+<td>TODO: error handling</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
 <td>kentauros.sources.src_abstract</td>
 <td>&#160;</td>
 <td>46</td>
 <td>0</td>
 <td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.pkgformat.pkg_rpm_spec</td>
-<td>&#160;</td>
-<td>295</td>
-<td>0</td>
-<td>TODO: error handling</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -64,7 +64,7 @@
 <td>warning</td>
 <td>kentauros.construct.con_srpm</td>
 <td>&#160;</td>
-<td>333</td>
+<td>332</td>
 <td>0</td>
 <td>TODO: arguments need to be passed through (force, relreset, etc)</td>
 </tr>
@@ -88,7 +88,7 @@
 <td>warning</td>
 <td>kentauros.upload.upl_copr</td>
 <td>&#160;</td>
-<td>122</td>
+<td>113</td>
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
@@ -101,7 +101,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1930 statements analysed.</p><div>
+<p>1958 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -130,8 +130,8 @@
 </tr>
 <tr class="even">
 <td>method</td>
-<td>130</td>
-<td>130</td>
+<td>132</td>
+<td>132</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -139,8 +139,8 @@
 <tr class="odd">
 <td>function</td>
 <td>49</td>
-<td>53</td>
-<td>-4.00</td>
+<td>49</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -179,7 +179,7 @@ kentauros
   \-construct (kentauros.package)
   | \-con_abstract (kentauros.construct.con_srpm)
   | \-con_srpm (kentauros.construct)
-  \-definitions (kentauros.build)
+  \-definitions (kentauros.config)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
@@ -212,31 +212,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2129</td>
-<td>40.33</td>
-<td>2140</td>
-<td>-11.00</td>
+<td>2158</td>
+<td>40.44</td>
+<td>2158</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1819</td>
-<td>34.46</td>
-<td>1831</td>
-<td>-12.00</td>
+<td>1836</td>
+<td>34.41</td>
+<td>1836</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>208</td>
-<td>3.94</td>
-<td>209</td>
-<td>-1.00</td>
+<td>203</td>
+<td>3.80</td>
+<td>203</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1123</td>
-<td>21.27</td>
-<td>1136</td>
-<td>-13.00</td>
+<td>1139</td>
+<td>21.35</td>
+<td>1139</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -287,8 +287,8 @@ kentauros
 <tr class="even">
 <td>warning</td>
 <td>8</td>
-<td>9</td>
-<td>-1.00</td>
+<td>8</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>error</td>
@@ -382,7 +382,7 @@ kentauros
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.95/10 (previous run: 9.94/10, +0.00)</div>
+Your code has been rated at 9.95/10 (previous run: 9.95/10, +0.00)</div>
 </div>
 </body>
 </html>

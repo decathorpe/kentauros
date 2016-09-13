@@ -9,7 +9,7 @@ from kentauros.instance import Kentauros
 from kentauros.package import Package
 
 from kentauros.actions.act_abstract import Action
-from kentauros.actions.act_common import LOGPREFIX1
+from kentauros.actions.act_common import LOGPREFIX
 
 
 class VerifyAction(Action):
@@ -40,6 +40,6 @@ class VerifyAction(Action):
         # TODO: verify that package *.conf is valid
 
         if not True:
-            Kentauros(LOGPREFIX1).log("Package could not be verified.", 2)
+            Kentauros(LOGPREFIX).log("Package could not be verified.", 2)
 
         return True

@@ -14,7 +14,7 @@ from kentauros.instance import Kentauros
 from kentauros.upload.upl_abstract import Uploader
 
 
-LOGPREFIX1 = "ktr/upload/copr: "
+LOGPREFIX = "ktr/upload/copr"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -49,7 +49,7 @@ class CoprUploader(Uploader):
         try:
             subprocess.check_output(["which", "copr-cli"])
         except subprocess.CalledProcessError:
-            Kentauros(LOGPREFIX1).log("Install copr-cli to use the specified uploader.")
+            Kentauros(LOGPREFIX).log("Install copr-cli to use the specified uploader.")
             self.active = False
 
         self.remote = DEFAULT_COPR_URL
@@ -67,7 +67,7 @@ class CoprUploader(Uploader):
         if not self.active:
             return True
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         packdir = os.path.join(ktr.conf.get_packdir(), self.upkg.conf_name)
 
@@ -88,16 +88,7 @@ class CoprUploader(Uploader):
             dists = []
 
         # construct copr-cli command
-        cmd = ["copr-cli"]
-
-        if ktr.debug:
-            cmd.append("--debug")
-
-        # append build command
-        cmd.append("build")
-
-        # append copr repo
-        cmd.append(self.upkg.conf.get("copr", "repo"))
+        cmd = ["copr-cli", "build", self.upkg.conf.get("copr", "repo")]
 
         # append chroots (dists)
         for dist in dists:
@@ -116,7 +107,7 @@ class CoprUploader(Uploader):
             ktr.log("No connection to remote host detected. Cancelling upload.", 2)
             return False
 
-        ktr.log_command_old(LOGPREFIX1, "copr-cli", cmd, 1)
+        ktr.log_command(cmd, 1)
         subprocess.call(cmd)
 
         # TODO: error handling

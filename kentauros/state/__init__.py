@@ -12,7 +12,7 @@ import dataset
 from kentauros.instance import Kentauros
 
 
-LOGPREFIX = "ktr/state:"
+LOGPREFIX = "ktr/state"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """

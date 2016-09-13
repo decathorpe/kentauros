@@ -20,7 +20,7 @@ from kentauros.sources import SOURCE_TYPE_DICT
 from kentauros.upload import UPLOADER_TYPE_DICT
 
 
-LOGPREFIX1 = "ktr/package: "
+LOGPREFIX = "ktr/package"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -65,7 +65,7 @@ class Package:
     def __init__(self, conf_name: str):
         assert isinstance(conf_name, str)
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         self.file = os.path.join(ktr.conf.get_confdir(), conf_name + ".conf")
         self.conf = ConfigParser()
@@ -136,7 +136,7 @@ class Package:
 
         assert isinstance(self.conf, ConfigParser)
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         if "package" not in self.conf.sections():
             ktr.err("Package configuration file does not have a 'package' section.")
@@ -158,7 +158,7 @@ class Package:
         permanent changes.
         """
 
-        ktr = Kentauros(LOGPREFIX1)
+        ktr = Kentauros(LOGPREFIX)
 
         try:
             conf_file = open(self.file, "w")
