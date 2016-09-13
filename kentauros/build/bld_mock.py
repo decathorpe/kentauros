@@ -119,8 +119,6 @@ class MockBuild:
         # add --verbose or --quiet depending on settings
         if (ktr.verby == 2) and not ktr.debug:
             cmd.append("--quiet")
-        if (ktr.verby == 0) or ktr.debug:
-            cmd.append("--verbose")
 
         # specify chroot if it has been set
         if self.dist is not None:
