@@ -77,9 +77,9 @@ class Kentauros:
         if "state" not in self.saved_state:
             self.state = dict()
             self.state["db_path"] = os.path.join(self.conf.get_basedir(), STATE_DB_URL)
-            self.state["db_conn"] = dataset.connect(STATE_DB_PROTOCOL + self.db_path)
-            self.state["pkg_tbl"] = self.db_conn["packages"]
-            self.state["ktr_tbl"] = self.db_conn["kentauros"]
+            self.state["db_conn"] = dataset.connect(STATE_DB_PROTOCOL + self.state["db_path"])
+            self.state["pkg_tbl"] = self.state["db_conn"]["packages"]
+            self.state["ktr_tbl"] = self.state["db_conn"]["kentauros"]
 
     def state_write(self, conf_name: str, entries: dict) -> int:
         """
