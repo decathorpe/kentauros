@@ -11,6 +11,7 @@ import sys
 from kentauros.config import ktr_get_conf
 from kentauros.init.cli import CLIArgs
 from kentauros.init.env import get_env_debug, get_env_verby
+from kentauros.state import KtrStater
 
 
 def __smaller_int__(int1: int, int2: int):
@@ -60,6 +61,9 @@ class Kentauros:
 
         if "conf" not in self.saved_state:
             self.conf = ktr_get_conf()
+
+        if "state" not in self.saved_state:
+            self.state = KtrStater()
 
     def dbg(self, msg: str, prefix: str=None):
         """

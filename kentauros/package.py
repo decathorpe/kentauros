@@ -125,6 +125,22 @@ class Package:
             except KeyError:
                 raise PackageError("The specified uploader type is not supported.")
 
+        ktr.state.write(conf_name, self.status())
+        ktr.state.write(conf_name, self.source.status())
+
+    def status(self) -> dict:
+        """
+        This method returns statistics describing this Package object and its associated source.
+
+        Returns:
+            dict:   key-value pairs (property: value)
+        """
+
+        state = dict(package_name=self.name,
+                     source_type=self.conf.get("source", "type"),
+                     source_version=self.conf.get("source", "version"))
+        return state
+
     def verify(self) -> bool:
         """
         This method verifies that the absolute minimum for proceeding with package initialisation is

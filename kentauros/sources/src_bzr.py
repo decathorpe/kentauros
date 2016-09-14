@@ -93,20 +93,24 @@ class BzrSource(Source):
         os.chdir(prevdir)
 
         self.saved_rev = rev
+        ktr.state.write(self.spkg.conf_name, dict(bzr_last_rev=rev))
+
         return rev
 
     def status(self) -> dict:
         """
         This method returns statistics describing this BzrSource object and its associated file(s).
-        At the moment, this only includes the revision the repository is at.
+        At the moment, this only includes the branch and revision specified in the configuration
+        file.
 
         Returns:
             dict:   key-value pairs (property: value)
         """
 
-        status = dict()
-        status["last-rev"] = self.rev()
-        return status
+        state = dict(bzr_branch=self.spkg.conf.get("bzr", "branch"),
+                     bzr_rev=self.spkg.conf.get("bzr", "rev"))
+
+        return state
 
     def formatver(self) -> str:
         """

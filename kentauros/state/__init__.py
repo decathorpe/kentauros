@@ -32,6 +32,7 @@ class KtrStater:
         self.db_path = os.path.join(Kentauros(LOGPREFIX).conf.get_basedir(), STATE_DB_URL)
         self.db_conn = dataset.connect(STATE_DB_PROTOCOL + self.db_path)
         self.pkg_tbl = self.db_conn["packages"]
+        self.ktr_tbl = self.db_conn["kentauros"]
 
     def write(self, conf_name: str, entries: dict) -> int:
         """
@@ -46,8 +47,8 @@ class KtrStater:
             int: row ID of the package in the database
         """
 
-        entries["conf_name"] = conf_name
-        return self.pkg_tbl.upsert(entries, ["conf_name"])
+        entries["name"] = conf_name
+        return self.pkg_tbl.upsert(entries, ["name"])
 
     def read(self, conf_name: str) -> OrderedDict:
         """
@@ -61,4 +62,4 @@ class KtrStater:
             OrderedDict:    result of the query
         """
 
-        return self.pkg_tbl.find_one(conf_name=conf_name)
+        return self.pkg_tbl.find_one(name=conf_name)
