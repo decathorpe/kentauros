@@ -125,8 +125,8 @@ class Package:
             except KeyError:
                 raise PackageError("The specified uploader type is not supported.")
 
-        ktr.state.write(conf_name, self.status())
-        ktr.state.write(conf_name, self.source.status())
+        ktr.state_write(conf_name, self.status())
+        ktr.state_write(conf_name, self.source.status())
 
     def status(self) -> dict:
         """

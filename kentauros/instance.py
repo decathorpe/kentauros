@@ -6,12 +6,24 @@ program run. Additionally, this subpackage holds logging and error printing func
 """
 
 
+from collections import OrderedDict
+import os
 import sys
+
+import dataset
 
 from kentauros.config import ktr_get_conf
 from kentauros.init.cli import CLIArgs
 from kentauros.init.env import get_env_debug, get_env_verby
-from kentauros.state import KtrStater
+
+
+LOGPREFIX = "ktr/instance"
+"""This string specifies the prefix for log and error messages printed to stdout or stderr from
+inside this subpackage.
+"""
+
+STATE_DB_PROTOCOL = "sqlite:///"
+STATE_DB_URL = "state.sqlite"
 
 
 def __smaller_int__(int1: int, int2: int):
@@ -63,7 +75,41 @@ class Kentauros:
             self.conf = ktr_get_conf()
 
         if "state" not in self.saved_state:
-            self.state = KtrStater()
+            self.state = dict()
+            self.state["db_path"] = os.path.join(self.conf.get_basedir(), STATE_DB_URL)
+            self.state["db_conn"] = dataset.connect(STATE_DB_PROTOCOL + self.db_path)
+            self.state["pkg_tbl"] = self.db_conn["packages"]
+            self.state["ktr_tbl"] = self.db_conn["kentauros"]
+
+    def state_write(self, conf_name: str, entries: dict) -> int:
+        """
+        This method inserts or updates a package's entry in the state database with the dictionary
+        entries given.
+
+        Arguments:
+            str package:    package name
+            dict entries:   dictionary containing the key-value pairs to insert or update in the db
+
+        Returns:
+            int: row ID of the package in the database
+        """
+
+        entries["name"] = conf_name
+        return self.state["pkg_tbl"].upsert(entries, ["name"])
+
+    def state_read(self, conf_name: str) -> OrderedDict:
+        """
+        This method reads the entries for the given package from the database and returns them as an
+        ordered dictionary.
+
+        Arguments:
+            str conf_name:  package configuration name
+
+        Returns:
+            OrderedDict:    result of the query
+        """
+
+        return self.state["pkg_tbl"].find_one(name=conf_name)
 
     def dbg(self, msg: str, prefix: str=None):
         """
