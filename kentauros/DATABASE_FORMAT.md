@@ -24,14 +24,19 @@ These are only expected if their corresponding source type has been set:
 - `bzr_rev`: revision number set in package configuration
 - `bzr_last_rev`: revision number after the latest source change
 
-## example columns for git package
+For RPM packages, the following columns are also expected:
 
-| id  | name | package_name | source_type | source_version | git_branch | git_commit | git_last_commit | git_last_date |
-| --- | ---- | ------------ | ----------- | -------------- | ---------- | ---------- | --------------- | ------------- |
-|  0  | mesa | mesa         | git         | 11.2.0~devel   | master     | None       | $GIT_HASH       | YYMMDD.HHMMSS |
+- `rpm_last_release`: release string of the latest built package, minus "%{dist}"
 
-## example columns for bzr package
 
-| id  | name    | package_name | source_type | source_version | bzr_branch | bzr_rev | bzr_last_rev |
-| --- | ------- | ------------ | ----------- | -------------- | ---------- | ------- | ------------ |
-|  1  | granite | granite      | bzr         | 0.4.0.1        | None       | None    | $BZR_REV     | 
+## example columns for git/srpm package
+
+| id  | name | package_name | source_type | source_version | rpm_last_release | git_branch | git_commit | git_last_commit | git_last_date |
+| --- | ---- | ------------ | ----------- | -------------- | ---------------- | ---------- | ---------- | --------------- | ------------- |
+|  0  | mesa | mesa         | git         | 11.2.0~devel   | 1                | master     | None       | $GIT_HASH       | YYMMDD.HHMMSS |
+
+## example columns for bzr/srpm package
+
+| id  | name    | package_name | source_type | source_version | rpm_last_release | bzr_branch | bzr_rev | bzr_last_rev |
+| --- | ------- | ------------ | ----------- | -------------- | ---------------- | ---------- | ------- | ------------ |
+|  1  | granite | granite      | bzr         | 0.4.0.1        | 2                | None       | None    | $BZR_REV     | 

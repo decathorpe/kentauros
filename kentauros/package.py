@@ -85,48 +85,86 @@ class Package:
 
         self.name = self.conf.get("package", "name")
 
-        if "builder" not in self.conf["package"]:
-            # self.build = lambda *args: None
-            raise PackageError("No builder has been specified in the configuration file.")
-        else:
-            bld_type = str(self.conf.get("package", "builder")).upper()
-            try:
-                self.builder = BUILDER_TYPE_DICT[BuilderType[bld_type]](self)
-                # self.build = BUILDER_TYPE_DICT[BuilderType[bld_type]](self).build
-            except KeyError:
-                raise PackageError("The specified builder type is not supported.")
-
-        if "constructor" not in self.conf["package"]:
-            # self.construct = lambda *args: None
-            raise PackageError("No constrctor has been specified in the configuration file.")
-        else:
-            con_type = str(self.conf.get("package", "constructor")).upper()
-            try:
-                self.constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self)
-                # self.construct = CONSTRUCTOR_TYPE_DICT[ConstructorType[con_type]](self).construct
-            except KeyError:
-                raise PackageError("The specified constructor type is not supported.")
-
-        src_type = str(self.conf.get("source", "type")).upper()
-        try:
-            self.source = SOURCE_TYPE_DICT[SourceType[src_type]](self)
-            # self.upstream_source = SOURCE_TYPE_DICT[SourceType[src_type]](self).source
-        except KeyError:
-            raise PackageError("The specified source type is not supported.")
-
-        if "uploader" not in self.conf["package"]:
-            # self.upload = lambda *args: None
-            raise PackageError("No uploader has been specified in the configuration file.")
-        else:
-            upl_type = str(self.conf.get("package", "uploader")).upper()
-            try:
-                self.uploader = UPLOADER_TYPE_DICT[UploaderType[upl_type]](self)
-                # self.upload = UPLOADER_TYPE_DICT[UploaderType[upl_type]](self).upload
-            except KeyError:
-                raise PackageError("The specified uploader type is not supported.")
+        self.builder = self._get_builder()
+        self.constructor = self._get_constructor()
+        self.source = self._get_source()
+        self.uploader = self._get_uploader()
 
         ktr.state_write(conf_name, self.status())
         ktr.state_write(conf_name, self.source.status())
+
+    def _get_builder(self):
+        """
+        This method tries to get a :py:class:`Builder` instance corresponding to the values set in
+        the package configuration.
+
+        Returns:
+            Builder:    package builder object
+        """
+
+        if "builder" not in self.conf["package"]:
+            raise PackageError("No builder has been specified in the configuration file.")
+        else:
+            builder_type = str(self.conf.get("package", "builder")).upper()
+            try:
+                builder = BUILDER_TYPE_DICT[BuilderType[builder_type]](self)
+            except KeyError:
+                raise PackageError("The specified builder type is not supported.")
+            return builder
+
+    def _get_constructor(self):
+        """
+        This method tries to get a :py:class:`Constructor` instance corresponding to the values set
+        in the package configuration.
+
+        Returns:
+            Constructor:    package constructor object
+        """
+
+        if "constructor" not in self.conf["package"]:
+            raise PackageError("No constrctor has been specified in the configuration file.")
+        else:
+            constructor_type = str(self.conf.get("package", "constructor")).upper()
+            try:
+                constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[constructor_type]](self)
+            except KeyError:
+                raise PackageError("The specified constructor type is not supported.")
+            return constructor
+
+    def _get_source(self):
+        """
+        This method tries to get a :py:class:`Source` instance corresponding to the values set in
+        the package configuration.
+
+        Returns:
+            Source: package source object
+        """
+
+        source_type = str(self.conf.get("source", "type")).upper()
+        try:
+            source = SOURCE_TYPE_DICT[SourceType[source_type]](self)
+        except KeyError:
+            raise PackageError("The specified source type is not supported.")
+        return source
+
+    def _get_uploader(self):
+        """
+        This method tries to get a :py:class:`Uploader` instance corresponding to the values set in
+        the package configuration.
+
+        Returns:
+            Uploader:   package uploader object
+        """
+
+        if "uploader" not in self.conf["package"]:
+            raise PackageError("No uploader has been specified in the configuration file.")
+        else:
+            uploader_type = str(self.conf.get("package", "uploader")).upper()
+            try:
+                uploader = UPLOADER_TYPE_DICT[UploaderType[uploader_type]](self)
+            except KeyError:
+                raise PackageError("The specified uploader type is not supported.")
+            return uploader
 
     def status(self) -> dict:
         """
