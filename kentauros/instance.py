@@ -6,11 +6,10 @@ program run. Additionally, this subpackage holds logging and error printing func
 """
 
 
-from collections import OrderedDict
 import os
 import sys
 
-import dataset
+from tinydb import TinyDB, Query
 
 from kentauros.config import ktr_get_conf
 from kentauros.init.cli import CLIArgs
@@ -21,9 +20,6 @@ LOGPREFIX = "ktr/instance"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
-
-STATE_DB_PROTOCOL = "sqlite:///"
-STATE_DB_URL = "state.sqlite"
 
 
 def __smaller_int__(int1: int, int2: int):
@@ -75,11 +71,7 @@ class Kentauros:
             self.conf = ktr_get_conf()
 
         if "state" not in self.saved_state:
-            self.state = dict()
-            self.state["db_path"] = os.path.join(self.conf.get_basedir(), STATE_DB_URL)
-            self.state["db_conn"] = dataset.connect(STATE_DB_PROTOCOL + self.state["db_path"])
-            self.state["pkg_tbl"] = self.state["db_conn"]["packages"]
-            self.state["ktr_tbl"] = self.state["db_conn"]["kentauros"]
+            self.state = TinyDB(os.path.join(self.conf.get_basedir(), "state.json"))
 
     def state_write(self, conf_name: str, entries: dict) -> int:
         """
@@ -87,29 +79,36 @@ class Kentauros:
         entries given.
 
         Arguments:
-            str package:    package name
-            dict entries:   dictionary containing the key-value pairs to insert or update in the db
+            str package:    package configuration name
+            dict entries:   dict containing the key-value pairs to insert or update in the db
 
         Returns:
-            int: row ID of the package in the database
+            int:            ID of the package in the database
         """
 
-        entries["name"] = conf_name
-        return self.state["pkg_tbl"].upsert(entries, ["name"])
+        package = Query()
+        if not self.state.search(package.name == conf_name):
+            entries["name"] = conf_name
+            return self.state.insert(entries)
+        else:
+            return self.state.update(entries, package.name == conf_name)[0]
 
-    def state_read(self, conf_name: str) -> OrderedDict:
+    def state_read(self, conf_name: str) -> dict:
         """
-        This method reads the entries for the given package from the database and returns them as an
-        ordered dictionary.
+        This method reads the entries for the given package from the database and returns them as
+        an ordered dictionary.
 
         Arguments:
             str conf_name:  package configuration name
 
         Returns:
-            OrderedDict:    result of the query
+            dict:           result of the query
         """
 
-        return self.state["pkg_tbl"].find_one(name=conf_name)
+        assert isinstance(conf_name, str)
+
+        package = Query()
+        return self.state.search(package.name == conf_name)[0]
 
     def dbg(self, msg: str, prefix: str=None):
         """

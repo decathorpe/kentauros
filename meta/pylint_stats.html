@@ -14,19 +14,19 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.pkgformat.pkg_rpm_spec</td>
-<td>&#160;</td>
-<td>294</td>
-<td>0</td>
-<td>TODO: error handling</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
 <td>kentauros.sources.src_abstract</td>
 <td>&#160;</td>
 <td>46</td>
 <td>0</td>
 <td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.pkgformat.pkg_rpm_spec</td>
+<td>&#160;</td>
+<td>294</td>
+<td>0</td>
+<td>TODO: error handling</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -117,7 +117,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1965 statements analysed.</p><div>
+<p>1963 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -147,8 +147,8 @@
 <tr class="even">
 <td>method</td>
 <td>135</td>
-<td>135</td>
-<td>=</td>
+<td>133</td>
+<td>+2.00</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -164,8 +164,7 @@
 </div>
 <div>
 <h2>External dependencies</h2>
-<pre>dataset (kentauros.instance)
-dateutil 
+<pre>dateutil 
   \-parser (kentauros.sources.src_git)
 kentauros 
   \-actions (kentauros.run.run_ktr)
@@ -215,7 +214,8 @@ kentauros
   | \-src_url (kentauros.pkgformat.rpm.spec_version_out)
   \-upload (kentauros.package)
     \-upl_abstract (kentauros.upload.upl_copr)
-    \-upl_copr (kentauros.upload)</pre></div>
+    \-upl_copr (kentauros.upload)
+tinydb (kentauros.instance)</pre></div>
 <div>
 <h2>Raw metrics</h2>
 <table>
@@ -228,31 +228,31 @@ kentauros
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2167</td>
-<td>40.48</td>
-<td>2167</td>
-<td>=</td>
+<td>2166</td>
+<td>40.47</td>
+<td>2156</td>
+<td>+10.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>1849</td>
-<td>34.54</td>
-<td>1849</td>
-<td>=</td>
+<td>34.55</td>
+<td>1828</td>
+<td>+21.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>196</td>
 <td>3.66</td>
-<td>196</td>
-<td>=</td>
+<td>220</td>
+<td>-24.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
 <td>1141</td>
 <td>21.32</td>
-<td>1141</td>
-<td>=</td>
+<td>1138</td>
+<td>+3.00</td>
 </tr>
 </table>
 </div>
