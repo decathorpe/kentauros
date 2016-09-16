@@ -132,16 +132,13 @@ class SrpmConstructor(Constructor):
             self.init()
 
         # calculate absolute paths of files
-        pkg_data_dir = self.cpkg.source.sdir
-        pkg_conf_file = os.path.join(ktr.conf.get_confdir(),
-                                     self.cpkg.conf_name + ".conf")
-        pkg_spec_file = os.path.join(ktr.conf.get_specdir(),
-                                     self.cpkg.conf_name,
-                                     self.cpkg.name + ".spec")
+        pkg_conf_file = os.path.join(ktr.conf.get_confdir(), self.cpkg.conf_name + ".conf")
+        pkg_spec_name = self.cpkg.name + ".spec"
+        pkg_spec_file = os.path.join(ktr.conf.get_specdir(), self.cpkg.conf_name, pkg_spec_name)
 
         # copy sources to rpmbuild/SOURCES
-        for entry in os.listdir(pkg_data_dir):
-            entry_path = os.path.join(pkg_data_dir, entry)
+        for entry in os.listdir(self.cpkg.source.sdir):
+            entry_path = os.path.join(self.cpkg.source.sdir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.srcsdir)
                 ktr.log("File copied: " + entry_path, 1)
@@ -154,11 +151,12 @@ class SrpmConstructor(Constructor):
 
             # otherwise it is in kentauros' standard .tar.gz format:
             else:
-                tarballs = glob.glob(os.path.join(pkg_data_dir, self.cpkg.name) + "*.tar.gz")
+                tarballs = glob.glob(os.path.join(self.cpkg.source.sdir,
+                                                  self.cpkg.name) + "*.tar.gz")
                 # remove only the newest one to be safe
                 tarballs.sort(reverse=True)
                 if os.path.isfile(tarballs[0]):
-                    assert pkg_data_dir in tarballs[0]
+                    assert self.cpkg.source.sdir in tarballs[0]
                     os.remove(tarballs[0])
                     ktr.log("File removed: " + tarballs[0], 1)
 
@@ -328,10 +326,4 @@ class SrpmConstructor(Constructor):
 
         shutil.rmtree(self.tempdir)
 
-    # def construct(self):
-    #     # TODO: arguments need to be passed through (force, relreset, etc)
-    #     self.init()
-    #     self.prepare()
-    #     self.build()
-    #     self.export()
-    #     self.clean()
+# TODO: one uber-method for running everything in correct order
