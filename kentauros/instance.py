@@ -108,7 +108,16 @@ class Kentauros:
         assert isinstance(conf_name, str)
 
         package = Query()
-        return self.state.search(package.name == conf_name)[0]
+        results = self.state.search(package.name == conf_name)
+
+        if len(results) > 1:
+            self.err("Got more than one result from the state db. Something went wrong here.")
+            return results[0]
+        elif len(results) == 0:
+            self.log("Got no result from the state db. Package state not yet stored.")
+            return dict()
+        else:
+            return results[0]
 
     def dbg(self, msg: str, prefix: str=None):
         """

@@ -1,7 +1,7 @@
 examples/exports/*
 examples/packages/*
 examples/sources/*
-examples/state.sqlite
+examples/state.json
 
 .idea
 
