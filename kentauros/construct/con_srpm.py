@@ -193,7 +193,9 @@ class SrpmConstructor(Constructor):
 
         # if major version has changed, put it into the changelog
         if old_version != new_version:
-            new_rpm_spec.do_release_bump("Update to version " + str(new_version) + ".")
+            new_rpm_spec.do_release_bump("Update to version " +
+                                         self.cpkg.conf.get("source", "version") +
+                                         ".")
 
         # else if nothing changed but "force" was set (packaging changes)
         # old_version =!= new_version, relreset !=!= True
