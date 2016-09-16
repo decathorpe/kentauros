@@ -14,14 +14,14 @@ from kentauros.sources.src_url import UrlSource
 
 def spec_preamble_bzr(source: BzrSource) -> str:
     """
-    This function returns the "%defines" necessary for packages built from *bzr*
-    repositories. This includes a definition of "rev" just now.
+    This function returns the "%defines" necessary for packages built from *bzr* repositories.
+    This includes a definition of "rev" just now.
 
     Arguments:
-        BzrSource source: source repository the revision will be determined from
+        BzrSource source:   source repository the revision will be determined from
 
     Returns:
-        str: string containing the ``%defines rev $REV`` line
+        str:                string containing the ``%defines rev $REV`` line
     """
 
     assert isinstance(source, BzrSource)
@@ -31,16 +31,15 @@ def spec_preamble_bzr(source: BzrSource) -> str:
 
 def spec_preamble_git(source: GitSource) -> str:
     """
-    This function returns the "%defines" necessary for packages built from *git*
-    repositories. This includes a definition of "rev" and "date" just now. The
-    value of "rev" here are the first 8 characters of the corresponding git
-    commit hash.
+    This function returns the "%defines" necessary for packages built from *git* repositories. This
+    includes a definition of "rev" and "date" just now. The value of "rev" here are the first 8
+    characters of the corresponding git commit hash.
 
     Arguments:
-        GitSource source: source repository the revision will be determined from
+        GitSource source:   source repository the revision will be determined from
 
     Returns:
-        str: string with the "%defines rev $REV" and "%defines date $DATE" lines
+        str:                string with the "%defines rev $REV" and "%defines date $DATE" lines
     """
 
     assert isinstance(source, GitSource)
@@ -51,14 +50,14 @@ def spec_preamble_git(source: GitSource) -> str:
 
 def spec_preamble_url(source: UrlSource) -> str:
     """
-    This function returns the "%defines" necessary for packages built from
-    tarballs specified by *url*.
+    This function returns the "%defines" necessary for packages built from tarballs specified by
+    *url*.
 
     Arguments:
-        UrlSource source: source the ``%defines`` will be determined from
+        UrlSource source:   source the ``%defines`` will be determined from
 
     Returns:
-        str: empty string
+        str:                empty string
     """
 
     assert isinstance(source, UrlSource)
@@ -67,14 +66,14 @@ def spec_preamble_url(source: UrlSource) -> str:
 
 def spec_preamble_local(source: LocalSource) -> str:
     """
-    This function returns the "%defines" necessary for packages built from
-    tarballs specified by a *local path*.
+    This function returns the "%defines" necessary for packages built from tarballs specified by a
+    *local path*.
 
     Arguments:
-        LocalSource source: source the ``%defines`` will be determined from
+        LocalSource source:     source the ``%defines`` will be determined from
 
     Returns:
-        str: empty string
+        str:                    empty string
     """
 
     assert isinstance(source, LocalSource)
@@ -82,8 +81,8 @@ def spec_preamble_local(source: LocalSource) -> str:
 
 
 SPEC_PREAMBLE_DICT = dict()
-"""This dictionary maps `SourceType` enum members to their respective
-RPM spec preamble generator functions.
+"""This dictionary maps `SourceType` enum members to their respectiv RPM spec preamble generator
+functions.
 """
 
 SPEC_PREAMBLE_DICT[SourceType.BZR] = spec_preamble_bzr

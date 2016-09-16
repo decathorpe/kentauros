@@ -70,9 +70,6 @@ class Kentauros:
         if "conf" not in self.saved_state:
             self.conf = ktr_get_conf()
 
-        if "state" not in self.saved_state:
-            self.state = TinyDB(os.path.join(self.conf.get_basedir(), "state.json"))
-
     def state_write(self, conf_name: str, entries: dict) -> int:
         """
         This method inserts or updates a package's entry in the state database with the dictionary
@@ -86,12 +83,13 @@ class Kentauros:
             int:            ID of the package in the database
         """
 
-        package = Query()
-        if not self.state.search(package.name == conf_name):
-            entries["name"] = conf_name
-            return self.state.insert(entries)
-        else:
-            return self.state.update(entries, package.name == conf_name)[0]
+        with TinyDB(os.path.join(self.conf.get_basedir(), "state.json")) as db:
+            package = Query()
+            if not db.search(package.name == conf_name):
+                entries["name"] = conf_name
+                return db.insert(entries)
+            else:
+                return db.update(entries, package.name == conf_name)[0]
 
     def state_read(self, conf_name: str) -> dict:
         """
@@ -107,8 +105,9 @@ class Kentauros:
 
         assert isinstance(conf_name, str)
 
-        package = Query()
-        results = self.state.search(package.name == conf_name)
+        with TinyDB(os.path.join(self.conf.get_basedir(), "state.json")) as db:
+            package = Query()
+            results = db.search(package.name == conf_name)
 
         if len(results) > 1:
             self.err("Got more than one result from the state db. Something went wrong here.")

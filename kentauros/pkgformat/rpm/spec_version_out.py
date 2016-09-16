@@ -14,14 +14,13 @@ from kentauros.sources.src_url import UrlSource
 
 def spec_version_bzr(source: BzrSource) -> str:
     """
-    This function returns the version string for packages built from *bzr*
-    repositories.
+    This function returns the version string for packages built from *bzr* repositories.
 
     Arguments:
-        BzrSource source: source repository a version string will be generated for
+        BzrSource source:   source repository a version string will be generated for
 
     Returns:
-        str: version string in the format ``$VERSION~rev%{rev}``
+        str:                version string in the format ``$VERSION~rev%{rev}``
     """
 
     assert isinstance(source, BzrSource)
@@ -31,14 +30,13 @@ def spec_version_bzr(source: BzrSource) -> str:
 
 def spec_version_git(source: GitSource) -> str:
     """
-    This function returns the version string for packages built from *git*
-    repositories.
+    This function returns the version string for packages built from *git* repositories.
 
     Arguments:
-        GitSource source:  source repository a version string will be generated for
+        GitSource source:   source repository a version string will be generated for
 
     Returns:
-        str: version string in the format ``$VERSION~git%{date}~%{rev}``
+        str:                version string in the format ``$VERSION~git%{date}~%{rev}``
     """
 
     assert isinstance(source, GitSource)
@@ -48,14 +46,14 @@ def spec_version_git(source: GitSource) -> str:
 
 def spec_version_local(source: LocalSource) -> str:
     """
-    This function returns the version string for packages built from tarballs
-    specified by a *local path*.
+    This function returns the version string for packages built from tarballs specified by a *local
+    path*.
 
     Arguments:
-        LocalSource source:  source a version string will be generated for
+        LocalSource source:     source a version string will be generated for
 
     Returns:
-        str: version string in the format ``$VERSION``
+        str:                    version string in the format ``$VERSION``
     """
 
     assert isinstance(source, LocalSource)
@@ -65,14 +63,13 @@ def spec_version_local(source: LocalSource) -> str:
 
 def spec_version_url(source: UrlSource) -> str:
     """
-    This function returns the version string for packages built from tarballs
-    specified by *url*.
+    This function returns the version string for packages built from tarballs specified by *url*.
 
     Arguments:
-        UrlSource source:  source a version string will be generated for
+        UrlSource source:   source a version string will be generated for
 
     Returns:
-        str: version string in the format ``$VERSION``
+        str:                version string in the format ``$VERSION``
     """
 
     assert isinstance(source, UrlSource)
@@ -81,8 +78,8 @@ def spec_version_url(source: UrlSource) -> str:
 
 
 SPEC_VERSION_DICT = dict()
-""" This dictionary maps `SourceType` enum members to their respective
-RPM spec version string generator functions.
+""" This dictionary maps `SourceType` enum members to their respective RPM spec version string
+generator functions.
 """
 
 SPEC_VERSION_DICT[SourceType.BZR] = spec_version_bzr

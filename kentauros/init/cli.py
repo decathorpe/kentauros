@@ -114,6 +114,12 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
         description="run toolchain (get/update, construct, build, upload)",
         help="comlete source to upload toolchain",
         parents=[package_parser])
+    chain_parser.add_argument(
+        "-m", "--message",
+        action="store",
+        nargs="?",
+        default=None,
+        help="message to be used in changelog entry")
     chain_parser.set_defaults(action=ActionType.CHAIN)
 
     clean_parser = parsers.add_parser(
@@ -128,6 +134,12 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
         description="construct source package as specified by *.conf",
         help="construct source package",
         parents=[package_parser])
+    construct_parser.add_argument(
+        "-m", "--message",
+        action="store",
+        nargs="?",
+        default=None,
+        help="message to be used in changelog entry")
     construct_parser.set_defaults(action=ActionType.CONSTRUCT)
 
     export_parser = parsers.add_parser(
@@ -329,3 +341,16 @@ class CLIArgs:
             return self.args.force
         else:
             return False
+
+    def get_message(self) -> str:
+        """
+        This method returns the changelog message specified by command line argument.
+
+        Returns:
+            str:  specified changelog message
+        """
+
+        if 'message' in self.args:
+            return self.args.message
+        else:
+            return None

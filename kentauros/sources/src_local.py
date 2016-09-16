@@ -31,7 +31,7 @@ class LocalSource(Source):
     def __init__(self, package):
         super().__init__(package)
         self.dest = os.path.join(self.sdir, os.path.basename(self.spkg.conf.get("source", "orig")))
-        self.type = SourceType.LOCAL
+        self.stype = SourceType.LOCAL
 
     def status(self) -> dict:
         return dict()

@@ -79,8 +79,7 @@ class ChainAction(Action):
 
         ExportAction(self.kpkg, self.force).execute()
 
-        success = ConstructAction(self.kpkg, relreset=(get or update),
-                                  force=self.force).execute()
+        success = ConstructAction(self.kpkg, self.force).execute()
         if not success:
             print_abort_msg()
             return False

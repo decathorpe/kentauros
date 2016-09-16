@@ -45,7 +45,7 @@ class Constructor(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def prepare(self, relreset: bool=False, force: bool=False) -> bool:
+    def prepare(self) -> bool:
         """
         This method prepares all files necessary for the actual assembly of the source package.
         """

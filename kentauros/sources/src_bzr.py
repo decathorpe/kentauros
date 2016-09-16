@@ -40,7 +40,7 @@ class BzrSource(Source):
         super().__init__(package)
 
         self.dest = os.path.join(self.sdir, self.spkg.name)
-        self.type = SourceType.BZR
+        self.stype = SourceType.BZR
         self.saved_rev = None
 
         ktr = Kentauros(LOGPREFIX)

@@ -42,7 +42,7 @@ class GitSource(Source):
     def __init__(self, package):
         super().__init__(package)
         self.dest = os.path.join(self.sdir, self.spkg.name)
-        self.type = SourceType.GIT
+        self.stype = SourceType.GIT
 
         ktr = Kentauros(LOGPREFIX)
 

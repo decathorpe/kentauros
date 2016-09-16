@@ -34,9 +34,8 @@ class ConstructAction(Action):
         ActionType atype:   here: stores ``ActionType.CONSTRUCT``
     """
 
-    def __init__(self, kpkg: Package, force: bool, relreset: bool=False):
+    def __init__(self, kpkg: Package, force: bool):
         super().__init__(kpkg, force)
-        self.relreset = relreset
         self.atype = ActionType.CONSTRUCT
 
     def execute(self) -> bool:
@@ -62,7 +61,7 @@ class ConstructAction(Action):
 
         self.kpkg.constructor.init()
 
-        success = self.kpkg.constructor.prepare(relreset=self.relreset, force=self.force)
+        success = self.kpkg.constructor.prepare()
         if not success:
             self.kpkg.constructor.clean()
             Kentauros(LOGPREFIX).log("Source package assembly unsuccessful.", 2)

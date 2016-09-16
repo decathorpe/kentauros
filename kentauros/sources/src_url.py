@@ -38,7 +38,7 @@ class UrlSource(Source):
         super().__init__(package)
         self.dest = os.path.join(self.sdir, os.path.basename(
             self.spkg.conf.get("source", "orig")))
-        self.type = SourceType.URL
+        self.stype = SourceType.URL
 
         ktr = Kentauros(LOGPREFIX)
 
