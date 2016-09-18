@@ -85,9 +85,9 @@ class Package:
 
         self.name = self.conf.get("package", "name")
 
-        self.builder = self._get_builder()
-        self.constructor = self._get_constructor()
         self.source = self._get_source()
+        self.constructor = self._get_constructor()
+        self.builder = self._get_builder()
         self.uploader = self._get_uploader()
 
         ktr.state_write(conf_name, self.status())

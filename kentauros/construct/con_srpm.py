@@ -13,7 +13,7 @@ import warnings
 
 from kentauros.instance import Kentauros
 from kentauros.construct.con_abstract import Constructor
-from kentauros.pkgformat.rpm import RPMSpec
+from kentauros.pkgformat.rpm import RPMSpec, do_release_bump
 
 
 LOGPREFIX = "ktr/construct/srpm"
@@ -60,6 +60,80 @@ class SrpmConstructor(Constructor):
         except subprocess.CalledProcessError:
             ktr.log("Install rpmdevtools to use the specified constructor.")
             self.active = False
+
+        self.path = os.path.join(ktr.conf.get_specdir(),
+                                 self.cpkg.conf_name,
+                                 self.cpkg.name + ".spec")
+
+        try:
+            self.spec = RPMSpec(self.path, self.cpkg.source)
+        except FileNotFoundError:
+            ktr.err("Spec file has not been found at the expected location:")
+            ktr.err(self.path)
+            self.active = False
+
+    def _get_last_version(self, spec: RPMSpec):
+        """
+        This method tries to read the latest state from the state database - if that is not
+        available, the .spec file is parsed as a fallback.
+
+        Arguments:
+            RPMSpec spec:   rpm spec object
+
+        Returns:
+            str:            last known version
+        """
+
+        assert isinstance(spec, RPMSpec)
+
+        ktr = Kentauros(LOGPREFIX)
+        saved_state = ktr.state_read(self.cpkg.conf_name)
+
+        if saved_state is None:
+            ktr.dbg("Package " + self.cpkg.conf_name + " not yet in state database.")
+            ktr.dbg("Falling back to legacy version detection.")
+            old_version = spec.get_version()
+        elif "rpm_last_release" not in saved_state:
+            ktr.dbg("Package " + self.cpkg.conf_name + " has never been built before.")
+            old_version = ""
+        elif "source_version" not in saved_state:
+            ktr.dbg("Package " + self.cpkg.conf_name + " has no version set in state database.")
+            ktr.dbg("Falling back to legacy version detection.")
+            old_version = spec.get_version()
+        else:
+            old_version = saved_state["source_version"]
+
+        return old_version
+
+    def _get_last_release(self, spec: RPMSpec):
+        """
+        This method tries to read the latest state from the state database - if that is not
+        available, the .spec file is parsed as a fallback.
+
+        Arguments:
+            RPMSpec spec:   rpm spec object
+
+        Returns:
+            str:            last known release
+        """
+
+        assert isinstance(spec, RPMSpec)
+
+        ktr = Kentauros(LOGPREFIX)
+        saved_state = ktr.state_read(self.cpkg.conf_name)
+
+        if saved_state is None:
+            ktr.dbg("Package " + self.cpkg.conf_name + " not yet in state database.")
+            ktr.dbg("Falling back to legacy release detection.")
+            old_release = spec.get_release()
+        elif "rpm_last_release" not in saved_state:
+            ktr.dbg("Package " + self.cpkg.conf_name + " has no release set in state database.")
+            ktr.dbg("Falling back to legacy release detection.")
+            old_release = spec.get_release()
+        else:
+            old_release = saved_state["rpm_last_release"]
+
+        return old_release
 
     def init(self):
         """
@@ -128,20 +202,16 @@ class SrpmConstructor(Constructor):
             warnings.warn("Make sure to call Constructor.init() before .prepare()!", Warning)
             self.init()
 
-        # calculate absolute paths of files
-        pkg_conf_file = os.path.join(ktr.conf.get_confdir(), self.cpkg.conf_name + ".conf")
-        pkg_spec_name = self.cpkg.name + ".spec"
-        pkg_spec_file = os.path.join(ktr.conf.get_specdir(), self.cpkg.conf_name, pkg_spec_name)
-
         # copy sources to rpmbuild/SOURCES
         for entry in os.listdir(self.cpkg.source.sdir):
             entry_path = os.path.join(self.cpkg.source.sdir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.srcsdir)
-                ktr.log("File copied: " + entry_path, 1)
+                ktr.log("File copied to SOURCES: " + entry_path, 1)
 
         # remove tarballs if they should not be kept
         if not self.cpkg.conf.getboolean("source", "keep"):
+
             # if source is a tarball (or similar) from the beginning:
             if os.path.isfile(self.cpkg.source.dest):
                 os.remove(self.cpkg.source.dest)
@@ -155,35 +225,34 @@ class SrpmConstructor(Constructor):
                 if os.path.isfile(tarballs[0]):
                     assert self.cpkg.source.sdir in tarballs[0]
                     os.remove(tarballs[0])
-                    ktr.log("File removed: " + tarballs[0], 1)
+                    ktr.log("Tarball removed: " + tarballs[0], 1)
 
         # copy package.conf to rpmbuild/SOURCES
-        shutil.copy2(pkg_conf_file, self.srcsdir)
-        ktr.log("File copied: " + pkg_conf_file, 1)
-
-        # calculate absolute path of new spec file and copy it over
-        new_spec_file = os.path.join(self.specdir, self.cpkg.name + ".spec")
-        shutil.copy2(pkg_spec_file, new_spec_file)
-
-        new_rpm_spec = RPMSpec(new_spec_file, self.cpkg.source)
+        shutil.copy2(self.cpkg.file, self.srcsdir)
+        ktr.log("Package configuration copied to SOURCES: " + self.cpkg.file, 1)
 
         # construct preamble and new version string
-        old_version = new_rpm_spec.read_version()
-        new_version = new_rpm_spec.build_version_string()
-        new_rpm_spec.write_version()
+        old_version = self._get_last_version(self.spec)
+        new_version = self.cpkg.conf.get("source", "version")
+        old_release = self._get_last_release(self.spec)
 
-        # TODO: rework the release resetting / incrementing logic so it actually works
-        # TODO: check if it works now
+        # TODO: check if release resetting / incrementing logic works now
+
+        self.spec.set_version()
 
         # if old version and new version are different, force release reset to 0
         relreset = (new_version != old_version)
 
         # start constructing release string from old release string
         if relreset:
-            new_rpm_spec.do_release_reset()
+            self.spec.do_release_reset()
 
         # write preamble to new spec file
-        new_rpm_spec.prepend_preamble()
+        preamble = self.spec.build_preamble_string()
+
+        # calculate absolute path of new spec file and copy it over
+        new_spec_path = os.path.join(self.specdir, self.cpkg.name + ".spec")
+        self.spec.export_to_file(new_spec_path)
 
         # use "rpmdev-bumpspec" to increment release number and create changelog entries
         force = ktr.cli.get_force()
@@ -191,35 +260,45 @@ class SrpmConstructor(Constructor):
         ktr.dbg("Old Version: " + old_version)
         ktr.dbg("New Version: " + new_version)
 
+        new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.source)
+
         # if major version has changed, put it into the changelog
         if old_version != new_version:
-            new_rpm_spec.do_release_bump("Update to version " +
-                                         self.cpkg.conf.get("source", "version") +
-                                         ".")
+            do_release_bump(new_spec_path,
+                            "Update to version " + self.cpkg.conf.get("source", "version") + ".")
+            new_release = 1
 
         # else if nothing changed but "force" was set (packaging changes)
         # old_version =!= new_version, relreset !=!= True
         elif force:
             message = ktr.cli.get_message()
             if message is None:
-                new_rpm_spec.do_release_bump("Update for packaging changes.")
+                do_release_bump(new_spec_path, "Update for packaging changes.")
             else:
-                new_rpm_spec.do_release_bump(message)
+                do_release_bump(new_spec_path, message)
+
+            new_release = int(old_release) + 1
 
         # else if version has not changed, but snapshot has been updated:
         # old_version =!= new_version
         elif relreset:
             new_rpm_spec.do_release_reset()
-            new_rpm_spec.do_release_bump("Update to latest snapshot.")
+            do_release_bump(new_spec_path, "Update to latest snapshot.")
+            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.source)
+            new_release = 1
+
+        else:
+            return False
+
+        ktr.state_write(self.cpkg.conf_name, dict(rpm_last_release=str(new_release)))
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as backup)
         # BUT: remove preamble again, it would break things otherwise
-        shutil.move(pkg_spec_file, pkg_spec_file + ".old")
 
-        # write spec file without preamble back into place
-        new_rpm_spec.path = pkg_spec_file
-        new_rpm_spec.unprepend_preamble()
+        new_rpm_spec.contents = new_rpm_spec.contents.replace(preamble, "")
+        shutil.copy2(self.path, self.path + ".old")
+        new_rpm_spec.export_to_file(self.path)
 
         return True
 
@@ -271,12 +350,10 @@ class SrpmConstructor(Constructor):
 
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
-        packdir = os.path.join(ktr.conf.get_packdir(), self.cpkg.conf_name)
-
-        os.makedirs(packdir, exist_ok=True)
+        os.makedirs(self.pdir, exist_ok=True)
 
         for srpm in srpms:
-            shutil.copy2(srpm, packdir)
+            shutil.copy2(srpm, self.pdir)
             ktr.log("File copied: " + srpm, 0)
 
     def clean(self):

@@ -26,6 +26,12 @@ class RPMSpec:
     This class serves as the go-to toolbelt for handling everything concerning RPM spec files
     from within kentauros.
 
+    The typical usage has 3 stages:
+
+    * reading from file (path that is passed at initialisation)
+    * manipulating .spec file contents
+    * writing to different file path
+
     Attributes:
         str path:       path pointing to the associated RPM spec file
         Source source:  package sources that are needed to generate some information
@@ -40,31 +46,11 @@ class RPMSpec:
 
         self.path = path
         self.source = source
-        self.contents = self._get_contents()
 
-        self.saved_preamble = None
+        with open(path, "r") as file:
+            self.contents = file.read()
 
-    def _get_contents(self) -> str:
-        """
-        This method reads the contents of the file at `self.path` and returns them.
-
-        Returns:
-            str:    .spec file contents
-        """
-
-        with open(self.path, "r") as file:
-            contents = file.read()
-            return contents
-
-    def _set_contents(self):
-        """
-        This method write the in-memory contents to the file at `self.path`.
-        """
-
-        with open(self.path, "w") as file:
-            file.write(self.contents)
-
-    def _get_lines(self) -> list:
+    def get_lines(self) -> list:
         """
         This method splits the contents of the .spec file into lines and returns a list of them.
 
@@ -74,7 +60,7 @@ class RPMSpec:
 
         return self.contents.split("\n")
 
-    def read_version(self) -> str:
+    def get_version(self) -> str:
         """
         This method reads and parses the RPM spec file's contents for its "Version" tag.
 
@@ -82,13 +68,14 @@ class RPMSpec:
             str:    version string found on the line containing the "Version:" tag
         """
 
-        for line in self._get_lines():
+        for line in self.get_lines():
+            assert isinstance(line, str)
             if line[0:8] == "Version:":
                 return line.replace("Version:", "").lstrip(" \t").rstrip()
 
         raise RPMSpecError("No Version tag was found in the file.")
 
-    def read_release(self) -> str:
+    def get_release(self) -> str:
         """
         This method reads and parses the RPM spec file's contents for its "Release" tag.
 
@@ -96,28 +83,28 @@ class RPMSpec:
             str:    release string found on the line containing the "Version:" tag
         """
 
-        for line in self._get_lines():
+        for line in self.get_lines():
+            assert isinstance(line, str)
             if line[0:8] == "Release:":
                 return line.replace("Release:", "").lstrip(" \t").rstrip()
 
         raise RPMSpecError("No Version tag was found in the file.")
 
-    def write_version(self):
+    def set_version(self):
         """
         This method writes the updated version to the rpm spec file.
         """
 
         contents_new = str()
 
-        for line in self._get_lines():
+        for line in self.get_lines():
+            assert isinstance(line, str)
             if line[0:8] != "Version:":
-                assert isinstance(line, str)
                 contents_new += (line + "\n")
             else:
                 contents_new += format_tagline("Version", self.build_version_string())
 
         self.contents = contents_new
-        self._set_contents()
 
     def build_preamble_string(self) -> str:
         """
@@ -141,35 +128,36 @@ class RPMSpec:
 
         return SPEC_VERSION_DICT[self.source.stype](self.source)
 
-    def prepend_preamble(self):
+    def export_to_file(self, path: str):
         """
-        This method prepends the necessary preamble to the contents here and on disk.
+        This method exports the .spec file's (modified in memory) contents to another file,
+        specified by the `path` argument.
+
+        Arguments:
+            str path:   path to write the modified .spec contents to
         """
 
-        self.saved_preamble = self.build_preamble_string()
-        self.contents = self.saved_preamble + self.contents
-        self._set_contents()
+        file_contents = str()
+        file_contents += self.build_preamble_string()
+        file_contents += self.contents
 
-    def unprepend_preamble(self):
-        """
-        This method removes the prepended preamble from the spec file's contents here and on disk.
-        """
+        if path == self.path:
+            raise RPMSpecError("Overriding the original .spec file is not supported.")
 
-        assert self.saved_preamble is not None
-        self.contents = self.contents.replace(self.saved_preamble, "")
-        self._set_contents()
+        with open(path, "w") as file:
+            file.write(file_contents)
 
     def do_release_reset(self):
         """
         This method resets the release number to 0suffix.
         """
 
-        old_rel = self.read_release()
+        old_rel = self.get_release()
         new_rel = str(0) + old_rel[1:]
 
         contents_new = str()
 
-        for line in self._get_lines():
+        for line in self.get_lines():
             if line[0:8] != "Release:":
                 assert isinstance(line, str)
                 contents_new += (line + "\n")
@@ -177,35 +165,36 @@ class RPMSpec:
                 contents_new += format_tagline("Release", new_rel)
 
         self.contents = contents_new
-        self._set_contents()
 
-    def do_release_bump(self, comment: str=None):
-        """
-        This method calls `rpmdev-bumpspec` with the specified arguments to bump the release number
-        and create a changelog entry with a given comment.
 
-        Arguments:
-            str comment:    comment to be added to the changelog entry
-        """
+def do_release_bump(path: str, comment: str=None):
+    """
+    This function calls `rpmdev-bumpspec` with the specified arguments to bump the release number
+    and create a changelog entry with a given comment.
 
-        ktr = Kentauros(LOGPREFIX)
+    Arguments:
+        str comment:    comment to be added to the changelog entry
+    """
 
-        if comment is None:
-            comment = "Automatic build by kentauros."
+    ktr = Kentauros(LOGPREFIX)
 
-        # construct rpmdev-bumpspec command
-        cmd = ["rpmdev-bumpspec"]
+    if not os.path.exists(path):
+        raise FileNotFoundError()
 
-        # add --verbose or --quiet depending on settings
-        if (ktr.verby == 0) or ktr.debug:
-            cmd.append("--verbose")
+    if comment is None:
+        comment = "Automatic build by kentauros."
 
-        cmd.append(self.path)
-        cmd.append('--comment="' + comment + '"')
+    # construct rpmdev-bumpspec command
+    cmd = ["rpmdev-bumpspec"]
 
-        ktr.log_command(cmd)
-        subprocess.call(cmd)
+    # add --verbose or --quiet depending on settings
+    if (ktr.verby == 0) or ktr.debug:
+        cmd.append("--verbose")
 
-        # TODO: error handling
+    cmd.append(path)
+    cmd.append('--comment="' + comment + '"')
 
-        self.contents = self._get_contents()
+    ktr.log_command(cmd)
+    subprocess.call(cmd)
+
+    # TODO: error handling

@@ -114,7 +114,7 @@ class Kentauros:
             return results[0]
         elif len(results) == 0:
             self.log("Got no result from the state db. Package state not yet stored.")
-            return dict()
+            return None
         else:
             return results[0]
 
