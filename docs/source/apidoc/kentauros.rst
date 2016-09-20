@@ -12,7 +12,6 @@ Subpackages
     kentauros.construct
     kentauros.init
     kentauros.pkgformat
-    kentauros.run
     kentauros.sources
     kentauros.upload
 
@@ -55,6 +54,14 @@ kentauros.package module
 ------------------------
 
 .. automodule:: kentauros.package
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.run module
+--------------------
+
+.. automodule:: kentauros.run
     :members:
     :undoc-members:
     :show-inheritance:

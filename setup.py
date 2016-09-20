@@ -20,7 +20,7 @@ setup(
     url="http://github.com/decathorpe/kentauros",
     packages=find_packages(),
     install_requires=["tinydb", "python-dateutil"],
-    entry_points={'console_scripts': ['ktr = kentauros.run.ktr:run']},
+    entry_points={'console_scripts': ['ktr = kentauros.run:run']},
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.spec'])],

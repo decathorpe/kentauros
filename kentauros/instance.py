@@ -70,6 +70,61 @@ class Kentauros:
         if "conf" not in self.saved_state:
             self.conf = ktr_get_conf()
 
+        if "packages" not in self.saved_state:
+            self.packages = dict()
+
+    def add_package(self, conf_name: str, package):
+        """
+        This method adds a package to the list of packages known to the kentauros instance.
+
+        Arguments:
+            conf_name:  package configuration name
+            package:    Package object
+
+        Returns:
+            bool:       successful addition to package list
+        """
+
+        if self.debug:
+            from kentauros.package import Package
+            assert isinstance(conf_name, str)
+            assert isinstance(package, Package)
+
+        if conf_name in self.packages:
+            return False
+
+        self.packages[conf_name] = package
+        return True
+
+    def get_package(self, conf_name: str):
+        """
+        This method gets a package from the list of packages known to the kentauros instance.
+
+        Arguments:
+            conf_name:  package configuration name
+
+        Returns:
+            Package:    package object
+        """
+
+        if conf_name not in self.packages:
+            return None
+
+        return self.packages[conf_name]
+
+    def get_package_names(self):
+        """
+        This method gets the list of known package configuration names.
+
+        Returns:
+            list:   list of package configurations active in this instance
+        """
+
+        if "packages" not in self.saved_state:
+            return list()
+
+        return self.packages.keys()
+
     def state_write(self, conf_name: str, entries: dict) -> int:
         """
         This method inserts or updates a package's entry in the state database with the dictionary

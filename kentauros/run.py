@@ -7,6 +7,8 @@ script.
 import glob
 import os
 
+from kentauros.definitions import ActionType
+
 from kentauros.instance import Kentauros
 
 from kentauros.actions import ACTION_DICT
@@ -44,7 +46,7 @@ def run():
     print()
 
     # if no action is specified: exit
-    if ktr.cli.get_action() is None:
+    if ktr.cli.get_action() == ActionType.NONE:
         ktr.log("No action specified. Exiting.")
         ktr.log("Use 'ktr --help' for more information.")
         print()
@@ -59,6 +61,13 @@ def run():
     if not ktr.cli.get_packages_all():
         pkgs = ktr.cli.get_packages().copy()
 
+        for pkg in pkgs:
+            pkg_conf_path = os.path.join(ktr.conf.get_confdir(), pkg + ".conf")
+
+            if not os.path.exists(pkg_conf_path):
+                ktr.err("Package configuration for '" + pkg + "' could not be found.")
+                pkgs.remove(pkg)
+
     # if all package are to be processed: get package configs present in CONFDIR
     else:
         pkg_conf_paths = glob.glob(os.path.join(ktr.conf.get_confdir(), "*.conf"))
@@ -66,18 +75,31 @@ def run():
         for pkg_conf_path in pkg_conf_paths:
             pkgs.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
 
+    if not pkgs:
+        ktr.log("No packages have been specified or found. Exiting.")
+        print()
+        raise SystemExit()
+
     # log list of found packages
     ktr.log_list("Packages", pkgs)
+
+    # generate package objects
+    for name in pkgs:
+        assert isinstance(name, str)
+
+        ktr.add_package(name, Package(name))
 
     action_succ = list()
     action_fail = list()
 
     # run action for every specified package
-    for name in pkgs:
+    for name in ktr.get_package_names():
         assert isinstance(name, str)
 
+        pkg = ktr.get_package(name)
+
         action_type = ktr.cli.get_action()
-        action = ACTION_DICT[action_type](Package(name), ktr.cli.get_force())
+        action = ACTION_DICT[action_type](pkg, ktr.cli.get_force())
         success = action.execute()
 
         if success:
