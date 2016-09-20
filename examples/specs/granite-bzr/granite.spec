@@ -5,8 +5,8 @@ Release:        0%{?dist}
 License:        LGPLv3
 URL:            http://launchpad.net/granite
 
-Source0:        %{name}-%{version}.tar.xz
-Source1:        granite-0.4.conf
+Source0:        %{name}-%{version}.tar.gz
+Source1:        granite-bzr.conf
 
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
