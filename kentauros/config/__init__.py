@@ -7,8 +7,6 @@ configuration found or the configuration location specified at command line.
 
 
 from collections import OrderedDict
-import configparser
-from enum import Enum
 import os
 
 from kentauros.definitions import KTR_SYSTEM_DATADIR, InstanceType
