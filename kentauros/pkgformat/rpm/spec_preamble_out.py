@@ -32,20 +32,20 @@ def spec_preamble_bzr(source: BzrSource) -> str:
 def spec_preamble_git(source: GitSource) -> str:
     """
     This function returns the "%defines" necessary for packages built from *git* repositories. This
-    includes a definition of "rev" and "date" just now. The value of "rev" here are the first 8
-    characters of the corresponding git commit hash.
+    includes a definition of "commit" and "date" just now. The value of "cpmmit" here are the first
+    8 characters of the corresponding git commit hash.
 
     Arguments:
-        GitSource source:   source repository the revision will be determined from
+        GitSource source:   source repository the commit hash and date will be determined from
 
     Returns:
-        str:                string with the "%defines rev $REV" and "%defines date $DATE" lines
+        str:                string with the "%defines commit COMMIT" and "%defines date $DATE" lines
     """
 
     assert isinstance(source, GitSource)
     date_define = "%define date " + source.date() + "\n"
-    rev_define = "%define rev " + source.rev()[0:8] + "\n"
-    return date_define + rev_define + "\n"
+    commit_define = "%define commit " + source.commit()[0:8] + "\n"
+    return date_define + commit_define + "\n"
 
 
 def spec_preamble_url(source: UrlSource) -> str:

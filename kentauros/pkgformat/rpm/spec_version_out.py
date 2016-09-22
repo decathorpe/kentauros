@@ -20,11 +20,11 @@ def spec_version_bzr(source: BzrSource) -> str:
         BzrSource source:   source repository a version string will be generated for
 
     Returns:
-        str:                version string in the format ``$VERSION~rev%{rev}``
+        str:                version string in the format ``$VERSION+rev%{rev}``
     """
 
     assert isinstance(source, BzrSource)
-    ver_str = source.spkg.conf.get("source", "version") + "~rev%{rev}"
+    ver_str = source.spkg.conf.get("source", "version") + "+rev%{rev}"
     return ver_str
 
 
@@ -36,11 +36,11 @@ def spec_version_git(source: GitSource) -> str:
         GitSource source:   source repository a version string will be generated for
 
     Returns:
-        str:                version string in the format ``$VERSION~git%{date}~%{rev}``
+        str:                version string in the format ``$VERSION+git%{date}.%{commit}``
     """
 
     assert isinstance(source, GitSource)
-    ver_str = source.spkg.conf.get("source", "version") + "~git%{date}~%{rev}"
+    ver_str = source.spkg.conf.get("source", "version") + "+git%{date}.%{commit}"
     return ver_str
 
 

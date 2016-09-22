@@ -67,7 +67,7 @@ class GitSource(Source):
             self.spkg.conf.set("git", "shallow", "false")
             self.spkg.update_config()
 
-        self.saved_rev = None
+        self.saved_commit = None
         self.saved_date = None
 
     def date(self) -> str:
@@ -135,7 +135,7 @@ class GitSource(Source):
 
         return date
 
-    def rev(self) -> str:
+    def commit(self) -> str:
         """
         This method provides an easy way of getting the commit hash of the requrested commit. It
         also stores the latest commit hash between method invocations, if the source goes away and
@@ -152,11 +152,11 @@ class GitSource(Source):
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
-            if self.saved_rev is None:
+            if self.saved_commit is None:
                 ktr.err("Sources need to be get before commit hash can be read.")
                 return None
             else:
-                return self.saved_rev
+                return self.saved_commit
 
         cmd = ["git", "rev-parse", "HEAD"]
 
@@ -168,7 +168,7 @@ class GitSource(Source):
 
         os.chdir(prevdir)
 
-        self.saved_rev = rev
+        self.saved_commit = rev
         ktr.state_write(self.spkg.conf_name, dict(git_last_commit=rev))
 
         return rev
@@ -192,7 +192,7 @@ class GitSource(Source):
         """
         This method assembles a standardised version string for git sources. This includes the
         package source base version, the git commit date and time and the first eight characters of
-        the git commit hash, for example: ``11.3.0~git160422~39e9cf6c``
+        the git commit hash, for example: ``11.3.0+git160422.234950.39e9cf6c``
 
         Returns:
             str:        nicely formatted version string
@@ -205,12 +205,12 @@ class GitSource(Source):
         ver = self.spkg.conf.get("source", "version")
 
         # date and time of commit
-        ver += "~git"
+        ver += "+git"
         ver += self.date()
 
         # first 8 chars of git commit ID
-        ver += "~"
-        ver += self.rev()[0:8]
+        ver += "."
+        ver += self.commit()[0:8]
 
         return ver
 
@@ -234,7 +234,7 @@ class GitSource(Source):
 
         # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            rev = self.rev()
+            rev = self.commit()
             ktr.log("Sources already downloaded. Latest commit id:", 2)
             ktr.log(rev, 2)
             return False
@@ -287,7 +287,7 @@ class GitSource(Source):
             os.chdir(prevdir)
 
         # get commit ID
-        rev = self.rev()
+        rev = self.commit()
         self.date()
 
         # check if checkout worked
@@ -338,7 +338,7 @@ class GitSource(Source):
             return False
 
         # get old commit ID
-        rev_old = self.rev()
+        rev_old = self.commit()
 
         # change to git repodir
         prevdir = os.getcwd()
@@ -352,7 +352,7 @@ class GitSource(Source):
         os.chdir(prevdir)
 
         # get new commit ID
-        rev_new = self.rev()
+        rev_new = self.commit()
         self.date()
 
         # return True if update found, False if not
@@ -429,7 +429,7 @@ class GitSource(Source):
         subprocess.call(cmd)
 
         # update saved rev and date
-        self.rev()
+        self.commit()
         self.date()
 
         # remove git repo if keep is False

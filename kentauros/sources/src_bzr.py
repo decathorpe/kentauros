@@ -117,14 +117,14 @@ class BzrSource(Source):
         This method returns a nicely formatted version string for bzr sources.
 
         Returns:
-            str: nice version string (base version + "~bzr" + revision)
+            str: nice version string (base version + "+bzr" + revision)
         """
 
         if not self.active:
             return None
 
         ver = self.spkg.conf.get("source", "version")   # base version
-        ver += "~rev"                                   # bzr prefix
+        ver += "+rev"                                   # bzr prefix
         ver += self.rev()                               # revision number as string
 
         return ver
