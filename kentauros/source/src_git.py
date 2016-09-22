@@ -166,7 +166,7 @@ class GitSource(Source):
         This method assembles a standardised version string for git sources.
         This includes the package source base version, the git commit date and
         time and the first eight characters of the git commit hash, for example:
-        ``11.3.0~devel+git160422~39e9cf6c``
+        ``11.3.0~devel+git160422.123450.39e9cf6c``
 
         Returns:
             str:        nicely formatted version string
@@ -183,7 +183,7 @@ class GitSource(Source):
         ver += self.date()
 
         # first 8 chars of git commit ID
-        ver += "~"
+        ver += "."
         ver += self.rev()[0:8]
 
         return ver

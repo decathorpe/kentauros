@@ -127,7 +127,7 @@ def spec_version_git(source: Source) -> str:
     """
 
     assert isinstance(source, Source)
-    ver_str = source.conf.get("source", "version") + "+git%{date}~%{rev}"
+    ver_str = source.conf.get("source", "version") + "+git%{date}.%{rev}"
     return ver_str
 
 
