@@ -50,7 +50,7 @@ Release:        0%{?dist}
 
 License:        MIT
 URL:            http://www.mesa3d.org
-Source0:        %{name}-%{version}.tar.xz
+Source0:        %{name}-%{version}.tar.gz
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -313,6 +313,8 @@ Requires:       %{name}-libd3d%{?_isa} = %{?epoch:%{epoch}}%{version}-%{release}
 
 
 %build
+autoreconf -vfi
+
 # C++ note: we never say "catch" in the source.  we do say "typeid" once,
 # in an assert, which is patched out above.  LLVM doesn't use RTTI or throw.
 #
