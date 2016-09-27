@@ -26,7 +26,7 @@ KTR_SYSTEM_DATADIR = "/usr/share/kentauros/"
 copied to at installation and where they are expected to be when running ktr.
 """
 
-KTR_VERSION = "0.9.11"
+KTR_VERSION = "0.9.90"
 """This string represents the version string used by ``setup.py`` at install
 time and ``make-srpm.sh`` when building an srpm package. The version in
 ``kentauros.spec`` has to be set manually yet.

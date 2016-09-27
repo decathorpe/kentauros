@@ -1,7 +1,7 @@
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.9.11
-Release:        1%{?dist}
+Version:        0.9.90
+Release:        0%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -9,12 +9,12 @@ Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
 BuildArch:      noarch
 
-BuildRequires:  python3-dataset
 BuildRequires:  python3-dateutil
 BuildRequires:  python3-devel
+BuildRequires:  python3-tinydb
 
-Requires:       python3-dataset
 Requires:       python3-dateutil
+Requires:       python3-tinydb
 
 Recommends:     bzr
 Recommends:     git
@@ -27,8 +27,9 @@ Suggests:       rpmdevtools
 
 %description
 kentauros is a small build system with little need for configuration.
-create a directory named after the project, drop in a .conf and RPM .spec file,
-configure copr-cli, and automagic updating, building, uploading to copr works.
+create a directory named after the project, drop in a .conf and RPM
+.spec file, configure copr-cli, and automagic updating, building,
+uploading to copr works.
 
 
 %prep
