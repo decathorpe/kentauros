@@ -24,8 +24,8 @@ class GetAction(Action):
         ActionType atype:   here: stores `ActionType.GET`
     """
 
-    def __init__(self, kpkg: Package, force: bool):
-        super().__init__(kpkg, force)
+    def __init__(self, kpkg: Package):
+        super().__init__(kpkg)
         self.atype = ActionType.GET
 
     def execute(self) -> bool:

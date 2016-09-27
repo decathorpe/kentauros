@@ -41,8 +41,8 @@ class ChainAction(Action):
         ActionType atype:   here: stores ``ActionType.CHAIN``
     """
 
-    def __init__(self, kpkg: Package, force: bool):
-        super().__init__(kpkg, force)
+    def __init__(self, kpkg: Package):
+        super().__init__(kpkg)
         self.atype = ActionType.CHAIN
 
     def execute(self) -> bool:
@@ -55,40 +55,41 @@ class ChainAction(Action):
         """
 
         ktr = Kentauros(LOGPREFIX)
+        force = ktr.cli.get_force()
 
         def print_abort_msg():
             """This function prints a standard abort message."""
             ktr.log("Action aborted.", 2)
 
-        verified = VerifyAction(self.kpkg, self.force).execute()
+        verified = VerifyAction(self.kpkg).execute()
         if not verified:
             print_abort_msg()
             return False
 
-        get = GetAction(self.kpkg, self.force).execute()
+        get = GetAction(self.kpkg).execute()
         if not get:
             ktr.log("Sources not downloaded.", 2)
 
-        update = UpdateAction(self.kpkg, self.force).execute()
+        update = UpdateAction(self.kpkg).execute()
         if not update:
             ktr.log("Sources not updated.", 2)
 
-        if not (get or update or self.force):
+        if not (get or update or force):
             ktr.log("No source changes were detected, aborting action.", 2)
             return False
 
-        ExportAction(self.kpkg, self.force).execute()
+        ExportAction(self.kpkg).execute()
 
-        success = ConstructAction(self.kpkg, self.force).execute()
+        success = ConstructAction(self.kpkg).execute()
         if not success:
             print_abort_msg()
             return False
 
-        success = BuildAction(self.kpkg, self.force).execute()
+        success = BuildAction(self.kpkg).execute()
         if not success:
             print_abort_msg()
             return False
 
-        UploadAction(self.kpkg, self.force).execute()
+        UploadAction(self.kpkg).execute()
 
         return True

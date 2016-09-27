@@ -25,8 +25,8 @@ class VerifyAction(Action):
         ActionType atype:   here: stores `ActionType.VERIFY`
     """
 
-    def __init__(self, kpkg: Package, force: bool):
-        super().__init__(kpkg, force)
+    def __init__(self, kpkg: Package):
+        super().__init__(kpkg)
         self.atype = ActionType.VERIFY
 
     def execute(self) -> bool:

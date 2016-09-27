@@ -99,7 +99,7 @@ def run():
         pkg = ktr.get_package(name)
 
         action_type = ktr.cli.get_action()
-        action = ACTION_DICT[action_type](pkg, ktr.cli.get_force())
+        action = ACTION_DICT[action_type](pkg)
         success = action.execute()
 
         if success:

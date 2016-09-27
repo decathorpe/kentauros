@@ -25,15 +25,13 @@ class Action(metaclass=abc.ABCMeta):
         ActionType atype:   stores type of action as enum
     """
 
-    def __init__(self, kpkg: Package, force: bool):
+    def __init__(self, kpkg: Package):
         ktr = Kentauros()
 
         if ktr.debug:
             assert isinstance(kpkg, Package)
-            assert isinstance(force, bool)
 
         self.kpkg = kpkg
-        self.force = force
         self.atype = None
 
     @abc.abstractmethod

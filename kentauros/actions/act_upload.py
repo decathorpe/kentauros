@@ -23,8 +23,8 @@ class UploadAction(Action):
         ActionType atype:   here: stores `ActionType.UPLOAD`
     """
 
-    def __init__(self, kpkg: Package, force: bool):
-        super().__init__(kpkg, force)
+    def __init__(self, kpkg: Package):
+        super().__init__(kpkg)
         self.atype = ActionType.UPLOAD
 
     def execute(self) -> bool:

@@ -24,8 +24,8 @@ class PrepareAction(Action):
         ActionType atype:   here: stores `ActionType.PREPARE`
     """
 
-    def __init__(self, kpkg: Package, force: bool):
-        super().__init__(kpkg, force)
+    def __init__(self, kpkg: Package):
+        super().__init__(kpkg)
         self.atype = ActionType.PREPARE
 
     def execute(self) -> bool:
