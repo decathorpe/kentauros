@@ -9,7 +9,6 @@
 
 - status: implementation missing
 - upload: missing error handling
-- verify: implementation missing
 - remove unnecessary action classes
 
 
@@ -23,25 +22,9 @@
 - rework relreset / force code so it actually works as intended
 
 
-## init:
-
-- cli: add --message argument for supplying changelog messages
-
-
-## instance:
-
-- remove old log,err,dbg,log_command functions
-
-
 ## package:
 
-- at initialisation, replace hyphens in source/version with tilde
 - allow variables in package configuration file: `$(VERSION)`, `$(NAME)`
-
-
-## pkgformat:
-
-- finish RPM spec handling rewrite
 
 
 ## source:

@@ -13,6 +13,14 @@
 <th>msg</th>
 </tr>
 <tr class="even">
+<td>warning</td>
+<td>kentauros.package</td>
+<td>&#160;</td>
+<td>226</td>
+<td>0</td>
+<td>TODO: delegate verifying all other config values to the appropriate places</td>
+</tr>
+<tr class="odd">
 <td>refactor</td>
 <td>kentauros.run</td>
 <td>run</td>
@@ -20,7 +28,7 @@
 <td>0</td>
 <td>Too many statements (55/40)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.sources.src_abstract</td>
 <td>&#160;</td>
@@ -28,7 +36,7 @@
 <td>0</td>
 <td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.pkgformat.rpm.__init__</td>
 <td>&#160;</td>
@@ -36,21 +44,13 @@
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>warning</td>
 <td>kentauros.actions.act_upload</td>
 <td>&#160;</td>
 <td>40</td>
 <td>0</td>
 <td>TODO: error handling</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.actions.act_verify</td>
-<td>&#160;</td>
-<td>40</td>
-<td>0</td>
-<td>TODO: verify that package *.conf is valid</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -101,7 +101,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>1986 statements analysed.</p><div>
+<p>2001 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -178,7 +178,7 @@ kentauros
   \-construct (kentauros.package)
   | \-con_abstract (kentauros.construct.con_srpm)
   | \-con_srpm (kentauros.construct)
-  \-definitions (kentauros.config)
+  \-definitions (kentauros.build)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
@@ -211,30 +211,30 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2201</td>
-<td>41.56</td>
-<td>2201</td>
+<td>2217</td>
+<td>41.63</td>
+<td>2217</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>1788</td>
-<td>33.76</td>
+<td>33.58</td>
 <td>1788</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>180</td>
-<td>3.40</td>
-<td>180</td>
+<td>188</td>
+<td>3.53</td>
+<td>188</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1127</td>
-<td>21.28</td>
-<td>1127</td>
+<td>1132</td>
+<td>21.26</td>
+<td>1132</td>
 <td>=</td>
 </tr>
 </table>
@@ -336,7 +336,7 @@ tinydb (kentauros.instance)</pre></div>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.actions.act_verify</td>
+<td>kentauros.package</td>
 <td>0.00</td>
 <td>12.50</td>
 <td>0.00</td>

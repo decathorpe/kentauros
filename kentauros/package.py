@@ -182,7 +182,7 @@ class Package:
     def verify(self) -> bool:
         """
         This method verifies that the absolute minimum for proceeding with package initialisation is
-        set.
+        set. This also ensures the validity of some entries.
 
         Returns:
             bool:   *True* if configuration is minimally valid, *False* if entries are missing
@@ -192,19 +192,49 @@ class Package:
 
         ktr = Kentauros(LOGPREFIX)
 
+        success = True
+
         if "package" not in self.conf.sections():
             ktr.err("Package configuration file does not have a 'package' section.")
-            return False
+            success = False
 
         if "source" not in self.conf.sections():
             ktr.err("Package configuration file does not have a 'source' section.")
-            return False
+            success = False
 
         if "type" not in self.conf["source"]:
             ktr.err("Package configuration file does not specify the type of source.")
-            return False
+            success = False
 
-        return True
+        if self.conf.get("source", "type") == "":
+            ktr.err("Package configuration file does not specify the type of source.")
+            success = False
+
+        if "version" not in self.conf["source"]:
+            ktr.err("Package configuration file does not specify the source version.")
+            success = False
+
+        if self.conf.get("source", "version") == "":
+            ktr.err("Package configuration file does not specify the source version.")
+            success = False
+
+        if "-" in self.conf.get("source", "version"):
+            ktr.err("Hyphens are not a valid part of a version string.")
+            ktr.err("Replace it with another character, e.g. '~' or '+'.")
+            success = False
+
+        # TODO: delegate verifying all other config values to the appropriate places
+
+        # if "constructor" in self.conf["package"]:
+        #     success = success and self.constructor.verify()
+        #
+        # if "builder" in self.conf["package"]:
+        #     success = success and self.builder.verify()
+        #
+        # if "uploader" in self.conf["package"]:
+        #     success = success and self.uploader.verify()
+
+        return success
 
     def update_config(self):
         """

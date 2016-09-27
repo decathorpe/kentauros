@@ -37,9 +37,8 @@ class VerifyAction(Action):
         Currently, this does no checking whatsoever.
         """
 
-        # TODO: verify that package *.conf is valid
-
-        if not True:
-            Kentauros(LOGPREFIX).log("Package could not be verified.", 2)
-
-        return True
+        if not self.kpkg.verify():
+            Kentauros(LOGPREFIX).log("Package configuration could not be verified.", 2)
+            return False
+        else:
+            return True

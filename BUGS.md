@@ -8,5 +8,4 @@
 
 ## constructor/srpm
 
-- RPM construction fails when a hyphen is in the version string
 - force-constructing SRPM from URL sources results in "new snapshot" changelog msg
