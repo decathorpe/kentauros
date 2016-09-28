@@ -13,6 +13,8 @@ import subprocess
 import time
 
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
+
 from kentauros.build.bld_abstract import Builder
 
 
@@ -107,7 +109,7 @@ class MockBuild:
             list:   argument list for consumption by subprocess methods
         """
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
 
         cmd = [self.mock]
 
@@ -134,7 +136,7 @@ class MockBuild:
             int:    return code of the subprocess call
         """
 
-        ktr = Kentauros(LOGPREFIX)
+        logger = KtrLogger(LOGPREFIX)
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
@@ -149,7 +151,7 @@ class MockBuild:
                 try:
                     fcntl.lockf(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 except IOError:
-                    ktr.log("The specified build chroot is busy, waiting.", 2)
+                    logger.log("The specified build chroot is busy, waiting.", 2)
                     time.sleep(120)
                 else:
                     build_wait = False
@@ -157,7 +159,7 @@ class MockBuild:
                     lock_file.close()
 
         cmd = self.get_command()
-        ktr.log_command(cmd)
+        logger.log_command(cmd)
 
         ret = subprocess.call(cmd)
         return ret
@@ -179,7 +181,7 @@ class MockBuilder(Builder):
     def __init__(self, package):
         super().__init__(package)
 
-        ktr = Kentauros(LOGPREFIX)
+        logger = KtrLogger(LOGPREFIX)
 
         # deactivate mock if section is not present in config file
         if "mock" not in self.bpkg.conf.sections():
@@ -203,12 +205,12 @@ class MockBuilder(Builder):
         try:
             self.mock_cmd = subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
         except subprocess.CalledProcessError:
-            ktr.log("Install mock to use the specified builder.")
+            logger.log("Install mock to use the specified builder.")
             self.active = False
 
         # check if the right binary is used or if something is messing up $PATH
         if self.mock_cmd == "/usr/sbin/mock":
-            ktr.log("Something is messing with your $PATH variable.", 2)
+            logger.log("Something is messing with your $PATH variable.", 2)
             self.mock_cmd = "/usr/bin/mock"
 
         # get dists to build for
@@ -236,13 +238,14 @@ class MockBuilder(Builder):
         if not self.active:
             return True
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         # check if user is in the "mock" group
         mock_group = grp.getgrnam("mock")
         mock_user = os.getenv("USER")
         if not ((mock_user in mock_group.gr_mem) or (mock_user == "root")):
-            ktr.log("This user is not allowed to build in mock.", 2)
+            logger.log("This user is not allowed to build in mock.", 2)
             return False
 
         packdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.conf_name)
@@ -251,14 +254,14 @@ class MockBuilder(Builder):
         srpms = glob.glob(os.path.join(packdir, self.bpkg.name + "*.src.rpm"))
 
         if not srpms:
-            ktr.log("No source packages were found. Construct them first.", 2)
+            logger.log("No source packages were found. Construct them first.", 2)
             return False
 
         # figure out which srpm to build
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        ktr.log_list("Specified chroots", self.dists)
+        logger.log_list("Specified chroots", self.dists)
 
         # generate build queue
         build_queue = list()
@@ -285,10 +288,10 @@ class MockBuilder(Builder):
             os.remove(srpm)
 
         if build_succ:
-            ktr.log_list("Build successes", build_succ)
+            logger.log_list("Build successes", build_succ)
 
         if build_fail:
-            ktr.log_list("Build failures", build_fail)
+            logger.log_list("Build failures", build_fail)
 
         return not build_fail
 
@@ -307,17 +310,18 @@ class MockBuilder(Builder):
         if not self.exporting:
             return True
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         pkg_expo_dir = os.path.join(ktr.conf.get_expodir(), self.bpkg.conf_name)
         os.makedirs(pkg_expo_dir, exist_ok=True)
 
         if not os.path.exists(pkg_expo_dir):
-            ktr.err("Package exports directory could not be created.")
+            logger.err("Package exports directory could not be created.")
             return False
 
         if not os.access(pkg_expo_dir, os.W_OK):
-            ktr.err("Package exports directory can not be written to.")
+            logger.err("Package exports directory can not be written to.")
             return False
 
         mock_result_dirs = list()

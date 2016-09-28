@@ -8,6 +8,7 @@ determine which directories those should be.
 import os
 
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 
 LOGPREFIX = "ktr/bootstrap"
@@ -28,20 +29,20 @@ def ktr_mkdirp(path: str) -> bool:
         bool:       success (or not)
     """
 
-    ktr = Kentauros(LOGPREFIX)
+    logger = KtrLogger(LOGPREFIX)
 
     if os.path.exists(path):
         if os.access(path, os.W_OK):
             return True
         else:
-            ktr.err(path + " can't be written to.")
+            logger.err(path + " can't be written to.")
             return False
     else:
-        ktr.log(path + " directory doesn't exist and will be created.")
+        logger.log(path + " directory doesn't exist and will be created.")
         try:
             os.makedirs(path)
         except OSError:
-            ktr.err(path + " directory could not be created.")
+            logger.err(path + " directory could not be created.")
             return False
         return True
 
@@ -56,7 +57,7 @@ def ktr_bootstrap() -> bool:
         bool:       success (or not)
     """
 
-    ktr = Kentauros(LOGPREFIX)
+    ktr = Kentauros()
 
     for path in [ktr.conf.get_basedir(), ktr.conf.get_confdir(), ktr.conf.get_datadir(),
                  ktr.conf.get_expodir(), ktr.conf.get_packdir(), ktr.conf.get_specdir()]:

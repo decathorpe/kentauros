@@ -6,6 +6,7 @@ This submodule contains the :py:class:`ChainAction` class.
 from kentauros.definitions import ActionType
 
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.actions.act_abstract import Action
 from kentauros.actions.act_common import LOGPREFIX
@@ -53,12 +54,13 @@ class ChainAction(Action):
             bool:   ``True`` if chain went all the way through, ``False`` if not
         """
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
         force = ktr.cli.get_force()
 
         def print_abort_msg():
             """This function prints a standard abort message."""
-            ktr.log("Action aborted.", 2)
+            logger.log("Action aborted.", 2)
 
         verified = VerifyAction(self.name).execute()
         if not verified:
@@ -67,14 +69,14 @@ class ChainAction(Action):
 
         get = GetAction(self.name).execute()
         if not get:
-            ktr.log("Sources not downloaded.", 2)
+            logger.log("Sources not downloaded.", 2)
 
         update = UpdateAction(self.name).execute()
         if not update:
-            ktr.log("Sources not updated.", 2)
+            logger.log("Sources not updated.", 2)
 
         if not (get or update or force):
-            ktr.log("No source changes were detected, aborting action.", 2)
+            logger.log("No source changes were detected, aborting action.", 2)
             return False
 
         ExportAction(self.name).execute()

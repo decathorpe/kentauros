@@ -5,7 +5,7 @@ This submodule contains the :py:class:`BuildAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.actions.act_abstract import Action
 from kentauros.actions.act_common import LOGPREFIX
@@ -38,18 +38,18 @@ class BuildAction(Action):
             bool:   ``True`` if all builds were successful, ``False`` otherwise
         """
 
-        ktr = Kentauros(LOGPREFIX)
+        logger = KtrLogger(LOGPREFIX)
 
         success = self.kpkg.builder.build()
 
         if not success:
-            ktr.log("Binary package building unsuccessful, aborting action.")
+            logger.log("Binary package building unsuccessful, aborting action.")
             return False
 
         success = self.kpkg.builder.export()
 
         if not success:
-            ktr.log("Binary package exporting unsuccessful, aborting action.")
+            logger.log("Binary package exporting unsuccessful, aborting action.")
             return False
 
         return success

@@ -29,7 +29,7 @@ class Constructor(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
 
         if ktr.debug:
             from kentauros.package import Package

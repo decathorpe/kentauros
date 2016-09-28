@@ -10,7 +10,9 @@ import subprocess
 
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
+
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.sources.src_abstract import Source
 
@@ -40,13 +42,13 @@ class UrlSource(Source):
             self.spkg.conf.get("source", "orig")))
         self.stype = SourceType.URL
 
-        ktr = Kentauros(LOGPREFIX)
+        logger = KtrLogger(LOGPREFIX)
 
         try:
             self.active = True
             subprocess.check_output(["which", "wget"])
         except subprocess.CalledProcessError:
-            ktr.log("Install wget to use the specified source.")
+            logger.log("Install wget to use the specified source.")
             self.active = False
 
     def status(self) -> dict:
@@ -64,7 +66,8 @@ class UrlSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -72,12 +75,12 @@ class UrlSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            ktr.log("Sources already downloaded.", 1)
+            logger.log("Sources already downloaded.", 1)
             return False
 
         # check for connectivity to server
         if not is_connected(self.spkg.conf.get("source", "orig")):
-            ktr.log("No connection to remote host detected. Cancelling source download.", 2)
+            logger.log("No connection to remote host detected. Cancelling source download.", 2)
             return False
 
         # construct wget commands
@@ -95,7 +98,7 @@ class UrlSource(Source):
         cmd.append(self.dest)
 
         # wget source from orig to dest
-        ktr.log_command(cmd, 1)
+        logger.log_command(cmd, 1)
         subprocess.call(cmd)
 
         return True

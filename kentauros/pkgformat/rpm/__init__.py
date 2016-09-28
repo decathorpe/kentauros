@@ -7,6 +7,7 @@ import os
 import subprocess
 
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.sources.src_abstract import Source
 
@@ -176,7 +177,8 @@ def do_release_bump(path: str, comment: str=None):
         str comment:    comment to be added to the changelog entry
     """
 
-    ktr = Kentauros(LOGPREFIX)
+    ktr = Kentauros()
+    logger = KtrLogger(LOGPREFIX)
 
     if not os.path.exists(path):
         raise FileNotFoundError()
@@ -194,7 +196,7 @@ def do_release_bump(path: str, comment: str=None):
     cmd.append(path)
     cmd.append('--comment="' + comment + '"')
 
-    ktr.log_command(cmd)
+    logger.log_command(cmd)
     subprocess.call(cmd)
 
     # TODO: error handling

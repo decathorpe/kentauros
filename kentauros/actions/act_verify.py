@@ -5,7 +5,7 @@ This submodule contains the :py:class:`VerifyAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.actions.act_abstract import Action
 from kentauros.actions.act_common import LOGPREFIX
@@ -37,7 +37,7 @@ class VerifyAction(Action):
         """
 
         if not self.kpkg.verify():
-            Kentauros(LOGPREFIX).log("Package configuration could not be verified.", 2)
+            KtrLogger(LOGPREFIX).log("Package configuration could not be verified.", 2)
             return False
         else:
             return True

@@ -13,6 +13,7 @@ import os
 from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
 
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.build import BUILDER_TYPE_DICT
 from kentauros.construct import CONSTRUCTOR_TYPE_DICT
@@ -65,7 +66,8 @@ class Package:
     def __init__(self, conf_name: str):
         assert isinstance(conf_name, str)
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         self.file = os.path.join(ktr.conf.get_confdir(), conf_name + ".conf")
         self.conf = ConfigParser()
@@ -76,8 +78,8 @@ class Package:
 
         success = self.conf.read(self.file)
         if not success:
-            ktr.err("Package configuration could not be read.")
-            ktr.err("Path: " + self.file)
+            logger.err("Package configuration could not be read.")
+            logger.err("Path: " + self.file)
             raise PackageError("Package configuration could not be read.")
 
         if not self.verify():
@@ -190,37 +192,37 @@ class Package:
 
         assert isinstance(self.conf, ConfigParser)
 
-        ktr = Kentauros(LOGPREFIX)
+        logger = KtrLogger(LOGPREFIX)
 
         success = True
 
         if "package" not in self.conf.sections():
-            ktr.err("Package configuration file does not have a 'package' section.")
+            logger.err("Package configuration file does not have a 'package' section.")
             success = False
 
         if "source" not in self.conf.sections():
-            ktr.err("Package configuration file does not have a 'source' section.")
+            logger.err("Package configuration file does not have a 'source' section.")
             success = False
 
         if "type" not in self.conf["source"]:
-            ktr.err("Package configuration file does not specify the type of source.")
+            logger.err("Package configuration file does not specify the type of source.")
             success = False
 
         if self.conf.get("source", "type") == "":
-            ktr.err("Package configuration file does not specify the type of source.")
+            logger.err("Package configuration file does not specify the type of source.")
             success = False
 
         if "version" not in self.conf["source"]:
-            ktr.err("Package configuration file does not specify the source version.")
+            logger.err("Package configuration file does not specify the source version.")
             success = False
 
         if self.conf.get("source", "version") == "":
-            ktr.err("Package configuration file does not specify the source version.")
+            logger.err("Package configuration file does not specify the source version.")
             success = False
 
         if "-" in self.conf.get("source", "version"):
-            ktr.err("Hyphens are not a valid part of a version string.")
-            ktr.err("Replace it with another character, e.g. '~' or '+'.")
+            logger.err("Hyphens are not a valid part of a version string.")
+            logger.err("Replace it with another character, e.g. '~' or '+'.")
             success = False
 
         # TODO: delegate verifying all other config values to the appropriate places
@@ -242,13 +244,13 @@ class Package:
         permanent changes.
         """
 
-        ktr = Kentauros(LOGPREFIX)
+        logger = KtrLogger(LOGPREFIX)
 
         try:
             conf_file = open(self.file, "w")
             self.conf.write(conf_file)
             conf_file.close()
         except OSError:
-            ktr.err("Package configuration file could not be written.")
-            ktr.err("Path: " + self.file)
+            logger.err("Package configuration file could not be written.")
+            logger.err("Path: " + self.file)
             raise PackageError("Package configuration file could not be written.")

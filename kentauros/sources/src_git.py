@@ -12,7 +12,9 @@ import dateutil.parser
 
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
+
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.sources.src_abstract import Source
 
@@ -44,14 +46,14 @@ class GitSource(Source):
         self.dest = os.path.join(self.sdir, self.spkg.name)
         self.stype = SourceType.GIT
 
-        ktr = Kentauros(LOGPREFIX)
+        logger = KtrLogger(LOGPREFIX)
 
         # if git is not installed: mark GitSource instance as inactive
         try:
             self.active = True
             subprocess.check_output(["which", "git"])
         except subprocess.CalledProcessError:
-            ktr.log("Install git to use the specified source.")
+            logger.log("Install git to use the specified source.")
             self.active = False
 
         # either branch or commit must be set. default to branch=master
@@ -108,12 +110,13 @@ class GitSource(Source):
 
             return date_str
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
             if self.saved_date is None:
-                ktr.err("Sources need to be get before their age can be read.")
+                logger.err("Sources need to be get before their age can be read.")
                 return None
             else:
                 return self.saved_date
@@ -123,7 +126,7 @@ class GitSource(Source):
         prevdir = os.getcwd()
         os.chdir(self.dest)
 
-        ktr.log_command(cmd, 1)
+        logger.log_command(cmd, 1)
         date_raw = subprocess.check_output(cmd).decode().rstrip('\r\n')
 
         os.chdir(prevdir)
@@ -148,12 +151,13 @@ class GitSource(Source):
         if not self.active:
             return None
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
             if self.saved_commit is None:
-                ktr.err("Sources need to be get before commit hash can be read.")
+                logger.err("Sources need to be get before commit hash can be read.")
                 return None
             else:
                 return self.saved_commit
@@ -163,7 +167,7 @@ class GitSource(Source):
         prevdir = os.getcwd()
         os.chdir(self.dest)
 
-        ktr.log_command(cmd, 1)
+        logger.log_command(cmd, 1)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
 
         os.chdir(prevdir)
@@ -226,7 +230,8 @@ class GitSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -235,13 +240,13 @@ class GitSource(Source):
         # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             rev = self.commit()
-            ktr.log("Sources already downloaded. Latest commit id:", 2)
-            ktr.log(rev, 2)
+            logger.log("Sources already downloaded. Latest commit id:", 2)
+            logger.log(rev, 2)
             return False
 
         # check for connectivity to server
         if not is_connected(self.spkg.conf.get("source", "orig")):
-            ktr.log("No connection to remote host detected. Cancelling source checkout.", 2)
+            logger.log("No connection to remote host detected. Cancelling source checkout.", 2)
             return False
 
         # construct clone command
@@ -267,7 +272,7 @@ class GitSource(Source):
         cmd_clone.append(self.dest)
 
         # clone git repo from orig to dest
-        ktr.log_command(cmd_clone, 1)
+        logger.log_command(cmd_clone, 1)
         subprocess.call(cmd_clone)
 
         # if commit is specified: checkout commit
@@ -280,7 +285,7 @@ class GitSource(Source):
             os.chdir(self.dest)
 
             # checkout commit
-            ktr.log_command(cmd_checkout, 1)
+            logger.log_command(cmd_checkout, 1)
             subprocess.call(cmd_checkout)
 
             # go to previous dir
@@ -293,7 +298,7 @@ class GitSource(Source):
         # check if checkout worked
         if self.spkg.conf.get("git", "commit"):
             if self.spkg.conf.get("git", "commit") != rev:
-                ktr.err("Something went wrong, requested commit not in repo.")
+                logger.err("Something went wrong, requested commit not in repo.")
                 return False
 
         # return True if successful
@@ -312,7 +317,8 @@ class GitSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         # if specific commit is requested, do not pull updates (obviously)
         if self.spkg.conf.get("git", "commit"):
@@ -320,7 +326,7 @@ class GitSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.spkg.conf.get("source", "orig")):
-            ktr.log("No connection to remote host detected. Cancelling source update.", 2)
+            logger.log("No connection to remote host detected. Cancelling source update.", 2)
             return False
 
         # construct git command
@@ -334,7 +340,7 @@ class GitSource(Source):
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            ktr.err("Sources need to be get before an update can be run.")
+            logger.err("Sources need to be get before an update can be run.")
             return False
 
         # get old commit ID
@@ -345,7 +351,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        ktr.log_command(cmd, 1)
+        logger.log_command(cmd, 1)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -371,7 +377,8 @@ class GitSource(Source):
         if not self.active:
             return False
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         def remove_notkeep():
             """
@@ -384,7 +391,7 @@ class GitSource(Source):
                 assert os.path.isabs(self.dest)
                 assert ktr.conf.get_datadir() in self.dest
                 shutil.rmtree(self.dest)
-                ktr.log("git repository has been deleted after exporting to tarball.", 1)
+                logger.log("git repository has been deleted after exporting to tarball.", 1)
 
         # construct git command
         cmd = ["git", "archive"]
@@ -397,7 +404,7 @@ class GitSource(Source):
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
-            ktr.err("Sources need to be get before they can be exported.")
+            logger.err("Sources need to be get before they can be exported.")
             return False
 
         version = self.formatver()
@@ -413,7 +420,7 @@ class GitSource(Source):
 
         # check if file has already been exported
         if os.path.exists(file_name):
-            ktr.log("Tarball has already been exported.", 1)
+            logger.log("Tarball has already been exported.", 1)
             # remove git repo if keep is False
             remove_notkeep()
             return True
@@ -425,7 +432,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        ktr.log_command(cmd, 1)
+        logger.log_command(cmd, 1)
         subprocess.call(cmd)
 
         # update saved rev and date

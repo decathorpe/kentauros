@@ -5,7 +5,7 @@ This submodule contains the :py:class:`ConstructAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.actions.act_abstract import Action
 from kentauros.actions.act_common import LOGPREFIX
@@ -63,7 +63,7 @@ class ConstructAction(Action):
         success = self.kpkg.constructor.prepare()
         if not success:
             self.kpkg.constructor.clean()
-            Kentauros(LOGPREFIX).log("Source package assembly unsuccessful.", 2)
+            KtrLogger(LOGPREFIX).log("Source package assembly unsuccessful.", 2)
             return False
 
         self.kpkg.constructor.build()

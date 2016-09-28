@@ -9,7 +9,8 @@ import os
 import shutil
 
 from kentauros.definitions import SourceType
-from kentauros.instance import Kentauros
+
+from kentauros.logger import KtrLogger
 
 from kentauros.sources.src_abstract import Source
 
@@ -46,7 +47,7 @@ class LocalSource(Source):
             bool:   *True* if source was copied successfully, *False* if not
         """
 
-        ktr = Kentauros(LOGPREFIX)
+        logger = KtrLogger(LOGPREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -54,7 +55,7 @@ class LocalSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            ktr.log("Sources already present.", 1)
+            logger.log("Sources already present.", 1)
             return False
 
         # copy file from orig to dest

@@ -50,6 +50,14 @@ kentauros.instance module
     :undoc-members:
     :show-inheritance:
 
+kentauros.logger module
+-----------------------
+
+.. automodule:: kentauros.logger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros.package module
 ------------------------
 

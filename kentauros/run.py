@@ -10,6 +10,7 @@ import os
 from kentauros.definitions import ActionType
 
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 from kentauros.actions import ACTION_DICT
 from kentauros.bootstrap import ktr_bootstrap
@@ -29,26 +30,27 @@ def run():
     installation.
     """
 
-    ktr = Kentauros(LOGPREFIX)
+    ktr = Kentauros()
+    logger = KtrLogger(LOGPREFIX)
 
     print()
 
-    ktr.log("DEBUG set: " + str(ktr.debug), 0)
-    ktr.log("VERBOSITY: " + str(ktr.verby) + "/2", 1)
+    logger.log("DEBUG set: " + str(ktr.debug), 0)
+    logger.log("VERBOSITY: " + str(ktr.verby) + "/2", 1)
 
-    ktr.dbg("BASEDIR: " + ktr.conf.basedir)
-    ktr.dbg("CONFDIR: " + ktr.conf.get_confdir())
-    ktr.dbg("DATADIR: " + ktr.conf.get_datadir())
-    ktr.dbg("EXPODIR: " + ktr.conf.get_expodir())
-    ktr.dbg("PACKDIR: " + ktr.conf.get_packdir())
-    ktr.dbg("SPECDIR: " + ktr.conf.get_specdir())
+    logger.dbg("BASEDIR: " + ktr.conf.basedir)
+    logger.dbg("CONFDIR: " + ktr.conf.get_confdir())
+    logger.dbg("DATADIR: " + ktr.conf.get_datadir())
+    logger.dbg("EXPODIR: " + ktr.conf.get_expodir())
+    logger.dbg("PACKDIR: " + ktr.conf.get_packdir())
+    logger.dbg("SPECDIR: " + ktr.conf.get_specdir())
 
     print()
 
     # if no action is specified: exit
     if ktr.cli.get_action() == ActionType.NONE:
-        ktr.log("No action specified. Exiting.")
-        ktr.log("Use 'ktr --help' for more information.")
+        logger.log("No action specified. Exiting.")
+        logger.log("Use 'ktr --help' for more information.")
         print()
         return
 
@@ -65,7 +67,7 @@ def run():
             pkg_conf_path = os.path.join(ktr.conf.get_confdir(), pkg + ".conf")
 
             if not os.path.exists(pkg_conf_path):
-                ktr.err("Package configuration for '" + pkg + "' could not be found.")
+                logger.err("Package configuration for '" + pkg + "' could not be found.")
                 pkgs.remove(pkg)
 
     # if all package are to be processed: get package configs present in CONFDIR
@@ -76,12 +78,12 @@ def run():
             pkgs.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
 
     if not pkgs:
-        ktr.log("No packages have been specified or found. Exiting.")
+        logger.log("No packages have been specified or found. Exiting.")
         print()
         raise SystemExit()
 
     # log list of found packages
-    ktr.log_list("Packages", pkgs)
+    logger.log_list("Packages", pkgs)
     print()
 
     # generate package objects
@@ -102,19 +104,19 @@ def run():
         success = action.execute()
 
         if success:
-            ktr.log(name + ": Success!")
+            logger.log(name + ": Success!")
             action_succ.append(name)
         else:
-            ktr.log(name + ": Not successful.")
+            logger.log(name + ": Not successful.")
             action_fail.append(name)
 
     print()
 
     if action_succ:
-        ktr.log_list("Successful actions", action_succ)
+        logger.log_list("Successful actions", action_succ)
 
     if action_fail:
-        ktr.log_list("Failed actions", action_fail)
+        logger.log_list("Failed actions", action_fail)
 
     print()
 

@@ -29,14 +29,12 @@ class Builder(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-        ktr = Kentauros(LOGPREFIX)
-
-        if ktr.debug:
+        if Kentauros.debug:
             from kentauros.package import Package
             assert isinstance(package, Package)
 
         self.bpkg = package
-        self.pdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.conf_name)
+        self.pdir = os.path.join(Kentauros.conf.get_packdir(), self.bpkg.conf_name)
 
     @abc.abstractmethod
     def build(self):

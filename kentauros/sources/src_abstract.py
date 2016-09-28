@@ -9,6 +9,7 @@ import os
 import shutil
 
 from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
 
 
 LOGPREFIX = "ktr/sources"
@@ -34,7 +35,7 @@ class Source(metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
 
         if ktr.debug:
             from kentauros.package import Package
@@ -88,10 +89,11 @@ class Source(metaclass=abc.ABCMeta):
             bool:   *True* if successful
         """
 
-        ktr = Kentauros(LOGPREFIX)
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
 
         if not os.path.exists(self.sdir):
-            ktr.log("Nothing here to be cleaned.", 0)
+            logger.log("Nothing here to be cleaned.", 0)
             return True
 
         # try to be careful with "rm -r"
