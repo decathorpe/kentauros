@@ -7,7 +7,6 @@ action implementations.
 import abc
 
 from kentauros.instance import Kentauros
-from kentauros.package import Package
 
 
 class Action(metaclass=abc.ABCMeta):
@@ -25,13 +24,15 @@ class Action(metaclass=abc.ABCMeta):
         ActionType atype:   stores type of action as enum
     """
 
-    def __init__(self, kpkg: Package):
+    def __init__(self, pkg_name: str):
+        assert isinstance(pkg_name, str)
+
         ktr = Kentauros()
 
-        if ktr.debug:
-            assert isinstance(kpkg, Package)
+        self.name = pkg_name
+        self.kpkg = ktr.get_package(pkg_name)
+        assert self.kpkg is not None
 
-        self.kpkg = kpkg
         self.atype = None
 
     @abc.abstractmethod

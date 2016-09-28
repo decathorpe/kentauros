@@ -5,8 +5,6 @@ This submodule contains the :py:class:`PrepareAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.package import Package
-
 from kentauros.actions.act_abstract import Action
 
 
@@ -24,8 +22,8 @@ class PrepareAction(Action):
         ActionType atype:   here: stores `ActionType.PREPARE`
     """
 
-    def __init__(self, kpkg: Package):
-        super().__init__(kpkg)
+    def __init__(self, pkg_name: str):
+        super().__init__(pkg_name)
         self.atype = ActionType.PREPARE
 
     def execute(self) -> bool:

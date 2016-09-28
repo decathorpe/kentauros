@@ -6,7 +6,6 @@ This submodule contains the :py:class:`ChainAction` class.
 from kentauros.definitions import ActionType
 
 from kentauros.instance import Kentauros
-from kentauros.package import Package
 
 from kentauros.actions.act_abstract import Action
 from kentauros.actions.act_common import LOGPREFIX
@@ -41,8 +40,8 @@ class ChainAction(Action):
         ActionType atype:   here: stores ``ActionType.CHAIN``
     """
 
-    def __init__(self, kpkg: Package):
-        super().__init__(kpkg)
+    def __init__(self, pkg_name: str):
+        super().__init__(pkg_name)
         self.atype = ActionType.CHAIN
 
     def execute(self) -> bool:
@@ -61,16 +60,16 @@ class ChainAction(Action):
             """This function prints a standard abort message."""
             ktr.log("Action aborted.", 2)
 
-        verified = VerifyAction(self.kpkg).execute()
+        verified = VerifyAction(self.name).execute()
         if not verified:
             print_abort_msg()
             return False
 
-        get = GetAction(self.kpkg).execute()
+        get = GetAction(self.name).execute()
         if not get:
             ktr.log("Sources not downloaded.", 2)
 
-        update = UpdateAction(self.kpkg).execute()
+        update = UpdateAction(self.name).execute()
         if not update:
             ktr.log("Sources not updated.", 2)
 
@@ -78,18 +77,18 @@ class ChainAction(Action):
             ktr.log("No source changes were detected, aborting action.", 2)
             return False
 
-        ExportAction(self.kpkg).execute()
+        ExportAction(self.name).execute()
 
-        success = ConstructAction(self.kpkg).execute()
+        success = ConstructAction(self.name).execute()
         if not success:
             print_abort_msg()
             return False
 
-        success = BuildAction(self.kpkg).execute()
+        success = BuildAction(self.name).execute()
         if not success:
             print_abort_msg()
             return False
 
-        UploadAction(self.kpkg).execute()
+        UploadAction(self.name).execute()
 
         return True

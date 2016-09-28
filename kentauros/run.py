@@ -82,6 +82,7 @@ def run():
 
     # log list of found packages
     ktr.log_list("Packages", pkgs)
+    print()
 
     # generate package objects
     for name in pkgs:
@@ -96,10 +97,8 @@ def run():
     for name in ktr.get_package_names():
         assert isinstance(name, str)
 
-        pkg = ktr.get_package(name)
-
         action_type = ktr.cli.get_action()
-        action = ACTION_DICT[action_type](pkg)
+        action = ACTION_DICT[action_type](name)
         success = action.execute()
 
         if success:

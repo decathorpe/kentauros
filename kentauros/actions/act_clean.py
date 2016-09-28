@@ -5,8 +5,6 @@ This submodule contains the :py:class:`CleanAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.package import Package
-
 from kentauros.actions.act_abstract import Action
 
 
@@ -23,8 +21,8 @@ class CleanAction(Action):
         ActionType atype:   here: stores ``ActionType.CLEAN``
     """
 
-    def __init__(self, kpkg: Package):
-        super().__init__(kpkg)
+    def __init__(self, pkg_name: str):
+        super().__init__(pkg_name)
         self.atype = ActionType.CLEAN
 
     def execute(self) -> bool:

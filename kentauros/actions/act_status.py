@@ -5,8 +5,6 @@ This submodule contains the :py:class:`StatusAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.package import Package
-
 from kentauros.actions.act_abstract import Action
 
 
@@ -24,8 +22,8 @@ class StatusAction(Action):
         ActionType atype:   here: stores `ActionType.STATUS`
     """
 
-    def __init__(self, kpkg: Package):
-        super().__init__(kpkg)
+    def __init__(self, pkg_name: str):
+        super().__init__(pkg_name)
         self.atype = ActionType.STATUS
 
     def execute(self) -> bool:

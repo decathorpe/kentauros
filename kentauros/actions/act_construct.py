@@ -6,7 +6,6 @@ This submodule contains the :py:class:`ConstructAction` class.
 from kentauros.definitions import ActionType
 
 from kentauros.instance import Kentauros
-from kentauros.package import Package
 
 from kentauros.actions.act_abstract import Action
 from kentauros.actions.act_common import LOGPREFIX
@@ -34,8 +33,8 @@ class ConstructAction(Action):
         ActionType atype:   here: stores ``ActionType.CONSTRUCT``
     """
 
-    def __init__(self, kpkg: Package):
-        super().__init__(kpkg)
+    def __init__(self, pkg_name: str):
+        super().__init__(pkg_name)
         self.atype = ActionType.CONSTRUCT
 
     def execute(self) -> bool:
