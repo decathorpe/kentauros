@@ -68,6 +68,14 @@ kentauros.actions.act_get module
     :undoc-members:
     :show-inheritance:
 
+kentauros.actions.act_import module
+-----------------------------------
+
+.. automodule:: kentauros.actions.act_import
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros.actions.act_prepare module
 ------------------------------------
 

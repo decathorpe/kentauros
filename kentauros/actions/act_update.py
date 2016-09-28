@@ -15,8 +15,7 @@ class UpdateAction(Action):
     changes as specified.
 
     Arguments:
-        Package kpkg:       Package instance source update will be run for
-        bool force:         currently without effect
+        str pkg_name:       Package name for which status will be printed
 
     Attributes:
         ActionType atype:   here: stores `ActionType.UPDATE`

@@ -26,8 +26,7 @@ class ConstructAction(Action):
     the release number will be reset to 0 and a changelog entry will be added for the new version.
 
     Arguments:
-        Package kpkg:       package the source package will be built for
-        bool force:         determines if build will be forced despite update
+        str pkg_name:       Package name for which status will be printed
 
     Attributes:
         ActionType atype:   here: stores ``ActionType.CONSTRUCT``

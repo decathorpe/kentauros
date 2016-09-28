@@ -17,8 +17,7 @@ class BuildAction(Action):
     specified at initialisation.
 
     Arguments:
-        Package kpkg:       package this local build will done for
-        bool force:         currently without effect (common flag of actions)
+        str pkg_name:       Package name for which status will be printed
 
     Attributes:
         ActionType atype:   here: stores ``ActionType.BUILD``

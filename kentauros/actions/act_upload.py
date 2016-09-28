@@ -14,8 +14,7 @@ class UploadAction(Action):
     cloud service (or similar) as specified in the package configuration.
 
     Arguments:
-        Package kpkg:       source package upload will be done for `package`
-        bool force:         currently without effect
+        str pkg_name:       Package name for which status will be printed
 
     Attributes:
         ActionType atype:   here: stores `ActionType.UPLOAD`

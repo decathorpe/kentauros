@@ -15,8 +15,7 @@ class PrepareAction(Action):
     necessary.
 
     Arguments:
-        Package kpkg:       package for which source preparation is done
-        bool force:         currently without effect
+        str pkg_name:       Package name for which status will be printed
 
     Attributes:
         ActionType atype:   here: stores `ActionType.PREPARE`

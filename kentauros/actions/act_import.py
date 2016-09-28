@@ -1,5 +1,5 @@
 """
-This submodule contains the :py:class:`StatusAction` class.
+This submodule contains the :py:class:`ImportAction` class.
 """
 
 
@@ -8,22 +8,21 @@ from kentauros.definitions import ActionType
 from kentauros.actions.act_abstract import Action
 
 
-class StatusAction(Action):
+class ImportAction(Action):
     """
-    This `Action` subclass contains information for displaying packages which are configured for
-    use with kentauros. At the moment, this only includes printing a list of packages, which is done
-    by default when kentauros is run. More status messages are plannned for the future.
+    This `Action` subclass contains methods for importing packages which are not yet configured for
+    use with kentauros.
 
     Arguments:
         str pkg_name:       Package name for which status will be printed
 
     Attributes:
-        ActionType atype:   here: stores `ActionType.STATUS`
+        ActionType atype:   here: stores `ActionType.IMPORT`
     """
 
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
-        self.atype = ActionType.STATUS
+        self.atype = ActionType.IMPORT
 
     def execute(self) -> bool:
         """
@@ -31,5 +30,5 @@ class StatusAction(Action):
         Currently, this does nothing whatsoever.
         """
 
-        # TODO: output package configuration / status
+        # TODO: import package configuration / status
         return True

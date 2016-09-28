@@ -63,6 +63,7 @@ class ActionType(Enum):
     """
 
     NONE = 0
+    IMPORT = 10
     STATUS = 11
     VERIFY = 12
     GET = 20

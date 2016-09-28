@@ -156,6 +156,13 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
         parents=[package_parser])
     get_parser.set_defaults(action=ActionType.GET)
 
+    import_parser = parsers.add_parser(
+        "import",
+        description="import packages into the database",
+        help="import package to database",
+        parents=[package_parser])
+    import_parser.set_defaults(action=ActionType.IMPORT)
+
     prepare_parser = parsers.add_parser(
         "prepare",
         description="prepare sources for further use (get/update, export)",

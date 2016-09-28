@@ -14,8 +14,7 @@ class RefreshAction(Action):
     cleaned up and re-downloaded as specified.
 
     Arguments:
-        Package kpkg:       Package instance for which source refreshing is done
-        bool force:         currently without effect
+        str pkg_name:       Package name for which status will be printed
 
     Attributes:
         ActionType atype:   here: stores `ActionType.REFRESH`

@@ -15,12 +15,11 @@ class Action(metaclass=abc.ABCMeta):
     ktr command line, there is an Action subclass.
 
     Arguments:
-        Package kpkg:       Package instance this action will be run on
-        bool force:         specifies if the pending action should be forced
+        str pkg_name:       Package instance this action will be run on
 
     Attributes:
-        Package kpkg:       stores reference to package given at initialisation
-        bool force:         stores force value given at initialisation
+        str name:           stores the package configuration name given at initialisation
+        Package kpkg:       stores reference to the package object
         ActionType atype:   stores type of action as enum
     """
 

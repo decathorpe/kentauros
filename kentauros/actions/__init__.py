@@ -14,6 +14,7 @@ from kentauros.actions.act_clean import CleanAction
 from kentauros.actions.act_construct import ConstructAction
 from kentauros.actions.act_export import ExportAction
 from kentauros.actions.act_get import GetAction
+from kentauros.actions.act_import import ImportAction
 from kentauros.actions.act_prepare import PrepareAction
 from kentauros.actions.act_refresh import RefreshAction
 from kentauros.actions.act_status import StatusAction
@@ -33,6 +34,7 @@ ACTION_DICT[ActionType.CLEAN] = CleanAction
 ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
 ACTION_DICT[ActionType.EXPORT] = ExportAction
 ACTION_DICT[ActionType.GET] = GetAction
+ACTION_DICT[ActionType.IMPORT] = ImportAction
 ACTION_DICT[ActionType.PREPARE] = PrepareAction
 ACTION_DICT[ActionType.REFRESH] = RefreshAction
 ACTION_DICT[ActionType.STATUS] = StatusAction

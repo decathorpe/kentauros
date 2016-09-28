@@ -15,8 +15,7 @@ class GetAction(Action):
     tarball will be downloaded from URL, or a local copy will be made.
 
     Arguments:
-        Package kpkg:       package source getting will be attempted for
-        bool force:         currently without effect
+        str pkg_name:       Package name for which status will be printed
 
     Attributes:
         ActionType atype:   here: stores `ActionType.GET`

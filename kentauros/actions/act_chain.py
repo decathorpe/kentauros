@@ -34,8 +34,7 @@ class ChainAction(Action):
     - upload source package to cloud build service (``UploadAction``)
 
     Arguments:
-        Package kpkg:       package this chain reaction will done for
-        bool force:         force further actions even if sources did not change
+        str pkg_name:       Package name for which status will be printed
 
     Attributes:
         ActionType atype:   here: stores ``ActionType.CHAIN``
