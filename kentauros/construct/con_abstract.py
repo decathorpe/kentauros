@@ -8,6 +8,7 @@ import abc
 import os
 
 from kentauros.instance import Kentauros
+from kentauros.module import PkgModule
 
 
 LOGPREFIX = "ktr/construct"
@@ -16,7 +17,7 @@ inside this subpackage.
 """
 
 
-class Constructor(metaclass=abc.ABCMeta):
+class Constructor(PkgModule, metaclass=abc.ABCMeta):
     """
     This class is the abstract base class for all constructors. It's only real function is to
     provide a unified API for builder classes and store the package to which the builder belongs.
@@ -37,6 +38,13 @@ class Constructor(metaclass=abc.ABCMeta):
 
         self.cpkg = package
         self.pdir = os.path.join(ktr.conf.get_packdir(), self.cpkg.conf_name)
+
+    @abc.abstractmethod
+    def status(self) -> dict:
+        """
+        This method is expected to return a dictionary of statistics about the respective
+        constructor.
+        """
 
     @abc.abstractmethod
     def init(self):

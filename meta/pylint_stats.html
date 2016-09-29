@@ -21,6 +21,14 @@
 <td>TODO: delegate verifying all other config values to the appropriate places</td>
 </tr>
 <tr class="odd">
+<td>warning</td>
+<td>kentauros.import</td>
+<td>&#160;</td>
+<td>44</td>
+<td>0</td>
+<td>TODO: get status from all package modules</td>
+</tr>
+<tr class="even">
 <td>refactor</td>
 <td>kentauros.run</td>
 <td>run</td>
@@ -28,19 +36,27 @@
 <td>0</td>
 <td>Too many statements (56/40)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.sources.src_abstract</td>
 <td>&#160;</td>
-<td>47</td>
+<td>48</td>
 <td>0</td>
 <td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.pkgformat.rpm.__init__</td>
+<td>&#160;</td>
+<td>25</td>
+<td>0</td>
+<td>TODO: write URL of source to spec at Source0: if Source is a UrlSource</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
 <td>kentauros.pkgformat.rpm.__init__</td>
 <td>&#160;</td>
-<td>202</td>
+<td>205</td>
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
@@ -53,20 +69,20 @@
 <td>TODO: error handling</td>
 </tr>
 <tr class="odd">
-<td>warning</td>
-<td>kentauros.actions.act_import</td>
-<td>&#160;</td>
-<td>33</td>
-<td>0</td>
-<td>TODO: import package configuration / status</td>
-</tr>
-<tr class="even">
 <td>refactor</td>
 <td>kentauros.init.cli</td>
 <td>get_cli_parser</td>
 <td>63</td>
 <td>0</td>
 <td>Too many local variables (16/15)</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.actions.act_import</td>
+<td>&#160;</td>
+<td>33</td>
+<td>0</td>
+<td>TODO: import package configuration / status</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -80,15 +96,31 @@
 <td>warning</td>
 <td>kentauros.upload.upl_copr</td>
 <td>&#160;</td>
-<td>116</td>
+<td>60</td>
+<td>0</td>
+<td>TODO: return e.g. build success of builds</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.upload.upl_copr</td>
+<td>&#160;</td>
+<td>120</td>
 <td>0</td>
 <td>TODO: error handling</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.construct.con_srpm</td>
+<td>&#160;</td>
+<td>146</td>
+<td>0</td>
+<td>TODO: return latest RPM release, etc. so it can be stored after builds</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
 <td>kentauros.construct.con_srpm</td>
 <td>&#160;</td>
-<td>247</td>
+<td>251</td>
 <td>0</td>
 <td>TODO: check if release resetting / incrementing logic works now</td>
 </tr>
@@ -96,7 +128,7 @@
 <td>warning</td>
 <td>kentauros.construct.con_srpm</td>
 <td>&#160;</td>
-<td>374</td>
+<td>378</td>
 <td>0</td>
 <td>TODO: one uber-method for running everything in correct order</td>
 </tr>
@@ -104,7 +136,7 @@
 <td>refactor</td>
 <td>kentauros.construct.con_srpm</td>
 <td>SrpmConstructor.prepare</td>
-<td>180</td>
+<td>184</td>
 <td>4</td>
 <td>Too many local variables (16/15)</td>
 </tr>
@@ -112,7 +144,7 @@
 <td>refactor</td>
 <td>kentauros.construct.con_srpm</td>
 <td>SrpmConstructor.prepare</td>
-<td>180</td>
+<td>184</td>
 <td>4</td>
 <td>Too many statements (57/40)</td>
 </tr>
@@ -125,7 +157,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2042 statements analysed.</p><div>
+<p>2068 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -138,32 +170,32 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>53</td>
-<td>53</td>
+<td>55</td>
+<td>55</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>41</td>
-<td>41</td>
+<td>42</td>
+<td>42</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>144</td>
-<td>144</td>
+<td>151</td>
+<td>151</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>function</td>
-<td>36</td>
-<td>36</td>
+<td>38</td>
+<td>38</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -204,12 +236,13 @@ kentauros
   \-construct (kentauros.package)
   | \-con_abstract (kentauros.construct.con_srpm)
   | \-con_srpm (kentauros.construct)
-  \-definitions (kentauros.build)
+  \-definitions (kentauros.config)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
   \-instance (kentauros.build.bld_mock)
   \-logger (kentauros.build.bld_mock)
+  \-module (kentauros.build.bld_abstract)
   \-package (kentauros.build.bld_abstract)
   \-pkgformat 
   | \-rpm (kentauros.construct.con_srpm)
@@ -239,30 +272,30 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2266</td>
-<td>41.96</td>
-<td>2266</td>
+<td>2300</td>
+<td>41.80</td>
+<td>2300</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1796</td>
-<td>33.26</td>
-<td>1796</td>
+<td>1836</td>
+<td>33.36</td>
+<td>1836</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>191</td>
-<td>3.54</td>
-<td>191</td>
+<td>196</td>
+<td>3.56</td>
+<td>196</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1147</td>
-<td>21.24</td>
-<td>1147</td>
+<td>1171</td>
+<td>21.28</td>
+<td>1171</td>
 <td>=</td>
 </tr>
 </table>
@@ -313,8 +346,8 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>9</td>
-<td>9</td>
+<td>13</td>
+<td>13</td>
 <td>=</td>
 </tr>
 <tr class="odd">
@@ -338,67 +371,74 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <td>kentauros.construct.con_srpm</td>
 <td>0.00</td>
-<td>22.22</td>
+<td>23.08</td>
 <td>50.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.upload.upl_copr</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>15.38</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.sources.src_abstract</td>
+<td>kentauros.pkgformat.rpm.__init__</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>15.38</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.pkgformat.rpm.__init__</td>
+<td>kentauros.sources.src_abstract</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>7.69</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.package</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>7.69</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
+<td>kentauros.import</td>
+<td>0.00</td>
+<td>7.69</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
 <td>kentauros.actions.act_upload</td>
 <td>0.00</td>
-<td>11.11</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="even">
-<td>kentauros.actions.act_status</td>
-<td>0.00</td>
-<td>11.11</td>
+<td>7.69</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.actions.act_import</td>
+<td>kentauros.actions.act_status</td>
 <td>0.00</td>
-<td>11.11</td>
+<td>7.69</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
+<td>kentauros.actions.act_import</td>
+<td>0.00</td>
+<td>7.69</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
 <td>kentauros.run</td>
 <td>0.00</td>
 <td>0.00</td>
 <td>25.00</td>
 <td>0.00</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>kentauros.init.cli</td>
 <td>0.00</td>
 <td>0.00</td>
@@ -416,7 +456,7 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>fixme</td>
-<td>9</td>
+<td>13</td>
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
@@ -430,7 +470,7 @@ tinydb (kentauros.instance)</pre></div>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.94/10 (previous run: 9.94/10, +0.00)</div>
+Your code has been rated at 9.92/10 (previous run: 9.92/10, +0.00)</div>
 </div>
 </body>
 </html>

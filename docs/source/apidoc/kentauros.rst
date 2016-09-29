@@ -42,6 +42,14 @@ kentauros.definitions module
     :undoc-members:
     :show-inheritance:
 
+kentauros.import module
+-----------------------
+
+.. automodule:: kentauros.import
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros.instance module
 -------------------------
 
@@ -54,6 +62,14 @@ kentauros.logger module
 -----------------------
 
 .. automodule:: kentauros.logger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.module module
+-----------------------
+
+.. automodule:: kentauros.module
     :members:
     :undoc-members:
     :show-inheritance:

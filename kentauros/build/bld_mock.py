@@ -218,6 +218,9 @@ class MockBuilder(Builder):
         if self.dists == [""]:
             self.dists = []
 
+    def status(self) -> dict:
+        return dict()
+
     def build(self) -> bool:
         """
         This method constructs the :py:class:`MockBuilder` instances, which contain the commands

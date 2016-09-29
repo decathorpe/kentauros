@@ -142,6 +142,10 @@ class SrpmConstructor(Constructor):
 
         return old_release
 
+    def status(self) -> dict:
+        # TODO: return latest RPM release, etc. so it can be stored after builds
+        return dict()
+
     def init(self):
         """
         This method creates a temporary directory (which is then set to `$HOME` in the

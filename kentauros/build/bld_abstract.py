@@ -8,6 +8,7 @@ import abc
 import os
 
 from kentauros.instance import Kentauros
+from kentauros.module import PkgModule
 
 
 LOGPREFIX = "ktr/build"
@@ -16,7 +17,7 @@ inside this subpackage.
 """
 
 
-class Builder(metaclass=abc.ABCMeta):
+class Builder(PkgModule, metaclass=abc.ABCMeta):
     """
     This class is the base class for all builders. It's only real function is to provide a unified
     API for builder classes and store the package to which the builder belongs.
@@ -35,6 +36,12 @@ class Builder(metaclass=abc.ABCMeta):
 
         self.bpkg = package
         self.pdir = os.path.join(Kentauros.conf.get_packdir(), self.bpkg.conf_name)
+
+    @abc.abstractmethod
+    def status(self) -> dict:
+        """
+        This method is expected to return a dictionary of statistics about the respective builder.
+        """
 
     @abc.abstractmethod
     def build(self):

@@ -56,6 +56,10 @@ class CoprUploader(Uploader):
 
         self.remote = DEFAULT_COPR_URL
 
+    def status(self) -> dict:
+        # TODO: return e.g. build success of builds
+        return dict()
+
     def upload(self) -> bool:
         """
         This method executes the upload of the newest SRPM package found in the package directory.

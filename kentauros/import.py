@@ -8,6 +8,17 @@ from kentauros.instance import Kentauros
 
 
 def check_package(pkg_name: str):
+    """
+    This function checks if a package with the given configuration name already exists in the
+    package database.
+
+    Arguments:
+        str pkg_name:   configuration name to check for
+
+    Returns:
+        bool:           *True* if the package already exists, *False* if not
+    """
+
     assert isinstance(pkg_name, str)
 
     ktr = Kentauros()
@@ -15,9 +26,19 @@ def check_package(pkg_name: str):
 
 
 def import_package(pkg_name: str):
+    """
+    This function adds a package, which must not be in the database already, to the database of
+    known packages.
+
+    Arguments:
+        str pkg_name:   configuration name to insert with
+    """
+
     assert isinstance(pkg_name, str)
 
     ktr = Kentauros()
     package = ktr.get_package(pkg_name)
     ktr.state_write(pkg_name, package.status())
     ktr.state_write(pkg_name, package.source.status())
+
+    # TODO: get status from all package modules

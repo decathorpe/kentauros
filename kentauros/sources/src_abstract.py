@@ -10,6 +10,7 @@ import shutil
 
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
+from kentauros.module import PkgModule
 
 
 LOGPREFIX = "ktr/sources"
@@ -18,7 +19,7 @@ inside this subpackage.
 """
 
 
-class Source(metaclass=abc.ABCMeta):
+class Source(PkgModule, metaclass=abc.ABCMeta):
     """
     This class serves as an abstract base class for source handlers. They are expected to override
     this class's unimplemented methods. It also provides common infrastructure for all code sources
@@ -76,8 +77,8 @@ class Source(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def status(self) -> dict:
         """
-        This method is expected to return a dictionary of statistics about the source, which
-        includes, for example, the current git commit hash, bzr revision number, etc.
+        This method is expected to return a dictionary of statistics about the respective source.
+        This might include, for example, the current git commit hash, bzr revision number, etc.
         """
 
     def clean(self) -> bool:

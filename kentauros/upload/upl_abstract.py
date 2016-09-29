@@ -31,6 +31,12 @@ class Uploader(metaclass=abc.ABCMeta):
         self.upkg = package
 
     @abc.abstractmethod
+    def status(self) -> dict:
+        """
+        This method is expected to return a dictionary of statistics about the respective uploader.
+        """
+
+    @abc.abstractmethod
     def upload(self):
         """
         This method executes the source package upload with the settings specified in the package

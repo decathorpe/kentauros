@@ -22,6 +22,9 @@ inside this subpackage.
 """
 
 
+# TODO: write URL of source to spec at Source0: if Source is a UrlSource
+
+
 class RPMSpec:
     """
     This class serves as the go-to toolbelt for handling everything concerning RPM spec files
