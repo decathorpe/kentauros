@@ -1,2 +1,3 @@
+argcomplete
 python-dateutil
 tinydb

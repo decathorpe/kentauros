@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 NAME=kentauros
 VERSION=$(python3 -c 'from kentauros.definitions import KTR_VERSION; print(KTR_VERSION, end="")')

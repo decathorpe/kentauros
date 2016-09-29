@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+# PYTHON_ARGCOMPLETE_OK
+
+"""ktr is kentauros.py
+This script launches kentauros by executing the appropriate function as entry point.
+"""
+
+from kentauros.run import run
+
+run()

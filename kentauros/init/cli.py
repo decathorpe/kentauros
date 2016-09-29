@@ -7,6 +7,8 @@ return parsed CLI arguments, depending on where the `kentauros` module is used f
 
 from argparse import ArgumentParser
 
+import argcomplete
+
 from kentauros.definitions import ActionType, KtrConfType
 
 
@@ -208,21 +210,6 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
     return cliparser
 
 
-def get_parsed_cli() -> ArgumentParser:
-    """
-    This function returns a `Namespace` object which contains the parsed CLI switches and arguments,
-    as specified in the :py:class:`ArgumentParser` constructing functions in this module - and also
-    depending on the instance type specified.
-
-    Returns:
-        Namespace:      parsed CLI arguments and switches
-    """
-
-    cli_args = get_cli_parser(get_cli_parser_base()).parse_args()
-
-    return cli_args
-
-
 class CLIArgs:
     """
     This class represents the parsed command line arguments and switches used with a kentauros
@@ -231,6 +218,7 @@ class CLIArgs:
     from the parsed CLI.
     """
 
+    parser = None
     args = None
     """ArgumentParser: This class variable contains the permanent (instance-independent) storage
     of parsed CLI arguments. It is initially set to `None` and generated at the time of the first
@@ -238,8 +226,12 @@ class CLIArgs:
     """
 
     def __init__(self):
+        if self.parser is None:
+            CLIArgs.parser = get_cli_parser(get_cli_parser_base())
+            argcomplete.autocomplete(self.parser)
+
         if self.args is None:
-            CLIArgs.args = get_parsed_cli()
+            CLIArgs.args = self.parser.parse_args()
 
     def get_debug(self) -> bool:
         """

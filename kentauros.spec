@@ -9,10 +9,12 @@ Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
 
 BuildArch:      noarch
 
+BuildRequires:  python3-argcomplete
 BuildRequires:  python3-dateutil
 BuildRequires:  python3-devel
 BuildRequires:  python3-tinydb
 
+Requires:       python3-argcomplete
 Requires:       python3-dateutil
 Requires:       python3-tinydb
 

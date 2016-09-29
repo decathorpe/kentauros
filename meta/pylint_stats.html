@@ -45,12 +45,12 @@
 <td>TODO: error handling</td>
 </tr>
 <tr class="even">
-<td>refactor</td>
-<td>kentauros.init.cli</td>
-<td>get_cli_parser</td>
-<td>61</td>
+<td>warning</td>
+<td>kentauros.actions.act_upload</td>
+<td>&#160;</td>
+<td>37</td>
 <td>0</td>
-<td>Too many local variables (16/15)</td>
+<td>TODO: error handling</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -61,12 +61,12 @@
 <td>TODO: import package configuration / status</td>
 </tr>
 <tr class="even">
-<td>warning</td>
-<td>kentauros.actions.act_upload</td>
-<td>&#160;</td>
-<td>37</td>
+<td>refactor</td>
+<td>kentauros.init.cli</td>
+<td>get_cli_parser</td>
+<td>63</td>
 <td>0</td>
-<td>TODO: error handling</td>
+<td>Too many local variables (16/15)</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -125,7 +125,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2038 statements analysed.</p><div>
+<p>2042 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -138,32 +138,32 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>52</td>
-<td>51</td>
-<td>+1.00</td>
+<td>53</td>
+<td>53</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>class</td>
 <td>41</td>
-<td>40</td>
-<td>+1.00</td>
+<td>41</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
 <td>144</td>
-<td>142</td>
-<td>+2.00</td>
+<td>144</td>
+<td>=</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>function</td>
-<td>37</td>
-<td>37</td>
+<td>36</td>
+<td>36</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -172,7 +172,8 @@
 </div>
 <div>
 <h2>External dependencies</h2>
-<pre>dateutil 
+<pre>argcomplete (kentauros.init.cli)
+dateutil 
   \-parser (kentauros.sources.src_git)
 kentauros 
   \-actions (kentauros.run)
@@ -215,6 +216,7 @@ kentauros
   |   \-spec_common (kentauros.pkgformat.rpm)
   |   \-spec_preamble_out (kentauros.pkgformat.rpm)
   |   \-spec_version_out (kentauros.pkgformat.rpm)
+  \-run (ktr)
   \-sources (kentauros.package)
   | \-src_abstract (kentauros.pkgformat.rpm)
   | \-src_bzr (kentauros.pkgformat.rpm.spec_version_out)
@@ -237,31 +239,31 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2261</td>
-<td>41.91</td>
-<td>2243</td>
-<td>+18.00</td>
+<td>2266</td>
+<td>41.96</td>
+<td>2266</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1801</td>
-<td>33.38</td>
 <td>1796</td>
-<td>+5.00</td>
+<td>33.26</td>
+<td>1796</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>189</td>
-<td>3.50</td>
-<td>188</td>
-<td>+1.00</td>
+<td>191</td>
+<td>3.54</td>
+<td>191</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1144</td>
-<td>21.20</td>
-<td>1135</td>
-<td>+9.00</td>
+<td>1147</td>
+<td>21.24</td>
+<td>1147</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -306,14 +308,14 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="odd">
 <td>refactor</td>
 <td>4</td>
-<td>3</td>
-<td>+1.00</td>
+<td>4</td>
+<td>=</td>
 </tr>
 <tr class="even">
 <td>warning</td>
 <td>9</td>
-<td>8</td>
-<td>+1.00</td>
+<td>9</td>
+<td>=</td>
 </tr>
 <tr class="odd">
 <td>error</td>
@@ -428,7 +430,7 @@ tinydb (kentauros.instance)</pre></div>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.94/10 (previous run: 9.95/10, -0.01)</div>
+Your code has been rated at 9.94/10 (previous run: 9.94/10, +0.00)</div>
 </div>
 </body>
 </html>
