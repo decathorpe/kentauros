@@ -94,7 +94,7 @@ class BzrSource(Source):
         os.chdir(prevdir)
 
         self.saved_rev = rev
-        ktr.state_write(self.spkg.conf_name, dict(bzr_last_rev=rev))
+        # ktr.state_write(self.spkg.conf_name, dict(bzr_last_rev=rev))
 
         return rev
 

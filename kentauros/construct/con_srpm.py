@@ -69,7 +69,7 @@ class SrpmConstructor(Constructor):
                                  self.cpkg.name + ".spec")
 
         try:
-            self.spec = RPMSpec(self.path, self.cpkg.source)
+            self.spec = RPMSpec(self.path, self.cpkg.get_source())
         except FileNotFoundError:
             logger.err("Spec file has not been found at the expected location:")
             logger.err(self.path)
@@ -215,8 +215,8 @@ class SrpmConstructor(Constructor):
             self.init()
 
         # copy sources to rpmbuild/SOURCES
-        for entry in os.listdir(self.cpkg.source.sdir):
-            entry_path = os.path.join(self.cpkg.source.sdir, entry)
+        for entry in os.listdir(self.cpkg.get_source().sdir):
+            entry_path = os.path.join(self.cpkg.get_source().sdir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.srcsdir)
                 logger.log("File copied to SOURCES: " + entry_path, 1)
@@ -225,17 +225,17 @@ class SrpmConstructor(Constructor):
         if not self.cpkg.conf.getboolean("source", "keep"):
 
             # if source is a tarball (or similar) from the beginning:
-            if os.path.isfile(self.cpkg.source.dest):
-                os.remove(self.cpkg.source.dest)
+            if os.path.isfile(self.cpkg.get_source().dest):
+                os.remove(self.cpkg.get_source().dest)
 
             # otherwise it is in kentauros' standard .tar.gz format:
             else:
-                tarballs = glob.glob(os.path.join(self.cpkg.source.sdir,
+                tarballs = glob.glob(os.path.join(self.cpkg.get_source().sdir,
                                                   self.cpkg.name) + "*.tar.gz")
                 # remove only the newest one to be safe
                 tarballs.sort(reverse=True)
                 if os.path.isfile(tarballs[0]):
-                    assert self.cpkg.source.sdir in tarballs[0]
+                    assert self.cpkg.get_source().sdir in tarballs[0]
                     os.remove(tarballs[0])
                     logger.log("Tarball removed: " + tarballs[0], 1)
 
@@ -246,7 +246,7 @@ class SrpmConstructor(Constructor):
         # construct preamble and new version string
         old_version = self._get_last_version(self.spec)
         new_version = self.cpkg.conf.get("source", "version")
-        old_release = self._get_last_release(self.spec)
+        # old_release = self._get_last_release(self.spec)
 
         # TODO: check if release resetting / incrementing logic works now
 
@@ -272,13 +272,13 @@ class SrpmConstructor(Constructor):
         logger.dbg("Old Version: " + old_version)
         logger.dbg("New Version: " + new_version)
 
-        new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.source)
+        new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_source())
 
         # if major version has changed, put it into the changelog
         if old_version != new_version:
             do_release_bump(new_spec_path,
                             "Update to version " + self.cpkg.conf.get("source", "version") + ".")
-            new_release = 1
+            # new_release = 1
 
         # else if nothing changed but "force" was set (packaging changes)
         # old_version =!= new_version, relreset !=!= True
@@ -289,20 +289,20 @@ class SrpmConstructor(Constructor):
             else:
                 do_release_bump(new_spec_path, message)
 
-            new_release = int(old_release) + 1
+            # new_release = int(old_release) + 1
 
         # else if version has not changed, but snapshot has been updated:
         # old_version =!= new_version
         elif relreset:
             new_rpm_spec.do_release_reset()
             do_release_bump(new_spec_path, "Update to latest snapshot.")
-            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.source)
-            new_release = 1
+            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_source())
+            # new_release = 1
 
         else:
             return False
 
-        ktr.state_write(self.cpkg.conf_name, dict(rpm_last_release=str(new_release)))
+        # TODO: ktr.state_write(self.cpkg.conf_name, dict(rpm_last_release=str(new_release)))
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as backup)

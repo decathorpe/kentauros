@@ -34,4 +34,4 @@ class RefreshAction(Action):
             bool:           *True* when successful, *False* if sub-action fails
         """
 
-        return self.kpkg.source.refresh()
+        return self.kpkg.get_source().refresh()

@@ -134,7 +134,7 @@ class GitSource(Source):
         date = datestr_from_raw(date_raw)
 
         self.saved_date = date
-        ktr.state_write(self.spkg.conf_name, dict(git_last_date=date))
+        # ktr.state_write(self.spkg.conf_name, dict(git_last_date=date))
 
         return date
 
@@ -173,7 +173,7 @@ class GitSource(Source):
         os.chdir(prevdir)
 
         self.saved_commit = rev
-        ktr.state_write(self.spkg.conf_name, dict(git_last_commit=rev))
+        # ktr.state_write(self.spkg.conf_name, dict(git_last_commit=rev))
 
         return rev
 

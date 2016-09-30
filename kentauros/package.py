@@ -87,32 +87,43 @@ class Package:
 
         self.name = self.conf.get("package", "name")
 
-        self.source = self._get_source()
-        self.constructor = self._get_constructor()
-        self.builder = self._get_builder()
-        self.uploader = self._get_uploader()
+        self._source = None
+        self._constructor = None
+        self._builder = None
+        self._uploader = None
 
-        ktr.state_write(conf_name, self.status())
-        ktr.state_write(conf_name, self.source.status())
+        # TODO: move writing state to after the action execution
+        # ktr.state_write(conf_name, self.status())
+        # ktr.state_write(conf_name, self.source.status())
 
-    def _get_builder(self):
+    def _get_source(self):
         """
-        This method tries to get a :py:class:`Builder` instance corresponding to the values set in
+        This method tries to get a :py:class:`Source` instance corresponding to the values set in
         the package configuration.
 
         Returns:
-            Builder:    package builder object
+            Source: package source object
         """
 
-        if "builder" not in self.conf["package"]:
-            raise PackageError("No builder has been specified in the configuration file.")
-        else:
-            builder_type = str(self.conf.get("package", "builder")).upper()
-            try:
-                builder = BUILDER_TYPE_DICT[BuilderType[builder_type]](self)
-            except KeyError:
-                raise PackageError("The specified builder type is not supported.")
-            return builder
+        source_type = str(self.conf.get("source", "type")).upper()
+        try:
+            source = SOURCE_TYPE_DICT[SourceType[source_type]](self)
+        except KeyError:
+            raise PackageError("The specified source type is not supported.")
+        return source
+
+    def get_source(self):
+        """
+        This method initialises the package Source if that hasn't been done yet and returns it.
+
+        Returns:
+            Source:     package source
+        """
+
+        if self._source is None:
+            self._source = self._get_source()
+
+        return self._source
 
     def _get_constructor(self):
         """
@@ -133,21 +144,50 @@ class Package:
                 raise PackageError("The specified constructor type is not supported.")
             return constructor
 
-    def _get_source(self):
+    def get_constructor(self):
         """
-        This method tries to get a :py:class:`Source` instance corresponding to the values set in
+        This method initialises the package Constructor if that hasn't been done yet and returns it.
+
+        Returns:
+            Constructor:    package constructor
+        """
+
+        if self._constructor is None:
+            self._constructor = self._get_constructor()
+
+        return self._constructor
+
+    def _get_builder(self):
+        """
+        This method tries to get a :py:class:`Builder` instance corresponding to the values set in
         the package configuration.
 
         Returns:
-            Source: package source object
+            Builder:    package builder object
         """
 
-        source_type = str(self.conf.get("source", "type")).upper()
-        try:
-            source = SOURCE_TYPE_DICT[SourceType[source_type]](self)
-        except KeyError:
-            raise PackageError("The specified source type is not supported.")
-        return source
+        if "builder" not in self.conf["package"]:
+            raise PackageError("No builder has been specified in the configuration file.")
+        else:
+            builder_type = str(self.conf.get("package", "builder")).upper()
+            try:
+                builder = BUILDER_TYPE_DICT[BuilderType[builder_type]](self)
+            except KeyError:
+                raise PackageError("The specified builder type is not supported.")
+            return builder
+
+    def get_builder(self):
+        """
+        This method initialises the package Builder if that hasn't been done yet and returns it.
+
+        Returns:
+            Builder:    package builder
+        """
+
+        if self._builder is None:
+            self._builder = self._get_builder()
+
+        return self._builder
 
     def _get_uploader(self):
         """
@@ -167,6 +207,19 @@ class Package:
             except KeyError:
                 raise PackageError("The specified uploader type is not supported.")
             return uploader
+
+    def get_uploader(self):
+        """
+        This method initialises the package Uploader if that hasn't been done yet and returns it.
+
+        Returns:
+            Uploader:     package uploader
+        """
+
+        if self._uploader is None:
+            self._uploader = self._get_uploader()
+
+        return self._uploader
 
     def status(self) -> dict:
         """

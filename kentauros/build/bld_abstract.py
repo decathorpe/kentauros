@@ -30,12 +30,14 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-        if Kentauros.debug:
+        ktr = Kentauros()
+
+        if ktr.debug:
             from kentauros.package import Package
             assert isinstance(package, Package)
 
         self.bpkg = package
-        self.pdir = os.path.join(Kentauros.conf.get_packdir(), self.bpkg.conf_name)
+        self.pdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.conf_name)
 
     @abc.abstractmethod
     def status(self) -> dict:

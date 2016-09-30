@@ -34,4 +34,4 @@ class GetAction(Action):
             bool:           *True* when successful, *False* if action failed
         """
 
-        return self.kpkg.source.get()
+        return self.kpkg.get_source().get()

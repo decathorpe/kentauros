@@ -34,4 +34,4 @@ class ExportAction(Action):
             bool:           *True* when successful, *False* if file exists
         """
 
-        return self.kpkg.source.export()
+        return self.kpkg.get_source().export()

@@ -34,5 +34,5 @@ class CleanAction(Action):
             bool:           always ``True`` at the moment
         """
 
-        self.kpkg.source.clean()
+        self.kpkg.get_source().clean()
         return True

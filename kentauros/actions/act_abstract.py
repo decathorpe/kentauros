@@ -7,6 +7,7 @@ action implementations.
 import abc
 
 from kentauros.instance import Kentauros
+from kentauros.package import Package
 
 
 class Action(metaclass=abc.ABCMeta):
@@ -30,7 +31,9 @@ class Action(metaclass=abc.ABCMeta):
 
         self.name = pkg_name
         self.kpkg = ktr.get_package(pkg_name)
+
         assert self.kpkg is not None
+        assert isinstance(self.kpkg, Package)
 
         self.atype = None
 
