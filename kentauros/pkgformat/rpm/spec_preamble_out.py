@@ -6,10 +6,10 @@ file, which depend on the type of source that is used.
 
 from kentauros.definitions import SourceType
 
-from kentauros.sources.src_bzr import BzrSource
-from kentauros.sources.src_git import GitSource
-from kentauros.sources.src_local import LocalSource
-from kentauros.sources.src_url import UrlSource
+from kentauros.modules.sources.src_bzr import BzrSource
+from kentauros.modules.sources.src_git import GitSource
+from kentauros.modules.sources.src_url import UrlSource
+from kentauros.modules.sources.src_local import LocalSource
 
 
 def spec_preamble_bzr(source: BzrSource) -> str:

@@ -7,13 +7,10 @@ Subpackages
 .. toctree::
 
     kentauros.actions
-    kentauros.build
     kentauros.config
-    kentauros.construct
     kentauros.init
+    kentauros.modules
     kentauros.pkgformat
-    kentauros.sources
-    kentauros.upload
 
 Submodules
 ----------
@@ -62,14 +59,6 @@ kentauros.logger module
 -----------------------
 
 .. automodule:: kentauros.logger
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.module module
------------------------
-
-.. automodule:: kentauros.module
     :members:
     :undoc-members:
     :show-inheritance:

@@ -10,7 +10,7 @@ constructors.
 
 from kentauros.definitions import BuilderType
 
-from kentauros.build.bld_mock import MockBuilder
+from kentauros.modules.builder.bld_mock import MockBuilder
 
 
 BUILDER_TYPE_DICT = dict()

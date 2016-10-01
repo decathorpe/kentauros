@@ -9,14 +9,12 @@ import os
 import subprocess
 
 from kentauros.conntest import is_connected
-
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
+from kentauros.modules.uploader.upl_abstract import Uploader
 
-from kentauros.upload.upl_abstract import Uploader
 
-
-LOGPREFIX = "ktr/upload/copr"
+LOGPREFIX = "ktr/uploader/copr"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """

@@ -14,11 +14,10 @@ import time
 
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
+from kentauros.modules.builder.bld_abstract import Builder
 
-from kentauros.build.bld_abstract import Builder
 
-
-LOGPREFIX = "ktr/build/mock"
+LOGPREFIX = "ktr/builder/mock"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """

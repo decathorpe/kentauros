@@ -8,7 +8,7 @@ enums to their respective class constructors.
 
 from kentauros.definitions import UploaderType
 
-from kentauros.upload.upl_copr import CoprUploader
+from kentauros.modules.uploader.upl_copr import CoprUploader
 
 
 UPLOADER_TYPE_DICT = dict()

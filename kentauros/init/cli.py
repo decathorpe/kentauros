@@ -114,7 +114,7 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
     chain_parser = parsers.add_parser(
         "chain",
         description="run toolchain (get/update, construct, build, upload)",
-        help="comlete source to upload toolchain",
+        help="complete source to upload toolchain",
         parents=[package_parser])
     chain_parser.add_argument(
         "-m", "--message",

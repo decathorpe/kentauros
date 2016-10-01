@@ -7,18 +7,18 @@ attributes according to configuration.
 """
 
 
-from configparser import ConfigParser
 import os
 
-from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
+from configparser import ConfigParser
 
+from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
-from kentauros.build import BUILDER_TYPE_DICT
-from kentauros.construct import CONSTRUCTOR_TYPE_DICT
-from kentauros.sources import SOURCE_TYPE_DICT
-from kentauros.upload import UPLOADER_TYPE_DICT
+from kentauros.modules.builder import BUILDER_TYPE_DICT
+from kentauros.modules.constructor import CONSTRUCTOR_TYPE_DICT
+from kentauros.modules.sources import SOURCE_TYPE_DICT
+from kentauros.modules.uploader import UPLOADER_TYPE_DICT
 
 
 LOGPREFIX = "ktr/package"

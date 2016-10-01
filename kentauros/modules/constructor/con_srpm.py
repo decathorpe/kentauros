@@ -13,12 +13,11 @@ import warnings
 
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
-
-from kentauros.construct.con_abstract import Constructor
+from kentauros.modules.constructor.con_abstract import Constructor
 from kentauros.pkgformat.rpm import RPMSpec, do_release_bump
 
 
-LOGPREFIX = "ktr/construct/srpm"
+LOGPREFIX = "ktr/constructor/srpm"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """

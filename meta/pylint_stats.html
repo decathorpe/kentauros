@@ -46,29 +46,21 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.sources.src_abstract</td>
-<td>&#160;</td>
-<td>48</td>
-<td>0</td>
-<td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
 <td>kentauros.pkgformat.rpm.__init__</td>
 <td>&#160;</td>
-<td>25</td>
+<td>24</td>
 <td>0</td>
 <td>TODO: write URL of source to spec at Source0: if Source is a UrlSource</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
 <td>kentauros.pkgformat.rpm.__init__</td>
 <td>&#160;</td>
-<td>205</td>
+<td>204</td>
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>refactor</td>
 <td>kentauros.init.cli</td>
 <td>get_cli_parser</td>
@@ -76,13 +68,69 @@
 <td>0</td>
 <td>Too many local variables (16/15)</td>
 </tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.modules.sources.src_abstract</td>
+<td>&#160;</td>
+<td>48</td>
+<td>0</td>
+<td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
+</tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.actions.act_import</td>
+<td>kentauros.modules.uploader.upl_copr</td>
 <td>&#160;</td>
-<td>33</td>
+<td>58</td>
 <td>0</td>
-<td>TODO: import package configuration / status</td>
+<td>TODO: return e.g. build success of builds</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.modules.uploader.upl_copr</td>
+<td>&#160;</td>
+<td>118</td>
+<td>0</td>
+<td>TODO: error handling</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.modules.constructor.con_srpm</td>
+<td>&#160;</td>
+<td>145</td>
+<td>0</td>
+<td>TODO: return latest RPM release, etc. so it can be stored after builds</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.modules.constructor.con_srpm</td>
+<td>&#160;</td>
+<td>250</td>
+<td>0</td>
+<td>TODO: check if release resetting / incrementing logic works now</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.modules.constructor.con_srpm</td>
+<td>&#160;</td>
+<td>304</td>
+<td>0</td>
+<td>TODO: ktr.state_write(self.cpkg.conf_name, dict(rpm_last_release=str(new_release)))</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.modules.constructor.con_srpm</td>
+<td>&#160;</td>
+<td>377</td>
+<td>0</td>
+<td>TODO: one uber-method for running everything in correct order</td>
+</tr>
+<tr class="even">
+<td>refactor</td>
+<td>kentauros.modules.constructor.con_srpm</td>
+<td>SrpmConstructor.prepare</td>
+<td>183</td>
+<td>4</td>
+<td>Too many statements (52/40)</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -94,67 +142,19 @@
 </tr>
 <tr class="even">
 <td>warning</td>
+<td>kentauros.actions.act_import</td>
+<td>&#160;</td>
+<td>33</td>
+<td>0</td>
+<td>TODO: import package configuration / status</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
 <td>kentauros.actions.act_status</td>
 <td>&#160;</td>
 <td>34</td>
 <td>0</td>
 <td>TODO: output package configuration / status</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.upload.upl_copr</td>
-<td>&#160;</td>
-<td>60</td>
-<td>0</td>
-<td>TODO: return e.g. build success of builds</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.upload.upl_copr</td>
-<td>&#160;</td>
-<td>120</td>
-<td>0</td>
-<td>TODO: error handling</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.construct.con_srpm</td>
-<td>&#160;</td>
-<td>146</td>
-<td>0</td>
-<td>TODO: return latest RPM release, etc. so it can be stored after builds</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.construct.con_srpm</td>
-<td>&#160;</td>
-<td>251</td>
-<td>0</td>
-<td>TODO: check if release resetting / incrementing logic works now</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.construct.con_srpm</td>
-<td>&#160;</td>
-<td>305</td>
-<td>0</td>
-<td>TODO: ktr.state_write(self.cpkg.conf_name, dict(rpm_last_release=str(new_release)))</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.construct.con_srpm</td>
-<td>&#160;</td>
-<td>378</td>
-<td>0</td>
-<td>TODO: one uber-method for running everything in correct order</td>
-</tr>
-<tr class="odd">
-<td>refactor</td>
-<td>kentauros.construct.con_srpm</td>
-<td>SrpmConstructor.prepare</td>
-<td>184</td>
-<td>4</td>
-<td>Too many statements (52/40)</td>
 </tr>
 </table>
 </div>
@@ -165,7 +165,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2080 statements analysed.</p><div>
+<p>2074 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -178,8 +178,8 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>55</td>
-<td>55</td>
+<td>56</td>
+<td>56</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -214,7 +214,7 @@
 <h2>External dependencies</h2>
 <pre>argcomplete (kentauros.init.cli)
 dateutil 
-  \-parser (kentauros.sources.src_git)
+  \-parser (kentauros.modules.sources.src_git)
 kentauros 
   \-actions (kentauros.run)
   | \-act_abstract (kentauros.actions.act_construct)
@@ -233,40 +233,42 @@ kentauros
   | \-act_upload (kentauros.actions)
   | \-act_verify (kentauros.actions)
   \-bootstrap (kentauros.run)
-  \-build (kentauros.package)
-  | \-bld_abstract (kentauros.build.bld_mock)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
   | \-common (kentauros.config)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
-  \-conntest (kentauros.upload.upl_copr)
-  \-construct (kentauros.package)
-  | \-con_abstract (kentauros.construct.con_srpm)
-  | \-con_srpm (kentauros.construct)
-  \-definitions (kentauros.build)
+  \-conntest (kentauros.modules.uploader.upl_copr)
+  \-definitions (kentauros.config)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
-  \-instance (kentauros.build.bld_mock)
-  \-logger (kentauros.build.bld_mock)
-  \-module (kentauros.build.bld_abstract)
-  \-package (kentauros.build.bld_abstract)
+  \-instance (kentauros.actions.act_chain)
+  \-logger (kentauros.actions.act_construct)
+  \-modules 
+  | \-builder (kentauros.package)
+  | | \-bld_abstract (kentauros.modules.builder.bld_mock)
+  | | \-bld_mock (kentauros.modules.builder)
+  | \-constructor (kentauros.package)
+  | | \-con_abstract (kentauros.modules.constructor.con_srpm)
+  | | \-con_srpm (kentauros.modules.constructor)
+  | \-module (kentauros.modules.builder.bld_abstract)
+  | \-sources (kentauros.package)
+  | | \-src_abstract (kentauros.modules.sources.src_bzr)
+  | | \-src_bzr (kentauros.modules.sources)
+  | | \-src_git (kentauros.modules.sources)
+  | | \-src_local (kentauros.modules.sources)
+  | | \-src_url (kentauros.modules.sources)
+  | \-uploader (kentauros.package)
+  |   \-upl_abstract (kentauros.modules.uploader.upl_copr)
+  |   \-upl_copr (kentauros.modules.uploader)
+  \-package (kentauros.actions.act_abstract)
   \-pkgformat 
-  | \-rpm (kentauros.construct.con_srpm)
+  | \-rpm (kentauros.modules.constructor.con_srpm)
   |   \-spec_common (kentauros.pkgformat.rpm)
   |   \-spec_preamble_out (kentauros.pkgformat.rpm)
   |   \-spec_version_out (kentauros.pkgformat.rpm)
   \-run (ktr)
-  \-sources (kentauros.package)
-  | \-src_abstract (kentauros.pkgformat.rpm)
-  | \-src_bzr (kentauros.pkgformat.rpm.spec_version_out)
-  | \-src_git (kentauros.pkgformat.rpm.spec_version_out)
-  | \-src_local (kentauros.pkgformat.rpm.spec_version_out)
-  | \-src_url (kentauros.pkgformat.rpm.spec_version_out)
-  \-upload (kentauros.package)
-    \-upl_abstract (kentauros.upload.upl_copr)
-    \-upl_copr (kentauros.upload)
 tinydb (kentauros.instance)</pre></div>
 <div>
 <h2>Raw metrics</h2>
@@ -280,30 +282,30 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2312</td>
-<td>41.52</td>
-<td>2312</td>
+<td>2307</td>
+<td>41.50</td>
+<td>2307</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>1860</td>
-<td>33.41</td>
+<td>33.46</td>
 <td>1860</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>210</td>
-<td>3.77</td>
-<td>210</td>
+<td>216</td>
+<td>3.89</td>
+<td>216</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1186</td>
-<td>21.30</td>
-<td>1186</td>
+<td>1176</td>
+<td>21.15</td>
+<td>1176</td>
 <td>=</td>
 </tr>
 </table>
@@ -377,35 +379,35 @@ tinydb (kentauros.instance)</pre></div>
 <th>convention</th>
 </tr>
 <tr class="even">
-<td>kentauros.construct.con_srpm</td>
+<td>kentauros.modules.constructor.con_srpm</td>
 <td>0.00</td>
 <td>26.67</td>
 <td>33.33</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.upload.upl_copr</td>
-<td>0.00</td>
-<td>13.33</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="even">
 <td>kentauros.pkgformat.rpm.__init__</td>
 <td>0.00</td>
 <td>13.33</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>kentauros.package</td>
 <td>0.00</td>
 <td>13.33</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
+<tr class="odd">
+<td>kentauros.modules.uploader.upl_copr</td>
+<td>0.00</td>
+<td>13.33</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
 <tr class="even">
-<td>kentauros.sources.src_abstract</td>
+<td>kentauros.modules.sources.src_abstract</td>
 <td>0.00</td>
 <td>6.67</td>
 <td>0.00</td>

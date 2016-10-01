@@ -8,15 +8,14 @@ in the package's configuration file.
 import os
 import shutil
 import subprocess
+
 import dateutil.parser
 
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
-
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
-
-from kentauros.sources.src_abstract import Source
+from kentauros.modules.sources.src_abstract import Source
 
 
 LOGPREFIX = "ktr/sources/git"
@@ -110,7 +109,7 @@ class GitSource(Source):
 
             return date_str
 
-        ktr = Kentauros()
+        # ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
         # if sources are not accessible (anymore), return None or last saved rev
@@ -151,7 +150,7 @@ class GitSource(Source):
         if not self.active:
             return None
 
-        ktr = Kentauros()
+        # ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
         # if sources are not accessible (anymore), return None or last saved rev
