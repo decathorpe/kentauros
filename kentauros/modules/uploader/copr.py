@@ -11,7 +11,7 @@ import subprocess
 from kentauros.conntest import is_connected
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
-from kentauros.modules.uploader.upl_abstract import Uploader
+from kentauros.modules.uploader.abstract import Uploader
 
 
 LOGPREFIX = "ktr/uploader/copr"
