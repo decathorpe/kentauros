@@ -1,6 +1,13 @@
 kentauros.modules.constructor package
 =====================================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    kentauros.modules.constructor.rpm
+
 Submodules
 ----------
 

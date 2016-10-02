@@ -13,8 +13,9 @@ import warnings
 
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
+
 from kentauros.modules.constructor.abstract import Constructor
-from kentauros.pkgformat.rpm import RPMSpec, do_release_bump
+from kentauros.modules.constructor.rpm import RPMSpec, do_release_bump
 
 
 LOGPREFIX = "ktr/constructor/srpm"

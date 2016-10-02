@@ -10,7 +10,6 @@ Subpackages
     kentauros.config
     kentauros.init
     kentauros.modules
-    kentauros.pkgformat
 
 Submodules
 ----------
