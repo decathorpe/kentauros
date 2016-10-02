@@ -7,10 +7,10 @@ constructors.
 """
 
 
-from kentauros.modules.sources.src_bzr import BzrSource
-from kentauros.modules.sources.src_git import GitSource
-from kentauros.modules.sources.src_url import UrlSource
-from kentauros.modules.sources.src_local import LocalSource
+from kentauros.modules.sources.bzr import BzrSource
+from kentauros.modules.sources.git import GitSource
+from kentauros.modules.sources.url import UrlSource
+from kentauros.modules.sources.local import LocalSource
 
 from kentauros.definitions import SourceType
 

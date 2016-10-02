@@ -15,7 +15,7 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
-from kentauros.modules.sources.src_abstract import Source
+from kentauros.modules.sources.abstract import Source
 
 
 LOGPREFIX = "ktr/sources/git"

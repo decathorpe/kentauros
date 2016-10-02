@@ -8,7 +8,7 @@ import subprocess
 
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
-from kentauros.modules.sources.src_abstract import Source
+from kentauros.modules.sources.abstract import Source
 
 from kentauros.pkgformat.rpm.spec_common import RPMSpecError, format_tagline
 from kentauros.pkgformat.rpm.spec_preamble_out import SPEC_PREAMBLE_DICT

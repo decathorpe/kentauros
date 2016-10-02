@@ -10,7 +10,7 @@ import shutil
 
 from kentauros.definitions import SourceType
 from kentauros.logger import KtrLogger
-from kentauros.modules.sources.src_abstract import Source
+from kentauros.modules.sources.abstract import Source
 
 
 LOGPREFIX = "ktr/sources/local"
