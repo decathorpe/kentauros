@@ -8,19 +8,19 @@ enums to their respective class constructors.
 
 from kentauros.definitions import ActionType
 
-from kentauros.actions.act_build import BuildAction
-from kentauros.actions.act_chain import ChainAction
-from kentauros.actions.act_clean import CleanAction
-from kentauros.actions.act_construct import ConstructAction
-from kentauros.actions.act_export import ExportAction
-from kentauros.actions.act_get import GetAction
-from kentauros.actions.act_import import ImportAction
-from kentauros.actions.act_prepare import PrepareAction
-from kentauros.actions.act_refresh import RefreshAction
-from kentauros.actions.act_status import StatusAction
-from kentauros.actions.act_update import UpdateAction
-from kentauros.actions.act_upload import UploadAction
-from kentauros.actions.act_verify import VerifyAction
+from kentauros.actions.build import BuildAction
+from kentauros.actions.chain import ChainAction
+from kentauros.actions.clean import CleanAction
+from kentauros.actions.construct import ConstructAction
+from kentauros.actions.export import ExportAction
+from kentauros.actions.get import GetAction
+from kentauros.actions.importing import ImportAction
+from kentauros.actions.prepare import PrepareAction
+from kentauros.actions.refresh import RefreshAction
+from kentauros.actions.status import StatusAction
+from kentauros.actions.update import UpdateAction
+from kentauros.actions.upload import UploadAction
+from kentauros.actions.verify import VerifyAction
 
 
 ACTION_DICT = dict()

@@ -8,15 +8,15 @@ from kentauros.definitions import ActionType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
-from kentauros.actions.act_abstract import Action
-from kentauros.actions.act_common import LOGPREFIX
-from kentauros.actions.act_build import BuildAction
-from kentauros.actions.act_construct import ConstructAction
-from kentauros.actions.act_export import ExportAction
-from kentauros.actions.act_get import GetAction
-from kentauros.actions.act_update import UpdateAction
-from kentauros.actions.act_upload import UploadAction
-from kentauros.actions.act_verify import VerifyAction
+from kentauros.actions.abstract import Action
+from kentauros.actions.common import LOGPREFIX
+from kentauros.actions.build import BuildAction
+from kentauros.actions.construct import ConstructAction
+from kentauros.actions.export import ExportAction
+from kentauros.actions.get import GetAction
+from kentauros.actions.update import UpdateAction
+from kentauros.actions.upload import UploadAction
+from kentauros.actions.verify import VerifyAction
 
 
 class ChainAction(Action):

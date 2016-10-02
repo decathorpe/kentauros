@@ -5,7 +5,7 @@ This submodule contains the :py:class:`RefreshAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.actions.act_abstract import Action
+from kentauros.actions.abstract import Action
 
 
 class RefreshAction(Action):

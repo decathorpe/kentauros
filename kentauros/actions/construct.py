@@ -7,8 +7,8 @@ from kentauros.definitions import ActionType
 
 from kentauros.logger import KtrLogger
 
-from kentauros.actions.act_abstract import Action
-from kentauros.actions.act_common import LOGPREFIX
+from kentauros.actions.abstract import Action
+from kentauros.actions.common import LOGPREFIX
 
 
 class ConstructAction(Action):

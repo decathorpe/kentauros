@@ -5,7 +5,7 @@ This submodule contains the :py:class:`ImportAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.actions.act_abstract import Action
+from kentauros.actions.abstract import Action
 
 
 class ImportAction(Action):
