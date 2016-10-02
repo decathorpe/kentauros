@@ -70,7 +70,7 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.modules.sources.src_abstract</td>
+<td>kentauros.modules.sources.abstract</td>
 <td>&#160;</td>
 <td>48</td>
 <td>0</td>
@@ -78,7 +78,7 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.uploader.upl_copr</td>
+<td>kentauros.modules.uploader.copr</td>
 <td>&#160;</td>
 <td>58</td>
 <td>0</td>
@@ -86,7 +86,7 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.modules.uploader.upl_copr</td>
+<td>kentauros.modules.uploader.copr</td>
 <td>&#160;</td>
 <td>118</td>
 <td>0</td>
@@ -94,7 +94,7 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.constructor.con_srpm</td>
+<td>kentauros.modules.constructor.srpm</td>
 <td>&#160;</td>
 <td>145</td>
 <td>0</td>
@@ -102,7 +102,7 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.modules.constructor.con_srpm</td>
+<td>kentauros.modules.constructor.srpm</td>
 <td>&#160;</td>
 <td>250</td>
 <td>0</td>
@@ -110,7 +110,7 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.constructor.con_srpm</td>
+<td>kentauros.modules.constructor.srpm</td>
 <td>&#160;</td>
 <td>304</td>
 <td>0</td>
@@ -118,7 +118,7 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.modules.constructor.con_srpm</td>
+<td>kentauros.modules.constructor.srpm</td>
 <td>&#160;</td>
 <td>377</td>
 <td>0</td>
@@ -126,7 +126,7 @@
 </tr>
 <tr class="even">
 <td>refactor</td>
-<td>kentauros.modules.constructor.con_srpm</td>
+<td>kentauros.modules.constructor.srpm</td>
 <td>SrpmConstructor.prepare</td>
 <td>183</td>
 <td>4</td>
@@ -134,27 +134,27 @@
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.actions.act_upload</td>
+<td>kentauros.actions.status</td>
+<td>&#160;</td>
+<td>34</td>
+<td>0</td>
+<td>TODO: output package configuration / status</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.actions.upload</td>
 <td>&#160;</td>
 <td>37</td>
 <td>0</td>
 <td>TODO: error handling</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>warning</td>
-<td>kentauros.actions.act_import</td>
+<td>kentauros.actions.importing</td>
 <td>&#160;</td>
 <td>33</td>
 <td>0</td>
 <td>TODO: import package configuration / status</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.actions.act_status</td>
-<td>&#160;</td>
-<td>34</td>
-<td>0</td>
-<td>TODO: output package configuration / status</td>
 </tr>
 </table>
 </div>
@@ -214,57 +214,57 @@
 <h2>External dependencies</h2>
 <pre>argcomplete (kentauros.init.cli)
 dateutil 
-  \-parser (kentauros.modules.sources.src_git)
+  \-parser (kentauros.modules.sources.git)
 kentauros 
   \-actions (kentauros.run)
-  | \-act_abstract (kentauros.actions.act_construct)
-  | \-act_build (kentauros.actions)
-  | \-act_chain (kentauros.actions)
-  | \-act_clean (kentauros.actions)
-  | \-act_common (kentauros.actions.act_construct)
-  | \-act_construct (kentauros.actions)
-  | \-act_export (kentauros.actions)
-  | \-act_get (kentauros.actions)
-  | \-act_import (kentauros.actions)
-  | \-act_prepare (kentauros.actions)
-  | \-act_refresh (kentauros.actions)
-  | \-act_status (kentauros.actions)
-  | \-act_update (kentauros.actions)
-  | \-act_upload (kentauros.actions)
-  | \-act_verify (kentauros.actions)
+  | \-abstract (kentauros.actions.update)
+  | \-build (kentauros.actions.chain)
+  | \-chain (kentauros.actions)
+  | \-clean (kentauros.actions)
+  | \-common (kentauros.actions.chain)
+  | \-construct (kentauros.actions.chain)
+  | \-export (kentauros.actions.chain)
+  | \-get (kentauros.actions.chain)
+  | \-importing (kentauros.actions)
+  | \-prepare (kentauros.actions)
+  | \-refresh (kentauros.actions)
+  | \-status (kentauros.actions)
+  | \-update (kentauros.actions.chain)
+  | \-upload (kentauros.actions.chain)
+  | \-verify (kentauros.actions.chain)
   \-bootstrap (kentauros.run)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
   | \-common (kentauros.config)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
-  \-conntest (kentauros.modules.uploader.upl_copr)
+  \-conntest (kentauros.modules.uploader.copr)
   \-definitions (kentauros.config)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
-  \-instance (kentauros.actions.act_chain)
-  \-logger (kentauros.actions.act_construct)
+  \-instance (kentauros.actions.chain)
+  \-logger (kentauros.actions.chain)
   \-modules 
   | \-builder (kentauros.package)
-  | | \-bld_abstract (kentauros.modules.builder.bld_mock)
-  | | \-bld_mock (kentauros.modules.builder)
+  | | \-abstract (kentauros.modules.builder.mock)
+  | | \-mock (kentauros.modules.builder)
   | \-constructor (kentauros.package)
-  | | \-con_abstract (kentauros.modules.constructor.con_srpm)
-  | | \-con_srpm (kentauros.modules.constructor)
-  | \-module (kentauros.modules.builder.bld_abstract)
+  | | \-abstract (kentauros.modules.constructor.srpm)
+  | | \-srpm (kentauros.modules.constructor)
+  | \-module (kentauros.modules.builder.abstract)
   | \-sources (kentauros.package)
-  | | \-src_abstract (kentauros.modules.sources.src_bzr)
-  | | \-src_bzr (kentauros.modules.sources)
-  | | \-src_git (kentauros.modules.sources)
-  | | \-src_local (kentauros.modules.sources)
-  | | \-src_url (kentauros.modules.sources)
+  | | \-abstract (kentauros.modules.sources.git)
+  | | \-bzr (kentauros.modules.sources)
+  | | \-git (kentauros.modules.sources)
+  | | \-local (kentauros.modules.sources)
+  | | \-url (kentauros.modules.sources)
   | \-uploader (kentauros.package)
-  |   \-upl_abstract (kentauros.modules.uploader.upl_copr)
-  |   \-upl_copr (kentauros.modules.uploader)
-  \-package (kentauros.actions.act_abstract)
+  |   \-abstract (kentauros.modules.uploader.copr)
+  |   \-copr (kentauros.modules.uploader)
+  \-package (kentauros.actions.abstract)
   \-pkgformat 
-  | \-rpm (kentauros.modules.constructor.con_srpm)
+  | \-rpm (kentauros.modules.constructor.srpm)
   |   \-spec_common (kentauros.pkgformat.rpm)
   |   \-spec_preamble_out (kentauros.pkgformat.rpm)
   |   \-spec_version_out (kentauros.pkgformat.rpm)
@@ -283,30 +283,30 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <td>code</td>
 <td>2307</td>
-<td>41.50</td>
-<td>2307</td>
-<td>=</td>
+<td>41.48</td>
+<td>2310</td>
+<td>-3.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
+<td>1863</td>
+<td>33.50</td>
 <td>1860</td>
-<td>33.46</td>
-<td>1860</td>
-<td>=</td>
+<td>+3.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>216</td>
-<td>3.89</td>
-<td>216</td>
-<td>=</td>
+<td>3.88</td>
+<td>213</td>
+<td>+3.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
 <td>1176</td>
-<td>21.15</td>
-<td>1176</td>
-<td>=</td>
+<td>21.14</td>
+<td>1165</td>
+<td>+11.00</td>
 </tr>
 </table>
 </div>
@@ -345,8 +345,8 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <td>convention</td>
 <td>0</td>
-<td>0</td>
-<td>=</td>
+<td>1</td>
+<td>-1.00</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
@@ -357,8 +357,8 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <td>warning</td>
 <td>15</td>
-<td>15</td>
-<td>=</td>
+<td>19</td>
+<td>-4.00</td>
 </tr>
 <tr class="odd">
 <td>error</td>
@@ -379,7 +379,7 @@ tinydb (kentauros.instance)</pre></div>
 <th>convention</th>
 </tr>
 <tr class="even">
-<td>kentauros.modules.constructor.con_srpm</td>
+<td>kentauros.modules.constructor.srpm</td>
 <td>0.00</td>
 <td>26.67</td>
 <td>33.33</td>
@@ -400,14 +400,14 @@ tinydb (kentauros.instance)</pre></div>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.modules.uploader.upl_copr</td>
+<td>kentauros.modules.uploader.copr</td>
 <td>0.00</td>
 <td>13.33</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.modules.sources.src_abstract</td>
+<td>kentauros.modules.sources.abstract</td>
 <td>0.00</td>
 <td>6.67</td>
 <td>0.00</td>
@@ -421,21 +421,21 @@ tinydb (kentauros.instance)</pre></div>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.actions.act_upload</td>
+<td>kentauros.actions.upload</td>
 <td>0.00</td>
 <td>6.67</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.actions.act_status</td>
+<td>kentauros.actions.status</td>
 <td>0.00</td>
 <td>6.67</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
-<td>kentauros.actions.act_import</td>
+<td>kentauros.actions.importing</td>
 <td>0.00</td>
 <td>6.67</td>
 <td>0.00</td>
@@ -480,7 +480,7 @@ tinydb (kentauros.instance)</pre></div>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.91/10 (previous run: 9.91/10, +0.00)</div>
+Your code has been rated at 9.91/10 (previous run: 9.89/10, +0.02)</div>
 </div>
 </body>
 </html>

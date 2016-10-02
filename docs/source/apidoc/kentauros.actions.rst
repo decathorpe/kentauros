@@ -4,122 +4,122 @@ kentauros.actions package
 Submodules
 ----------
 
-kentauros.actions.act_abstract module
--------------------------------------
+kentauros.actions.abstract module
+---------------------------------
 
-.. automodule:: kentauros.actions.act_abstract
+.. automodule:: kentauros.actions.abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_build module
+kentauros.actions.build module
+------------------------------
+
+.. automodule:: kentauros.actions.build
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.actions.chain module
+------------------------------
+
+.. automodule:: kentauros.actions.chain
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.actions.clean module
+------------------------------
+
+.. automodule:: kentauros.actions.clean
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.actions.common module
+-------------------------------
+
+.. automodule:: kentauros.actions.common
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.actions.construct module
 ----------------------------------
 
-.. automodule:: kentauros.actions.act_build
+.. automodule:: kentauros.actions.construct
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_chain module
+kentauros.actions.export module
+-------------------------------
+
+.. automodule:: kentauros.actions.export
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.actions.get module
+----------------------------
+
+.. automodule:: kentauros.actions.get
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros.actions.importing module
 ----------------------------------
 
-.. automodule:: kentauros.actions.act_chain
+.. automodule:: kentauros.actions.importing
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_clean module
-----------------------------------
-
-.. automodule:: kentauros.actions.act_clean
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.actions.act_common module
------------------------------------
-
-.. automodule:: kentauros.actions.act_common
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.actions.act_construct module
---------------------------------------
-
-.. automodule:: kentauros.actions.act_construct
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.actions.act_export module
------------------------------------
-
-.. automodule:: kentauros.actions.act_export
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.actions.act_get module
+kentauros.actions.prepare module
 --------------------------------
 
-.. automodule:: kentauros.actions.act_get
+.. automodule:: kentauros.actions.prepare
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_import module
------------------------------------
+kentauros.actions.refresh module
+--------------------------------
 
-.. automodule:: kentauros.actions.act_import
+.. automodule:: kentauros.actions.refresh
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_prepare module
-------------------------------------
+kentauros.actions.status module
+-------------------------------
 
-.. automodule:: kentauros.actions.act_prepare
+.. automodule:: kentauros.actions.status
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_refresh module
-------------------------------------
+kentauros.actions.update module
+-------------------------------
 
-.. automodule:: kentauros.actions.act_refresh
+.. automodule:: kentauros.actions.update
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_status module
------------------------------------
+kentauros.actions.upload module
+-------------------------------
 
-.. automodule:: kentauros.actions.act_status
+.. automodule:: kentauros.actions.upload
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.act_update module
------------------------------------
+kentauros.actions.verify module
+-------------------------------
 
-.. automodule:: kentauros.actions.act_update
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.actions.act_upload module
------------------------------------
-
-.. automodule:: kentauros.actions.act_upload
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.actions.act_verify module
------------------------------------
-
-.. automodule:: kentauros.actions.act_verify
+.. automodule:: kentauros.actions.verify
     :members:
     :undoc-members:
     :show-inheritance:

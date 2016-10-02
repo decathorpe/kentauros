@@ -4,42 +4,42 @@ kentauros.modules.sources package
 Submodules
 ----------
 
-kentauros.modules.sources.src_abstract module
----------------------------------------------
+kentauros.modules.sources.abstract module
+-----------------------------------------
 
-.. automodule:: kentauros.modules.sources.src_abstract
+.. automodule:: kentauros.modules.sources.abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.modules.sources.src_bzr module
-----------------------------------------
+kentauros.modules.sources.bzr module
+------------------------------------
 
-.. automodule:: kentauros.modules.sources.src_bzr
+.. automodule:: kentauros.modules.sources.bzr
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.modules.sources.src_git module
-----------------------------------------
+kentauros.modules.sources.git module
+------------------------------------
 
-.. automodule:: kentauros.modules.sources.src_git
+.. automodule:: kentauros.modules.sources.git
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.modules.sources.src_local module
-------------------------------------------
+kentauros.modules.sources.local module
+--------------------------------------
 
-.. automodule:: kentauros.modules.sources.src_local
+.. automodule:: kentauros.modules.sources.local
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.modules.sources.src_url module
-----------------------------------------
+kentauros.modules.sources.url module
+------------------------------------
 
-.. automodule:: kentauros.modules.sources.src_url
+.. automodule:: kentauros.modules.sources.url
     :members:
     :undoc-members:
     :show-inheritance:

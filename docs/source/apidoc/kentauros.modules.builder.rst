@@ -4,18 +4,18 @@ kentauros.modules.builder package
 Submodules
 ----------
 
-kentauros.modules.builder.bld_abstract module
----------------------------------------------
+kentauros.modules.builder.abstract module
+-----------------------------------------
 
-.. automodule:: kentauros.modules.builder.bld_abstract
+.. automodule:: kentauros.modules.builder.abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.modules.builder.bld_mock module
------------------------------------------
+kentauros.modules.builder.mock module
+-------------------------------------
 
-.. automodule:: kentauros.modules.builder.bld_mock
+.. automodule:: kentauros.modules.builder.mock
     :members:
     :undoc-members:
     :show-inheritance:
