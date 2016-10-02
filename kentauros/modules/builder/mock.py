@@ -14,7 +14,7 @@ import time
 
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
-from kentauros.modules.builder.bld_abstract import Builder
+from kentauros.modules.builder.abstract import Builder
 
 
 LOGPREFIX = "ktr/builder/mock"
