@@ -13,7 +13,7 @@ import warnings
 
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
-from kentauros.modules.constructor.con_abstract import Constructor
+from kentauros.modules.constructor.abstract import Constructor
 from kentauros.pkgformat.rpm import RPMSpec, do_release_bump
 
 

@@ -9,7 +9,7 @@ constructors.
 
 from kentauros.definitions import ConstructorType
 
-from kentauros.modules.constructor.con_srpm import SrpmConstructor
+from kentauros.modules.constructor.srpm import SrpmConstructor
 
 
 CONSTRUCTOR_TYPE_DICT = dict()
