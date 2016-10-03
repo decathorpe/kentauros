@@ -33,6 +33,14 @@ time and ``make-srpm.sh`` when building an srpm package. The version in
 """
 
 
+@unique
+class PkgModuleType(Enum):
+    SOURCE = 10
+    CONSTRUCTOR = 20
+    BUILDER = 30
+    UPLOADER = 40
+
+
 class KtrConfType(Enum):
     """
     This Enum defines the types of configuration file locations kentauros supports and tries to read

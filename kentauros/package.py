@@ -9,16 +9,20 @@ attributes according to configuration.
 
 import os
 
+from collections import OrderedDict
 from configparser import ConfigParser
 
+from kentauros.definitions import PkgModuleType
 from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
-from kentauros.modules.builder import BUILDER_TYPE_DICT
-from kentauros.modules.constructor import CONSTRUCTOR_TYPE_DICT
-from kentauros.modules.sources import SOURCE_TYPE_DICT
-from kentauros.modules.uploader import UPLOADER_TYPE_DICT
+from kentauros.modules import PKG_MODULE_DICT, PKG_MODULE_TYPE_DICT
+
+# from kentauros.modules.builder import BUILDER_TYPE_DICT
+# from kentauros.modules.constructor import CONSTRUCTOR_TYPE_DICT
+# from kentauros.modules.sources import SOURCE_TYPE_DICT
+# from kentauros.modules.uploader import UPLOADER_TYPE_DICT
 
 
 LOGPREFIX = "ktr/package"
@@ -87,139 +91,21 @@ class Package:
 
         self.name = self.conf.get("package", "name")
 
-        self._source = None
-        self._constructor = None
-        self._builder = None
-        self._uploader = None
+        modules_str = self.conf.get("package", "modules")
+        abstract_module_list = modules_str.split(",")
+
+        self.modules = OrderedDict()
+
+        # TODO: this is beyond me at the moment, let's fix this later
+        for module in abstract_module_list:
+            abstract_module_type = PkgModuleType[module.upper()]                # FIXME
+            concrete_module_type = PKG_MODULE_TYPE_DICT[abstract_module_type]   # FIXME
+            mumbo = PKG_MODULE_DICT[abstract_module_type]                       # FIXME
+            jumbo = self.modules[abstract_module_type]                          # FIXME
 
         # TODO: move writing state to after the action execution
         # ktr.state_write(conf_name, self.status())
         # ktr.state_write(conf_name, self.source.status())
-
-    def _get_source(self):
-        """
-        This method tries to get a :py:class:`Source` instance corresponding to the values set in
-        the package configuration.
-
-        Returns:
-            Source: package source object
-        """
-
-        source_type = str(self.conf.get("source", "type")).upper()
-        try:
-            source = SOURCE_TYPE_DICT[SourceType[source_type]](self)
-        except KeyError:
-            raise PackageError("The specified source type is not supported.")
-        return source
-
-    def get_source(self):
-        """
-        This method initialises the package Source if that hasn't been done yet and returns it.
-
-        Returns:
-            Source:     package source
-        """
-
-        if self._source is None:
-            self._source = self._get_source()
-
-        return self._source
-
-    def _get_constructor(self):
-        """
-        This method tries to get a :py:class:`Constructor` instance corresponding to the values set
-        in the package configuration.
-
-        Returns:
-            Constructor:    package constructor object
-        """
-
-        if "constructor" not in self.conf["package"]:
-            raise PackageError("No constrctor has been specified in the configuration file.")
-        else:
-            constructor_type = str(self.conf.get("package", "constructor")).upper()
-            try:
-                constructor = CONSTRUCTOR_TYPE_DICT[ConstructorType[constructor_type]](self)
-            except KeyError:
-                raise PackageError("The specified constructor type is not supported.")
-            return constructor
-
-    def get_constructor(self):
-        """
-        This method initialises the package Constructor if that hasn't been done yet and returns it.
-
-        Returns:
-            Constructor:    package constructor
-        """
-
-        if self._constructor is None:
-            self._constructor = self._get_constructor()
-
-        return self._constructor
-
-    def _get_builder(self):
-        """
-        This method tries to get a :py:class:`Builder` instance corresponding to the values set in
-        the package configuration.
-
-        Returns:
-            Builder:    package builder object
-        """
-
-        if "builder" not in self.conf["package"]:
-            raise PackageError("No builder has been specified in the configuration file.")
-        else:
-            builder_type = str(self.conf.get("package", "builder")).upper()
-            try:
-                builder = BUILDER_TYPE_DICT[BuilderType[builder_type]](self)
-            except KeyError:
-                raise PackageError("The specified builder type is not supported.")
-            return builder
-
-    def get_builder(self):
-        """
-        This method initialises the package Builder if that hasn't been done yet and returns it.
-
-        Returns:
-            Builder:    package builder
-        """
-
-        if self._builder is None:
-            self._builder = self._get_builder()
-
-        return self._builder
-
-    def _get_uploader(self):
-        """
-        This method tries to get a :py:class:`Uploader` instance corresponding to the values set in
-        the package configuration.
-
-        Returns:
-            Uploader:   package uploader object
-        """
-
-        if "uploader" not in self.conf["package"]:
-            raise PackageError("No uploader has been specified in the configuration file.")
-        else:
-            uploader_type = str(self.conf.get("package", "uploader")).upper()
-            try:
-                uploader = UPLOADER_TYPE_DICT[UploaderType[uploader_type]](self)
-            except KeyError:
-                raise PackageError("The specified uploader type is not supported.")
-            return uploader
-
-    def get_uploader(self):
-        """
-        This method initialises the package Uploader if that hasn't been done yet and returns it.
-
-        Returns:
-            Uploader:     package uploader
-        """
-
-        if self._uploader is None:
-            self._uploader = self._get_uploader()
-
-        return self._uploader
 
     def status(self) -> dict:
         """
@@ -249,36 +135,60 @@ class Package:
 
         success = True
 
+        # [package]
         if "package" not in self.conf.sections():
             logger.err("Package configuration file does not have a 'package' section.")
             success = False
 
-        if "source" not in self.conf.sections():
-            logger.err("Package configuration file does not have a 'source' section.")
+        # name =
+        if "name" not in self.conf["package"]:
+            logger.err("Package configuration file doesn't set 'name' in the 'package' section.")
             success = False
 
-        if "type" not in self.conf["source"]:
-            logger.err("Package configuration file does not specify the type of source.")
+        if self.conf.get("package", "name") == "":
+            logger.err("Package configuration file doesn't set 'name' in the 'package' section.")
             success = False
 
-        if self.conf.get("source", "type") == "":
-            logger.err("Package configuration file does not specify the type of source.")
+        # version =
+        if "version" not in self.conf["package"]:
+            logger.err("Package configuration file doesn't set 'version' in the 'package' section.")
             success = False
 
-        if "version" not in self.conf["source"]:
-            logger.err("Package configuration file does not specify the source version.")
-            success = False
-
-        if self.conf.get("source", "version") == "":
-            logger.err("Package configuration file does not specify the source version.")
-            success = False
-
-        if "-" in self.conf.get("source", "version"):
+        if "-" in self.conf.get("package", "version"):
             logger.err("Hyphens are not a valid part of a version string.")
             logger.err("Replace it with another character, e.g. '~' or '+'.")
             success = False
 
+        # modules =
+        if self.conf.get("package", "modules") == "":
+            logger.err("Package configuration file doesn't set 'modules' in the 'package' section.")
+            success = False
+
+        # [modules]
+        if "modules" not in self.conf.sections():
+            logger.err("Package configuration file does not have a 'modules' section.")
+            success = False
+
+        modules_str = self.conf.get("package", "modules")
+        module_list = modules_str.split(",")
+
+        for module in module_list:
+            if module not in self.conf["modules"]:
+                logger.err("Package configuration file doesn't define module " +
+                           module +
+                           "in the 'modules' section.")
+                success = False
+
+        # check for module configurations
+        for module in module_list:
+            if self.conf.get("modules", module) not in self.conf.sections():
+                logger.err("Package configuration file doesn't have a section for module " +
+                           module +
+                           ".")
+                success = False
+
         # TODO: delegate verifying all other config values to the appropriate places
+        # but: verify only after class initialisation
 
         # if "constructor" in self.conf["package"]:
         #     success = success and self.constructor.verify()
