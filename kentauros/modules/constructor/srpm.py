@@ -142,6 +142,10 @@ class SrpmConstructor(Constructor):
 
         return old_release
 
+    def verify(self) -> bool:
+        # TODO: constructor/srpm verification code
+        return True
+
     def status(self) -> dict:
         # TODO: return latest RPM release, etc. so it can be stored after builds
         return dict()

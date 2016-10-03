@@ -32,6 +32,10 @@ class LocalSource(Source):
         self.dest = os.path.join(self.sdir, os.path.basename(self.spkg.conf.get("source", "orig")))
         self.stype = SourceType.LOCAL
 
+    def verify(self) -> bool:
+        # TODO: sources/local verification code
+        return True
+
     def status(self) -> dict:
         return dict()
 

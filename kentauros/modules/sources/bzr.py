@@ -55,6 +55,10 @@ class BzrSource(Source):
         else:
             self.remote = self.spkg.conf.get("source", "orig")
 
+    def verify(self) -> bool:
+        # TODO: sources/bzr verification code
+        return True
+
     def rev(self) -> str:
         """
         This method determines which revision the bzr repository associated with this

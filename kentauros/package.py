@@ -12,12 +12,12 @@ import os
 from collections import OrderedDict
 from configparser import ConfigParser
 
-from kentauros.definitions import PkgModuleType
-from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
+# from kentauros.definitions import PkgModuleType
+# from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
-from kentauros.modules import PKG_MODULE_DICT, PKG_MODULE_TYPE_DICT
+# from kentauros.modules import PKG_MODULE_DICT, PKG_MODULE_TYPE_DICT
 
 # from kentauros.modules.builder import BUILDER_TYPE_DICT
 # from kentauros.modules.constructor import CONSTRUCTOR_TYPE_DICT
@@ -91,17 +91,17 @@ class Package:
 
         self.name = self.conf.get("package", "name")
 
-        modules_str = self.conf.get("package", "modules")
-        abstract_module_list = modules_str.split(",")
+        # modules_str = self.conf.get("package", "modules")
+        # abstract_module_list = modules_str.split(",")
 
         self.modules = OrderedDict()
 
         # TODO: this is beyond me at the moment, let's fix this later
-        for module in abstract_module_list:
-            abstract_module_type = PkgModuleType[module.upper()]                # FIXME
-            concrete_module_type = PKG_MODULE_TYPE_DICT[abstract_module_type]   # FIXME
-            mumbo = PKG_MODULE_DICT[abstract_module_type]                       # FIXME
-            jumbo = self.modules[abstract_module_type]                          # FIXME
+        # for module in abstract_module_list:
+        #     abstract_module_type = PkgModuleType[module.upper()]                # FIXME
+        #     concrete_module_type = PKG_MODULE_TYPE_DICT[abstract_module_type]   # FIXME
+        #     mumbo = PKG_MODULE_DICT[abstract_module_type]                       # FIXME
+        #     jumbo = self.modules[abstract_module_type]                          # FIXME
 
         # TODO: move writing state to after the action execution
         # ktr.state_write(conf_name, self.status())
@@ -169,8 +169,11 @@ class Package:
             logger.err("Package configuration file does not have a 'modules' section.")
             success = False
 
-        modules_str = self.conf.get("package", "modules")
+        modules_str = str(self.conf.get("package", "modules"))
         module_list = modules_str.split(",")
+
+        if module_list == [""]:
+            module_list = []
 
         for module in module_list:
             if module not in self.conf["modules"]:

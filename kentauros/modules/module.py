@@ -24,3 +24,9 @@ class PkgModule(metaclass=abc.ABCMeta):
         """
         This method is expected to return a dictionary of statistics about this module.
         """
+
+    @abc.abstractmethod
+    def verify(self) -> bool:
+        """
+        This method checks if all configuration values needed for this module are present and valid.
+        """

@@ -49,6 +49,10 @@ class UrlSource(Source):
             logger.log("Install wget to use the specified source.")
             self.active = False
 
+    def verify(self) -> bool:
+        # TODO: sources/url verification code
+        return True
+
     def status(self) -> dict:
         return dict()
 

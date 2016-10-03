@@ -71,6 +71,10 @@ class GitSource(Source):
         self.saved_commit = None
         self.saved_date = None
 
+    def verify(self) -> bool:
+        # TODO: sources/git verification code
+        return True
+
     def date(self) -> str:
         """
         This method provides an easy way of getting the date and time of the requrested commit in a

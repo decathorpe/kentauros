@@ -217,6 +217,10 @@ class MockBuilder(Builder):
         if self.dists == [""]:
             self.dists = []
 
+    def verify(self) -> bool:
+        # TODO: builder/mock verification code
+        return True
+
     def status(self) -> dict:
         return dict()
 
