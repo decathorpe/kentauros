@@ -35,4 +35,4 @@ class PrepareAction(Action):
             bool:           *True* when successful, *False* if sub-action fails
         """
 
-        return self.kpkg.get_source().prepare()
+        return self.kpkg.get_module("source").prepare()

@@ -9,6 +9,8 @@ program run. Additionally, this subpackage holds logging and error printing func
 import os
 import warnings
 
+from collections import OrderedDict
+
 from tinydb import TinyDB, Query
 
 from kentauros.config import ktr_get_conf
@@ -50,7 +52,7 @@ class Kentauros:
             Kentauros.debug = get_env_debug() or self.cli.get_debug()
             Kentauros.verby = __smaller_int__(get_env_verby(), self.cli.get_verby())
             Kentauros.conf = ktr_get_conf()
-            Kentauros.packages = dict()
+            Kentauros.packages = OrderedDict()
 
             Kentauros.initialised = True
 

@@ -42,38 +42,107 @@ class GitSource(Source):
 
     def __init__(self, package):
         super().__init__(package)
-        self.dest = os.path.join(self.sdir, self.spkg.name)
+
+        self.dest = os.path.join(self.sdir, self.spkg.get_name())
         self.stype = SourceType.GIT
-
-        logger = KtrLogger(LOGPREFIX)
-
-        # if git is not installed: mark GitSource instance as inactive
-        try:
-            self.active = True
-            subprocess.check_output(["which", "git"])
-        except subprocess.CalledProcessError:
-            logger.log("Install git to use the specified source.")
-            self.active = False
-
-        # either branch or commit must be set. default to branch=master
-        if self.spkg.conf.get("git", "branch") == "" and \
-           self.spkg.conf.get("git", "commit") == "":
-            self.spkg.conf.set("git", "branch", "master")
-            self.spkg.update_config()
-
-        # shallow clones and checking out a specific commit is not supported
-        if self.spkg.conf.get("git", "commit") != "" and \
-           self.spkg.conf.getboolean("git", "shallow"):
-
-            self.spkg.conf.set("git", "shallow", "false")
-            self.spkg.update_config()
 
         self.saved_commit = None
         self.saved_date = None
 
     def verify(self) -> bool:
-        # TODO: sources/git verification code
-        return True
+        """
+        This method runs several checks to ensure git commands can proceed. It is automatically
+        executed at package initialisation. This includes:
+
+        * checks if all expected keys are present in the configuration file
+        * checks that the configuration file is consistent (i.e. shallow clone and commit checkout
+          are not compatible)
+        * checks if the `git` binary is installed and can be found on the system
+
+        Returns:
+            bool:   verification success
+        """
+
+        logger = KtrLogger(LOGPREFIX)
+
+        success = True
+
+        # check if the configuration file is valid
+        expected_keys = ["branch", "commit", "keep", "keep_repo", "orig", "shallow"]
+
+        for key in expected_keys:
+            if key not in self.spkg.conf["git"]:
+                logger.err("The [git] section in the package's .conf file doesn't set the '" +
+                           key +
+                           "' key.")
+                success = False
+
+        # shallow clones and checking out a specific commit is not supported
+        if (self.get_commit() != "HEAD") and self.get_shallow():
+            logger.err("Shallow clones are not compatible with specifying a specific commit.")
+            success = False
+
+        # check if git is installed
+        try:
+            subprocess.check_output(["which", "git"]).decode().rstrip("\n")
+        except subprocess.CalledProcessError:
+            logger.log("Install git to use the specified source.")
+            success = False
+
+        return success
+
+    def get_keep(self) -> bool:
+        return self.spkg.conf.getboolean("git", "keep")
+
+    def get_keep_repo(self) -> bool:
+        """
+        Returns:
+            bool:   boolean value indicating whether the git repository should be kept
+        """
+
+        return self.spkg.conf.getboolean("git", "keep_repo")
+
+    def get_orig(self) -> str:
+        """
+        Returns:
+            str:    string containing the upstream git repository URL
+        """
+
+        return self.spkg.conf.get("git", "orig")
+
+    def get_branch(self) -> str:
+        """
+        Returns:
+            str:    string containing the branch that is set in the package configuration
+        """
+
+        branch = self.spkg.conf.get("git", "branch")
+
+        if not branch:
+            return "master"
+        else:
+            return branch
+
+    def get_commit(self) -> str:
+        """
+        Returns:
+            str:    string containing the commit hash that is set in the package configuration
+        """
+
+        commit = self.spkg.conf.get("git", "commit")
+
+        if not commit:
+            return "HEAD"
+        else:
+            return commit
+
+    def get_shallow(self) -> bool:
+        """
+        Returns:
+            bool:   boolean value indicating whether the git checkout depth should be 1 or not
+        """
+
+        return self.spkg.conf.getboolean("git", "shallow")
 
     def date(self) -> str:
         """
@@ -84,9 +153,6 @@ class GitSource(Source):
         Returns:
             str:        commit date.time string (``YYMMDD.HHmmSS``)
         """
-
-        if not self.active:
-            return None
 
         def prepend_zero(string):
             """This local function prepends '0' to one-digit time value strings."""
@@ -137,7 +203,7 @@ class GitSource(Source):
         date = datestr_from_raw(date_raw)
 
         self.saved_date = date
-        # ktr.state_write(self.spkg.conf_name, dict(git_last_date=date))
+        # ktr.state_write(self.spkg.get_conf_name(), dict(git_last_date=date))
 
         return date
 
@@ -150,9 +216,6 @@ class GitSource(Source):
         Returns:
             str:        commit hash
         """
-
-        if not self.active:
-            return None
 
         # ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
@@ -176,7 +239,7 @@ class GitSource(Source):
         os.chdir(prevdir)
 
         self.saved_commit = rev
-        # ktr.state_write(self.spkg.conf_name, dict(git_last_commit=rev))
+        # ktr.state_write(self.spkg.get_conf_name(), dict(git_last_commit=rev))
 
         return rev
 
@@ -190,8 +253,8 @@ class GitSource(Source):
             dict:   key-value pairs (property: value)
         """
 
-        state = dict(git_branch=self.spkg.conf.get("git", "branch"),
-                     git_commit=self.spkg.conf.get("git", "commit"))
+        state = dict(git_branch=self.get_branch(),
+                     git_commit=self.get_commit())
 
         return state
 
@@ -205,11 +268,8 @@ class GitSource(Source):
             str:        nicely formatted version string
         """
 
-        if not self.active:
-            return ""
-
         # base version
-        ver = self.spkg.conf.get("source", "version")
+        ver = self.spkg.get_version()
 
         # date and time of commit
         ver += "+git"
@@ -230,9 +290,6 @@ class GitSource(Source):
             bool: *True* if successful, *False* if not or source pre-exists
         """
 
-        if not self.active:
-            return False
-
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
@@ -248,7 +305,7 @@ class GitSource(Source):
             return False
 
         # check for connectivity to server
-        if not is_connected(self.spkg.conf.get("source", "orig")):
+        if not is_connected(self.get_orig()):
             logger.log("No connection to remote host detected. Cancelling source checkout.", 2)
             return False
 
@@ -262,16 +319,16 @@ class GitSource(Source):
             cmd_clone.append("--verbose")
 
         # set --depth==1 if shallow is specified
-        if self.spkg.conf.getboolean("git", "shallow"):
+        if self.get_shallow():
             cmd_clone.append("--depth=1")
 
         # set branch if specified
-        if self.spkg.conf.get("git", "branch"):
+        if self.get_branch():
             cmd_clone.append("--branch")
-            cmd_clone.append(self.spkg.conf.get("git", "branch"))
+            cmd_clone.append(self.get_branch())
 
         # set origin and destination
-        cmd_clone.append(self.spkg.conf.get("source", "orig"))
+        cmd_clone.append(self.get_orig())
         cmd_clone.append(self.dest)
 
         # clone git repo from orig to dest
@@ -279,9 +336,9 @@ class GitSource(Source):
         subprocess.call(cmd_clone)
 
         # if commit is specified: checkout commit
-        if self.spkg.conf.get("git", "commit"):
+        if self.get_commit():
             # construct checkout command
-            cmd_checkout = ["git", "checkout", self.spkg.conf.get("git", "commit")]
+            cmd_checkout = ["git", "checkout", self.get_commit()]
 
             # go to git repo and remember old cwd
             prevdir = os.getcwd()
@@ -299,9 +356,9 @@ class GitSource(Source):
         self.date()
 
         # check if checkout worked
-        if self.spkg.conf.get("git", "commit"):
-            if self.spkg.conf.get("git", "commit") != rev:
-                logger.err("Something went wrong, requested commit not in repo.")
+        if self.get_commit() != "HEAD":
+            if self.get_commit() != rev:
+                logger.err("Something went wrong, requested commit not checked out.")
                 return False
 
         # return True if successful
@@ -317,18 +374,15 @@ class GitSource(Source):
             bool: *True* if update available and successful, *False* if not
         """
 
-        if not self.active:
-            return False
-
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
         # if specific commit is requested, do not pull updates (obviously)
-        if self.spkg.conf.get("git", "commit"):
+        if self.get_commit() == "HEAD":
             return False
 
         # check for connectivity to server
-        if not is_connected(self.spkg.conf.get("source", "orig")):
+        if not is_connected(self.get_orig()):
             logger.log("No connection to remote host detected. Cancelling source update.", 2)
             return False
 
@@ -377,9 +431,6 @@ class GitSource(Source):
             bool:   *True* if successful or already done, *False* at failure
         """
 
-        if not self.active:
-            return False
-
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
@@ -389,21 +440,15 @@ class GitSource(Source):
             if `git.keep=false` is set.
             """
 
-            if not self.spkg.conf.getboolean("git", "keep"):
+            if not self.get_keep():
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
                 assert ktr.conf.get_datadir() in self.dest
                 shutil.rmtree(self.dest)
                 logger.log("git repository has been deleted after exporting to tarball.", 1)
 
-        # construct git command
-        cmd = ["git", "archive"]
-
-        # export HEAD or specified commit
-        if self.spkg.conf.get("git", "commit") == "":
-            cmd.append("HEAD")
-        else:
-            cmd.append(self.spkg.conf.get("git", "commit"))
+        # construct git command to export HEAD or specified commit
+        cmd = ["git", "archive", self.get_commit()]
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
@@ -411,7 +456,7 @@ class GitSource(Source):
             return False
 
         version = self.formatver()
-        name_version = self.spkg.name + "-" + version
+        name_version = self.spkg.get_name() + "-" + version
 
         # add prefix
         cmd.append("--prefix=" + name_version + "/")

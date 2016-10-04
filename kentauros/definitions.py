@@ -35,6 +35,10 @@ time and ``make-srpm.sh`` when building an srpm package. The version in
 
 @unique
 class PkgModuleType(Enum):
+    """
+    This Enum defines the types of package submodules there can be.
+    """
+
     SOURCE = 10
     CONSTRUCTOR = 20
     BUILDER = 30

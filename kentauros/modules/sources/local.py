@@ -29,12 +29,47 @@ class LocalSource(Source):
 
     def __init__(self, package):
         super().__init__(package)
-        self.dest = os.path.join(self.sdir, os.path.basename(self.spkg.conf.get("source", "orig")))
+
+        self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.LOCAL
 
     def verify(self) -> bool:
-        # TODO: sources/local verification code
-        return True
+        """
+        This method runs several checks to ensure local copying can proceed. It is automatically
+        executed at package initialisation. This includes:
+
+        * checks if all expected keys are present in the configuration file
+
+        Returns:
+            bool:   verification success
+        """
+
+        logger = KtrLogger(LOGPREFIX)
+
+        success = True
+
+        # check if the configuration file is valid
+        expected_keys = ["keep", "orig"]
+
+        for key in expected_keys:
+            if key not in self.spkg.conf["local"]:
+                logger.err("The [local] section in the package's .conf file doesn't set the '" +
+                           key +
+                           "' key.")
+                success = False
+
+        return success
+
+    def get_keep(self) -> bool:
+        return self.spkg.conf.getboolean("local", "keep")
+
+    def get_orig(self) -> str:
+        """
+        Returns:
+            str:    string containing the source file path
+        """
+
+        return self.spkg.conf.get("local", "orig")
 
     def status(self) -> dict:
         return dict()
@@ -61,7 +96,7 @@ class LocalSource(Source):
             return False
 
         # copy file from orig to dest
-        shutil.copy2(self.spkg.conf.get("source", "orig"), self.dest)
+        shutil.copy2(self.get_orig(), self.dest)
 
         return True
 

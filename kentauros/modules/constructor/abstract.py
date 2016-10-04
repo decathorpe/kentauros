@@ -23,10 +23,10 @@ class Constructor(PkgModule, metaclass=abc.ABCMeta):
     provide a unified API for builder classes and store the package to which the builder belongs.
 
     Arguments:
-        Package package: package for which this constructor is for
+        Package package:    package for which this constructor is for
 
     Attributes:
-        Package pkg: stores parent package instance reference
+        Package cpkg:       stores parent package instance reference
     """
 
     def __init__(self, package):
@@ -37,7 +37,7 @@ class Constructor(PkgModule, metaclass=abc.ABCMeta):
             assert isinstance(package, Package)
 
         self.cpkg = package
-        self.pdir = os.path.join(ktr.conf.get_packdir(), self.cpkg.conf_name)
+        self.pdir = os.path.join(ktr.conf.get_packdir(), self.cpkg.get_conf_name())
 
     @abc.abstractmethod
     def status(self) -> dict:

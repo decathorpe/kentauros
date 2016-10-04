@@ -12,17 +12,12 @@ import os
 from collections import OrderedDict
 from configparser import ConfigParser
 
-# from kentauros.definitions import PkgModuleType
-# from kentauros.definitions import BuilderType, ConstructorType, SourceType, UploaderType
+from kentauros.definitions import PkgModuleType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
-# from kentauros.modules import PKG_MODULE_DICT, PKG_MODULE_TYPE_DICT
-
-# from kentauros.modules.builder import BUILDER_TYPE_DICT
-# from kentauros.modules.constructor import CONSTRUCTOR_TYPE_DICT
-# from kentauros.modules.sources import SOURCE_TYPE_DICT
-# from kentauros.modules.uploader import UPLOADER_TYPE_DICT
+from kentauros.modules import PKG_MODULE_DICT, PKG_MODULE_TYPE_DICT
+from kentauros.modules.module import PkgModule
 
 
 LOGPREFIX = "ktr/package"
@@ -55,13 +50,8 @@ class Package:
         str conf_name:              name of the configuration file, without the ".conf" suffix
 
     Attributes:
-        str conf_name:              name of the configuration
-        str name:                   name of the package
+        str file:                   configuration file path
         ConfigParser conf:          parser for package.conf file
-        Source source:              handling of upstream source code
-        Constructor constructor:    handling of building compilable source packages
-        Builder builder:            handling of building binary packages from source
-        Uploader uploader:          handling of uploading source/binary packages to remote location
 
     Raises:
         PackageError:               error if package.conf file is invalid
@@ -91,21 +81,82 @@ class Package:
 
         self.name = self.conf.get("package", "name")
 
-        # modules_str = self.conf.get("package", "modules")
-        # abstract_module_list = modules_str.split(",")
+        modules_str = str(self.conf.get("package", "modules"))
+        module_type_list = modules_str.split(",")
+
+        if module_type_list == [""]:
+            module_type_list = []
 
         self.modules = OrderedDict()
 
-        # TODO: this is beyond me at the moment, let's fix this later
-        # for module in abstract_module_list:
-        #     abstract_module_type = PkgModuleType[module.upper()]                # FIXME
-        #     concrete_module_type = PKG_MODULE_TYPE_DICT[abstract_module_type]   # FIXME
-        #     mumbo = PKG_MODULE_DICT[abstract_module_type]                       # FIXME
-        #     jumbo = self.modules[abstract_module_type]                          # FIXME
+        for module_type in module_type_list:
+            module_type_enum = PkgModuleType[module_type.upper()]
+            module_implement = str(self.conf.get("modules", module_type)).upper()
+
+            module = PKG_MODULE_DICT[module_type_enum][
+                PKG_MODULE_TYPE_DICT[module_type_enum][module_implement]](self)
+
+            self.modules[module_type] = module
+
+        for module in self.modules.values():
+            assert isinstance(module, PkgModule)
+            module.verify()
 
         # TODO: move writing state to after the action execution
         # ktr.state_write(conf_name, self.status())
         # ktr.state_write(conf_name, self.source.status())
+
+    def get_module(self, module_type: str):
+        """
+        This method gets a specific package module from the module dictionary.
+
+        Arguments:
+            str module_type:    module type string (abstract class name, lower-case)
+
+        Returns:
+            PkgModule:          corresponding package module, if it is found
+        """
+
+        assert isinstance(module_type, str)
+
+        try:
+            return self.modules[module_type]
+        except KeyError:
+            return None
+
+    def get_modules(self):
+        """
+        This method gets all a package's modules.
+
+        Returns:
+            list:       package module list
+        """
+
+        return self.modules.values()
+
+    def get_conf_name(self) -> str:
+        """
+        Returns:
+            str:    package configuration name
+        """
+
+        return self.conf_name
+
+    def get_name(self) -> str:
+        """
+        Returns:
+            str:    package name
+        """
+
+        return self.conf.get("package", "name")
+
+    def get_version(self) -> str:
+        """
+        Returns:
+            str:    package version string
+        """
+
+        return self.conf.get("package", "version")
 
     def status(self) -> dict:
         """
@@ -175,48 +226,27 @@ class Package:
         if module_list == [""]:
             module_list = []
 
+        # check if the module is recognised
+        for module in module_list:
+            try:
+                PkgModuleType[module.upper()]
+            except KeyError:
+                raise PackageError("Module '" + module + "' is not one of the recognised modules.")
+
+        # check if modules are defined in the [modules] section
         for module in module_list:
             if module not in self.conf["modules"]:
-                logger.err("Package configuration file doesn't define module " +
+                logger.err("Package configuration file doesn't define module '" +
                            module +
-                           "in the 'modules' section.")
+                           "' in the 'modules' section.")
                 success = False
 
-        # check for module configurations
+        # check if each module has its configuration section
         for module in module_list:
             if self.conf.get("modules", module) not in self.conf.sections():
-                logger.err("Package configuration file doesn't have a section for module " +
+                logger.err("Package configuration file doesn't have a section for module '" +
                            module +
-                           ".")
+                           "'.")
                 success = False
 
-        # TODO: delegate verifying all other config values to the appropriate places
-        # but: verify only after class initialisation
-
-        # if "constructor" in self.conf["package"]:
-        #     success = success and self.constructor.verify()
-        #
-        # if "builder" in self.conf["package"]:
-        #     success = success and self.builder.verify()
-        #
-        # if "uploader" in self.conf["package"]:
-        #     success = success and self.uploader.verify()
-
         return success
-
-    def update_config(self):
-        """
-        This method writes a changes package configuration back to the configuration file for
-        permanent changes.
-        """
-
-        logger = KtrLogger(LOGPREFIX)
-
-        try:
-            conf_file = open(self.file, "w")
-            self.conf.write(conf_file)
-            conf_file.close()
-        except OSError:
-            logger.err("Package configuration file could not be written.")
-            logger.err("Path: " + self.file)
-            raise PackageError("Package configuration file could not be written.")

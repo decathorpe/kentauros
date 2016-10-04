@@ -39,25 +39,86 @@ class BzrSource(Source):
     def __init__(self, package):
         super().__init__(package)
 
-        self.dest = os.path.join(self.sdir, self.spkg.name)
+        self.dest = os.path.join(self.sdir, self.spkg.get_name())
         self.stype = SourceType.BZR
         self.saved_rev = None
 
-        try:
-            self.active = True
-            subprocess.check_output(["which", "bzr"])
-        except subprocess.CalledProcessError:
-            KtrLogger(LOGPREFIX).log("Install bzr to use the specified source.")
-            self.active = False
+        orig = self.get_orig()
 
-        if self.spkg.conf.get("source", "orig")[0:3] == "lp:":
+        if orig[0:3] == "lp:":
             self.remote = "https://launchpad.net"
         else:
-            self.remote = self.spkg.conf.get("source", "orig")
+            self.remote = orig
 
     def verify(self) -> bool:
-        # TODO: sources/bzr verification code
-        return True
+        """
+        This method runs several checks to ensure bzr commands can proceed. It is automatically
+        executed at package initialisation. This includes:
+
+        * checks if all expected keys are present in the configuration file
+        * checks if the `bzr` binary is installed and can be found on the system
+
+        Returns:
+            bool:   verification success
+        """
+
+        logger = KtrLogger(LOGPREFIX)
+
+        success = True
+
+        # check if the configuration file is valid
+        expected_keys = ["branch", "keep", "keep_repo", "orig", "revno"]
+
+        for key in expected_keys:
+            if key not in self.spkg.conf["bzr"]:
+                logger.err("The [bzr] section in the package's .conf file doesn't set the '" +
+                           key +
+                           "' key.")
+                success = False
+
+        # check if bzr is installed
+        try:
+            subprocess.check_output(["which", "bzr"]).decode().rstrip("\n")
+        except subprocess.CalledProcessError:
+            logger.log("Install bzr to use the specified source.")
+            success = False
+
+        return success
+
+    def get_keep(self) -> bool:
+        return self.spkg.conf.getboolean("bzr", "keep")
+
+    def get_keep_repo(self) -> bool:
+        """
+        Returns:
+            bool:   boolean value indicating whether the bzr repository should be kept
+        """
+
+        return self.spkg.conf.getboolean("bzr", "keep_repo")
+
+    def get_orig(self) -> str:
+        """
+        Returns:
+            str:    string containing the upstream bzr repository URL (or `lp:` link)
+        """
+
+        return self.spkg.conf.get("bzr", "orig")
+
+    def get_branch(self) -> str:
+        """
+        Returns:
+            str:    string containing the branch that is set in the package configuration
+        """
+
+        return self.spkg.conf.get("bzr", "branch")
+
+    def get_revno(self) -> str:
+        """
+        Returns:
+            str:    string containing the revision number that is set in the package configuration
+        """
+
+        return self.spkg.conf.get("bzr", "revno")
 
     def rev(self) -> str:
         """
@@ -70,9 +131,6 @@ class BzrSource(Source):
         Returns:
             str: either revision string from repo, last stored rev string or `""` when unsuccessful
         """
-
-        if not self.active:
-            return ""
 
         # ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
@@ -96,7 +154,7 @@ class BzrSource(Source):
         os.chdir(prevdir)
 
         self.saved_rev = rev
-        # ktr.state_write(self.spkg.conf_name, dict(bzr_last_rev=rev))
+        # ktr.state_write(self.spkg.get_conf_name(), dict(bzr_last_rev=rev))
 
         return rev
 
@@ -110,8 +168,8 @@ class BzrSource(Source):
             dict:   key-value pairs (property: value)
         """
 
-        state = dict(bzr_branch=self.spkg.conf.get("bzr", "branch"),
-                     bzr_rev=self.spkg.conf.get("bzr", "rev"))
+        state = dict(bzr_branch=self.get_branch(),
+                     bzr_rev=self.get_revno())
 
         return state
 
@@ -123,12 +181,9 @@ class BzrSource(Source):
             str: nice version string (base version + "+bzr" + revision)
         """
 
-        if not self.active:
-            return None
-
-        ver = self.spkg.conf.get("source", "version")   # base version
-        ver += "+rev"                                   # bzr prefix
-        ver += self.rev()                               # revision number as string
+        ver = self.spkg.get_version()   # base version
+        ver += "+rev"                   # bzr prefix
+        ver += self.rev()               # revision number as string
 
         return ver
 
@@ -140,9 +195,6 @@ class BzrSource(Source):
         Returns:
             bool:  `True` if successful, `False` if not or source already exists
         """
-
-        if not self.active:
-            return False
 
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
@@ -172,17 +224,15 @@ class BzrSource(Source):
             cmd.append("--verbose")
 
         # set origin
-        if not self.spkg.conf.get("bzr", "branch"):
-            cmd.append(self.spkg.conf.get("source", "orig"))
+        if not self.get_branch():
+            cmd.append(self.get_orig())
         else:
-            cmd.append(self.spkg.conf.get("source", "orig") +
-                       "/" +
-                       self.spkg.conf.get("bzr", "branch"))
+            cmd.append(self.get_orig() + "/" + self.get_branch())
 
         # set revision is specified
-        if self.spkg.conf.get("bzr", "rev"):
+        if self.get_revno():
             cmd.append("--revision")
-            cmd.append(self.spkg.conf.get("bzr", "rev"))
+            cmd.append(self.get_revno())
 
         # set destination
         cmd.append(self.dest)
@@ -195,8 +245,8 @@ class BzrSource(Source):
         rev = self.rev()
 
         # check if checkout worked
-        if self.spkg.conf.get("bzr", "rev"):
-            if self.spkg.conf.get("bzr", "rev") != rev:
+        if self.get_revno():
+            if self.get_revno() != rev:
                 logger.err("Something went wrong, requested commit not available.")
                 return False
 
@@ -213,14 +263,11 @@ class BzrSource(Source):
             bool: `True` if update available and successful, `False` otherwise
         """
 
-        if not self.active:
-            return False
-
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
         # if specific revision is requested, do not pull updates (obviously)
-        if self.spkg.conf.get("bzr", "rev"):
+        if self.get_revno():
             return False
 
         # check for connectivity to server
@@ -272,15 +319,12 @@ class BzrSource(Source):
             bool:       `True` if successful, `False` if not or already exported
         """
 
-        if not self.active:
-            return False
-
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
         def remove_notkeep():
             """local function for removing bzr repo after export "if not keep" """
-            if not self.spkg.conf.getboolean("bzr", "keep"):
+            if not self.get_keep_repo():
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
                 assert ktr.conf.get_datadir() in self.dest
@@ -297,9 +341,9 @@ class BzrSource(Source):
             cmd.append("--verbose")
 
         # export HEAD or specified commit
-        if self.spkg.conf.get("bzr", "rev"):
+        if self.get_revno():
             cmd.append("--revision")
-            cmd.append(self.spkg.conf.get("bzr", "rev"))
+            cmd.append(self.get_revno())
 
         # check if bzr repo exists
         if not os.access(self.dest, os.R_OK):
@@ -307,7 +351,7 @@ class BzrSource(Source):
             return False
 
         version = self.formatver()
-        name_version = self.spkg.name + "-" + version
+        name_version = self.spkg.get_name() + "-" + version
 
         file_name = os.path.join(self.sdir, name_version + ".tar.gz")
 

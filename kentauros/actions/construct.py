@@ -57,16 +57,18 @@ class ConstructAction(Action):
             bool:       ``True`` when successful, ``False`` if an error occurred
         """
 
-        self.kpkg.get_constructor().init()
+        constructor = self.kpkg.get_module("constructor")
 
-        success = self.kpkg.get_constructor().prepare()
+        constructor.init()
+
+        success = constructor.prepare()
         if not success:
-            self.kpkg.get_constructor().clean()
+            constructor.clean()
             KtrLogger(LOGPREFIX).log("Source package assembly unsuccessful.", 2)
             return False
 
-        self.kpkg.get_constructor().build()
-        self.kpkg.get_constructor().export()
-        self.kpkg.get_constructor().clean()
+        constructor.build()
+        constructor.export()
+        constructor.clean()
 
         return True

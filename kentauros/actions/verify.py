@@ -4,11 +4,7 @@ This submodule contains the :py:class:`VerifyAction` class.
 
 
 from kentauros.definitions import ActionType
-
-from kentauros.logger import KtrLogger
-
 from kentauros.actions.abstract import Action
-from kentauros.actions.common import LOGPREFIX
 
 
 class VerifyAction(Action):
@@ -35,8 +31,4 @@ class VerifyAction(Action):
         Currently, this does no checking whatsoever.
         """
 
-        if not self.kpkg.verify():
-            KtrLogger(LOGPREFIX).log("Package configuration could not be verified.", 2)
-            return False
-        else:
-            return True
+        return True

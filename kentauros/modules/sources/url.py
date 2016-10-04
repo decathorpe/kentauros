@@ -36,22 +36,62 @@ class UrlSource(Source):
 
     def __init__(self, package):
         super().__init__(package)
-        self.dest = os.path.join(self.sdir, os.path.basename(
-            self.spkg.conf.get("source", "orig")))
+
+        self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.URL
+
+    def verify(self) -> bool:
+        """
+        This method runs several checks to ensure wget commands can proceed. It is automatically
+        executed at package initialisation. This includes:
+
+        * checks if all expected keys are present in the configuration file
+        * checks if the `wget` binary is installed and can be found on the system
+
+        Returns:
+            bool:   verification success
+        """
 
         logger = KtrLogger(LOGPREFIX)
 
+        success = True
+
+        # check if the configuration file is valid
+        expected_keys = ["keep", "orig"]
+
+        for key in expected_keys:
+            if key not in self.spkg.conf["url"]:
+                logger.err("The [url] section in the package's .conf file doesn't set the '" +
+                           key +
+                           "' key.")
+                success = False
+
+        # check if wget is installed
         try:
-            self.active = True
             subprocess.check_output(["which", "wget"])
         except subprocess.CalledProcessError:
             logger.log("Install wget to use the specified source.")
-            self.active = False
 
-    def verify(self) -> bool:
-        # TODO: sources/url verification code
-        return True
+        return success
+
+    def get_keep(self) -> bool:
+        return self.spkg.conf.getboolean("url", "keep")
+
+    def get_keep_repo(self) -> bool:
+        """
+        Returns:
+            bool:   boolean value indicating whether the downloaded file should be kept
+        """
+
+        return self.spkg.conf.getboolean("url", "keep_repo")
+
+    def get_orig(self) -> str:
+        """
+        Returns:
+            str:    string containing the upstream file URL
+        """
+
+        return self.spkg.conf.get("url", "orig")
 
     def status(self) -> dict:
         return dict()
@@ -64,9 +104,6 @@ class UrlSource(Source):
         Returns:
             bool:  *True* if successful, *False* if not or source already exists
         """
-
-        if not self.active:
-            return False
 
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
@@ -81,7 +118,7 @@ class UrlSource(Source):
             return False
 
         # check for connectivity to server
-        if not is_connected(self.spkg.conf.get("source", "orig")):
+        if not is_connected(self.get_orig()):
             logger.log("No connection to remote host detected. Cancelling source download.", 2)
             return False
 
@@ -95,7 +132,7 @@ class UrlSource(Source):
             cmd.append("--verbose")
 
         # set origin and destination
-        cmd.append(self.spkg.conf.get("source", "orig"))
+        cmd.append(self.get_orig())
         cmd.append("-O")
         cmd.append(self.dest)
 

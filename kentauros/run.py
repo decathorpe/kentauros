@@ -82,6 +82,8 @@ def run():
         print()
         raise SystemExit()
 
+    pkgs.sort()
+
     # log list of found packages
     logger.log_list("Packages", pkgs)
     print()

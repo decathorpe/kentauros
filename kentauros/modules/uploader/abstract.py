@@ -7,9 +7,10 @@ uploaders.
 import abc
 
 from kentauros.instance import Kentauros
+from kentauros.modules.module import PkgModule
 
 
-class Uploader(metaclass=abc.ABCMeta):
+class Uploader(PkgModule, metaclass=abc.ABCMeta):
     """
     This class serves as a quasi-abstract base class for source package uploaders. They are expected
     to override this class's methods as necessary.

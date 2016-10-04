@@ -24,7 +24,7 @@ def spec_version_bzr(source: BzrSource) -> str:
     """
 
     assert isinstance(source, BzrSource)
-    ver_str = source.spkg.conf.get("source", "version") + "+rev%{rev}"
+    ver_str = source.spkg.get_version() + "+rev%{rev}"
     return ver_str
 
 
@@ -40,7 +40,7 @@ def spec_version_git(source: GitSource) -> str:
     """
 
     assert isinstance(source, GitSource)
-    ver_str = source.spkg.conf.get("source", "version") + "+git%{date}.%{commit}"
+    ver_str = source.spkg.get_version() + "+git%{date}.%{commit}"
     return ver_str
 
 
@@ -57,7 +57,7 @@ def spec_version_local(source: LocalSource) -> str:
     """
 
     assert isinstance(source, LocalSource)
-    ver_str = source.spkg.conf.get("source", "version")
+    ver_str = source.spkg.get_version()
     return ver_str
 
 
@@ -73,7 +73,7 @@ def spec_version_url(source: UrlSource) -> str:
     """
 
     assert isinstance(source, UrlSource)
-    ver_str = source.spkg.conf.get("source", "version")
+    ver_str = source.spkg.get_version()
     return ver_str
 
 

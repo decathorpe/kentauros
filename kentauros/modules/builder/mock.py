@@ -206,7 +206,8 @@ class MockBuilder(Builder):
 
     def verify(self) -> bool:
         """
-        This method runs several checks to ensure mock builds can proceed. This includes:
+        This method runs several checks to ensure mock builds can proceed. It is automatically
+        executed at package initialisation. This includes:
 
         * checks if all expected keys are present in the configuration file
         * checks if the `mock` binary is installed and can be found on the system
@@ -316,10 +317,10 @@ class MockBuilder(Builder):
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
-        packdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.conf_name)
+        packdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.get_conf_name())
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(packdir, self.bpkg.name + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(packdir, self.bpkg.get_name() + "*.src.rpm"))
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.", 2)
@@ -380,7 +381,7 @@ class MockBuilder(Builder):
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
-        pkg_expo_dir = os.path.join(ktr.conf.get_expodir(), self.bpkg.conf_name)
+        pkg_expo_dir = os.path.join(ktr.conf.get_expodir(), self.bpkg.get_conf_name())
         os.makedirs(pkg_expo_dir, exist_ok=True)
 
         if not os.path.exists(pkg_expo_dir):

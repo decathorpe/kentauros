@@ -35,5 +35,5 @@ class UploadAction(Action):
         """
 
         # TODO: error handling
-        self.kpkg.get_uploader().upload()
+        self.kpkg.get_module("uploader").upload()
         return True

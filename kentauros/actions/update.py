@@ -34,5 +34,5 @@ class UpdateAction(Action):
             bool:   *True* when update was available, *False* if not or failure
         """
 
-        update = self.kpkg.get_source().update()
+        update = self.kpkg.get_module("source").update()
         return update

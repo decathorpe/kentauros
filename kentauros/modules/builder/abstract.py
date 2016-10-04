@@ -26,7 +26,7 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
         Package package:    package to which this builder belongs
 
     Attributes:
-        Package package:    stores the package argument given at initialisation
+        Package bpkg:       stores the package argument given at initialisation
     """
 
     def __init__(self, package):
@@ -37,7 +37,7 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
             assert isinstance(package, Package)
 
         self.bpkg = package
-        self.pdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.conf_name)
+        self.pdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.get_conf_name())
 
     @abc.abstractmethod
     def status(self) -> dict:

@@ -28,11 +28,8 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
     Attributes:
         str sdir:           source directory of the package this source belongs to
         str dest:           destination path when downloading / copying sources
-        str orig:           origin of the source, as specified in the package configuration file
-        bool keep:          determines wheather sources are kept between actions
-
-        Package package:    mother package
-        SourceType type:    type of source
+        Package spkg:       stores the package argument given at initialisation
+        SourceType stype:   type of source
     """
 
     def __init__(self, package):
@@ -43,14 +40,24 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             assert isinstance(package, Package)
 
         self.spkg = package
-        self.sdir = os.path.join(ktr.conf.get_datadir(), self.spkg.conf_name)
-
-        # TODO: some attributes (e.g. self.keep) are never set and never used
+        self.sdir = os.path.join(ktr.conf.get_datadir(), self.spkg.get_conf_name())
 
         self.dest = None
-        self.orig = None
-        self.keep = False
         self.stype = None
+
+    @abc.abstractmethod
+    def get_orig(self) -> str:
+        """
+        This method is expected to read and return the 'orig' value specified in the package
+        configuration file in the source section.
+        """
+
+    @abc.abstractmethod
+    def get_keep(self) -> bool:
+        """
+        This method is expected to read and return the 'keep' value specified in the package
+        configuration file in the source section.
+        """
 
     @abc.abstractmethod
     def export(self):
@@ -108,14 +115,16 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             os.remove(self.dest)
 
         # if destination is a directory (VCS repo):
-        if os.path.isdir(self.dest):
+        elif os.path.isdir(self.dest):
             shutil.rmtree(self.dest)
+
+        # otherwise: something went horribly wrong
+        else:
+            logger.err("Something just went wrong.")
 
         # if source directory is empty now (no patches, additional files, etc. left):
         # remove whole directory
         if not os.listdir(self.sdir):
-            assert os.path.isabs(self.sdir)
-            assert ktr.conf.get_datadir() in self.sdir
             os.rmdir(self.sdir)
 
         return True

@@ -1,10 +1,5 @@
 # TODO items for kentauros
 
-## ktr
-
-- add assertions for type checks (if debug: assert isinstance)
-
-
 ## actions:
 
 - import: implementation missing
@@ -33,7 +28,6 @@
 ## package:
 
 - allow variables in package configuration file: `$(VERSION)`, `$(NAME)`
-- delegate configuration verification to the appropriate modules
 
 
 ## pkgformat/rpm:
@@ -45,7 +39,7 @@
 ## source:
 
 - bzr: lightweight checkouts are not supported yet
-- some attributes of `Source` subclasses are never used
+- url: support curl and check at runtime which downloader can be used
 
 
 ## upload:

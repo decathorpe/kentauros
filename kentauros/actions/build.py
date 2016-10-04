@@ -39,13 +39,15 @@ class BuildAction(Action):
 
         logger = KtrLogger(LOGPREFIX)
 
-        success = self.kpkg.get_builder().build()
+        builder = self.kpkg.get_module("builder")
+
+        success = builder.build()
 
         if not success:
             logger.log("Binary package building unsuccessful, aborting action.")
             return False
 
-        success = self.kpkg.get_builder().export()
+        success = builder.export()
 
         if not success:
             logger.log("Binary package exporting unsuccessful, aborting action.")

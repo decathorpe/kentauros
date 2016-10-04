@@ -38,21 +38,87 @@ class CoprUploader(Uploader):
     def __init__(self, package):
         super().__init__(package)
 
-        # if "active" value has not been set in package.conf, set it to false
-        if "active" not in self.upkg.conf.options("copr"):
-            self.upkg.conf.set("copr", "active", "false")
-            self.upkg.update_config()
+        self.remote = DEFAULT_COPR_URL
 
-        self.active = self.upkg.conf.getboolean("copr", "active")
+    def verify(self) -> bool:
+        """
+        This method runs several checks to ensure copr uploads can proceed. It is automatically
+        executed at package initialisation. This includes:
 
-        # if binaries are not installed: mark CoprUploader instance inactive
+        * checks if all expected keys are present in the configuration file
+        * checks if the `copr-cli` binary is installed and can be found on the system
+
+        Returns:
+            bool:   verification success
+        """
+
+        logger = KtrLogger(LOGPREFIX)
+
+        success = True
+
+        # check if the configuration file is valid
+        expected_keys = ["active", "dists", "keep", "repo", "wait"]
+
+        for key in expected_keys:
+            if key not in self.upkg.conf["copr"]:
+                logger.err("The [copr] section in the package's .conf file doesn't set the '" +
+                           key +
+                           "' key.")
+                success = False
+
+        # check if copr is installed
         try:
             subprocess.check_output(["which", "copr-cli"])
         except subprocess.CalledProcessError:
-            KtrLogger(LOGPREFIX).log("Install copr-cli to use the specified uploader.")
-            self.active = False
+            logger.log("Install copr-cli to use the specified builder.")
+            success = False
 
-        self.remote = DEFAULT_COPR_URL
+        return success
+
+    def get_active(self):
+        """
+        Returns:
+            bool:   boolean value indicating whether this builder should be active
+        """
+
+        return self.upkg.conf.getboolean("copr", "active")
+
+    def get_dists(self):
+        """
+        Returns:
+            list:   list of chroots that are going to be used for sequential builds
+        """
+
+        dists = self.upkg.conf.get("copr", "dists").split(",")
+
+        if dists == [""]:
+            dists = []
+
+        return dists
+
+    def get_keep(self):
+        """
+        Returns:
+            bool:   boolean value indicating whether this builder should keep source packages
+        """
+
+        return self.upkg.conf.getboolean("copr", "keep")
+
+    def get_repo(self):
+        """
+        Returns:
+            str:    name of the repository to upload to
+        """
+
+        return self.upkg.conf.get("copr", "repo")
+
+    def get_wait(self):
+        """
+        Returns:
+            bool:   boolean value indicating whether this builder should wait for remote builds
+        """
+
+        return self.upkg.conf.getboolean("copr", "wait")
 
     def status(self) -> dict:
         # TODO: return e.g. build success of builds
@@ -68,16 +134,13 @@ class CoprUploader(Uploader):
             bool:       returns *False* if anything goes wrong, *True* otherwise
         """
 
-        if not self.active:
-            return True
-
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
-        packdir = os.path.join(ktr.conf.get_packdir(), self.upkg.conf_name)
+        packdir = os.path.join(ktr.conf.get_packdir(), self.upkg.get_conf_name())
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(packdir, self.upkg.name + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(packdir, self.upkg.get_name() + "*.src.rpm"))
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.")
@@ -87,21 +150,16 @@ class CoprUploader(Uploader):
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        # get dists to build for
-        dists = self.upkg.conf.get("copr", "dist").split(",")
-        if dists == [""]:
-            dists = []
-
         # construct copr-cli command
-        cmd = ["copr-cli", "build", self.upkg.conf.get("copr", "repo")]
+        cmd = ["copr-cli", "build", self.get_repo()]
 
         # append chroots (dists)
-        for dist in dists:
+        for dist in self.get_dists():
             cmd.append("--chroot")
             cmd.append(dist)
 
         # append --nowait if wait=False
-        if not self.upkg.conf.getboolean("copr", "wait"):
+        if not self.get_wait():
             cmd.append("--nowait")
 
         # append package
@@ -118,7 +176,7 @@ class CoprUploader(Uploader):
         # TODO: error handling
 
         # remove source package if keep=False is specified
-        if not self.upkg.conf.getboolean("copr", "keep"):
+        if not self.get_keep():
             os.remove(srpm)
 
         return True
