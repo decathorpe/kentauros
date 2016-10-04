@@ -13,22 +13,6 @@
 <th>msg</th>
 </tr>
 <tr class="even">
-<td>convention</td>
-<td>kentauros.definitions</td>
-<td>PkgModuleType</td>
-<td>36</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="odd">
-<td>refactor</td>
-<td>kentauros.run</td>
-<td>run</td>
-<td>26</td>
-<td>0</td>
-<td>Too many statements (56/40)</td>
-</tr>
-<tr class="even">
 <td>warning</td>
 <td>kentauros.package</td>
 <td>&#160;</td>
@@ -53,6 +37,14 @@
 <td>TODO: delegate verifying all other config values to the appropriate places</td>
 </tr>
 <tr class="odd">
+<td>convention</td>
+<td>kentauros.definitions</td>
+<td>PkgModuleType</td>
+<td>36</td>
+<td>0</td>
+<td>Missing class docstring</td>
+</tr>
+<tr class="even">
 <td>warning</td>
 <td>kentauros.import</td>
 <td>&#160;</td>
@@ -60,53 +52,61 @@
 <td>0</td>
 <td>TODO: get status from all package modules</td>
 </tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.actions.status</td>
-<td>&#160;</td>
-<td>34</td>
+<tr class="odd">
+<td>refactor</td>
+<td>kentauros.init.cli</td>
+<td>get_cli_parser</td>
+<td>63</td>
 <td>0</td>
-<td>TODO: output package configuration / status</td>
+<td>Too many local variables (16/15)</td>
+</tr>
+<tr class="even">
+<td>refactor</td>
+<td>kentauros.run</td>
+<td>run</td>
+<td>26</td>
+<td>0</td>
+<td>Too many statements (56/40)</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.actions.importing</td>
+<td>kentauros.modules.sources.abstract</td>
 <td>&#160;</td>
-<td>33</td>
+<td>48</td>
 <td>0</td>
-<td>TODO: import package configuration / status</td>
+<td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.actions.upload</td>
+<td>kentauros.modules.sources.url</td>
 <td>&#160;</td>
-<td>37</td>
+<td>53</td>
 <td>0</td>
-<td>TODO: error handling</td>
+<td>TODO: sources/url verification code</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.modules.uploader.copr</td>
+<td>kentauros.modules.sources.local</td>
 <td>&#160;</td>
-<td>58</td>
+<td>36</td>
 <td>0</td>
-<td>TODO: return e.g. build success of builds</td>
+<td>TODO: sources/local verification code</td>
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.uploader.copr</td>
+<td>kentauros.modules.sources.bzr</td>
 <td>&#160;</td>
-<td>118</td>
+<td>59</td>
 <td>0</td>
-<td>TODO: error handling</td>
+<td>TODO: sources/bzr verification code</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.modules.builder.mock</td>
+<td>kentauros.modules.sources.git</td>
 <td>&#160;</td>
-<td>221</td>
+<td>75</td>
 <td>0</td>
-<td>TODO: builder/mock verification code</td>
+<td>TODO: sources/git verification code</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -174,51 +174,43 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.sources.local</td>
+<td>kentauros.modules.uploader.copr</td>
 <td>&#160;</td>
-<td>36</td>
+<td>58</td>
 <td>0</td>
-<td>TODO: sources/local verification code</td>
+<td>TODO: return e.g. build success of builds</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.modules.sources.url</td>
+<td>kentauros.modules.uploader.copr</td>
 <td>&#160;</td>
-<td>53</td>
+<td>118</td>
 <td>0</td>
-<td>TODO: sources/url verification code</td>
+<td>TODO: error handling</td>
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.sources.bzr</td>
+<td>kentauros.actions.status</td>
 <td>&#160;</td>
-<td>59</td>
+<td>34</td>
 <td>0</td>
-<td>TODO: sources/bzr verification code</td>
+<td>TODO: output package configuration / status</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
-<td>kentauros.modules.sources.abstract</td>
+<td>kentauros.actions.upload</td>
 <td>&#160;</td>
-<td>48</td>
+<td>37</td>
 <td>0</td>
-<td>TODO: some attributes (e.g. self.keep) are never set and never used</td>
+<td>TODO: error handling</td>
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.sources.git</td>
+<td>kentauros.actions.importing</td>
 <td>&#160;</td>
-<td>75</td>
+<td>33</td>
 <td>0</td>
-<td>TODO: sources/git verification code</td>
-</tr>
-<tr class="odd">
-<td>refactor</td>
-<td>kentauros.init.cli</td>
-<td>get_cli_parser</td>
-<td>63</td>
-<td>0</td>
-<td>Too many local variables (16/15)</td>
+<td>TODO: import package configuration / status</td>
 </tr>
 </table>
 </div>
@@ -229,7 +221,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2063 statements analysed.</p><div>
+<p>2069 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -251,24 +243,24 @@
 <tr class="odd">
 <td>class</td>
 <td>43</td>
-<td>43</td>
-<td>=</td>
+<td>42</td>
+<td>+1.00</td>
 <td>97.67</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>154</td>
-<td>154</td>
-<td>=</td>
+<td>158</td>
+<td>155</td>
+<td>+3.00</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>function</td>
+<td>39</td>
 <td>38</td>
-<td>38</td>
-<td>=</td>
+<td>+1.00</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -281,11 +273,11 @@ dateutil
   \-parser (kentauros.modules.sources.git)
 kentauros 
   \-actions (kentauros.run)
-  | \-abstract (kentauros.actions.prepare)
+  | \-abstract (kentauros.actions.importing)
   | \-build (kentauros.actions)
   | \-chain (kentauros.actions)
   | \-clean (kentauros.actions)
-  | \-common (kentauros.actions.verify)
+  | \-common (kentauros.actions.chain)
   | \-construct (kentauros.actions)
   | \-export (kentauros.actions)
   | \-get (kentauros.actions)
@@ -299,15 +291,16 @@ kentauros
   \-bootstrap (kentauros.run)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
+  | \-common (kentauros.config)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
-  \-conntest (kentauros.modules.sources.git)
-  \-definitions (kentauros.config.common)
+  \-conntest (kentauros.modules.uploader.copr)
+  \-definitions (kentauros.config)
   \-init 
-  | \-cli (kentauros.config.cli)
-  | \-env (kentauros.config.common)
-  \-instance (kentauros.modules.sources.git)
-  \-logger (kentauros.modules.sources.git)
+  | \-cli (kentauros.config)
+  | \-env (kentauros.config)
+  \-instance (kentauros.actions.chain)
+  \-logger (kentauros.actions.chain)
   \-modules 
   | \-builder (kentauros.modules)
   | | \-abstract (kentauros.modules.builder.mock)
@@ -319,17 +312,17 @@ kentauros
   | | | \-spec_preamble_out (kentauros.modules.constructor.rpm)
   | | | \-spec_version_out (kentauros.modules.constructor.rpm)
   | | \-srpm (kentauros.modules.constructor)
-  | \-module (kentauros.modules.sources.abstract)
+  | \-module (kentauros.modules.builder.abstract)
   | \-sources (kentauros.modules)
-  | | \-abstract (kentauros.modules.sources.git)
-  | | \-bzr (kentauros.modules.sources)
-  | | \-git (kentauros.modules.sources)
-  | | \-local (kentauros.modules.sources)
-  | | \-url (kentauros.modules.sources)
+  | | \-abstract (kentauros.modules.constructor.rpm)
+  | | \-bzr (kentauros.modules.constructor.rpm.spec_version_out)
+  | | \-git (kentauros.modules.constructor.rpm.spec_version_out)
+  | | \-local (kentauros.modules.constructor.rpm.spec_version_out)
+  | | \-url (kentauros.modules.constructor.rpm.spec_version_out)
   | \-uploader (kentauros.modules)
   |   \-abstract (kentauros.modules.uploader.copr)
   |   \-copr (kentauros.modules.uploader)
-  \-package (kentauros.modules.sources.abstract)
+  \-package (kentauros.actions.abstract)
   \-run (ktr)
 tinydb (kentauros.instance)</pre></div>
 <div>
@@ -344,31 +337,31 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2296</td>
-<td>41.50</td>
-<td>2297</td>
-<td>-1.00</td>
+<td>2302</td>
+<td>41.18</td>
+<td>2306</td>
+<td>-4.00</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1812</td>
-<td>32.75</td>
-<td>1812</td>
-<td>=</td>
+<td>1851</td>
+<td>33.11</td>
+<td>1859</td>
+<td>-8.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>244</td>
-<td>4.41</td>
-<td>244</td>
-<td>=</td>
+<td>242</td>
+<td>4.33</td>
+<td>216</td>
+<td>+26.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1180</td>
-<td>21.33</td>
-<td>1181</td>
-<td>-1.00</td>
+<td>1195</td>
+<td>21.38</td>
+<td>1178</td>
+<td>+17.00</td>
 </tr>
 </table>
 </div>
@@ -407,8 +400,8 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <td>convention</td>
 <td>1</td>
-<td>1</td>
-<td>=</td>
+<td>0</td>
+<td>+1.00</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
@@ -418,15 +411,15 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>22</td>
-<td>22</td>
-<td>=</td>
+<td>21</td>
+<td>15</td>
+<td>+6.00</td>
 </tr>
 <tr class="odd">
 <td>error</td>
 <td>0</td>
-<td>1</td>
-<td>-1.00</td>
+<td>0</td>
+<td>=</td>
 </tr>
 </table>
 </div>
@@ -443,116 +436,109 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <td>kentauros.modules.constructor.srpm</td>
 <td>0.00</td>
-<td>22.73</td>
+<td>23.81</td>
 <td>33.33</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.package</td>
 <td>0.00</td>
-<td>13.64</td>
+<td>14.29</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.modules.uploader.copr</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>9.52</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.modules.constructor.rpm.__init__</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>9.52</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.modules.sources.url</td>
 <td>0.00</td>
-<td>4.55</td>
+<td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.modules.sources.local</td>
 <td>0.00</td>
-<td>4.55</td>
+<td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.modules.sources.git</td>
 <td>0.00</td>
-<td>4.55</td>
+<td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>kentauros.modules.sources.bzr</td>
 <td>0.00</td>
-<td>4.55</td>
+<td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>kentauros.modules.sources.abstract</td>
 <td>0.00</td>
-<td>4.55</td>
+<td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.modules.builder.mock</td>
-<td>0.00</td>
-<td>4.55</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="even">
 <td>kentauros.import</td>
 <td>0.00</td>
-<td>4.55</td>
+<td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>kentauros.actions.upload</td>
 <td>0.00</td>
-<td>4.55</td>
-<td>0.00</td>
-<td>0.00</td>
-</tr>
-<tr class="even">
-<td>kentauros.actions.status</td>
-<td>0.00</td>
-<td>4.55</td>
+<td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
-<td>kentauros.actions.importing</td>
+<td>kentauros.actions.status</td>
 <td>0.00</td>
-<td>4.55</td>
+<td>4.76</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
+<td>kentauros.actions.importing</td>
+<td>0.00</td>
+<td>4.76</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
 <td>kentauros.run</td>
 <td>0.00</td>
 <td>0.00</td>
 <td>33.33</td>
 <td>0.00</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>kentauros.init.cli</td>
 <td>0.00</td>
 <td>0.00</td>
 <td>33.33</td>
 <td>0.00</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>kentauros.definitions</td>
 <td>0.00</td>
 <td>0.00</td>
@@ -570,7 +556,7 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>fixme</td>
-<td>22</td>
+<td>21</td>
 </tr>
 <tr class="odd">
 <td>too-many-statements</td>
@@ -588,7 +574,7 @@ tinydb (kentauros.instance)</pre></div>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.87/10 (previous run: 9.85/10, +0.02)</div>
+Your code has been rated at 9.88/10 (previous run: 9.91/10, -0.03)</div>
 </div>
 </body>
 </html>

@@ -74,6 +74,30 @@ def get_dist_result_path(dist: str) -> str:
     return os.path.join(DEFAULT_VAR_PATH, dist, "result")
 
 
+def get_mock_cmd() -> str:
+    """
+    This function tries to determine the correct mock binary path. If somethin is messing with the
+    `$PATH` environment variable, it will try to account for that. If mock is not installed (or
+    cannot be found within `$PATH`, this function will raise an Exception.
+
+    Raises:
+        subprocess.CalledProcessError
+
+    Returns:
+        str:    path to the mock binary
+    """
+    logger = KtrLogger(LOGPREFIX)
+
+    mock_cmd = subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
+
+    # check if the right binary is used or if something is messing up $PATH
+    if mock_cmd == "/usr/sbin/mock":
+        logger.log("Something is messing with your $PATH variable.", 2)
+        mock_cmd = "/usr/bin/mock"
+
+    return mock_cmd
+
+
 class MockBuild:
     """
     This helper class is used for the actual execution of mock.
@@ -180,46 +204,91 @@ class MockBuilder(Builder):
     def __init__(self, package):
         super().__init__(package)
 
+    def verify(self) -> bool:
+        """
+        This method runs several checks to ensure mock builds can proceed. This includes:
+
+        * checks if all expected keys are present in the configuration file
+        * checks if the `mock` binary is installed and can be found on the system
+        * checks if the current user is allowed to run builds with mock
+        * checks if the current user is root (building as root is strongly discouraged)
+
+        Returns:
+            bool:   verification success
+        """
+
         logger = KtrLogger(LOGPREFIX)
 
-        # deactivate mock if section is not present in config file
-        if "mock" not in self.bpkg.conf.sections():
-            self.bpkg.conf.add_section("mock")
-            self.bpkg.conf.set("mock", "active", "false")
-            self.bpkg.update_config()
+        success = True
 
-        if "active" not in self.bpkg.conf.options("mock"):
-            self.bpkg.conf.set("mock", "active", "false")
-            self.bpkg.update_config()
+        # check if the configuration file is valid
+        expected_keys = ["active", "dists", "export", "keep"]
 
-        if "export" not in self.bpkg.conf.options("mock"):
-            self.bpkg.conf.set("mock", "export", "false")
-            self.bpkg.update_config()
+        for key in expected_keys:
+            if key not in self.bpkg.conf["mock"]:
+                logger.err("The [mock] section in the package's .conf file doesn't set the '" +
+                           key +
+                           "' key.")
+                success = False
 
-        self.active = self.bpkg.conf.getboolean("mock", "active")
-        self.exporting = self.bpkg.conf.getboolean("mock", "export")
-
-        self.mock_cmd = None
-        # if mock is not installed: deactivate mock builder in conf file
+        # check if mock is installed
         try:
-            self.mock_cmd = subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
+            subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
         except subprocess.CalledProcessError:
             logger.log("Install mock to use the specified builder.")
-            self.active = False
+            success = False
 
-        # check if the right binary is used or if something is messing up $PATH
-        if self.mock_cmd == "/usr/sbin/mock":
-            logger.log("Something is messing with your $PATH variable.", 2)
-            self.mock_cmd = "/usr/bin/mock"
+        # check if the user is in the "mock" group or is root
+        mock_group = grp.getgrnam("mock")
+        mock_user = os.getenv("USER")
 
-        # get dists to build for
-        self.dists = self.bpkg.conf.get("mock", "dist").split(",")
-        if self.dists == [""]:
-            self.dists = []
+        if mock_user not in mock_group.gr_mem:
+            logger.err("The current user is not allowed to use mock.")
+            logger.err("Add yourself to the 'mock' group, log out and back in.")
+            success = False
 
-    def verify(self) -> bool:
-        # TODO: builder/mock verification code
-        return True
+        if mock_user == "root":
+            logger.err("Don't attempt to run mock as root.")
+            success = False
+
+        return success
+
+    def get_active(self):
+        """
+        Returns:
+            bool:   boolean value indicating whether this builder should be active
+        """
+
+        return self.bpkg.conf.getboolean("mock", "active")
+
+    def get_dists(self):
+        """
+        Returns:
+            list:   list of chroots that are going to be used for sequential builds
+        """
+
+        dists = self.bpkg.conf.get("mock", "dists").split(",")
+
+        if dists == [""]:
+            dists = [get_default_mock_dist()]
+
+        return dists
+
+    def get_export(self):
+        """
+        Returns:
+            bool:   boolean value indicating whether this builder should export built packages
+        """
+
+        return self.bpkg.conf.getboolean("mock", "export")
+
+    def get_keep(self):
+        """
+        Returns:
+            bool:   boolean value indicating whether this builder should keep source packages
+        """
+
+        return self.bpkg.conf.getboolean("mock", "keep")
 
     def status(self) -> dict:
         return dict()
@@ -241,18 +310,11 @@ class MockBuilder(Builder):
             bool:   ``True`` if all builds succeeded, ``False`` if not
         """
 
-        if not self.active:
+        if not self.get_active():
             return True
 
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
-
-        # check if user is in the "mock" group
-        mock_group = grp.getgrnam("mock")
-        mock_user = os.getenv("USER")
-        if not ((mock_user in mock_group.gr_mem) or (mock_user == "root")):
-            logger.log("This user is not allowed to build in mock.", 2)
-            return False
 
         packdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.conf_name)
 
@@ -267,16 +329,15 @@ class MockBuilder(Builder):
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        logger.log_list("Specified chroots", self.dists)
+        logger.log_list("Specified chroots", self.get_dists())
 
         # generate build queue
         build_queue = list()
 
-        if not self.dists:
-            build_queue.append(MockBuild(self.mock_cmd, srpm))
-        else:
-            for dist in self.dists:
-                build_queue.append(MockBuild(self.mock_cmd, srpm, dist))
+        mock_cmd = get_mock_cmd()
+
+        for dist in self.get_dists():
+            build_queue.append(MockBuild(mock_cmd, srpm, dist))
 
         # run builds in queue
         build_succ = list()
@@ -290,7 +351,7 @@ class MockBuilder(Builder):
                 build_succ.append((build.path, build.dist))
 
         # remove source package if keep=False is specified
-        if not self.bpkg.conf.getboolean("mock", "keep"):
+        if not self.get_keep():
             os.remove(srpm)
 
         if build_succ:
@@ -310,10 +371,10 @@ class MockBuilder(Builder):
             bool:   *True* if successful, *False* if not
         """
 
-        if not self.active:
+        if not self.get_active():
             return True
 
-        if not self.exporting:
+        if not self.get_export():
             return True
 
         ktr = Kentauros()
@@ -332,10 +393,7 @@ class MockBuilder(Builder):
 
         mock_result_dirs = list()
 
-        if not self.dists:
-            self.dists = [get_default_mock_dist()]
-
-        for dist in self.dists:
+        for dist in self.get_dists():
             path = get_dist_result_path(dist)
             if os.path.exists(path):
                 mock_result_dirs.append(path)
