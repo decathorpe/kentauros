@@ -204,6 +204,11 @@ class MockBuilder(Builder):
     def __init__(self, package):
         super().__init__(package)
 
+        self.edir = os.path.join(Kentauros().conf.get_expodir(), self.bpkg.get_conf_name())
+
+    def __str__(self) -> str:
+        return "Mock Builder for Package '" + self.bpkg.get_conf_name() + "'"
+
     def verify(self) -> bool:
         """
         This method runs several checks to ensure mock builds can proceed. It is automatically
@@ -378,17 +383,15 @@ class MockBuilder(Builder):
         if not self.get_export():
             return True
 
-        ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
-        pkg_expo_dir = os.path.join(ktr.conf.get_expodir(), self.bpkg.get_conf_name())
-        os.makedirs(pkg_expo_dir, exist_ok=True)
+        os.makedirs(self.edir, exist_ok=True)
 
-        if not os.path.exists(pkg_expo_dir):
+        if not os.path.exists(self.edir):
             logger.err("Package exports directory could not be created.")
             return False
 
-        if not os.access(pkg_expo_dir, os.W_OK):
+        if not os.access(self.edir, os.W_OK):
             logger.err("Package exports directory can not be written to.")
             return False
 
@@ -408,6 +411,41 @@ class MockBuilder(Builder):
             file_results += glob.glob(os.path.join(result_dir, "*.rpm"))
 
         for file in file_results:
-            shutil.copy2(file, pkg_expo_dir)
+            shutil.copy2(file, self.edir)
 
         return True
+
+    def execute(self) -> bool:
+        logger = KtrLogger(LOGPREFIX)
+
+        success = self.build()
+
+        if not success:
+            logger.log("Binary package building unsuccessful, aborting action.")
+            return False
+
+        success = self.export()
+
+        if not success:
+            logger.log("Binary package exporting unsuccessful, aborting action.")
+            return False
+
+        return success
+
+    def clean(self) -> bool:
+        if not os.path.exists(self.edir):
+            return True
+
+        logger = KtrLogger(LOGPREFIX)
+
+        try:
+            assert Kentauros().conf.get_expodir() in self.edir
+            assert os.path.isabs(self.edir)
+            shutil.rmtree(self.edir)
+            return True
+        except AssertionError:
+            logger.err("The Package exports directory looks weird. Doing nothing.")
+            return False
+        except OSError:
+            logger.err("The Package exports directory couldn't be removed.")
+            return False

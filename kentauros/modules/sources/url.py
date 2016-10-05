@@ -40,6 +40,9 @@ class UrlSource(Source):
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.URL
 
+    def __str__(self) -> str:
+        return "URL Source for Package '" + self.spkg.get_conf_name() + "'"
+
     def verify(self) -> bool:
         """
         This method runs several checks to ensure wget commands can proceed. It is automatically

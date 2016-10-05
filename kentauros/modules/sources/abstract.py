@@ -141,7 +141,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
 
         return self.spkg.conf.get("source", "version")
 
-    def prepare(self) -> bool:
+    def execute(self) -> bool:
         """
         This method provides a generic way of preparing a package's sources. This will invoke the
         :py:meth`Source.get()` method or the :py:meth`Source.update()` method and the

@@ -74,20 +74,17 @@ class ActionType(Enum):
     a default *NONE* type.
     """
 
-    NONE = 0
     IMPORT = 10
     STATUS = 11
     VERIFY = 12
-    GET = 20
-    UPDATE = 21
-    EXPORT = 22
-    CLEAN = 23
-    REFRESH = 24
-    PREPARE = 25
-    CONSTRUCT = 30
-    BUILD = 40
-    UPLOAD = 50
-    CHAIN = 60
+
+    PREPARE = 20
+    CONSTRUCT = 21
+    BUILD = 22
+    UPLOAD = 23
+
+    CLEAN = 30
+    CHAIN = 40
 
 
 @unique

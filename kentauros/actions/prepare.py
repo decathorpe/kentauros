@@ -4,8 +4,10 @@ This submodule contains the :py:class:`PrepareAction` class.
 
 
 from kentauros.definitions import ActionType
+from kentauros.logger import KtrLogger
 
 from kentauros.actions.abstract import Action
+from kentauros.actions.common import LOGPREFIX
 
 
 class PrepareAction(Action):
@@ -35,4 +37,10 @@ class PrepareAction(Action):
             bool:           *True* when successful, *False* if sub-action fails
         """
 
-        return self.kpkg.get_module("source").prepare()
+        source = self.kpkg.get_module("source")
+
+        if source is None:
+            KtrLogger(LOGPREFIX).log("This package doesn't define a source module. Aborting.")
+            return True
+
+        return source.execute()

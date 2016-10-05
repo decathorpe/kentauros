@@ -10,13 +10,6 @@ from kentauros.logger import KtrLogger
 
 from kentauros.actions.abstract import Action
 from kentauros.actions.common import LOGPREFIX
-from kentauros.actions.build import BuildAction
-from kentauros.actions.construct import ConstructAction
-from kentauros.actions.export import ExportAction
-from kentauros.actions.get import GetAction
-from kentauros.actions.update import UpdateAction
-from kentauros.actions.upload import UploadAction
-from kentauros.actions.verify import VerifyAction
 
 
 class ChainAction(Action):
@@ -57,39 +50,20 @@ class ChainAction(Action):
         logger = KtrLogger(LOGPREFIX)
         force = ktr.cli.get_force()
 
-        def print_abort_msg():
-            """This function prints a standard abort message."""
-            logger.log("Action aborted.", 2)
+        success = True
 
-        verified = VerifyAction(self.name).execute()
-        if not verified:
-            print_abort_msg()
-            return False
+        for module in self.kpkg.get_modules():
+            succeeded = module.execute()
 
-        get = GetAction(self.name).execute()
-        if not get:
-            logger.log("Sources not downloaded.", 2)
+            if not succeeded:
+                logger.err("Execution of module '" + str(module) + "' wasn't successful.")
 
-        update = UpdateAction(self.name).execute()
-        if not update:
-            logger.log("Sources not updated.", 2)
+                if force:
+                    logger.log("Execution is forced to continue.")
+                    success = success and succeeded
+                    continue
+                else:
+                    success = False
+                    break
 
-        if not (get or update or force):
-            logger.log("No source changes were detected, aborting action.", 2)
-            return False
-
-        ExportAction(self.name).execute()
-
-        success = ConstructAction(self.name).execute()
-        if not success:
-            print_abort_msg()
-            return False
-
-        success = BuildAction(self.name).execute()
-        if not success:
-            print_abort_msg()
-            return False
-
-        UploadAction(self.name).execute()
-
-        return True
+        return success

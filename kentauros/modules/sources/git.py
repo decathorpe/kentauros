@@ -49,6 +49,9 @@ class GitSource(Source):
         self.saved_commit = None
         self.saved_date = None
 
+    def __str__(self) -> str:
+        return "git Source for Package '" + self.spkg.get_conf_name() + "'"
+
     def verify(self) -> bool:
         """
         This method runs several checks to ensure git commands can proceed. It is automatically

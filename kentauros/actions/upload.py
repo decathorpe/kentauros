@@ -4,8 +4,10 @@ This submodule contains the :py:class:`UploadAction` class.
 
 
 from kentauros.definitions import ActionType
+from kentauros.logger import KtrLogger
 
 from kentauros.actions.abstract import Action
+from kentauros.actions.common import LOGPREFIX
 
 
 class UploadAction(Action):
@@ -34,6 +36,10 @@ class UploadAction(Action):
             bool:           always *True*, future error checking still missing
         """
 
-        # TODO: error handling
-        self.kpkg.get_module("uploader").upload()
-        return True
+        uploader = self.kpkg.get_module("uploader")
+
+        if uploader is None:
+            KtrLogger(LOGPREFIX).log("This package doesn't define an uploader module. Aborting.")
+            return True
+
+        return uploader.execute()

@@ -7,14 +7,12 @@ script.
 import glob
 import os
 
-from kentauros.definitions import ActionType
-
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
 from kentauros.actions import ACTION_DICT
 from kentauros.bootstrap import ktr_bootstrap
-from kentauros.package import Package
+from kentauros.package import Package, PackageError
 
 
 LOGPREFIX = "ktr"
@@ -48,7 +46,7 @@ def run():
     print()
 
     # if no action is specified: exit
-    if ktr.cli.get_action() == ActionType.NONE:
+    if ktr.cli.get_action() is None:
         logger.log("No action specified. Exiting.")
         logger.log("Use 'ktr --help' for more information.")
         print()
@@ -92,7 +90,12 @@ def run():
     for name in pkgs:
         assert isinstance(name, str)
 
-        ktr.add_package(name, Package(name))
+        try:
+            pkg = Package(name)
+            ktr.add_package(name, pkg)
+        except PackageError:
+            logger.log("Package with configuration file '" + name + "' is invalid, skipping.")
+            continue
 
     action_succ = list()
     action_fail = list()

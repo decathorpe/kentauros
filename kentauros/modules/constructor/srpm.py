@@ -60,6 +60,9 @@ class SrpmConstructor(Constructor):
 
         self.spec = RPMSpec(self.path, self.cpkg.get_module("source"))
 
+    def __str__(self) -> str:
+        return "SRPM Constructor for Package '" + self.cpkg.get_conf_name() + "'"
+
     def verify(self) -> bool:
         """
         This method runs several checks to ensure srpm builds can proceed. It is automatically
@@ -402,7 +405,38 @@ class SrpmConstructor(Constructor):
             shutil.copy2(srpm, self.pdir)
             logger.log("File copied: " + srpm, 0)
 
-    def clean(self):
+    def cleanup(self):
         shutil.rmtree(self.tempdir)
 
-# TODO: one uber-method for running everything in correct order
+    def execute(self) -> bool:
+        self.init()
+
+        success = self.prepare()
+        if not success:
+            self.clean()
+            KtrLogger(LOGPREFIX).log("Source package assembly unsuccessful.", 2)
+            return False
+
+        self.build()
+        self.export()
+        self.cleanup()
+
+        return True
+
+    def clean(self) -> bool:
+        if not os.path.exists(self.pdir):
+            return True
+
+        logger = KtrLogger(LOGPREFIX)
+
+        try:
+            assert Kentauros().conf.get_packdir() in self.pdir
+            assert os.path.isabs(self.pdir)
+            shutil.rmtree(self.pdir)
+            return True
+        except AssertionError:
+            logger.err("The Package exports directory looks weird. Doing nothing.")
+            return False
+        except OSError:
+            logger.err("The Package exports directory couldn't be removed.")
+            return False

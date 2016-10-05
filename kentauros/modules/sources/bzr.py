@@ -50,6 +50,9 @@ class BzrSource(Source):
         else:
             self.remote = orig
 
+    def __str__(self) -> str:
+        return "bzr Source for Package '" + self.spkg.get_conf_name() + "'"
+
     def verify(self) -> bool:
         """
         This method runs several checks to ensure bzr commands can proceed. It is automatically

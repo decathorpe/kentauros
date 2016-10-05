@@ -52,22 +52,6 @@ kentauros.actions.construct module
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.export module
--------------------------------
-
-.. automodule:: kentauros.actions.export
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.actions.get module
-----------------------------
-
-.. automodule:: kentauros.actions.get
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.actions.importing module
 ----------------------------------
 
@@ -84,26 +68,10 @@ kentauros.actions.prepare module
     :undoc-members:
     :show-inheritance:
 
-kentauros.actions.refresh module
---------------------------------
-
-.. automodule:: kentauros.actions.refresh
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.actions.status module
 -------------------------------
 
 .. automodule:: kentauros.actions.status
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros.actions.update module
--------------------------------
-
-.. automodule:: kentauros.actions.update
     :members:
     :undoc-members:
     :show-inheritance:

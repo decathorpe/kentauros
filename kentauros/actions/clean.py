@@ -4,8 +4,10 @@ This submodule contains the :py:class:`CleanAction` class.
 
 
 from kentauros.definitions import ActionType
+from kentauros.logger import KtrLogger
 
 from kentauros.actions.abstract import Action
+from kentauros.actions.common import LOGPREFIX
 
 
 class CleanAction(Action):
@@ -34,5 +36,15 @@ class CleanAction(Action):
             bool:           always ``True`` at the moment
         """
 
-        self.kpkg.get_module("source").clean()
-        return True
+        success = True
+
+        for module in self.kpkg.get_modules():
+            cleanup = module.clean()
+
+            if not cleanup:
+                KtrLogger(LOGPREFIX).log("Module '" + str(module) +
+                                         "' did not clean up successfully.")
+
+            success = success and cleanup
+
+        return success

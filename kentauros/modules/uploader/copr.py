@@ -40,6 +40,9 @@ class CoprUploader(Uploader):
 
         self.remote = DEFAULT_COPR_URL
 
+    def __str__(self) -> str:
+        return "COPR Uploader for Package '" + self.upkg.get_conf_name() + "'"
+
     def verify(self) -> bool:
         """
         This method runs several checks to ensure copr uploads can proceed. It is automatically
@@ -179,4 +182,10 @@ class CoprUploader(Uploader):
         if not self.get_keep():
             os.remove(srpm)
 
+        return True
+
+    def execute(self) -> bool:
+        return self.upload()
+
+    def clean(self) -> bool:
         return True

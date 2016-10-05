@@ -71,7 +71,7 @@ class Constructor(PkgModule, metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def clean(self):
+    def cleanup(self):
         """
         This method cleans up all temporary files and directories.
         """

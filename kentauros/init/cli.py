@@ -144,20 +144,6 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
         help="message to be used in changelog entry")
     construct_parser.set_defaults(action=ActionType.CONSTRUCT)
 
-    export_parser = parsers.add_parser(
-        "export",
-        description="export sources from repository to tarball",
-        help="export package sources",
-        parents=[package_parser])
-    export_parser.set_defaults(action=ActionType.EXPORT)
-
-    get_parser = parsers.add_parser(
-        "get",
-        description="get sources specified in package configuration",
-        help="get package sources",
-        parents=[package_parser])
-    get_parser.set_defaults(action=ActionType.GET)
-
     import_parser = parsers.add_parser(
         "import",
         description="import packages into the database",
@@ -172,26 +158,12 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
         parents=[package_parser])
     prepare_parser.set_defaults(action=ActionType.PREPARE)
 
-    refresh_parser = parsers.add_parser(
-        "refresh",
-        description="refresh package sources (clean, get)",
-        help="refresh package sources",
-        parents=[package_parser])
-    refresh_parser.set_defaults(action=ActionType.REFRESH)
-
     status_parser = parsers.add_parser(
         "status",
         description="display kentauros status (configuration, packages)",
         help="display kentauros status",
         parents=[package_parser])
     status_parser.set_defaults(action=ActionType.STATUS)
-
-    update_parser = parsers.add_parser(
-        "update",
-        description="update sources specified in package configuration",
-        help="update package sources",
-        parents=[package_parser])
-    update_parser.set_defaults(action=ActionType.UPDATE)
 
     upload_parser = parsers.add_parser(
         "upload",
@@ -298,7 +270,7 @@ class CLIArgs:
 
         if 'action' in self.args:
             return self.args.action
-        return ActionType.NONE
+        return None
 
     def get_packages(self) -> list:
         """

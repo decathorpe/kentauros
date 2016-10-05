@@ -28,29 +28,10 @@ class BuildAction(Action):
         self.atype = ActionType.BUILD
 
     def execute(self) -> bool:
-        """
-        This method runs the local build corresponding to the package specified at initialisation,
-        with the configuration from package configuration file. This method executes the
-        :py:meth:`Builder.build()` method of the Builder instance in the specified package.
-
-        Returns:
-            bool:   ``True`` if all builds were successful, ``False`` otherwise
-        """
-
-        logger = KtrLogger(LOGPREFIX)
-
         builder = self.kpkg.get_module("builder")
 
-        success = builder.build()
+        if builder is None:
+            KtrLogger(LOGPREFIX).log("This package doesn't define a builder module. Aborting.")
+            return True
 
-        if not success:
-            logger.log("Binary package building unsuccessful, aborting action.")
-            return False
-
-        success = builder.export()
-
-        if not success:
-            logger.log("Binary package exporting unsuccessful, aborting action.")
-            return False
-
-        return success
+        return builder.execute()

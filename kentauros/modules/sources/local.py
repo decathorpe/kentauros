@@ -33,6 +33,9 @@ class LocalSource(Source):
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.LOCAL
 
+    def __str__(self) -> str:
+        return "Local Source for Package '" + self.spkg.get_conf_name() + "'"
+
     def verify(self) -> bool:
         """
         This method runs several checks to ensure local copying can proceed. It is automatically
