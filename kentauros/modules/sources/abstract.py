@@ -118,10 +118,6 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         elif os.path.isdir(self.dest):
             shutil.rmtree(self.dest)
 
-        # otherwise: something went horribly wrong
-        else:
-            logger.err("Something just went wrong.")
-
         # if source directory is empty now (no patches, additional files, etc. left):
         # remove whole directory
         if not os.listdir(self.sdir):
