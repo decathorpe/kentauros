@@ -242,8 +242,6 @@ class GitSource(Source):
         os.chdir(prevdir)
 
         self.saved_commit = rev
-        # ktr.state_write(self.spkg.get_conf_name(), dict(git_last_commit=rev))
-
         return rev
 
     def status(self) -> dict:
@@ -257,7 +255,9 @@ class GitSource(Source):
         """
 
         state = dict(git_branch=self.get_branch(),
-                     git_commit=self.get_commit())
+                     git_commit=self.get_commit(),
+                     git_last_commit=self.commit(),
+                     git_last_date=self.date())
 
         return state
 

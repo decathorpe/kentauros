@@ -60,6 +60,9 @@ class SrpmConstructor(Constructor):
 
         self.spec = RPMSpec(self.path, self.cpkg.get_module("source"))
 
+        self.last_release = None
+        # self.last_version = None
+
     def __str__(self) -> str:
         return "SRPM Constructor for Package '" + self.cpkg.get_conf_name() + "'"
 
@@ -143,14 +146,14 @@ class SrpmConstructor(Constructor):
                        self.cpkg.get_conf_name() +
                        " has never been built before.")
             old_version = ""
-        elif "source_version" not in saved_state:
+        elif "package_version" not in saved_state:
             logger.dbg("Package " +
                        self.cpkg.get_conf_name() +
                        " has no version set in state database.")
             logger.dbg("Falling back to legacy version detection.")
             old_version = spec.get_version()
         else:
-            old_version = saved_state["source_version"]
+            old_version = saved_state["package_version"]
 
         return old_version
 
@@ -191,8 +194,7 @@ class SrpmConstructor(Constructor):
         return old_release
 
     def status(self) -> dict:
-        # TODO: return latest RPM release, etc. so it can be stored after builds
-        return dict()
+        return dict(rpm_last_release=self.last_release)
 
     def init(self):
         """
@@ -288,7 +290,6 @@ class SrpmConstructor(Constructor):
         # construct preamble and new version string
         old_version = self._get_last_version(self.spec)
         new_version = self.cpkg.get_version()
-        # old_release = self._get_last_release(self.spec)
 
         # TODO: check if release resetting / incrementing logic works now
 
@@ -314,13 +315,11 @@ class SrpmConstructor(Constructor):
         logger.dbg("Old Version: " + old_version)
         logger.dbg("New Version: " + new_version)
 
-        new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
-
         # if major version has changed, put it into the changelog
         if old_version != new_version:
+            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
             do_release_bump(new_spec_path,
                             "Update to version " + self.cpkg.get_version() + ".")
-            # new_release = 1
 
         # else if nothing changed but "force" was set (packaging changes)
         # old_version =!= new_version, relreset !=!= True
@@ -331,20 +330,21 @@ class SrpmConstructor(Constructor):
             else:
                 do_release_bump(new_spec_path, message)
 
-            # new_release = int(old_release) + 1
+            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
 
         # else if version has not changed, but snapshot has been updated:
         # old_version =!= new_version
         elif relreset:
+            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
             new_rpm_spec.do_release_reset()
             do_release_bump(new_spec_path, "Update to latest snapshot.")
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
-            # new_release = 1
 
         else:
             return False
 
-        # TODO: ktr.state_write(self.cpkg.conf_name, dict(rpm_last_release=str(new_release)))
+        self.last_release = new_rpm_spec.get_release()
+        # self.last_version = new_rpm_spec.get_version()
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as backup)

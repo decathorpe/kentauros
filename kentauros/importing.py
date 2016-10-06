@@ -35,10 +35,4 @@ def import_package(pkg_name: str):
     """
 
     assert isinstance(pkg_name, str)
-
-    ktr = Kentauros()
-    package = ktr.get_package(pkg_name)
-    ktr.state_write(pkg_name, package.status())
-    ktr.state_write(pkg_name, package.source.status())
-
-    # TODO: get status from all package modules
+    # TODO: get fallback status values from all package modules

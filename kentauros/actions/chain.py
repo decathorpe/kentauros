@@ -66,4 +66,6 @@ class ChainAction(Action):
                     success = False
                     break
 
+        self.update_status()
+
         return success

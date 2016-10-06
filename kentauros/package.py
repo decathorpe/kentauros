@@ -102,10 +102,6 @@ class Package:
             assert isinstance(module, PkgModule)
             module.verify()
 
-        # TODO: move writing state to after the action execution
-        # ktr.state_write(conf_name, self.status())
-        # ktr.state_write(conf_name, self.source.status())
-
     def get_module(self, module_type: str):
         """
         This method gets a specific package module from the module dictionary.
@@ -166,9 +162,8 @@ class Package:
             dict:   key-value pairs (property: value)
         """
 
-        state = dict(package_name=self.name,
-                     source_type=self.conf.get("source", "type"),
-                     source_version=self.conf.get("source", "version"))
+        state = dict(package_name=self.get_name(),
+                     package_version=self.get_version())
         return state
 
     def verify(self) -> bool:

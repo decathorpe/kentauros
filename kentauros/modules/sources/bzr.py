@@ -157,8 +157,6 @@ class BzrSource(Source):
         os.chdir(prevdir)
 
         self.saved_rev = rev
-        # ktr.state_write(self.spkg.get_conf_name(), dict(bzr_last_rev=rev))
-
         return rev
 
     def status(self) -> dict:
@@ -172,7 +170,8 @@ class BzrSource(Source):
         """
 
         state = dict(bzr_branch=self.get_branch(),
-                     bzr_rev=self.get_revno())
+                     bzr_rev=self.get_revno(),
+                     bzr_last_rev=self.rev())
 
         return state
 

@@ -42,4 +42,8 @@ class UploadAction(Action):
             KtrLogger(LOGPREFIX).log("This package doesn't define an uploader module. Aborting.")
             return True
 
-        return uploader.execute()
+        success = uploader.execute()
+
+        self.update_status()
+
+        return success

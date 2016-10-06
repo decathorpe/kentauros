@@ -34,4 +34,8 @@ class BuildAction(Action):
             KtrLogger(LOGPREFIX).log("This package doesn't define a builder module. Aborting.")
             return True
 
-        return builder.execute()
+        success = builder.execute()
+
+        self.update_status()
+
+        return success

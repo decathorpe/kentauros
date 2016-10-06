@@ -42,5 +42,22 @@ class Action(metaclass=abc.ABCMeta):
         """
         This method runs the action corresponding to the :py:class:`Action` instance on the package
         specified at initialisation. It is overridden by subclasses to contain the real code for the
-        action.
+        action. Also, it is expected that actions update the package database after they have
+        finished successfully.
         """
+
+    def update_status(self):
+        """
+        This method writes a package's and all its sub-module's status to the package database. It
+        is executed after actions.
+        """
+
+        ktr = Kentauros()
+
+        conf_name = self.kpkg.get_conf_name()
+        modules = self.kpkg.get_modules()
+
+        ktr.state_write(conf_name, self.kpkg.status())
+
+        for module in modules:
+            ktr.state_write(conf_name, module.status())

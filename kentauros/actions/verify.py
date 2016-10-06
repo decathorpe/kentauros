@@ -26,9 +26,8 @@ class VerifyAction(Action):
     def execute(self) -> bool:
         """
         This method executes a verification of the package configuration and checks if every file
-        necessary for actions is present (and valid).
-
-        Currently, this does no checking whatsoever.
+        necessary for actions is present (and valid). The real checks are done during package
+        initialisation.
         """
 
         return True

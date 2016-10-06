@@ -43,4 +43,8 @@ class PrepareAction(Action):
             KtrLogger(LOGPREFIX).log("This package doesn't define a source module. Aborting.")
             return True
 
-        return source.execute()
+        success = source.execute()
+
+        self.update_status()
+
+        return success

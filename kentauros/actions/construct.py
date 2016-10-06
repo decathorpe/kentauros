@@ -34,4 +34,8 @@ class ConstructAction(Action):
             KtrLogger(LOGPREFIX).log("This package doesn't define a constructor module. Aborting.")
             return True
 
-        return constructor.execute()
+        success = constructor.execute()
+
+        self.update_status()
+
+        return success
