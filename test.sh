@@ -12,3 +12,5 @@ git checkout -- examples/specs
 ./ktr.py -v clean -a
 rm -f examples/state.json
 
+git checkout -- examples/specs
+rm examples/specs/*.old
