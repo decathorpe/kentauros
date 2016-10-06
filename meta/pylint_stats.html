@@ -46,22 +46,6 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.uploader.copr</td>
-<td>&#160;</td>
-<td>127</td>
-<td>0</td>
-<td>TODO: return e.g. build success of builds</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.modules.uploader.copr</td>
-<td>&#160;</td>
-<td>179</td>
-<td>0</td>
-<td>TODO: error handling</td>
-</tr>
-<tr class="even">
-<td>warning</td>
 <td>kentauros.modules.constructor.srpm</td>
 <td>&#160;</td>
 <td>294</td>
@@ -75,6 +59,22 @@
 <td>231</td>
 <td>4</td>
 <td>Too many statements (54/40)</td>
+</tr>
+<tr class="even">
+<td>warning</td>
+<td>kentauros.modules.uploader.copr</td>
+<td>&#160;</td>
+<td>127</td>
+<td>0</td>
+<td>TODO: return e.g. build success of builds</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.modules.uploader.copr</td>
+<td>&#160;</td>
+<td>179</td>
+<td>0</td>
+<td>TODO: error handling</td>
 </tr>
 <tr class="even">
 <td>warning</td>
@@ -153,7 +153,7 @@ dateutil
   \-parser (kentauros.modules.sources.git)
 kentauros 
   \-actions (kentauros.run)
-  | \-abstract (kentauros.actions.importing)
+  | \-abstract (kentauros.actions.chain)
   | \-build (kentauros.actions)
   | \-chain (kentauros.actions)
   | \-clean (kentauros.actions)
@@ -167,13 +167,14 @@ kentauros
   \-bootstrap (kentauros.run)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
+  | \-common (kentauros.config)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
   \-conntest (kentauros.modules.uploader.copr)
-  \-definitions (kentauros.config.common)
+  \-definitions (kentauros.config)
   \-init 
   | \-cli (kentauros.config)
-  | \-env (kentauros.config.common)
+  | \-env (kentauros.config)
   \-instance (kentauros.actions.chain)
   \-logger (kentauros.actions.chain)
   \-modules (kentauros.package)

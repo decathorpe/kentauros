@@ -317,9 +317,9 @@ class SrpmConstructor(Constructor):
 
         # if major version has changed, put it into the changelog
         if old_version != new_version:
-            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
             do_release_bump(new_spec_path,
                             "Update to version " + self.cpkg.get_version() + ".")
+            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
 
         # else if nothing changed but "force" was set (packaging changes)
         # old_version =!= new_version, relreset !=!= True
