@@ -224,7 +224,7 @@ class KtrConf:
 
         if not os.path.exists(filepath):
             if get_env_debug():
-                print(LOGPREFIX1 + errmsg)
+                print(LOGPREFIX1 + errmsg, flush=True)
             return None
 
         self.file = filepath
@@ -233,7 +233,7 @@ class KtrConf:
         successful = self.conf.read(self.file)
         if not successful:
             if errmsg:
-                print(LOGPREFIX1 + errmsg)
+                print(LOGPREFIX1 + errmsg, flush=True)
             return None
 
         if "main" not in self.conf.sections():
@@ -248,8 +248,9 @@ class KtrConf:
                 self.basedir = None
 
         if not self.validate():
-            print(LOGPREFIX1 + "Not all neccessary configuration options have been set.")
-            print(LOGPREFIX2 + self.file)
+            print(LOGPREFIX1 + "Not all neccessary configuration options have been set.",
+                  flush=True)
+            print(LOGPREFIX2 + self.file, flush=True)
             return None
         else:
             return self
@@ -274,7 +275,7 @@ def ktr_conf_from_file(conftype: KtrConfType, filepath: str, errmsg: str=None) -
 
     if not os.path.exists(filepath):
         if get_env_debug():
-            print(LOGPREFIX1 + errmsg)
+            print(LOGPREFIX1 + errmsg, flush=True)
         return None
 
     config = ConfigParser()
@@ -282,12 +283,12 @@ def ktr_conf_from_file(conftype: KtrConfType, filepath: str, errmsg: str=None) -
     successful = config.read(filepath)
     if not successful:
         if errmsg:
-            print(LOGPREFIX1 + errmsg)
+            print(LOGPREFIX1 + errmsg, flush=True)
             return None
 
     if "main" not in config.sections():
-        print(LOGPREFIX1 + "Configuration file invalid (no 'main' section).")
-        print(LOGPREFIX2 + filepath)
+        print(LOGPREFIX1 + "Configuration file invalid (no 'main' section).", flush=True)
+        print(LOGPREFIX2 + filepath, flush=True)
         return None
 
     basedir = None
@@ -303,7 +304,7 @@ def ktr_conf_from_file(conftype: KtrConfType, filepath: str, errmsg: str=None) -
     result = KtrConf(conftype=conftype, basedir=basedir)
 
     if not result.validate():
-        print(LOGPREFIX1 + "Something went wrong during configuration verification.")
+        print(LOGPREFIX1 + "Something went wrong during configuration verification.", flush=True)
         return None
     else:
         return result

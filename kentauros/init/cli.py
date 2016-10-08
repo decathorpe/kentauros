@@ -230,7 +230,7 @@ class CLIArgs:
         if (2 - self.args.verby) >= 0:
             return 2 - self.args.verby
         else:
-            print("DEBUG: Verbosity levels only range from 0 to 2.")
+            print("DEBUG: Verbosity levels only range from 0 to 2.", flush=True)
             return 0
 
     def get_priconf(self) -> KtrConfType:

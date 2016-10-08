@@ -31,7 +31,7 @@ def run():
     ktr = Kentauros()
     logger = KtrLogger(LOGPREFIX)
 
-    print()
+    print(flush=True)
 
     logger.log("DEBUG set: " + str(ktr.debug), 0)
     logger.log("VERBOSITY: " + str(ktr.verby) + "/2", 1)
@@ -43,13 +43,13 @@ def run():
     logger.dbg("PACKDIR: " + ktr.conf.get_packdir())
     logger.dbg("SPECDIR: " + ktr.conf.get_specdir())
 
-    print()
+    print(flush=True)
 
     # if no action is specified: exit
     if ktr.cli.get_action() is None:
         logger.log("No action specified. Exiting.")
         logger.log("Use 'ktr --help' for more information.")
-        print()
+        print(flush=True)
         return
 
     if not ktr_bootstrap():
@@ -77,14 +77,14 @@ def run():
 
     if not pkgs:
         logger.log("No packages have been specified or found. Exiting.")
-        print()
+        print(flush=True)
         raise SystemExit()
 
     pkgs.sort()
 
     # log list of found packages
     logger.log_list("Packages", pkgs)
-    print()
+    print(flush=True)
 
     # generate package objects
     for name in pkgs:
@@ -115,7 +115,7 @@ def run():
             logger.log(name + ": Not successful.")
             action_fail.append(name)
 
-    print()
+    print(flush=True)
 
     if action_succ:
         logger.log_list("Successful actions", action_succ)
@@ -123,6 +123,6 @@ def run():
     if action_fail:
         logger.log_list("Failed actions", action_fail)
 
-    print()
+    print(flush=True)
 
     raise SystemExit()

@@ -43,5 +43,5 @@ def get_env_config() -> KtrConf:
     if result.validate():
         return result
     else:
-        print(LOGPREFIX1 + "Something went wrong during configuration parsing.")
+        print(LOGPREFIX1 + "Something went wrong during configuration parsing.", flush=True)
         return None

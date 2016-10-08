@@ -30,5 +30,5 @@ def get_fallback_config() -> KtrConf:
     if result.validate():
         return result
     else:
-        print(LOGPREFIX1 + "Something went horribly wrong here.")
+        print(LOGPREFIX1 + "Something went horribly wrong here.", flush=True)
         return None

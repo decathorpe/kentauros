@@ -50,14 +50,14 @@ class KtrLogger:
         assert isinstance(msg, str)
 
         if prefix is not None:
-            print("DEBUG: " + prefix + " " + msg)
+            print("DEBUG: " + prefix + " " + msg, flush=True)
             return
 
         if self.log_prefix is not None:
-            print("DEBUG: " + self.log_prefix + " " + msg)
+            print("DEBUG: " + self.log_prefix + " " + msg, flush=True)
             return
 
-        print("DEBUG: " + msg)
+        print("DEBUG: " + msg, flush=True)
 
     def err(self, msg: str, prefix: str=None):
         """
@@ -100,14 +100,14 @@ class KtrLogger:
         if (pri >= ktr.verby) or ktr.debug:
 
             if prefix is not None:
-                print(prefix + sep + " " + msg, file=outfile)
+                print(prefix + sep + " " + msg, file=outfile, flush=True)
                 return
 
             if self.log_prefix is not None:
-                print(self.log_prefix + sep + " " + msg, file=outfile)
+                print(self.log_prefix + sep + " " + msg, file=outfile, flush=True)
                 return
 
-            print(msg, file=outfile)
+            print(msg, file=outfile, flush=True)
 
     def log_command(self, cmdlist: list, pri: int=2, prefix: str=None):
         """
