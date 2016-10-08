@@ -32,7 +32,7 @@ def run_create():
 
     ktr = Kentauros(itype=InstanceType.CREATE)
 
-    print()
+    print(flush=True)
 
     log(LOGPREFIX1 + "DEBUG set: " + str(ktr.debug), 0)
     log(LOGPREFIX1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
@@ -52,7 +52,7 @@ def run_create():
     # if list of packages is empty, nothing has to be done
     if not pkgs:
         log(LOGPREFIX1 + "No package names given. Exiting.", 2)
-        print()
+        print(flush=True)
         return
 
     # log list of found packages
@@ -71,5 +71,5 @@ def run_create():
         else:
             log(LOGPREFIX1 + name + ": Not successful.")
 
-    print()
+    print(flush=True)
 

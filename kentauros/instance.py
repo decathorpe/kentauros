@@ -83,7 +83,7 @@ class Kentauros:
         """
 
         if self.debug:
-            print("DEBUG: " + str(msg))
+            print("DEBUG: " + str(msg), flush=True)
 
 
     def err(self, msg: str):
@@ -118,7 +118,7 @@ class Kentauros:
         """
 
         if (pri >= self.verby) or self.debug:
-            print(msg, file=outfile)
+            print(msg, file=outfile, flush=True)
 
 
     def log_command(self, prefix1: str, basename: str,
@@ -159,7 +159,7 @@ def dbg(msg: str):
     """
 
     if Kentauros().debug:
-        print("DEBUG: " + str(msg))
+        print("DEBUG: " + str(msg), flush=True)
 
 
 def err(msg: str):
@@ -171,7 +171,7 @@ def err(msg: str):
         str msg: error message to be printed
     """
 
-    print("ERROR: " + msg, file=sys.stderr)
+    print("ERROR: " + msg, file=sys.stderr, flush=True)
 
 
 def log(msg: str, pri: int=2):
@@ -193,7 +193,7 @@ def log(msg: str, pri: int=2):
     """
 
     if (pri >= Kentauros().verby) or Kentauros().debug:
-        print(msg)
+        print(msg, flush=True)
 
 
 def log_command(prefix1: str, basename: str, cmdlist: list, pri: int=2):

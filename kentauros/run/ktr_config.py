@@ -34,7 +34,7 @@ def run_config():
 
     ktr = Kentauros(itype=InstanceType.CONFIG)
 
-    print()
+    print(flush=True)
 
     log(LOGPREFIX1 + "DEBUG set: " + str(ktr.debug), 0)
     log(LOGPREFIX1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
@@ -81,5 +81,5 @@ def run_config():
         else:
             log(LOGPREFIX1 + name + ": Not successful.")
 
-    print()
+    print(flush=True)
 

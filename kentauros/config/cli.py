@@ -69,6 +69,6 @@ def get_cli_config(itype: InstanceType) -> KtrConf:
         return result
     else:
         print(LOGPREFIX1 + \
-            "Not all neccessary values have been set at CLI.")
+            "Not all neccessary values have been set at CLI.", flush=True)
         return None
 

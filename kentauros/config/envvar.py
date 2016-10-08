@@ -69,6 +69,6 @@ def get_env_config() -> KtrConf:
         return result
     else:
         print(LOGPREFIX1 + \
-            "Not all neccessary config values have been set by env variables.")
+            "Not all neccessary config values have been set by env variables.", flush=True)
         return None
 

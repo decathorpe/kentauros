@@ -34,7 +34,7 @@ def run():
 
     ktr = Kentauros(itype=InstanceType.NORMAL)
 
-    print()
+    print(flush=True)
 
     log(LOGPREFIX1 + "DEBUG set: " + str(ktr.debug), 0)
     log(LOGPREFIX1 + "VERBOSITY: " + str(ktr.verby) + "/2", 1)
@@ -49,7 +49,7 @@ def run():
     if ktr.cli.get_action() is None:
         log(LOGPREFIX1 + "No action specified. Exiting.", 2)
         log(LOGPREFIX1 + "Use 'ktr --help' for more information.", 2)
-        print()
+        print(flush=True)
         return
 
     if not ktr_bootstrap():
@@ -90,5 +90,5 @@ def run():
         else:
             log(LOGPREFIX1 + name + ": Not successful.")
 
-    print()
+    print(flush=True)
 

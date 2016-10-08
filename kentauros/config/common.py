@@ -157,7 +157,7 @@ class KtrConf:
 
         if not self.validate():
             print(LOGPREFIX1 + \
-                "Last attempted action was overriding default values.")
+                "Last attempted action was overriding default values.", flush=True)
             raise ConfigException("Error occured during configuration parsing.")
 
 
@@ -181,7 +181,7 @@ class KtrConf:
 
         if not os.path.exists(filepath):
             if get_env_debug():
-                print(LOGPREFIX1 + errmsg)
+                print(LOGPREFIX1 + errmsg, flush=True)
             return None
 
         self.file = filepath
@@ -190,7 +190,7 @@ class KtrConf:
         successful = self.conf.read(self.file)
         if not successful:
             if errmsg:
-                print(LOGPREFIX1 + errmsg)
+                print(LOGPREFIX1 + errmsg, flush=True)
             return None
 
         if "main" not in self.conf.sections():
@@ -231,8 +231,8 @@ class KtrConf:
 
         if not self.validate():
             print(LOGPREFIX1 + \
-                "Not all neccessary configuration options have been set.")
-            print(LOGPREFIX2 + self.file)
+                "Not all neccessary configuration options have been set.", flush=True)
+            print(LOGPREFIX2 + self.file, flush=True)
             return None
         else:
             return self
