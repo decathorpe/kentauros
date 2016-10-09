@@ -305,11 +305,13 @@ class SrpmConstructor(Constructor):
 
         # construct preamble and new version string
         old_version = self._get_last_version(spec)
+        old_release = self._get_last_release(spec)
         new_version = self.cpkg.get_version()
 
         # TODO: check if release resetting / incrementing logic works now
 
         spec.set_version()
+        spec.set_source()
 
         # if old version and new version are different, force release reset to 0
         relreset = (new_version != old_version)
@@ -330,9 +332,10 @@ class SrpmConstructor(Constructor):
 
         logger.dbg("Old Version: " + old_version)
         logger.dbg("New Version: " + new_version)
+        logger.dbg("Old Release: " + old_release)
 
         # if major version has changed, put it into the changelog
-        if old_version != new_version:
+        if (old_version != new_version) or (old_release[0] == "0"):
             do_release_bump(new_spec_path,
                             "Update to version " + self.cpkg.get_version() + ".")
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
@@ -357,10 +360,11 @@ class SrpmConstructor(Constructor):
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
 
         else:
+            logger.err("Something went wrong.")
             return False
 
         self.last_release = new_rpm_spec.get_release()
-        # self.last_version = new_rpm_spec.get_version()
+        self.last_version = new_rpm_spec.get_version()
 
         # copy new specfile back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as backup)
