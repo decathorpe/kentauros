@@ -2,15 +2,15 @@
 
 set -e
 
-./ktr.py -v clean -a
+./ktr.py -d clean -a
 rm -f examples/state.json
 
-./ktr.py -v chain -a
+./ktr.py -d chain -a
 
 git checkout -- examples/specs
 
-./ktr.py -v clean -a
+./ktr.py -d clean -a
 rm -f examples/state.json
 
 git checkout -- examples/specs
-rm examples/specs/*.old
+rm -f examples/specs/*.old
