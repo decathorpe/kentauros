@@ -24,7 +24,7 @@
 <td>refactor</td>
 <td>kentauros.run</td>
 <td>run</td>
-<td>24</td>
+<td>49</td>
 <td>0</td>
 <td>Too many branches (16/15)</td>
 </tr>
@@ -32,9 +32,9 @@
 <td>refactor</td>
 <td>kentauros.run</td>
 <td>run</td>
-<td>24</td>
+<td>49</td>
 <td>0</td>
-<td>Too many statements (66/40)</td>
+<td>Too many statements (56/40)</td>
 </tr>
 <tr class="odd">
 <td>warning</td>
@@ -101,7 +101,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2191 statements analysed.</p><div>
+<p>2195 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -138,8 +138,8 @@
 </tr>
 <tr class="odd">
 <td>function</td>
-<td>39</td>
-<td>39</td>
+<td>40</td>
+<td>40</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -153,11 +153,11 @@ dateutil
   \-parser (kentauros.modules.sources.git)
 kentauros 
   \-actions (kentauros.run)
-  | \-abstract (kentauros.actions.chain)
+  | \-abstract (kentauros.actions.importing)
   | \-build (kentauros.actions)
   | \-chain (kentauros.actions)
   | \-clean (kentauros.actions)
-  | \-common (kentauros.actions.chain)
+  | \-common (kentauros.actions.build)
   | \-construct (kentauros.actions)
   | \-importing (kentauros.actions)
   | \-prepare (kentauros.actions)
@@ -167,15 +167,16 @@ kentauros
   \-bootstrap (kentauros.run)
   \-config (kentauros.instance)
   | \-cli (kentauros.config)
+  | \-common (kentauros.config)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
   \-conntest (kentauros.modules.uploader.copr)
-  \-definitions (kentauros.config.common)
+  \-definitions (kentauros.config)
   \-init 
   | \-cli (kentauros.config)
-  | \-env (kentauros.config.common)
+  | \-env (kentauros.config)
   \-instance (kentauros.actions.chain)
-  \-logger (kentauros.actions.chain)
+  \-logger (kentauros.actions.build)
   \-modules (kentauros.package)
   | \-builder (kentauros.modules)
   | | \-abstract (kentauros.modules.builder.mock)
@@ -212,30 +213,30 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2431</td>
-<td>41.53</td>
-<td>2431</td>
+<td>2435</td>
+<td>41.52</td>
+<td>2435</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>1941</td>
-<td>33.16</td>
-<td>1941</td>
+<td>1943</td>
+<td>33.13</td>
+<td>1943</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>203</td>
-<td>3.47</td>
+<td>3.46</td>
 <td>203</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1279</td>
-<td>21.85</td>
-<td>1279</td>
+<td>1283</td>
+<td>21.88</td>
+<td>1283</td>
 <td>=</td>
 </tr>
 </table>

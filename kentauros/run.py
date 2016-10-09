@@ -21,11 +21,9 @@ stdout or stderr from inside this subpackage.
 """
 
 
-def run():
+def print_parameters():
     """
-    This function is corresponding to (one of) the "main" function of the `kentauros` package and is
-    the entry point used by the ``ktr`` script from git and the script installed by setuptools at
-    installation.
+    This function prints the general execution parameters.
     """
 
     ktr = Kentauros()
@@ -33,17 +31,29 @@ def run():
 
     print_flush()
 
-    logger.log("DEBUG set: " + str(ktr.debug), 0)
-    logger.log("VERBOSITY: " + str(ktr.verby) + "/2", 1)
-
-    logger.dbg("BASEDIR: " + ktr.conf.basedir)
-    logger.dbg("CONFDIR: " + ktr.conf.get_confdir())
-    logger.dbg("DATADIR: " + ktr.conf.get_datadir())
-    logger.dbg("EXPODIR: " + ktr.conf.get_expodir())
-    logger.dbg("PACKDIR: " + ktr.conf.get_packdir())
-    logger.dbg("SPECDIR: " + ktr.conf.get_specdir())
+    logger.log("Debugging:                          " + str(ktr.debug), 0)
+    logger.log("Logger Verbosity:                   " + str(ktr.verby) + "/2", 1)
 
     print_flush()
+
+    logger.dbg("Base directory:                     " + ktr.conf.basedir)
+    logger.dbg("Package configuration directory:    " + ktr.conf.get_confdir())
+    logger.dbg("Package sources directory:          " + ktr.conf.get_datadir())
+    logger.dbg("Binary package directory:           " + ktr.conf.get_expodir())
+    logger.dbg("Source package directory:           " + ktr.conf.get_packdir())
+    logger.dbg("Package specification directory:    " + ktr.conf.get_specdir())
+
+    print_flush()
+
+
+def run():
+    """
+    This function is corresponding to (one of) the "main" function of the `kentauros` package and is
+    the entry point used by the `ktr.py` script from git and the script installed at installation.
+    """
+
+    ktr = Kentauros()
+    logger = KtrLogger(LOGPREFIX)
 
     # if no action is specified: exit
     if ktr.cli.get_action() is None:
