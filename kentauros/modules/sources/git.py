@@ -261,6 +261,17 @@ class GitSource(Source):
 
         return state
 
+    def imports(self) -> dict:
+        if os.path.exists(self.dest):
+            # Sources have already been downloaded, stats can be got as usual
+            return self.status()
+        else:
+            # Sources aren't there, last commit and date can't be determined
+            return dict(git_branch=self.get_branch(),
+                        git_commit=self.get_commit(),
+                        git_last_commit="",
+                        git_last_date="")
+
     def formatver(self) -> str:
         """
         This method assembles a standardised version string for git sources. This includes the

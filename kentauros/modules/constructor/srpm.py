@@ -58,10 +58,8 @@ class SrpmConstructor(Constructor):
                                  self.cpkg.get_conf_name(),
                                  self.cpkg.get_name() + ".spec")
 
-        self.spec = RPMSpec(self.path, self.cpkg.get_module("source"))
-
         self.last_release = None
-        # self.last_version = None
+        self.last_version = None
 
     def __str__(self) -> str:
         return "SRPM Constructor for Package '" + self.cpkg.get_conf_name() + "'"
@@ -194,7 +192,14 @@ class SrpmConstructor(Constructor):
         return old_release
 
     def status(self) -> dict:
-        return dict(rpm_last_release=self.last_release)
+        return dict(rpm_last_release=self.last_release,
+                    rpm_last_version=self.last_version)
+
+    def imports(self) -> dict:
+        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
+
+        return dict(rpm_last_release=spec.get_release(),
+                    rpm_last_version=spec.get_version())
 
     def init(self):
         """
@@ -254,6 +259,8 @@ class SrpmConstructor(Constructor):
         ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
+        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
+
         if not os.path.exists(self.rpmbdir):
             warnings.warn("Make sure to call Constructor.init() before .prepare()!", Warning)
             self.init()
@@ -288,26 +295,26 @@ class SrpmConstructor(Constructor):
         logger.log("Package configuration copied to SOURCES: " + self.cpkg.file, 1)
 
         # construct preamble and new version string
-        old_version = self._get_last_version(self.spec)
+        old_version = self._get_last_version(spec)
         new_version = self.cpkg.get_version()
 
         # TODO: check if release resetting / incrementing logic works now
 
-        self.spec.set_version()
+        spec.set_version()
 
         # if old version and new version are different, force release reset to 0
         relreset = (new_version != old_version)
 
         # start constructing release string from old release string
         if relreset:
-            self.spec.do_release_reset()
+            spec.do_release_reset()
 
         # write preamble to new spec file
-        preamble = self.spec.build_preamble_string()
+        preamble = spec.build_preamble_string()
 
         # calculate absolute path of new spec file and copy it over
         new_spec_path = os.path.join(self.specdir, self.cpkg.get_name() + ".spec")
-        self.spec.export_to_file(new_spec_path)
+        spec.export_to_file(new_spec_path)
 
         # use "rpmdev-bumpspec" to increment release number and create changelog entries
         force = ktr.cli.get_force()

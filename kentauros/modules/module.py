@@ -15,10 +15,10 @@ class PkgModule(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def __str__(self) -> str:
         """
-        This method is expected to produce a nice string describing the submodule.
+        This method is expected to produce a nice string describing the sub-module.
 
         Returns:
-             str:   string containing a description of the submodule
+             str:   string containing a description of the sub-module
         """
 
     @abc.abstractmethod
@@ -34,7 +34,7 @@ class PkgModule(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def clean(self) -> bool:
         """
-        This method is expected to clean up a submodule's files and folders, if it creates any
+        This method is expected to clean up a sub-module's files and folders, if it creates any
         during its execution.
 
         Returns:
@@ -47,7 +47,17 @@ class PkgModule(metaclass=abc.ABCMeta):
         This method is expected to return a dictionary of statistics about this module.
 
         Returns:
-            dict:   dictionary containing the submodule's exported stats
+            dict:   dictionary containing the sub-module's exported stats
+        """
+
+    @abc.abstractmethod
+    def imports(self) -> dict:
+        """
+        This method is expected to return a dictionary of statistics about a module that has not
+        yet been imported into the package database.
+
+        Returns:
+            dict:   dictionary containing the sub-module's imported stats
         """
 
     @abc.abstractmethod

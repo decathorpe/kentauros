@@ -15,6 +15,15 @@ inside this subpackage.
 """
 
 
+def print_flush(*args, **kwargs):
+    """
+    This function serves as a wrapper around the built-in print function. Calling it instead
+    of the standard `print` ensures that output buffers are flushed after every call.
+    """
+
+    print(*args, **kwargs, flush=True)
+
+
 class KtrLogger:
     """
     This class provides methods for printing messages to standard outputs.
@@ -50,14 +59,14 @@ class KtrLogger:
         assert isinstance(msg, str)
 
         if prefix is not None:
-            print("DEBUG: " + prefix + " " + msg, flush=True)
+            print_flush("DEBUG: " + prefix + " " + msg)
             return
 
         if self.log_prefix is not None:
-            print("DEBUG: " + self.log_prefix + " " + msg, flush=True)
+            print_flush("DEBUG: " + self.log_prefix + " " + msg)
             return
 
-        print("DEBUG: " + msg, flush=True)
+        print_flush("DEBUG: " + msg)
 
     def err(self, msg: str, prefix: str=None):
         """
@@ -100,14 +109,14 @@ class KtrLogger:
         if (pri >= ktr.verby) or ktr.debug:
 
             if prefix is not None:
-                print(prefix + sep + " " + msg, file=outfile, flush=True)
+                print_flush(prefix + sep + " " + msg, file=outfile)
                 return
 
             if self.log_prefix is not None:
-                print(self.log_prefix + sep + " " + msg, file=outfile, flush=True)
+                print_flush(self.log_prefix + sep + " " + msg, file=outfile)
                 return
 
-            print(msg, file=outfile, flush=True)
+            print_flush(msg, file=outfile)
 
     def log_command(self, cmdlist: list, pri: int=2, prefix: str=None):
         """

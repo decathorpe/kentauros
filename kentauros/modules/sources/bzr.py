@@ -175,6 +175,16 @@ class BzrSource(Source):
 
         return state
 
+    def imports(self) -> dict:
+        if os.path.exists(self.dest):
+            # Sources have already been downloaded, stats can be got as usual
+            return self.status()
+        else:
+            # Sources aren't there, last rev can't be determined
+            return dict(bzr_branch=self.get_branch(),
+                        bzr_rev=self.get_revno(),
+                        bzr_last_rev="")
+
     def formatver(self) -> str:
         """
         This method returns a nicely formatted version string for bzr sources.

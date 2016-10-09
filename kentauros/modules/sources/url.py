@@ -99,6 +99,9 @@ class UrlSource(Source):
     def status(self) -> dict:
         return dict()
 
+    def imports(self) -> dict:
+        return dict()
+
     def get(self) -> bool:
         """
         This method executes the download of the file specified by the URL to the package source

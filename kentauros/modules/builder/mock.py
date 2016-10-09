@@ -299,6 +299,9 @@ class MockBuilder(Builder):
     def status(self) -> dict:
         return dict()
 
+    def imports(self) -> dict:
+        return dict()
+
     def build(self) -> bool:
         """
         This method constructs the :py:class:`MockBuilder` instances, which contain the commands

@@ -77,6 +77,9 @@ class LocalSource(Source):
     def status(self) -> dict:
         return dict()
 
+    def imports(self) -> dict:
+        return dict()
+
     def get(self) -> bool:
         """
         This method attempts to copy the specified source from the location specified in the package

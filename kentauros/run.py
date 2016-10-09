@@ -8,9 +8,9 @@ import glob
 import os
 
 from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
+from kentauros.logger import KtrLogger, print_flush
 
-from kentauros.actions import ACTION_DICT
+from kentauros.actions import ACTION_DICT, ImportAction
 from kentauros.bootstrap import ktr_bootstrap
 from kentauros.package import Package, PackageError
 
@@ -31,7 +31,7 @@ def run():
     ktr = Kentauros()
     logger = KtrLogger(LOGPREFIX)
 
-    print(flush=True)
+    print_flush()
 
     logger.log("DEBUG set: " + str(ktr.debug), 0)
     logger.log("VERBOSITY: " + str(ktr.verby) + "/2", 1)
@@ -43,13 +43,13 @@ def run():
     logger.dbg("PACKDIR: " + ktr.conf.get_packdir())
     logger.dbg("SPECDIR: " + ktr.conf.get_specdir())
 
-    print(flush=True)
+    print_flush()
 
     # if no action is specified: exit
     if ktr.cli.get_action() is None:
         logger.log("No action specified. Exiting.")
         logger.log("Use 'ktr --help' for more information.")
-        print(flush=True)
+        print_flush()
         return
 
     if not ktr_bootstrap():
@@ -77,14 +77,14 @@ def run():
 
     if not pkgs:
         logger.log("No packages have been specified or found. Exiting.")
-        print(flush=True)
+        print_flush()
         raise SystemExit()
 
     pkgs.sort()
 
     # log list of found packages
     logger.log_list("Packages", pkgs)
-    print(flush=True)
+    print_flush()
 
     # generate package objects
     for name in pkgs:
@@ -104,6 +104,11 @@ def run():
     for name in ktr.get_package_names():
         assert isinstance(name, str)
 
+        if ktr.state_read(name) is None:
+            logger.log("Importing new package into the database.")
+            import_action = ImportAction(name)
+            import_action.execute()
+
         action_type = ktr.cli.get_action()
         action = ACTION_DICT[action_type](name)
         success = action.execute()
@@ -115,7 +120,7 @@ def run():
             logger.log(name + ": Not successful.")
             action_fail.append(name)
 
-    print(flush=True)
+    print_flush()
 
     if action_succ:
         logger.log_list("Successful actions", action_succ)
@@ -123,6 +128,6 @@ def run():
     if action_fail:
         logger.log_list("Failed actions", action_fail)
 
-    print(flush=True)
+    print_flush()
 
     raise SystemExit()

@@ -30,5 +30,6 @@ class ImportAction(Action):
         Currently, this does nothing whatsoever.
         """
 
-        # TODO: import package configuration / status
+        self.import_status()
+
         return True

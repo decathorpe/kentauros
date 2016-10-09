@@ -61,3 +61,18 @@ class Action(metaclass=abc.ABCMeta):
 
         for module in modules:
             ktr.state_write(conf_name, module.status())
+
+    def import_status(self):
+        """
+        This method imports a package's and all its sub-module's status to the package database.
+        """
+
+        ktr = Kentauros()
+
+        conf_name = self.kpkg.get_conf_name()
+        modules = self.kpkg.get_modules()
+
+        ktr.state_write(conf_name, self.kpkg.status())
+
+        for module in modules:
+            ktr.state_write(conf_name, module.imports())

@@ -127,6 +127,9 @@ class CoprUploader(Uploader):
         # TODO: return e.g. build success of builds
         return dict()
 
+    def imports(self) -> dict:
+        return dict()
+
     def upload(self) -> bool:
         """
         This method executes the upload of the newest SRPM package found in the package directory.
