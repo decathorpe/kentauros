@@ -38,14 +38,6 @@ kentauros.definitions module
     :undoc-members:
     :show-inheritance:
 
-kentauros.importing module
---------------------------
-
-.. automodule:: kentauros.importing
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros.instance module
 -------------------------
 

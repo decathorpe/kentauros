@@ -9,11 +9,11 @@ import subprocess
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
-from kentauros.modules.constructor.rpm.spec_common import RPMSpecError, format_tagline
 from kentauros.modules.sources.abstract import Source
 
-
+from kentauros.modules.constructor.rpm.spec_common import RPMSpecError, format_tagline
 from kentauros.modules.constructor.rpm.spec_preamble_out import SPEC_PREAMBLE_DICT
+from kentauros.modules.constructor.rpm.spec_source_out import SPEC_SOURCE_DICT
 from kentauros.modules.constructor.rpm.spec_version_out import SPEC_VERSION_DICT
 
 
@@ -21,9 +21,6 @@ LOGPREFIX = "ktr/pkgformat/rpm"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
-
-
-# TODO: write URL of source to spec at Source0: if Source is a UrlSource
 
 
 class RPMSpec:
@@ -108,6 +105,22 @@ class RPMSpec:
                 contents_new += (line + "\n")
             else:
                 contents_new += format_tagline("Version", self.build_version_string())
+
+        self.contents = contents_new
+
+    def set_source(self):
+        """
+        This method writes the updated source tag to the rpm spec file.
+        """
+
+        contents_new = str()
+
+        for line in self.get_lines():
+            assert isinstance(line, str)
+            if line[0:8] != "Source0:":
+                contents_new += (line + "\n")
+            else:
+                contents_new += SPEC_SOURCE_DICT[self.source.stype](self.source)
 
         self.contents = contents_new
 

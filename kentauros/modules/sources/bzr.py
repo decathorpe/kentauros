@@ -105,7 +105,7 @@ class BzrSource(Source):
             str:    string containing the upstream bzr repository URL (or `lp:` link)
         """
 
-        return self.spkg.conf.get("bzr", "orig")
+        return self.spkg.replace_vars(self.spkg.conf.get("bzr", "orig"))
 
     def get_branch(self) -> str:
         """

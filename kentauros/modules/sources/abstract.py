@@ -49,7 +49,8 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
     def get_orig(self) -> str:
         """
         This method is expected to read and return the 'orig' value specified in the package
-        configuration file in the source section.
+        configuration file in the source section. It is also expected to replace variables with
+        their corresponding values.
         """
 
     @abc.abstractmethod

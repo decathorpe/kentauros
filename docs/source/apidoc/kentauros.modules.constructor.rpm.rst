@@ -20,6 +20,14 @@ kentauros.modules.constructor.rpm.spec_preamble_out module
     :undoc-members:
     :show-inheritance:
 
+kentauros.modules.constructor.rpm.spec_source_out module
+--------------------------------------------------------
+
+.. automodule:: kentauros.modules.constructor.rpm.spec_source_out
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros.modules.constructor.rpm.spec_version_out module
 ---------------------------------------------------------
 

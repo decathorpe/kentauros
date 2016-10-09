@@ -94,7 +94,7 @@ class UrlSource(Source):
             str:    string containing the upstream file URL
         """
 
-        return self.spkg.conf.get("url", "orig")
+        return self.spkg.replace_vars(self.spkg.conf.get("url", "orig"))
 
     def status(self) -> dict:
         return dict()

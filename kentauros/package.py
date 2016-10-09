@@ -154,6 +154,28 @@ class Package:
 
         return self.conf.get("package", "version")
 
+    def replace_vars(self, input_str: str) -> str:
+        """
+        This method replaces variables in configuration file values with the appropriate values set
+        elsewhere. For example, this can be used to specify the name and version inside a URL.
+
+        Args:
+            str input_str:  string where variables should be replaced
+
+        Returns:
+            str:            string where variables have been replaced
+        """
+
+        output_str = input_str
+
+        if "%{name}" in output_str:
+            output_str.replace("%{name}", self.get_name())
+
+        if "%{version}" in output_str:
+            output_str.replace("%{version}", self.get_version())
+
+        return output_str
+
     def status(self) -> dict:
         """
         This method returns statistics describing this Package object and its associated source.

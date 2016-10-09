@@ -111,7 +111,7 @@ class GitSource(Source):
             str:    string containing the upstream git repository URL
         """
 
-        return self.spkg.conf.get("git", "orig")
+        return self.spkg.replace_vars(self.spkg.conf.get("git", "orig"))
 
     def get_branch(self) -> str:
         """

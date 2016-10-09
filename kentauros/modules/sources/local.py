@@ -72,7 +72,7 @@ class LocalSource(Source):
             str:    string containing the source file path
         """
 
-        return self.spkg.conf.get("local", "orig")
+        return self.spkg.replace_vars(self.spkg.conf.get("local", "orig"))
 
     def status(self) -> dict:
         return dict()
