@@ -195,6 +195,15 @@ class SrpmConstructor(Constructor):
         return dict(rpm_last_release=self.last_release,
                     rpm_last_version=self.last_version)
 
+    def status_string(self) -> str:
+        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
+
+        string = ("SRPM constructor module:\n" +
+                  "  Last Version:     {}\n".format(self._get_last_version(spec)) +
+                  "  Last Release:     {}\n".format(self._get_last_release(spec)))
+
+        return string
+
     def imports(self) -> dict:
         spec = RPMSpec(self.path, self.cpkg.get_module("source"))
 

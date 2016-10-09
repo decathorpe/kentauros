@@ -68,4 +68,9 @@ class ChainAction(Action):
 
         self.update_status()
 
+        if success:
+            logger.log(self.kpkg.get_conf_name() + ": Success!")
+        else:
+            logger.log(self.kpkg.get_conf_name() + ": Not successful.")
+
         return success

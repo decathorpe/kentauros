@@ -124,10 +124,8 @@ def run():
         success = action.execute()
 
         if success:
-            logger.log(name + ": Success!")
             action_succ.append(name)
         else:
-            logger.log(name + ": Not successful.")
             action_fail.append(name)
 
     print_flush()

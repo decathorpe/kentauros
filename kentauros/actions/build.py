@@ -28,14 +28,21 @@ class BuildAction(Action):
         self.atype = ActionType.BUILD
 
     def execute(self) -> bool:
+        logger = KtrLogger(LOGPREFIX)
+
         builder = self.kpkg.get_module("builder")
 
         if builder is None:
-            KtrLogger(LOGPREFIX).log("This package doesn't define a builder module. Aborting.")
+            logger.log("This package doesn't define a builder module. Aborting.")
             return True
 
         success = builder.execute()
 
         self.update_status()
+
+        if success:
+            logger.log(self.kpkg.get_conf_name() + ": Success!")
+        else:
+            logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
         return success

@@ -36,15 +36,21 @@ class CleanAction(Action):
             bool:           always ``True`` at the moment
         """
 
+        logger = KtrLogger(LOGPREFIX)
+
         success = True
 
         for module in self.kpkg.get_modules():
             cleanup = module.clean()
 
             if not cleanup:
-                KtrLogger(LOGPREFIX).log("Module '" + str(module) +
-                                         "' did not clean up successfully.")
+                logger.log("Module '" + str(module) + "' did not clean up successfully.")
 
             success = success and cleanup
+
+        if success:
+            logger.log(self.kpkg.get_conf_name() + ": Success!")
+        else:
+            logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
         return success

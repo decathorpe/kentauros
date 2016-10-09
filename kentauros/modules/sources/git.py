@@ -188,7 +188,7 @@ class GitSource(Source):
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
             if self.saved_date is None:
-                logger.err("Sources need to be get before their age can be read.")
+                logger.dbg("Sources need to be get before their age can be read.")
                 return None
             else:
                 return self.saved_date
@@ -226,7 +226,7 @@ class GitSource(Source):
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
             if self.saved_commit is None:
-                logger.err("Sources need to be get before commit hash can be read.")
+                logger.dbg("Sources need to be get before commit hash can be read.")
                 return None
             else:
                 return self.saved_commit
@@ -260,6 +260,25 @@ class GitSource(Source):
                      git_last_date=self.date())
 
         return state
+
+    def status_string(self) -> str:
+        ktr = Kentauros()
+
+        commit = self.commit()
+        date = self.date()
+
+        if commit == "":
+            commit = ktr.state_read(self.spkg.get_conf_name())["git_last_commit"]
+
+        if date == "":
+            date = ktr.state_read(self.spkg.get_conf_name())["git_last_date"]
+
+        string = ("git source module:\n" +
+                  "  Current branch:   {}\n".format(self.get_branch()) +
+                  "  Last Commit:      {}\n".format(commit) +
+                  "  Last Commit Date: {}\n".format(date))
+
+        return string
 
     def imports(self) -> dict:
         if os.path.exists(self.dest):

@@ -51,6 +51,15 @@ class PkgModule(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
+    def status_string(self) -> str:
+        """
+        This method is expected to return a string describing the status of this module.
+
+        Returns:
+            str:    string containing module statistics
+        """
+
+    @abc.abstractmethod
     def imports(self) -> dict:
         """
         This method is expected to return a dictionary of statistics about a module that has not

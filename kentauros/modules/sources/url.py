@@ -99,6 +99,9 @@ class UrlSource(Source):
     def status(self) -> dict:
         return dict()
 
+    def status_string(self) -> str:
+        return str()
+
     def imports(self) -> dict:
         return dict()
 

@@ -127,6 +127,9 @@ class CoprUploader(Uploader):
         # TODO: return e.g. build success of builds
         return dict()
 
+    def status_string(self) -> str:
+        return str()
+
     def imports(self) -> dict:
         return dict()
 

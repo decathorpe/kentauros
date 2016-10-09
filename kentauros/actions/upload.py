@@ -36,14 +36,21 @@ class UploadAction(Action):
             bool:           always *True*, future error checking still missing
         """
 
+        logger = KtrLogger(LOGPREFIX)
+
         uploader = self.kpkg.get_module("uploader")
 
         if uploader is None:
-            KtrLogger(LOGPREFIX).log("This package doesn't define an uploader module. Aborting.")
+            logger.log("This package doesn't define an uploader module. Aborting.")
             return True
 
         success = uploader.execute()
 
         self.update_status()
+
+        if success:
+            logger.log(self.kpkg.get_conf_name() + ": Success!")
+        else:
+            logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
         return success

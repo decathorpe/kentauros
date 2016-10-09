@@ -5,6 +5,7 @@ This submodule contains the :py:class:`StatusAction` class.
 
 from kentauros.definitions import ActionType
 
+from kentauros.logger import print_flush
 from kentauros.actions.abstract import Action
 
 
@@ -31,5 +32,13 @@ class StatusAction(Action):
         Currently, this does nothing whatsoever.
         """
 
-        # TODO: output package configuration / status
+        modules = self.kpkg.get_modules()
+
+        print_flush()
+
+        print_flush(self.kpkg.status_string(), end="")
+
+        for module in modules:
+            print_flush(module.status_string(), end="")
+
         return True

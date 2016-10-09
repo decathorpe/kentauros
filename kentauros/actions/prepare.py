@@ -37,14 +37,21 @@ class PrepareAction(Action):
             bool:           *True* when successful, *False* if sub-action fails
         """
 
+        logger = KtrLogger(LOGPREFIX)
+
         source = self.kpkg.get_module("source")
 
         if source is None:
-            KtrLogger(LOGPREFIX).log("This package doesn't define a source module. Aborting.")
+            logger.log("This package doesn't define a source module. Aborting.")
             return True
 
         success = source.execute()
 
         self.update_status()
+
+        if success:
+            logger.log(self.kpkg.get_conf_name() + ": Success!")
+        else:
+            logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
         return success

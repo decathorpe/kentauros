@@ -28,14 +28,21 @@ class ConstructAction(Action):
         self.atype = ActionType.CONSTRUCT
 
     def execute(self) -> bool:
+        logger = KtrLogger(LOGPREFIX)
+
         constructor = self.kpkg.get_module("constructor")
 
         if constructor is None:
-            KtrLogger(LOGPREFIX).log("This package doesn't define a constructor module. Aborting.")
+            logger.log("This package doesn't define a constructor module. Aborting.")
             return True
 
         success = constructor.execute()
 
         self.update_status()
+
+        if success:
+            logger.log(self.kpkg.get_conf_name() + ": Success!")
+        else:
+            logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
         return success

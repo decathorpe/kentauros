@@ -141,7 +141,7 @@ class BzrSource(Source):
         # if sources are not accessible (anymore), return "" or last saved rev
         if not os.access(self.dest, os.R_OK):
             if self.saved_rev is None:
-                logger.err("Sources need to be get before rev can be determined.")
+                logger.dbg("Sources need to be get before rev can be determined.")
                 return ""
             else:
                 return self.saved_rev
@@ -174,6 +174,20 @@ class BzrSource(Source):
                      bzr_last_rev=self.rev())
 
         return state
+
+    def status_string(self) -> str:
+        ktr = Kentauros()
+
+        rev = self.rev()
+
+        if rev == "":
+            rev = ktr.state_read(self.spkg.get_conf_name())["bzr_last_rev"]
+
+        string = ("bzr source module:\n" +
+                  "  Last Revision:    {}\n".format(rev) +
+                  "  Current branch:   {}\n".format(self.get_branch()))
+
+        return string
 
     def imports(self) -> dict:
         if os.path.exists(self.dest):

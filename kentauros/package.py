@@ -166,6 +166,22 @@ class Package:
                      package_version=self.get_version())
         return state
 
+    def status_string(self) -> str:
+        """
+        This method returns a string containing statistics describing this Package object and its
+        associated source.
+
+        Returns:
+            str:    package information
+        """
+
+        string = ("Configuration:      {}\n".format(self.get_conf_name()) +
+                  "-" * (len("Configuration:      ") + len(self.get_conf_name())) + "\n" +
+                  "  Package name:     {}\n".format(self.get_name()) +
+                  "  Package version:  {}\n".format(self.get_version()))
+
+        return string
+
     def verify(self) -> bool:
         """
         This method verifies that the absolute minimum for proceeding with package initialisation is
