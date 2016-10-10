@@ -43,10 +43,6 @@ Source1: %{name}.conf
 # %%find_lang %%{name}
 
 
-%clean
-rm -rf %{buildroot}
-
-
 %check
 # desktop-file-validate $RPM_BUILD_ROOT/%{_datadir}/applications/*.desktop
 # appstream-util validate-relax --nonet $RPM_BUILD_ROOT/%{_datadir}/appdata/*.appdata.xml
