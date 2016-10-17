@@ -1,5 +1,5 @@
 """
-This module contains the abstract :py:class:`Builder` class, which is then inherited by actual
+This module contains the abstract :py:class:`Constructor` class, which is then inherited by actual
 constructors.
 """
 

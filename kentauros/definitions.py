@@ -39,10 +39,11 @@ class PkgModuleType(Enum):
     This Enum defines the types of package submodules there can be.
     """
 
-    SOURCE = 10
-    CONSTRUCTOR = 20
-    BUILDER = 30
-    UPLOADER = 40
+    SOURCE = 1
+    PKGFORMATTER = 2
+    CONSTRUCTOR = 3
+    BUILDER = 4
+    UPLOADER = 5
 
 
 class KtrConfType(Enum):
