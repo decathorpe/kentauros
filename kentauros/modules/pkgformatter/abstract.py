@@ -26,26 +26,26 @@ class PkgFormatter(PkgModule, metaclass=abc.ABCMeta):
 
         self.fpkg = package
 
-    @abc.abstractmethod
-    def status(self) -> dict:
-        pass
-
-    @abc.abstractmethod
-    def init(self):
-        pass
-
-    @abc.abstractmethod
-    def prepare(self) -> bool:
-        pass
-
-    @abc.abstractmethod
-    def build(self):
-        pass
-
-    @abc.abstractmethod
-    def export(self):
-        pass
-
-    @abc.abstractmethod
-    def cleanup(self):
-        pass
+    # @abc.abstractmethod
+    # def status(self) -> dict:
+    #     pass
+    #
+    # @abc.abstractmethod
+    # def init(self):
+    #     pass
+    #
+    # @abc.abstractmethod
+    # def prepare(self) -> bool:
+    #     pass
+    #
+    # @abc.abstractmethod
+    # def build(self):
+    #     pass
+    #
+    # @abc.abstractmethod
+    # def export(self):
+    #     pass
+    #
+    # @abc.abstractmethod
+    # def cleanup(self):
+    #     pass
