@@ -1,7 +1,7 @@
 """
 This subpackage contains definitions of the default kentauros configuration files' locations, error
 messages if they are not found, and a function that returns the configuration values determined from
-the highest priority onfiguration found or the configuration location specified at command line.
+the highest priority configuration found or the configuration location specified at command line.
 """
 
 
@@ -23,8 +23,8 @@ from kentauros.init.env import get_env_home
 
 def get_conf_from_file_args(conf_type: KtrConfType) -> tuple:
     """
-    This function returns the arguments for :py:meth:`KtrConf.from_file` method calls, depending on
-    the type of configuration file location.
+    This function returns the arguments for :py:meth:`KtrConf.from_file` method calls, depending
+    on the type of configuration file location.
 
     Arguments:
         KtrConfType conf_type: type of configuration arguments will be built for
@@ -58,49 +58,46 @@ def ktr_get_conf() -> KtrConf:
     """
     This function gets and parses :py:class:`KtrConf` instances for configuration values.
 
-    Arguments:
-        InstanceType itype: instance type CLI configuration will be parsed for
-
     Returns:
         KtrConf:  highest-priority or requested :py:class:`KtrConf` instance
     """
 
     # configurations, in ascending priority
-    ktr_confs = OrderedDict()
+    ktr_configs = OrderedDict()
 
     def_config = KtrConf(KtrConfType.DEF).from_file(*get_conf_from_file_args(KtrConfType.DEF))
     sys_config = KtrConf(KtrConfType.SYS).from_file(*get_conf_from_file_args(KtrConfType.SYS))
     usr_config = KtrConf(KtrConfType.USR).from_file(*get_conf_from_file_args(KtrConfType.USR))
     prj_config = KtrConf(KtrConfType.PRJ).from_file(*get_conf_from_file_args(KtrConfType.PRJ))
 
-    ktr_confs[KtrConfType.FBK] = get_fallback_config()
-    ktr_confs[KtrConfType.DEF] = def_config
-    ktr_confs[KtrConfType.SYS] = sys_config
-    ktr_confs[KtrConfType.USR] = usr_config
-    ktr_confs[KtrConfType.PRJ] = prj_config
-    ktr_confs[KtrConfType.ENV] = get_env_config()
-    ktr_confs[KtrConfType.CLI] = get_cli_config()
+    ktr_configs[KtrConfType.FBK] = get_fallback_config()
+    ktr_configs[KtrConfType.DEF] = def_config
+    ktr_configs[KtrConfType.SYS] = sys_config
+    ktr_configs[KtrConfType.USR] = usr_config
+    ktr_configs[KtrConfType.PRJ] = prj_config
+    ktr_configs[KtrConfType.ENV] = get_env_config()
+    ktr_configs[KtrConfType.CLI] = get_cli_config()
 
     ktr_conf = None
 
     cli_args = CLIArgs()
 
     if cli_args.get_priconf():
-        ktr_conf = ktr_confs[cli_args.get_priconf()]
+        ktr_conf = ktr_configs[cli_args.get_priconf()]
 
     if ktr_conf is not None:
         return ktr_conf
 
     # KTR_CONF should contain the highest-priority,
     # non-None configuration for every value
-    ktr_conf = ktr_confs[KtrConfType.FALLBACK]
+    ktr_conf = ktr_configs[KtrConfType.FALLBACK]
 
-    for conftype in ktr_confs:
+    for conf_type in ktr_configs:
         # skip FALLBACK config
-        if conftype == KtrConfType.FALLBACK:
+        if conf_type == KtrConfType.FALLBACK:
             continue
 
-        conf = ktr_confs[conftype]
+        conf = ktr_configs[conf_type]
         if conf is not None:
             ktr_conf.succby(conf)
 

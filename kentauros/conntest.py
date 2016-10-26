@@ -1,6 +1,6 @@
 """
-This module contains one function (:py:func:`is_connected`), which is used for basic connectivity
-checks before actions that require internet access / access to a specific URL.
+This module contains a simple function which is used for basic connectivity checks before actions
+that require internet access / access to a specific URL.
 """
 
 

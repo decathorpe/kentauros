@@ -10,7 +10,7 @@ from kentauros.definitions import KtrConfType
 from kentauros.config.common import KtrConf
 
 
-LOGPREFIX1 = "ktr/config/fallback: "
+LOG_PREFIX1 = "ktr/config/fallback: "
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -18,7 +18,7 @@ inside this subpackage.
 
 def get_fallback_config() -> KtrConf:
     """
-    This function provides fallback valies for kentauros instance settings and puts them into a
+    This function provides fallback values for kentauros instance settings and puts them into a
     :py:class:`KtrConf` instance for further processing.
 
     Returns:
@@ -30,5 +30,5 @@ def get_fallback_config() -> KtrConf:
     if result.validate():
         return result
     else:
-        print(LOGPREFIX1 + "Something went horribly wrong here.", flush=True)
+        print(LOG_PREFIX1 + "Something went horribly wrong here.", flush=True)
         return None

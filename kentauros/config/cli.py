@@ -13,7 +13,7 @@ from kentauros.config.common import KtrConf
 from kentauros.init.cli import CLIArgs
 
 
-LOGPREFIX1 = "ktr/config/cli: "
+LOG_PREFIX1 = "ktr/config/cli: "
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -39,5 +39,5 @@ def get_cli_config() -> KtrConf:
     if result.validate():
         return result
     else:
-        print(LOGPREFIX1 + "Not all neccessary values have been set at CLI.", flush=True)
+        print(LOG_PREFIX1 + "Not all necessary values have been set at CLI.", flush=True)
         return None

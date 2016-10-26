@@ -1,5 +1,5 @@
 """
-This submodule contains only contains the :py:class:`GitSource` class, which has methods for
+This sub-module contains only contains the :py:class:`GitSource` class, which has methods for
 handling sources that have `source.type=git` specified and `source.orig` set to a git repository URL
 in the package's configuration file.
 """
@@ -18,7 +18,7 @@ from kentauros.logger import KtrLogger
 from kentauros.modules.sources.abstract import Source
 
 
-LOGPREFIX = "ktr/sources/git"
+LOG_PREFIX = "ktr/sources/git"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -66,7 +66,7 @@ class GitSource(Source):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = True
 
@@ -149,7 +149,7 @@ class GitSource(Source):
 
     def date(self) -> str:
         """
-        This method provides an easy way of getting the date and time of the requrested commit in a
+        This method provides an easy way of getting the date and time of the requested commit in a
         standardised format (``YYMMDD.HHmmSS``). It also stores the latest parsed date between
         method invocations, if the source goes away and the commit datetime string is needed again.
 
@@ -158,32 +158,38 @@ class GitSource(Source):
         """
 
         def prepend_zero(string):
-            """This local function prepends '0' to one-digit time value strings."""
+            """
+            This local function prepends '0' to one-digit time value strings.
+            """
+
             if len(string) == 1:
                 return "0" + string
             else:
                 return string
 
-        def datestr_from_raw(raw_date: str):
-            """This local function parses a datetime object and returns a simple string."""
+        def date_str_from_raw(raw_date: str):
+            """
+            This local function parses a datetime object and returns a simple string.
+            """
+
             assert isinstance(raw_date, str)
 
-            dateobj = dateutil.parser.parse(raw_date)
+            date_obj = dateutil.parser.parse(raw_date)
 
-            year_str = str(dateobj.year)[2:]
-            month_str = prepend_zero(str(dateobj.month))
-            day_str = prepend_zero(str(dateobj.day))
+            year_str = str(date_obj.year)[2:]
+            month_str = prepend_zero(str(date_obj.month))
+            day_str = prepend_zero(str(date_obj.day))
 
-            hour_str = prepend_zero(str(dateobj.hour))
-            minute_str = prepend_zero(str(dateobj.minute))
-            second_str = prepend_zero(str(dateobj.second))
+            hour_str = prepend_zero(str(date_obj.hour))
+            minute_str = prepend_zero(str(date_obj.minute))
+            second_str = prepend_zero(str(date_obj.second))
 
             date_str = year_str + month_str + day_str + "." + hour_str + minute_str + second_str
 
             return date_str
 
         # ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
@@ -195,15 +201,15 @@ class GitSource(Source):
 
         cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
 
-        prevdir = os.getcwd()
+        prev_dir = os.getcwd()
         os.chdir(self.dest)
 
         logger.log_command(cmd, 1)
         date_raw = subprocess.check_output(cmd).decode().rstrip('\r\n')
 
-        os.chdir(prevdir)
+        os.chdir(prev_dir)
 
-        date = datestr_from_raw(date_raw)
+        date = date_str_from_raw(date_raw)
 
         self.saved_date = date
         # ktr.state_write(self.spkg.get_conf_name(), dict(git_last_date=date))
@@ -212,7 +218,7 @@ class GitSource(Source):
 
     def commit(self) -> str:
         """
-        This method provides an easy way of getting the commit hash of the requrested commit. It
+        This method provides an easy way of getting the commit hash of the requested commit. It
         also stores the latest commit hash between method invocations, if the source goes away and
         the hash is needed again.
 
@@ -220,8 +226,7 @@ class GitSource(Source):
             str:        commit hash
         """
 
-        # ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # if sources are not accessible (anymore), return None or last saved rev
         if not os.access(self.dest, os.R_OK):
@@ -233,13 +238,13 @@ class GitSource(Source):
 
         cmd = ["git", "rev-parse", "HEAD"]
 
-        prevdir = os.getcwd()
+        prev_dir = os.getcwd()
         os.chdir(self.dest)
 
         logger.log_command(cmd, 1)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
 
-        os.chdir(prevdir)
+        os.chdir(prev_dir)
 
         self.saved_commit = rev
         return rev
@@ -324,7 +329,7 @@ class GitSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -364,7 +369,7 @@ class GitSource(Source):
         cmd_clone.append(self.get_orig())
         cmd_clone.append(self.dest)
 
-        # clone git repo from orig to dest
+        # clone git repo from origin to destination
         logger.log_command(cmd_clone, 1)
         subprocess.call(cmd_clone)
 
@@ -374,7 +379,7 @@ class GitSource(Source):
             cmd_checkout = ["git", "checkout", self.get_commit()]
 
             # go to git repo and remember old cwd
-            prevdir = os.getcwd()
+            prev_dir = os.getcwd()
             os.chdir(self.dest)
 
             # checkout commit
@@ -382,7 +387,7 @@ class GitSource(Source):
             subprocess.call(cmd_checkout)
 
             # go to previous dir
-            os.chdir(prevdir)
+            os.chdir(prev_dir)
 
         # get commit ID
         rev = self.commit()
@@ -408,7 +413,7 @@ class GitSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # if specific commit is requested, do not pull updates (obviously)
         if self.get_commit() == "HEAD":
@@ -436,8 +441,8 @@ class GitSource(Source):
         # get old commit ID
         rev_old = self.commit()
 
-        # change to git repodir
-        prevdir = os.getcwd()
+        # change to git repository directory
+        prev_dir = os.getcwd()
         os.chdir(self.dest)
 
         # get updates
@@ -445,7 +450,7 @@ class GitSource(Source):
         subprocess.call(cmd)
 
         # go back to previous dir
-        os.chdir(prevdir)
+        os.chdir(prev_dir)
 
         # get new commit ID
         rev_new = self.commit()
@@ -465,12 +470,12 @@ class GitSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
-        def remove_notkeep():
+        def remove_not_keep():
             """
-            This local function removes the git repository after it has been exported to a tarball,
-            if `git.keep=false` is set.
+            This local function removes the git repository and is called after source export, if
+            not keeping the repository around was specified in the configuration file.
             """
 
             if not self.get_keep():
@@ -503,13 +508,13 @@ class GitSource(Source):
         if os.path.exists(file_name):
             logger.log("Tarball has already been exported.", 1)
             # remove git repo if keep is False
-            remove_notkeep()
+            remove_not_keep()
             return True
 
         # remember previous directory
-        prevdir = os.getcwd()
+        prev_dir = os.getcwd()
 
-        # change to git repodir
+        # change to git repository directory
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
@@ -521,7 +526,7 @@ class GitSource(Source):
         self.date()
 
         # remove git repo if keep is False
-        remove_notkeep()
+        remove_not_keep()
 
-        os.chdir(prevdir)
+        os.chdir(prev_dir)
         return True

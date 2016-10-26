@@ -1,9 +1,7 @@
 """
-This subpackage contains the :py:class:`Package` class, which holds package configuration parsed
-from the corresponding `package.conf` file (errors that occur during parsing are probably not
-handled correctly yet). After parsing the package configuration, :py:class:`Source`,
-:py:class:`Constructor`, :py:class:`Builder` and :py:class:`Uploader` instances are set as
-attributes according to configuration.
+This sub-package contains the :py:class:`Package` class, which holds package configuration parsed
+from the corresponding `package.conf` file. After parsing the package configuration, package
+sub-modules are added according to configuration.
 """
 
 
@@ -20,7 +18,7 @@ from kentauros.modules import PKG_MODULE_DICT, PKG_MODULE_TYPE_DICT
 from kentauros.modules.module import PkgModule
 
 
-LOGPREFIX = "ktr/package"
+LOG_PREFIX = "ktr/package"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -61,7 +59,7 @@ class Package:
         assert isinstance(conf_name, str)
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         self.file = os.path.join(ktr.conf.get_confdir(), conf_name + ".conf")
         self.conf = ConfigParser()
@@ -215,7 +213,7 @@ class Package:
 
         assert isinstance(self.conf, ConfigParser)
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = True
 

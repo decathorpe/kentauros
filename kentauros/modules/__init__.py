@@ -1,5 +1,5 @@
 """
-This subpackage contains all pluggable kentauros modules.
+This subpackage contains all plug-able kentauros modules.
 """
 
 

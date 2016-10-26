@@ -11,7 +11,7 @@ from kentauros.instance import Kentauros
 from kentauros.modules.module import PkgModule
 
 
-LOGPREFIX = "ktr/constructor"
+LOG_PREFIX = "ktr/constructor"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """

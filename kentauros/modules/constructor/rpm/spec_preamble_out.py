@@ -1,5 +1,5 @@
 """
-This submodule contains the functions that generate the necessary version strings for the .spec
+This sub-module contains the functions that generate the necessary version strings for the .spec
 file, which depend on the type of source that is used.
 """
 
@@ -32,7 +32,7 @@ def spec_preamble_bzr(source: BzrSource) -> str:
 def spec_preamble_git(source: GitSource) -> str:
     """
     This function returns the "%defines" necessary for packages built from *git* repositories. This
-    includes a definition of "commit" and "date" just now. The value of "cpmmit" here are the first
+    includes a definition of "commit" and "date" just now. The value of "commit" here are the first
     8 characters of the corresponding git commit hash.
 
     Arguments:
@@ -81,7 +81,7 @@ def spec_preamble_local(source: LocalSource) -> str:
 
 
 SPEC_PREAMBLE_DICT = dict()
-"""This dictionary maps `SourceType` enum members to their respectiv RPM spec preamble generator
+"""This dictionary maps `SourceType` enum members to their respective RPM spec preamble generator
 functions.
 """
 

@@ -11,7 +11,7 @@ from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
 
-LOGPREFIX = "ktr/bootstrap"
+LOG_PREFIX = "ktr/bootstrap"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -19,7 +19,7 @@ inside this subpackage.
 
 def ktr_mkdirp(path: str) -> bool:
     """
-    This function checks for directory existance and the ability to write to it. If the directory
+    This function checks for directory existence and the ability to write to it. If the directory
     does not exist, it will be created.
 
     Arguments:
@@ -29,7 +29,7 @@ def ktr_mkdirp(path: str) -> bool:
         bool:       success (or not)
     """
 
-    logger = KtrLogger(LOGPREFIX)
+    logger = KtrLogger(LOG_PREFIX)
 
     if os.path.exists(path):
         if os.access(path, os.W_OK):

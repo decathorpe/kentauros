@@ -1,5 +1,5 @@
 """
-This submodule contains the :py:class:`Kentauros` class, which holds configuration values parsed
+This sub-module contains the :py:class:`Kentauros` class, which holds configuration values parsed
 from CLI arguments, environment variables and configuration files. The implementation makes sure
 that command line arguments, environment variables and configuration files are parsed only once per
 program run. Additionally, this subpackage holds logging and error printing functions.
@@ -18,7 +18,7 @@ from kentauros.init.cli import CLIArgs
 from kentauros.init.env import get_env_debug, get_env_verby
 
 
-LOGPREFIX = "ktr/instance"
+LOG_PREFIX = "ktr/instance"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """

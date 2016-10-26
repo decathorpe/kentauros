@@ -1,9 +1,9 @@
 """
-This submodule serves provides shared code for this subpackage. This includes:
+This sub-module serves provides shared code for this subpackage. This includes:
 
  * :py:class:`RPMSpecError`: custom exception that is raised when errors occur during the parsing
    of .spec files
- * :py:func:`format_tagline`: simple function generating prettified spec tag lines
+ * :py:func:`format_tag_line`: simple function generating prettified spec tag lines
 
 """
 
@@ -24,17 +24,17 @@ class RPMSpecError(Exception):
         return repr(self.value)
 
 
-def format_tagline(tag: str, value: str) -> str:
+def format_tag_line(tag: str, value: str) -> str:
     """
-    This function takes a tag and value as arguments and returns a nicely formatted tagline,
+    This function takes a tag and value as arguments and returns a nicely formatted tag line,
     aligning values after column 16 (second / fourth tab).
 
     Arguments:
-        str tag:    tag of tagline
+        str tag:    tag of tag line
         str value:  tag value
 
     Returns:
-        str:        pretty tagline
+        str:        pretty tag line
     """
 
     return tag + ":" + (16 - len(tag) - 1) * " " + value + "\n"

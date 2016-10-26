@@ -26,17 +26,17 @@ class RPMSpecError(Exception):
         return repr(self.value)
 
 
-def format_tagline(tag: str, value: str) -> str:
+def format_tag_line(tag: str, value: str) -> str:
     """
-    This function takes a tag and value as arguments and returns a nicely formatted tagline,
+    This function takes a tag and value as arguments and returns a nicely formatted tag line,
     aligning values after column 16 (second / fourth tab).
 
     Arguments:
-        str tag:    tag of tagline
+        str tag:    tag of tag line
         str value:  tag value
 
     Returns:
-        str:        pretty tagline
+        str:        pretty tag line
     """
 
     return tag + ":" + (16 - len(tag) - 1) * " " + value + "\n"
@@ -62,7 +62,7 @@ def spec_preamble_bzr(source: BzrSource) -> str:
 def spec_preamble_git(source: GitSource) -> str:
     """
     This function returns the "%defines" necessary for packages built from *git* repositories. This
-    includes a definition of "commit" and "date" just now. The value of "cpmmit" here are the first
+    includes a definition of "commit" and "date" just now. The value of "commit" here are the first
     8 characters of the corresponding git commit hash.
 
     Arguments:
@@ -111,7 +111,7 @@ def spec_preamble_local(source: LocalSource) -> str:
 
 
 SPEC_PREAMBLE_DICT = dict()
-"""This dictionary maps `SourceType` enum members to their respectiv RPM spec preamble generator
+"""This dictionary maps `SourceType` enum members to their respective RPM spec preamble generator
 functions.
 """
 
@@ -138,7 +138,7 @@ def spec_source_bzr(source: BzrSource) -> str:
                "# by executing 'bzr export' and has the usual format\n" +
                "# ('%{name}-%{version}.tar.gz'), where %{version} contains the upstream\n" +
                "# version number with a '+bzr%{rev}' suffix specifying the bzr revision.\n" +
-               format_tagline("Source0", "%{name}-%{version}.tar.gz"))
+               format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
 
     return src_str
 
@@ -161,7 +161,7 @@ def spec_source_git(source: GitSource) -> str:
                "# ('%{name}-%{version}.tar.gz'), where %{version} contains the upstream\n" +
                "# version number with a '+git%{commit}.%{date}' suffix specifying the git\n"
                "# commit hash (8 characters) and the commit date and time (UTC).\n" +
-               format_tagline("Source0", "%{name}-%{version}.tar.gz"))
+               format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
 
     return src_str
 
@@ -180,7 +180,7 @@ def spec_source_local(source: LocalSource) -> str:
 
     assert isinstance(source, LocalSource)
 
-    src_str = format_tagline("Source0", os.path.basename(source.spkg.conf.get("local", "orig")))
+    src_str = format_tag_line("Source0", os.path.basename(source.spkg.conf.get("local", "orig")))
     return src_str
 
 
@@ -197,7 +197,7 @@ def spec_source_url(source: UrlSource) -> str:
 
     assert isinstance(source, UrlSource)
 
-    src_str = format_tagline("Source0", source.spkg.conf.get("url", "orig"))
+    src_str = format_tag_line("Source0", source.spkg.conf.get("url", "orig"))
     return src_str
 
 
@@ -290,8 +290,8 @@ SPEC_VERSION_DICT[SourceType.URL] = spec_version_url
 
 class RpmSpec:
     """
-    This class serves as the go-to toolbelt for handling everything concerning RPM spec files
-    from within kentauros.
+    This class serves as the go-to swiss army knife for handling everything concerning RPM spec
+    files from within kentauros.
 
     The typical usage has 3 stages:
 
@@ -369,7 +369,7 @@ class RpmSpec:
             if line[0:8] != "Version:":
                 contents_new += (line + "\n")
             else:
-                contents_new += format_tagline("Version", self.build_version_string())
+                contents_new += format_tag_line("Version", self.build_version_string())
 
         self.contents = contents_new
 
@@ -445,6 +445,6 @@ class RpmSpec:
                 assert isinstance(line, str)
                 contents_new += (line + "\n")
             else:
-                contents_new += format_tagline("Release", new_rel)
+                contents_new += format_tag_line("Release", new_rel)
 
         self.contents = contents_new

@@ -1,5 +1,5 @@
 """
-This submodule contains the functions that generate the necessary "Source0:" tags for the .spec
+This sub-module contains the functions that generate the necessary "Source0:" tags for the .spec
 file.
 """
 
@@ -13,7 +13,7 @@ from kentauros.modules.sources.git import GitSource
 from kentauros.modules.sources.url import UrlSource
 from kentauros.modules.sources.local import LocalSource
 
-from kentauros.modules.constructor.rpm.spec_common import format_tagline
+from kentauros.modules.constructor.rpm.spec_common import format_tag_line
 
 
 def spec_source_bzr(source: BzrSource) -> str:
@@ -33,7 +33,7 @@ def spec_source_bzr(source: BzrSource) -> str:
                "# by executing 'bzr export' and has the usual format\n" +
                "# ('%{name}-%{version}.tar.gz'), where %{version} contains the upstream\n" +
                "# version number with a '+bzr%{rev}' suffix specifying the bzr revision.\n" +
-               format_tagline("Source0", "%{name}-%{version}.tar.gz"))
+               format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
 
     return src_str
 
@@ -56,7 +56,7 @@ def spec_source_git(source: GitSource) -> str:
                "# ('%{name}-%{version}.tar.gz'), where %{version} contains the upstream\n" +
                "# version number with a '+git%{commit}.%{date}' suffix specifying the git\n"
                "# commit hash (8 characters) and the commit date and time (UTC).\n" +
-               format_tagline("Source0", "%{name}-%{version}.tar.gz"))
+               format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
 
     return src_str
 
@@ -75,7 +75,7 @@ def spec_source_local(source: LocalSource) -> str:
 
     assert isinstance(source, LocalSource)
 
-    src_str = format_tagline("Source0", os.path.basename(source.spkg.conf.get("local", "orig")))
+    src_str = format_tag_line("Source0", os.path.basename(source.spkg.conf.get("local", "orig")))
     return src_str
 
 
@@ -92,7 +92,7 @@ def spec_source_url(source: UrlSource) -> str:
 
     assert isinstance(source, UrlSource)
 
-    src_str = format_tagline("Source0", source.spkg.conf.get("url", "orig"))
+    src_str = format_tag_line("Source0", source.spkg.conf.get("url", "orig"))
     return src_str
 
 

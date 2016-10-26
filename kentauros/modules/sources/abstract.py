@@ -13,7 +13,7 @@ from kentauros.logger import KtrLogger
 from kentauros.modules.module import PkgModule
 
 
-LOGPREFIX = "ktr/sources"
+LOG_PREFIX = "ktr/sources"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -23,7 +23,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
     """
     This class serves as an abstract base class for source handlers. They are expected to override
     this class's unimplemented methods. It also provides common infrastructure for all code sources
-    in the form of generalised implementations of get, refresh and formatver methods.
+    in the form of generalised implementations of `get`, `refresh` and `formatver` methods.
 
     Attributes:
         str sdir:           source directory of the package this source belongs to
@@ -99,7 +99,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         if not os.path.exists(self.sdir):
             logger.log("Nothing here to be cleaned.", 0)
@@ -141,8 +141,8 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
     def execute(self) -> bool:
         """
         This method provides a generic way of preparing a package's sources. This will invoke the
-        :py:meth`Source.get()` method or the :py:meth`Source.update()` method and the
-        :py:meth`Source.export()` method (as overridden by the subclass, respectively).
+        :py:meth:`Source.get()` method or the :py:meth:`Source.update()` method and the
+        :py:meth:`Source.export()` method (as overridden by the subclass, respectively).
 
         If sources can be downloaded / copied into place successfully, an update for them will not
         be attempted. Otherwise (sources are already present within the package directory), an
@@ -165,7 +165,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
     def refresh(self) -> bool:
         """
         This method provides a generic way of refreshing a package's sources. This will invoke the
-        generic :py:meth:`Source.clean()` method and the :py:meth`Source.get()` method (as
+        generic :py:meth:`Source.clean()` method and the :py:meth:`Source.get()` method (as
         overridden by the subclass).
 
         Returns:

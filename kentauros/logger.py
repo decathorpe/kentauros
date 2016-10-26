@@ -1,5 +1,5 @@
 """
-This submodule contains the KtrLogger class, which provides methods for logging messages to file or
+This sub-module contains the KtrLogger class, which provides methods for logging messages to file or
 standard outputs.
 """
 
@@ -9,7 +9,7 @@ import sys
 from kentauros.instance import Kentauros
 
 
-LOGPREFIX = "ktr/logger"
+LOG_PREFIX = "ktr/logger"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -118,42 +118,42 @@ class KtrLogger:
 
             print_flush(msg, file=outfile)
 
-    def log_command(self, cmdlist: list, pri: int=2, prefix: str=None):
+    def log_command(self, cmd_list: list, pri: int=2, prefix: str=None):
         """
         This method prints commands that are then executed by use of the :py:func:`subprocess.call`
         or :py:func:`subprocess.check_output` functions. Its priority behaviour is the same as the
         :py:meth:`Kentauros.log` function's.
 
         Arguments:
-            list cmdlist:   list of strings, as passed to :py:mod:`subprocess` functions
+            list cmd_list:  list of strings, as passed to :py:mod:`subprocess` functions
             int pri:        message priority (0-2, where 0 is lowest and 2 is highest)
             str prefix:     custom module-wide prefix string
         """
 
-        assert isinstance(cmdlist, list)
+        assert isinstance(cmd_list, list)
         assert isinstance(pri, int)
 
         if prefix is not None:
             assert isinstance(prefix, str)
 
-        cmdstring = ""
+        cmd_string = ""
 
-        for cmd in cmdlist:
+        for cmd in cmd_list:
             assert isinstance(cmd, str)
-            cmdstring += (cmd + " ")
+            cmd_string += (cmd + " ")
 
-        basename = str(cmdlist[0])
+        basename = str(cmd_list[0])
 
         if prefix is not None:
             spacing = " " * len(prefix)
             self.log(basename + " command:", pri, prefix)
-            self.log(cmdstring, pri, spacing)
+            self.log(cmd_string, pri, spacing)
             return
 
         if self.log_prefix is not None:
             spacing = " " * len(self.log_prefix)
             self.log(basename + " command:", pri)
-            self.log(cmdstring, pri, spacing)
+            self.log(cmd_string, pri, spacing)
             return
 
     def log_list(self, header: str, lst: list, pri: int=2, prefix: str=None):
@@ -163,7 +163,7 @@ class KtrLogger:
 
         Arguments:
             str header: header for the list
-            list lst:   list of objects that are parseable to str()s by python
+            list lst:   list of objects that are parse-able to str()s by python
             int pri:    message priority (0-2, where 0 is lowest and 2 is highest)
             str prefix: custom module-wide prefix string
         """

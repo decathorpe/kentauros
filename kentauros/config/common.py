@@ -10,12 +10,12 @@ from kentauros.definitions import KtrConfType
 from kentauros.init.env import get_env_debug
 
 
-LOGPREFIX1 = "ktr/config/common: "
+LOG_PREFIX1 = "ktr/config/common: "
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
 
-LOGPREFIX2 = "                   - "
+LOG_PREFIX2 = "                   - "
 """This string specifies the prefix for lists printed through log and error functions, printed to
 stdout or stderr from inside this subpackage.
 """
@@ -73,19 +73,19 @@ class KtrConf:
     - the location of kentauros base directory (`basedir`)
 
     Arguments:
-        KtrConfType conftype:   type of this configuration (where it was read from)
+        KtrConfType conf_type:  type of this configuration (where it was read from)
         str basedir:            optional string specifying `basedir`
     """
 
-    def __init__(self, conftype: KtrConfType, basedir: str=None):
-        assert isinstance(conftype, KtrConfType)
+    def __init__(self, conf_type: KtrConfType, basedir: str=None):
+        assert isinstance(conf_type, KtrConfType)
 
         if basedir is None:
             self.basedir = None
         else:
             self.basedir = os.path.abspath(__replace_home__(basedir))
 
-        self.type = conftype
+        self.type = conf_type
 
         # if values are read from config file, remember where from
         self.file = None
@@ -204,9 +204,9 @@ class KtrConf:
             self.type = other.type
 
         if not self.validate():
-            raise ConfigException("Error occured during configuration parsing.")
+            raise ConfigException("Error occurred during configuration parsing.")
 
-    def from_file(self, filepath: str, errmsg: str=None):
+    def from_file(self, file_path: str, errmsg: str=None):
         """
         This method is used to read values from an `ini`-style configuration file and store the
         results in the instance's attributes.
@@ -215,25 +215,25 @@ class KtrConf:
         along the line.
 
         Arguments:
-            str filepath:   path to configuration file
+            str file_path:  path to configuration file
             str errmsg:     error message that will be printed in case the file is not found
 
         Returns:
             KtrConf:        returns instance itself or *None* if file is not found.
         """
 
-        if not os.path.exists(filepath):
+        if not os.path.exists(file_path):
             if get_env_debug():
-                print(LOGPREFIX1 + errmsg, flush=True)
+                print(LOG_PREFIX1 + errmsg, flush=True)
             return None
 
-        self.file = filepath
+        self.file = file_path
         self.conf = ConfigParser()
 
         successful = self.conf.read(self.file)
         if not successful:
             if errmsg:
-                print(LOGPREFIX1 + errmsg, flush=True)
+                print(LOG_PREFIX1 + errmsg, flush=True)
             return None
 
         if "main" not in self.conf.sections():
@@ -248,15 +248,15 @@ class KtrConf:
                 self.basedir = None
 
         if not self.validate():
-            print(LOGPREFIX1 + "Not all neccessary configuration options have been set.",
+            print(LOG_PREFIX1 + "Not all necessary configuration options have been set.",
                   flush=True)
-            print(LOGPREFIX2 + self.file, flush=True)
+            print(LOG_PREFIX2 + self.file, flush=True)
             return None
         else:
             return self
 
 
-def ktr_conf_from_file(conftype: KtrConfType, filepath: str, errmsg: str=None) -> KtrConf:
+def ktr_conf_from_file(conf_type: KtrConfType, file_path: str, errmsg: str=None) -> KtrConf:
     """
     This factory method is used to create a :py:class:`KtrConf` instance with values that are read
     from an `ini`-style configuration file and store the results in the instance's attributes.
@@ -265,30 +265,30 @@ def ktr_conf_from_file(conftype: KtrConfType, filepath: str, errmsg: str=None) -
     case they are needed later.
 
     Arguments:
-        KtrConfType conftype:   type of configuration
-        str filepath:           path to configuration file
+        KtrConfType conf_type:  type of configuration
+        str file_path:          path to configuration file
         str errmsg:             error message that will be printed in case the file is not found
 
     Returns:
         KtrConf:                resulting configuration object
     """
 
-    if not os.path.exists(filepath):
+    if not os.path.exists(file_path):
         if get_env_debug():
-            print(LOGPREFIX1 + errmsg, flush=True)
+            print(LOG_PREFIX1 + errmsg, flush=True)
         return None
 
     config = ConfigParser()
 
-    successful = config.read(filepath)
+    successful = config.read(file_path)
     if not successful:
         if errmsg:
-            print(LOGPREFIX1 + errmsg, flush=True)
+            print(LOG_PREFIX1 + errmsg, flush=True)
             return None
 
     if "main" not in config.sections():
-        print(LOGPREFIX1 + "Configuration file invalid (no 'main' section).", flush=True)
-        print(LOGPREFIX2 + filepath, flush=True)
+        print(LOG_PREFIX1 + "Configuration file invalid (no 'main' section).", flush=True)
+        print(LOG_PREFIX2 + file_path, flush=True)
         return None
 
     basedir = None
@@ -301,10 +301,10 @@ def ktr_conf_from_file(conftype: KtrConfType, filepath: str, errmsg: str=None) -
         if basedir == "":
             basedir = None
 
-    result = KtrConf(conftype=conftype, basedir=basedir)
+    result = KtrConf(conf_type=conf_type, basedir=basedir)
 
     if not result.validate():
-        print(LOGPREFIX1 + "Something went wrong during configuration verification.", flush=True)
+        print(LOG_PREFIX1 + "Something went wrong during configuration verification.", flush=True)
         return None
     else:
         return result

@@ -13,7 +13,7 @@ def get_env_home() -> str:
     not set, the current directory is used.
 
     Returns:
-        str:    environment varible for `HOME` or the current directory
+        str:    environment variable for `HOME` or the current directory
     """
 
     if "HOME" in os.environ:
@@ -25,7 +25,7 @@ def get_env_home() -> str:
 def get_env_debug() -> bool:
     """
     This function returns *True* if the "*KTR_DEBUG*" environment variable was set to anything
-    parseable to *True* by python. If not (or the variable has not been set), it returns *False*.
+    parse-able to *True* by python. If not (or the variable has not been set), it returns *False*.
 
     Returns:
         bool:   debug *on* or *off*
@@ -40,7 +40,7 @@ def get_env_debug() -> bool:
 def get_env_verby() -> int:
     """
     This function returns the parsed value of the `KTR_VERBOSITY` environment variable (anything
-    parseable to an `int` by python. If it has not been set, it will return *2* (the lowest
+    parse-able to an `int` by python. If it has not been set, it will return *2* (the lowest
     verbosity level).
 
     Returns:

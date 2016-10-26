@@ -12,10 +12,10 @@
 
 ## construct:
 
-- srpm: test if relreset / force code actually works as intended now
+- srpm: test if rel_reset / force code actually works as intended now
 
 
-## pkgformat/rpm:
+## pkgformatter/rpm:
 
 - error handling of `rpmdev-bumpspec` subprocess
 

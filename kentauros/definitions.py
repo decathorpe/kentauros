@@ -14,7 +14,7 @@ The following Enums are defined here:
 * :py:class:`BuilderType`:      types of supported binary package builders
 * :py:class:`ConstructorType`:  types of supported source package constructors
 * :py:class:`SourceType`:       types of supported package sources
-* :py:class:`UploaderType`:     types of supported package uploaders
+* :py:class:`UploaderType`:     types of supported package upload modules
 """
 
 
@@ -127,7 +127,7 @@ class SourceType(Enum):
 @unique
 class UploaderType(Enum):
     """
-    This Enum defines the different types of (source) package uploaders that are supported by
+    This Enum defines the different types of (source) package uploader modules that are supported by
     kentauros. It also includes a default *NONE* type.
     """
 

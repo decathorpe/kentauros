@@ -18,7 +18,7 @@ from kentauros.modules.constructor.abstract import Constructor
 from kentauros.modules.constructor.rpm import RPMSpec, do_release_bump
 
 
-LOGPREFIX = "ktr/constructor/srpm"
+LOG_PREFIX = "ktr/constructor/srpm"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -27,7 +27,7 @@ inside this subpackage.
 class SrpmConstructor(Constructor):
     """
     This :py:class:`Constructor` subclass implements methods for all stages of building and
-    exporting source packages. At class instantiation, it checks for existance of `rpmbuild` and
+    exporting source packages. At class instantiation, it checks for existence of `rpmbuild` and
     `rpmdev-bumpspec` binaries. If they are not found in ``$PATH``, this instance is rendered
     inactive.
 
@@ -79,7 +79,7 @@ class SrpmConstructor(Constructor):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = True
 
@@ -129,7 +129,7 @@ class SrpmConstructor(Constructor):
         assert isinstance(spec, RPMSpec)
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         saved_state = ktr.state_read(self.cpkg.get_conf_name())
 
@@ -170,7 +170,7 @@ class SrpmConstructor(Constructor):
         assert isinstance(spec, RPMSpec)
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         saved_state = ktr.state_read(self.cpkg.get_conf_name())
 
@@ -213,11 +213,11 @@ class SrpmConstructor(Constructor):
     def init(self):
         """
         This method creates a temporary directory (which is then set to `$HOME` in the
-        :py:meth:`SrpmConstructor.build()` method) and other necessary subdirectores (here:
+        :py:meth:`SrpmConstructor.build()` method) and other necessary sub-directories (here:
         `SOURCES`, `SRPMS`, `SPECS`).
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # make sure to finally call self.clean()!
         self.tempdir = tempfile.mkdtemp()
@@ -257,16 +257,12 @@ class SrpmConstructor(Constructor):
         - appending a changelog entry automatically for every different build,
         - copying back the modified spec file to preserve added changelog entries.
 
-        Arguments:
-            bool relreset:  force release reset (triggered by major version or VCS update)
-            bool force:     force release increment (triggered by packaging-only changes)
-
         Returns:
             bool:           returns `True` if the preparation was successful.
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         spec = RPMSpec(self.path, self.cpkg.get_module("source"))
 
@@ -314,10 +310,10 @@ class SrpmConstructor(Constructor):
         spec.set_source()
 
         # if old version and new version are different, force release reset to 0
-        relreset = (new_version != old_version)
+        rel_reset = (new_version != old_version)
 
         # start constructing release string from old release string
-        if relreset:
+        if rel_reset:
             spec.do_release_reset()
 
         # write preamble to new spec file
@@ -341,7 +337,7 @@ class SrpmConstructor(Constructor):
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
 
         # else if nothing changed but "force" was set (packaging changes)
-        # old_version =!= new_version, relreset !=!= True
+        # old_version =!= new_version, rel_reset !=!= True
         elif force:
             message = ktr.cli.get_message()
             if message is None:
@@ -353,7 +349,7 @@ class SrpmConstructor(Constructor):
 
         # else if version has not changed, but snapshot has been updated:
         # old_version =!= new_version
-        elif relreset:
+        elif rel_reset:
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
             new_rpm_spec.do_release_reset()
             do_release_bump(new_spec_path, "Update to latest snapshot.")
@@ -366,7 +362,7 @@ class SrpmConstructor(Constructor):
         self.last_release = new_rpm_spec.get_release()
         self.last_version = new_rpm_spec.get_version()
 
-        # copy new specfile back to ktr/specdir to preserve version tracking,
+        # copy new spec file back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as backup)
         # BUT: remove preamble again, it would break things otherwise
 
@@ -384,7 +380,7 @@ class SrpmConstructor(Constructor):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         old_home = os.environ['HOME']
         os.environ['HOME'] = self.tempdir
@@ -410,12 +406,12 @@ class SrpmConstructor(Constructor):
 
     def export(self):
         """
-        This method copies the assembled source packages from `rpmbuild/SRPMS`
-        to the directory for built packages as specified in the kentauros
-        configuration. If multiple SRPM packages are found, they all are copied.
+        This method copies the assembled source packages from `rpmbuild/SRPMS` to the directory for
+        built packages as specified in the kentauros configuration. If multiple SRPM packages are
+        found, they all are copied.
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
 
@@ -434,7 +430,7 @@ class SrpmConstructor(Constructor):
         success = self.prepare()
         if not success:
             self.clean()
-            KtrLogger(LOGPREFIX).log("Source package assembly unsuccessful.", 2)
+            KtrLogger(LOG_PREFIX).log("Source package assembly unsuccessful.", 2)
             return False
 
         self.build()
@@ -447,7 +443,7 @@ class SrpmConstructor(Constructor):
         if not os.path.exists(self.pdir):
             return True
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         try:
             assert Kentauros().conf.get_packdir() in self.pdir

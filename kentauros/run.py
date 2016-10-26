@@ -15,7 +15,7 @@ from kentauros.bootstrap import ktr_bootstrap
 from kentauros.package import Package, PackageError
 
 
-LOGPREFIX = "ktr"
+LOG_PREFIX = "ktr"
 """This string specifies the prefix for log and error messages printed to
 stdout or stderr from inside this subpackage.
 """
@@ -27,7 +27,7 @@ def print_parameters():
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOGPREFIX)
+    logger = KtrLogger(LOG_PREFIX)
 
     print_flush()
 
@@ -53,7 +53,9 @@ def run():
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOGPREFIX)
+    logger = KtrLogger(LOG_PREFIX)
+
+    print_parameters()
 
     # if no action is specified: exit
     if ktr.cli.get_action() is None:
@@ -65,39 +67,40 @@ def run():
     if not ktr_bootstrap():
         raise SystemExit()
 
-    pkgs = list()
+    packages = list()
 
     # if only specified packages are to be processed: process packages from CLI only
     if not ktr.cli.get_packages_all():
-        pkgs = ktr.cli.get_packages().copy()
+        packages = ktr.cli.get_packages().copy()
 
-        for pkg in pkgs:
+        for pkg in packages:
             pkg_conf_path = os.path.join(ktr.conf.get_confdir(), pkg + ".conf")
 
             if not os.path.exists(pkg_conf_path):
                 logger.err("Package configuration for '" + pkg + "' could not be found.")
-                pkgs.remove(pkg)
+                packages.remove(pkg)
 
-    # if all package are to be processed: get package configs present in CONFDIR
+    # if all package are to be processed: get package configs present in the package configuration
+    # directory
     else:
         pkg_conf_paths = glob.glob(os.path.join(ktr.conf.get_confdir(), "*.conf"))
 
         for pkg_conf_path in pkg_conf_paths:
-            pkgs.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
+            packages.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
 
-    if not pkgs:
+    if not packages:
         logger.log("No packages have been specified or found. Exiting.")
         print_flush()
         raise SystemExit()
 
-    pkgs.sort()
+    packages.sort()
 
     # log list of found packages
-    logger.log_list("Packages", pkgs)
+    logger.log_list("Packages", packages)
     print_flush()
 
     # generate package objects
-    for name in pkgs:
+    for name in packages:
         assert isinstance(name, str)
 
         try:
@@ -107,8 +110,8 @@ def run():
             logger.log("Package with configuration file '" + name + "' is invalid, skipping.")
             continue
 
-    action_succ = list()
-    action_fail = list()
+    actions_success = list()
+    actions_failure = list()
 
     # run action for every specified package
     for name in ktr.get_package_names():
@@ -124,17 +127,17 @@ def run():
         success = action.execute()
 
         if success:
-            action_succ.append(name)
+            actions_success.append(name)
         else:
-            action_fail.append(name)
+            actions_failure.append(name)
 
     print_flush()
 
-    if action_succ:
-        logger.log_list("Successful actions", action_succ)
+    if actions_success:
+        logger.log_list("Successful actions", actions_success)
 
-    if action_fail:
-        logger.log_list("Failed actions", action_fail)
+    if actions_failure:
+        logger.log_list("Failed actions", actions_failure)
 
     print_flush()
 

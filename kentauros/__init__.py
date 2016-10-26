@@ -1,6 +1,7 @@
 """
-kentauros is an automatable build system.
-at the moment, the following is supported:
+kentauros is an automated build system.
+
+at the moment, the following actions are supported:
 
 * getting source code from:
 
@@ -11,13 +12,13 @@ at the moment, the following is supported:
 
 * building source packages:
 
-  * RPM format (.spec neccessary, but in theory an unmodified spec should work)
+  * RPM format (.spec necessary, but in theory an unmodified spec should work)
 
 * building binary packages:
 
-  * RPM format (mock neccessary)
+  * RPM format (mock necessary)
 
 * uploading source packages to cloud build service:
 
-  * copr for fedora and rhel/epel packages
+  * copr for fedora and RHEL/EPEL packages
 """

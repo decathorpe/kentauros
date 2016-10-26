@@ -1,5 +1,5 @@
 """
-This submodule contains only contains the :py:class:`BzrSource` class, which has methods for
+This sub-module contains only contains the :py:class:`BzrSource` class, which has methods for
 handling sources that have `source.type=bzr` specified and `source.orig` set to a bzr repository URL
 (or an `lp:` abbreviation) in the package's configuration file.
 """
@@ -16,7 +16,7 @@ from kentauros.logger import KtrLogger
 from kentauros.modules.sources.abstract import Source
 
 
-LOGPREFIX = "ktr/sources/bzr"
+LOG_PREFIX = "ktr/sources/bzr"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -65,7 +65,7 @@ class BzrSource(Source):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = True
 
@@ -136,7 +136,7 @@ class BzrSource(Source):
         """
 
         # ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # if sources are not accessible (anymore), return "" or last saved rev
         if not os.access(self.dest, os.R_OK):
@@ -148,13 +148,13 @@ class BzrSource(Source):
 
         cmd = ["bzr", "revno"]
 
-        prevdir = os.getcwd()
+        prev_dir = os.getcwd()
         os.chdir(self.dest)
 
         logger.log_command(cmd, 0)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
 
-        os.chdir(prevdir)
+        os.chdir(prev_dir)
 
         self.saved_rev = rev
         return rev
@@ -223,7 +223,7 @@ class BzrSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -263,7 +263,7 @@ class BzrSource(Source):
         # set destination
         cmd.append(self.dest)
 
-        # branch bzr repo from orig to dest
+        # branch bzr repo from origin to destination
         logger.log_command(cmd, 1)
         subprocess.call(cmd)
 
@@ -290,7 +290,7 @@ class BzrSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # if specific revision is requested, do not pull updates (obviously)
         if self.get_revno():
@@ -318,8 +318,8 @@ class BzrSource(Source):
         # get old commit ID
         rev_old = self.rev()
 
-        # change to git repodir
-        prevdir = os.getcwd()
+        # change to git repository directory
+        prev_dir = os.getcwd()
         os.chdir(self.dest)
 
         # get updates
@@ -327,7 +327,7 @@ class BzrSource(Source):
         subprocess.call(cmd)
 
         # go back to previous dir
-        os.chdir(prevdir)
+        os.chdir(prev_dir)
 
         # get new commit ID
         rev_new = self.rev()
@@ -346,10 +346,14 @@ class BzrSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
-        def remove_notkeep():
-            """local function for removing bzr repo after export "if not keep" """
+        def remove_not_keep():
+            """
+            This local function removes the bzr repository and is called after source export, if
+            not keeping the repository around was specified in the configuration file.
+            """
+
             if not self.get_keep_repo():
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
@@ -387,13 +391,13 @@ class BzrSource(Source):
         if os.path.exists(file_name):
             logger.log("Tarball has already been exported.", 1)
             # remove bzr repo if keep is False
-            remove_notkeep()
+            remove_not_keep()
             return False
 
         # remember previous directory
-        prevdir = os.getcwd()
+        prev_dir = os.getcwd()
 
-        # change to git repodir
+        # change to git repository directory
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
@@ -404,7 +408,7 @@ class BzrSource(Source):
         self.rev()
 
         # remove bzr repo if keep is False
-        remove_notkeep()
+        remove_not_keep()
 
-        os.chdir(prevdir)
+        os.chdir(prev_dir)
         return True

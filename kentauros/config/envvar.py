@@ -11,7 +11,7 @@ from kentauros.definitions import KtrConfType
 from kentauros.config.common import KtrConf
 
 
-LOGPREFIX1 = "ktr/config/envvar: "
+LOG_PREFIX1 = "ktr/config/envvar: "
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -43,5 +43,5 @@ def get_env_config() -> KtrConf:
     if result.validate():
         return result
     else:
-        print(LOGPREFIX1 + "Something went wrong during configuration parsing.", flush=True)
+        print(LOG_PREFIX1 + "Something went wrong during configuration parsing.", flush=True)
         return None

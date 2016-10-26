@@ -1,5 +1,5 @@
 """
-This submodule contains only contains the :py:class:`LocalSource` class, which has methods for
+This sub-module contains only contains the :py:class:`LocalSource` class, which has methods for
 handling sources that have `source.type=local` specified and `source.orig` set to an absolute path
 of a local file in the package's configuration file.
 """
@@ -13,7 +13,7 @@ from kentauros.logger import KtrLogger
 from kentauros.modules.sources.abstract import Source
 
 
-LOGPREFIX = "ktr/sources/local"
+LOG_PREFIX = "ktr/sources/local"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -47,7 +47,7 @@ class LocalSource(Source):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = True
 
@@ -93,7 +93,7 @@ class LocalSource(Source):
             bool:   *True* if source was copied successfully, *False* if not
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -104,7 +104,7 @@ class LocalSource(Source):
             logger.log("Sources already present.", 1)
             return False
 
-        # copy file from orig to dest
+        # copy file from origin to destination
         shutil.copy2(self.get_orig(), self.dest)
 
         return True

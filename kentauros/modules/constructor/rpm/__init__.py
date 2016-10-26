@@ -11,13 +11,13 @@ from kentauros.logger import KtrLogger
 
 from kentauros.modules.sources.abstract import Source
 
-from kentauros.modules.constructor.rpm.spec_common import RPMSpecError, format_tagline
+from kentauros.modules.constructor.rpm.spec_common import RPMSpecError, format_tag_line
 from kentauros.modules.constructor.rpm.spec_preamble_out import SPEC_PREAMBLE_DICT
 from kentauros.modules.constructor.rpm.spec_source_out import SPEC_SOURCE_DICT
 from kentauros.modules.constructor.rpm.spec_version_out import SPEC_VERSION_DICT
 
 
-LOGPREFIX = "ktr/pkgformat/rpm"
+LOG_PREFIX = "ktr/constructor/rpm"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -25,8 +25,8 @@ inside this subpackage.
 
 class RPMSpec:
     """
-    This class serves as the go-to toolbelt for handling everything concerning RPM spec files
-    from within kentauros.
+    This class serves as the go-to swiss army knife for handling everything concerning RPM spec
+    files from within kentauros.
 
     The typical usage has 3 stages:
 
@@ -104,7 +104,7 @@ class RPMSpec:
             if line[0:8] != "Version:":
                 contents_new += (line + "\n")
             else:
-                contents_new += format_tagline("Version", self.build_version_string())
+                contents_new += format_tag_line("Version", self.build_version_string())
 
         self.contents = contents_new
 
@@ -180,7 +180,7 @@ class RPMSpec:
                 assert isinstance(line, str)
                 contents_new += (line + "\n")
             else:
-                contents_new += format_tagline("Release", new_rel)
+                contents_new += format_tag_line("Release", new_rel)
 
         self.contents = contents_new
 
@@ -195,7 +195,7 @@ def do_release_bump(path: str, comment: str=None):
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOGPREFIX)
+    logger = KtrLogger(LOG_PREFIX)
 
     if not os.path.exists(path):
         raise FileNotFoundError()

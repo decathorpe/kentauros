@@ -14,7 +14,7 @@ from kentauros.logger import KtrLogger
 from kentauros.modules.uploader.abstract import Uploader
 
 
-LOGPREFIX = "ktr/uploader/copr"
+LOG_PREFIX = "ktr/uploader/copr"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -25,7 +25,7 @@ DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
 class CoprUploader(Uploader):
     """
     This :py:class:`Uploader` subclass implements methods for all stages of uploading source
-    packages. At class instantiation, it checks for existance of the `copr-cli` binary. If it is
+    packages. At class instantiation, it checks for existence of the `copr-cli` binary. If it is
     not found in `$PATH`, this instance is set to inactive.
 
     Arguments:
@@ -55,7 +55,7 @@ class CoprUploader(Uploader):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = True
 
@@ -144,12 +144,12 @@ class CoprUploader(Uploader):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
-        packdir = os.path.join(ktr.conf.get_packdir(), self.upkg.get_conf_name())
+        package_dir = os.path.join(ktr.conf.get_packdir(), self.upkg.get_conf_name())
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(packdir, self.upkg.get_name() + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(package_dir, self.upkg.get_name() + "*.src.rpm"))
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.")

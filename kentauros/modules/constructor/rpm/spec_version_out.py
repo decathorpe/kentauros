@@ -1,5 +1,5 @@
 """
-This submodule contains the functions that generate the necessary "%defines" for the .spec file,
+This sub-module contains the functions that generate the necessary "%defines" for the .spec file,
 which are included as that file's preamble.
 """
 

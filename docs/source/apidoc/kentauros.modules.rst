@@ -8,6 +8,7 @@ Subpackages
 
     kentauros.modules.builder
     kentauros.modules.constructor
+    kentauros.modules.pkgformatter
     kentauros.modules.sources
     kentauros.modules.uploader
 

@@ -1,5 +1,5 @@
 """
-This submodule contains only contains the :py:class:`UrlSource` class, which has methods for
+This sub-module contains only contains the :py:class:`UrlSource` class, which has methods for
 handling sources that have `source.type=url` specified and `source.orig` set to a URL of a tarball
 in the package's configuration file.
 """
@@ -15,7 +15,7 @@ from kentauros.logger import KtrLogger
 from kentauros.modules.sources.abstract import Source
 
 
-LOGPREFIX = "ktr/sources/url"
+LOG_PREFIX = "ktr/sources/url"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -55,7 +55,7 @@ class UrlSource(Source):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = True
 
@@ -115,7 +115,7 @@ class UrlSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -145,7 +145,7 @@ class UrlSource(Source):
         cmd.append("-O")
         cmd.append(self.dest)
 
-        # wget source from orig to dest
+        # wget source from origin to destination
         logger.log_command(cmd, 1)
         subprocess.call(cmd)
 

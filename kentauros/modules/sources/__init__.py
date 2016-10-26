@@ -2,7 +2,7 @@
 This subpackage contains the :py:class:`Source` base class an :py:class:`BzrSource`,
 :py:class:`GitSource`, :py:class:`LocalSource` and :py:class:`UrlSource` subclasses, which are used
 for holding information about a package's sources and methods for manipulating them. Additionally,
-this file contains a dictioary which maps :py:class:`SourceType` enums to their respective class
+this file contains a dictionary which maps :py:class:`SourceType` enums to their respective class
 constructors.
 """
 

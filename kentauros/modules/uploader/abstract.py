@@ -1,6 +1,6 @@
 """
 This module contains the abstract :py:class:`Uploader` class, which is then inherited by actual
-uploaders.
+upload classes.
 """
 
 
@@ -12,8 +12,8 @@ from kentauros.modules.module import PkgModule
 
 class Uploader(PkgModule, metaclass=abc.ABCMeta):
     """
-    This class serves as a quasi-abstract base class for source package uploaders. They are expected
-    to override this class's methods as necessary.
+    This class serves as a quasi-abstract base class for source package uploader classes. They are
+    expected to override this class's methods as necessary.
 
     Arguments:
         Package package:    package for which this constructor is for

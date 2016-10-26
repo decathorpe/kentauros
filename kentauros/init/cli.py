@@ -19,7 +19,7 @@ def get_cli_parser_base() -> ArgumentParser:
 
     The arguments parsed by this basic parser include:
 
-    * `--debug` (`-d`) switch to enable debug messages in kentauros and for subprocesses
+    * `--debug` (`-d`) switch to enable debug messages in kentauros
     * `--verbose` (`-v`, `-vv`) switch to control how many informational messages will be printed
       (twice for extra verbosity)
     * `--basedir=BASEDIR` argument to set base directory for kentauros files (optional)
@@ -28,12 +28,12 @@ def get_cli_parser_base() -> ArgumentParser:
         ArgumentParser: basic CLI argument parser
     """
 
-    cliparser = ArgumentParser(
+    cli_parser = ArgumentParser(
         description="execute actions on packages and their sources",
         prog="ktr")
 
     # --debug, -d switch
-    cliparser.add_argument(
+    cli_parser.add_argument(
         "-d",
         "--debug",
         action="store_const",
@@ -42,7 +42,7 @@ def get_cli_parser_base() -> ArgumentParser:
         help="enable debug output")
 
     # --verbose, -v, -vv switches
-    cliparser.add_argument(
+    cli_parser.add_argument(
         "-v",
         "--verbose",
         action="count",
@@ -51,16 +51,16 @@ def get_cli_parser_base() -> ArgumentParser:
         help="enable verbose output. use twice for extra verbosity")
 
     # --basedir switch
-    cliparser.add_argument(
+    cli_parser.add_argument(
         "--basedir",
         action="store",
         default=None,
         help="specify base directory for kentauros data")
 
-    return cliparser
+    return cli_parser
 
 
-def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
+def get_cli_parser(cli_parser: ArgumentParser) -> ArgumentParser:
     """
     This function constructs and returns a parser for command line arguments, which is used for
     "normal" execution (e.g. invoking the `ktr` script).
@@ -72,16 +72,16 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
     * `--force` (`-f`) switch to force actions which would not be executed
 
     Arguments:
-        ArgumentParser cliparser:   basic argument parser got from :py:func:`get_cli_parser_base`
+        ArgumentParser cli_parser:  basic argument parser got from :py:func:`get_cli_parser_base`
 
     Returns:
         ArgumentParser:             CLI argument parser for `ktr` script
     """
 
-    assert isinstance(cliparser, ArgumentParser)
+    assert isinstance(cli_parser, ArgumentParser)
 
     # sub-commands for ktr
-    parsers = cliparser.add_subparsers(
+    parsers = cli_parser.add_subparsers(
         title="commands",
         description="kentauros accepts the sub-commands given below")
 
@@ -179,7 +179,7 @@ def get_cli_parser(cliparser: ArgumentParser) -> ArgumentParser:
         parents=[package_parser])
     verify_parser.set_defaults(action=ActionType.VERIFY)
 
-    return cliparser
+    return cli_parser
 
 
 class CLIArgs:

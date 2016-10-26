@@ -17,7 +17,7 @@ from kentauros.logger import KtrLogger
 from kentauros.modules.builder.abstract import Builder
 
 
-LOGPREFIX = "ktr/builder/mock"
+LOG_PREFIX = "ktr/builder/mock"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
@@ -62,7 +62,7 @@ def get_dist_from_mock_config(dist: str) -> str:
 
 def get_dist_result_path(dist: str) -> str:
     """
-    This helper function cunstructs the mock result path for a given dist string.
+    This helper function constructs the mock result path for a given dist string.
 
     Arguments:
         str dist:   name of the standard dist
@@ -76,7 +76,7 @@ def get_dist_result_path(dist: str) -> str:
 
 def get_mock_cmd() -> str:
     """
-    This function tries to determine the correct mock binary path. If somethin is messing with the
+    This function tries to determine the correct mock binary path. If something is messing with the
     `$PATH` environment variable, it will try to account for that. If mock is not installed (or
     cannot be found within `$PATH`, this function will raise an Exception.
 
@@ -86,7 +86,7 @@ def get_mock_cmd() -> str:
     Returns:
         str:    path to the mock binary
     """
-    logger = KtrLogger(LOGPREFIX)
+    logger = KtrLogger(LOG_PREFIX)
 
     mock_cmd = subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
 
@@ -159,7 +159,7 @@ class MockBuild:
             int:    return code of the subprocess call
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
@@ -191,7 +191,7 @@ class MockBuild:
 class MockBuilder(Builder):
     """
     This :py:class:`Builder` subclass is used to hold information and methods for executing a local
-    package build using ``mock``. At class instantiation, it checks for existance of the ``mock``
+    package build using ``mock``. At class instantiation, it checks for existence of the ``mock``
     binary. If it is not found in ``$PATH``, this instance is set to inactive.
 
     Arguments:
@@ -223,7 +223,7 @@ class MockBuilder(Builder):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = True
 
@@ -326,12 +326,12 @@ class MockBuilder(Builder):
             return True
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
-        packdir = os.path.join(ktr.conf.get_packdir(), self.bpkg.get_conf_name())
+        package_dir = os.path.join(ktr.conf.get_packdir(), self.bpkg.get_conf_name())
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(packdir, self.bpkg.get_name() + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(package_dir, self.bpkg.get_name() + "*.src.rpm"))
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.", 2)
@@ -352,27 +352,27 @@ class MockBuilder(Builder):
             build_queue.append(MockBuild(mock_cmd, srpm, dist))
 
         # run builds in queue
-        build_succ = list()
-        build_fail = list()
+        builds_success = list()
+        builds_failure = list()
 
         for build in build_queue:
             ret = build.build()
             if ret:
-                build_fail.append((build.path, build.dist))
+                builds_failure.append((build.path, build.dist))
             else:
-                build_succ.append((build.path, build.dist))
+                builds_success.append((build.path, build.dist))
 
         # remove source package if keep=False is specified
         if not self.get_keep():
             os.remove(srpm)
 
-        if build_succ:
-            logger.log_list("Build successes", build_succ)
+        if builds_success:
+            logger.log_list("Build successes", builds_success)
 
-        if build_fail:
-            logger.log_list("Build failures", build_fail)
+        if builds_failure:
+            logger.log_list("Build failures", builds_failure)
 
-        return not build_fail
+        return not builds_failure
 
     def export(self) -> bool:
         """
@@ -389,7 +389,7 @@ class MockBuilder(Builder):
         if not self.get_export():
             return True
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         os.makedirs(self.edir, exist_ok=True)
 
@@ -422,7 +422,7 @@ class MockBuilder(Builder):
         return True
 
     def execute(self) -> bool:
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         success = self.build()
 
@@ -442,7 +442,7 @@ class MockBuilder(Builder):
         if not os.path.exists(self.edir):
             return True
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = KtrLogger(LOG_PREFIX)
 
         try:
             assert Kentauros().conf.get_expodir() in self.edir
