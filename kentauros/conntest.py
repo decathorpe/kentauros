@@ -33,6 +33,8 @@ def trial(address: str) -> bool:
         return False
     except socket.timeout:
         return False
+    except OSError:
+        return False
 
     return True
 
