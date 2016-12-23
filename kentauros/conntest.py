@@ -32,6 +32,8 @@ def is_connected(host_url: str) -> bool:
         return False
     except socket.timeout:
         return False
+    except OSError:
+        return False
 
     return True
 
