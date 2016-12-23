@@ -1,6 +1,6 @@
 Summary:        Small build system, written in python
 Name:           kentauros
-Version:        0.9.14
+Version:        0.9.15
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
@@ -41,10 +41,6 @@ configure copr-cli, and automagic updating, building, uploading to copr works.
 %py3_install
 
 
-%clean
-rm -rf %{buildroot}
-
-
 %files
 %{_bindir}/ktr
 %{_bindir}/ktr-config
@@ -56,6 +52,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Dec 23 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.15-1
+- Update to version 0.9.15.
+- Remove deprecated check scriptlet.
+
 * Sat Oct 08 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.14-1
 - Update to version 0.9.14.
 
