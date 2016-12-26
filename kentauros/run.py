@@ -122,7 +122,7 @@ def run() -> int:
         assert isinstance(name, str)
 
         if ktr.state_read(name) is None:
-            logger.log("Importing new package into the database.")
+            logger.log("Importing new package '" + name + "' into the database.")
             import_action = ImportAction(name)
             import_action.execute()
 

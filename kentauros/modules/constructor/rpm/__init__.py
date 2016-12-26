@@ -90,7 +90,7 @@ class RPMSpec:
             if line[0:8] == "Release:":
                 return line.replace("Release:", "").lstrip(" \t").rstrip()
 
-        raise RPMSpecError("No Version tag was found in the file.")
+        raise RPMSpecError("No Release tag was found in the file.")
 
     def set_version(self):
         """
@@ -211,7 +211,7 @@ def do_release_bump(path: str, comment: str=None):
         cmd.append("--verbose")
 
     cmd.append(path)
-    cmd.append('--comment="' + comment + '"')
+    cmd.append('--comment=' + comment)
 
     logger.log_command(cmd)
     subprocess.call(cmd)

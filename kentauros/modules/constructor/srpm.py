@@ -270,6 +270,11 @@ class SrpmConstructor(Constructor):
             warnings.warn("Make sure to call Constructor.init() before .prepare()!", Warning)
             self.init()
 
+        # check if sources are present
+        if not os.path.exists(self.cpkg.get_module("source").sdir):
+            logger.log("No Package source files are present. Aborting.")
+            return False
+
         # copy sources to rpmbuild/SOURCES
         for entry in os.listdir(self.cpkg.get_module("source").sdir):
             entry_path = os.path.join(self.cpkg.get_module("source").sdir, entry)
