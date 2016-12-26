@@ -124,7 +124,6 @@ class CoprUploader(Uploader):
         return self.upkg.conf.getboolean("copr", "wait")
 
     def status(self) -> dict:
-        # TODO: return e.g. build success of builds
         return dict()
 
     def status_string(self) -> str:
@@ -180,15 +179,15 @@ class CoprUploader(Uploader):
             return False
 
         logger.log_command(cmd, 1)
-        subprocess.call(cmd)
+        ret = subprocess.call(cmd)
 
-        # TODO: error handling
-
-        # remove source package if keep=False is specified
-        if not self.get_keep():
-            os.remove(srpm)
-
-        return True
+        if ret:
+            logger.log("copr-cli command did not complete successfully.")
+            return False
+        else:
+            if not self.get_keep():
+                os.remove(srpm)
+            return True
 
     def execute(self) -> bool:
         return self.upload()
