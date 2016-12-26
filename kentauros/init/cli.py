@@ -37,7 +37,9 @@ def package_name_completer(prefix, **kwargs):
 
     files = glob.glob(paths)
 
-    return (os.path.basename(v).replace(".conf", "") for v in files if v.startswith(prefix))
+    return (os.path.basename(v).replace(".conf", "")
+            for v in files
+            if os.path.basename(v).replace(".conf", "").startswith(prefix))
 
 
 def get_cli_parser_base() -> ArgumentParser:
