@@ -26,6 +26,23 @@ DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
 DEFAULT_VAR_PATH = "/var/lib/mock"
 
 
+class MockError(Exception):
+    """
+    This custom exception will be raised when errors occur during parsing of
+    mock configuration files.
+
+    Arguments:
+        str value:  informational string accompanying the exception
+    """
+
+    def __init__(self, value=""):
+        super().__init__()
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
 def get_default_mock_dist() -> str:
     """
     This helper function tries to figure out which dist is the default one.
@@ -57,7 +74,8 @@ def get_dist_from_mock_config(dist: str) -> str:
                 real_dist = line.replace("config_opts['root'] = ", "").lstrip("'").rstrip("'\n")
                 return real_dist
 
-        return None
+        raise MockError("Invalid configuration file " + cfg_dist + ": " +
+                        "It doesn't seem to contain the 'config_opts['root']' option.")
 
 
 def get_dist_result_path(dist: str) -> str:
@@ -86,6 +104,7 @@ def get_mock_cmd() -> str:
     Returns:
         str:    path to the mock binary
     """
+
     logger = KtrLogger(LOG_PREFIX)
 
     mock_cmd = subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
@@ -408,7 +427,10 @@ class MockBuilder(Builder):
             if os.path.exists(path):
                 mock_result_dirs.append(path)
             else:
-                corrected_path = get_dist_result_path(get_dist_from_mock_config(dist))
+                try:
+                    corrected_path = get_dist_result_path(get_dist_from_mock_config(dist))
+                except MockError:
+                    continue
                 mock_result_dirs.append(corrected_path)
 
         file_results = list()

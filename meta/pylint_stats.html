@@ -30,118 +30,6 @@
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>kentauros.modules.constructor.rpm.__init__</td>
-<td>&#160;</td>
-<td>219</td>
-<td>0</td>
-<td>TODO: error handling</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.modules.constructor.srpm</td>
-<td>&#160;</td>
-<td>307</td>
-<td>0</td>
-<td>TODO: check if release resetting / incrementing logic works now</td>
-</tr>
-<tr class="even">
-<td>refactor</td>
-<td>kentauros.modules.constructor.srpm</td>
-<td>SrpmConstructor.prepare</td>
-<td>245</td>
-<td>4</td>
-<td>Too many local variables (16/15)</td>
-</tr>
-<tr class="odd">
-<td>refactor</td>
-<td>kentauros.modules.constructor.srpm</td>
-<td>SrpmConstructor.prepare</td>
-<td>245</td>
-<td>4</td>
-<td>Too many statements (60/40)</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>PkgFormatter</td>
-<td>19</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>PkgFormatter</td>
-<td>19</td>
-<td>0</td>
-<td>Method '__str__' is abstract in class 'PkgModule' but is not overridden</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>PkgFormatter</td>
-<td>19</td>
-<td>0</td>
-<td>Method 'clean' is abstract in class 'PkgModule' but is not overridden</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>PkgFormatter</td>
-<td>19</td>
-<td>0</td>
-<td>Method 'execute' is abstract in class 'PkgModule' but is not overridden</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>PkgFormatter</td>
-<td>19</td>
-<td>0</td>
-<td>Method 'imports' is abstract in class 'PkgModule' but is not overridden</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>PkgFormatter</td>
-<td>19</td>
-<td>0</td>
-<td>Method 'status' is abstract in class 'PkgModule' but is not overridden</td>
-</tr>
-<tr class="even">
-<td>warning</td>
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>PkgFormatter</td>
-<td>19</td>
-<td>0</td>
-<td>Method 'status_string' is abstract in class 'PkgModule' but is not overridden</td>
-</tr>
-<tr class="odd">
-<td>warning</td>
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>PkgFormatter</td>
-<td>19</td>
-<td>0</td>
-<td>Method 'verify' is abstract in class 'PkgModule' but is not overridden</td>
-</tr>
-<tr class="even">
-<td>convention</td>
-<td>kentauros.modules.pkgformatter.rpm</td>
-<td>&#160;</td>
-<td>1</td>
-<td>0</td>
-<td>Missing module docstring</td>
-</tr>
-<tr class="odd">
-<td>convention</td>
-<td>kentauros.modules.pkgformatter.rpm</td>
-<td>RpmPkgFormatter</td>
-<td>4</td>
-<td>0</td>
-<td>Missing class docstring</td>
-</tr>
-<tr class="even">
-<td>warning</td>
 <td>kentauros.modules.uploader.copr</td>
 <td>&#160;</td>
 <td>127</td>
@@ -157,12 +45,36 @@
 <td>TODO: error handling</td>
 </tr>
 <tr class="even">
-<td>convention</td>
-<td>kentauros.modules.pkgformatter.rpm_spec</td>
+<td>warning</td>
+<td>kentauros.modules.constructor.srpm</td>
 <td>&#160;</td>
-<td>1</td>
+<td>307</td>
 <td>0</td>
-<td>Missing module docstring</td>
+<td>TODO: check if release resetting / incrementing logic works now</td>
+</tr>
+<tr class="odd">
+<td>refactor</td>
+<td>kentauros.modules.constructor.srpm</td>
+<td>SrpmConstructor.prepare</td>
+<td>245</td>
+<td>4</td>
+<td>Too many local variables (16/15)</td>
+</tr>
+<tr class="even">
+<td>refactor</td>
+<td>kentauros.modules.constructor.srpm</td>
+<td>SrpmConstructor.prepare</td>
+<td>245</td>
+<td>4</td>
+<td>Too many statements (60/40)</td>
+</tr>
+<tr class="odd">
+<td>warning</td>
+<td>kentauros.modules.constructor.rpm.__init__</td>
+<td>&#160;</td>
+<td>219</td>
+<td>0</td>
+<td>TODO: error handling</td>
 </tr>
 </table>
 </div>
@@ -173,7 +85,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2472 statements analysed.</p><div>
+<p>2311 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -186,33 +98,33 @@
 </tr>
 <tr class="even">
 <td>module</td>
-<td>55</td>
-<td>55</td>
-<td>=</td>
-<td>96.36</td>
+<td>51</td>
+<td>NC</td>
+<td>NC</td>
+<td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>class</td>
-<td>43</td>
-<td>43</td>
-<td>=</td>
-<td>95.35</td>
+<td>40</td>
+<td>NC</td>
+<td>NC</td>
+<td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="even">
 <td>method</td>
-<td>236</td>
-<td>236</td>
-<td>=</td>
+<td>217</td>
+<td>NC</td>
+<td>NC</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
 <tr class="odd">
 <td>function</td>
-<td>55</td>
-<td>55</td>
-<td>=</td>
+<td>42</td>
+<td>NC</td>
+<td>NC</td>
 <td>100.00</td>
 <td>0.00</td>
 </tr>
@@ -225,11 +137,10 @@ dateutil
   \-parser (kentauros.modules.sources.git)
 kentauros 
   \-actions (kentauros.run)
-  | \-abstract (kentauros.actions.importing)
+  | \-abstract (kentauros.actions.clean)
   | \-build (kentauros.actions)
   | \-chain (kentauros.actions)
-  | \-clean (kentauros.actions)
-  | \-common (kentauros.actions.chain)
+  | \-common (kentauros.actions.clean)
   | \-construct (kentauros.actions)
   | \-importing (kentauros.actions)
   | \-prepare (kentauros.actions)
@@ -243,12 +154,12 @@ kentauros
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
   \-conntest (kentauros.modules.uploader.copr)
-  \-definitions (kentauros.config)
+  \-definitions (kentauros.actions.clean)
   \-init 
   | \-cli (kentauros.config)
   | \-env (kentauros.config)
   \-instance (kentauros.actions.chain)
-  \-logger (kentauros.actions.chain)
+  \-logger (kentauros.actions.clean)
   \-modules (kentauros.package)
   | \-builder (kentauros.modules)
   | | \-abstract (kentauros.modules.builder.mock)
@@ -261,15 +172,13 @@ kentauros
   | | | \-spec_source_out (kentauros.modules.constructor.rpm)
   | | | \-spec_version_out (kentauros.modules.constructor.rpm)
   | | \-srpm (kentauros.modules.constructor)
-  | \-module (kentauros.modules.builder.abstract)
-  | \-pkgformatter 
-  | | \-abstract (kentauros.modules.pkgformatter.rpm)
+  | \-module (kentauros.modules.uploader.abstract)
   | \-sources (kentauros.modules)
-  | | \-abstract (kentauros.modules.pkgformatter.rpm_spec)
-  | | \-bzr (kentauros.modules.pkgformatter.rpm_spec)
-  | | \-git (kentauros.modules.pkgformatter.rpm_spec)
-  | | \-local (kentauros.modules.pkgformatter.rpm_spec)
-  | | \-url (kentauros.modules.pkgformatter.rpm_spec)
+  | | \-abstract (kentauros.modules.constructor.rpm)
+  | | \-bzr (kentauros.modules.constructor.rpm.spec_source_out)
+  | | \-git (kentauros.modules.constructor.rpm.spec_source_out)
+  | | \-local (kentauros.modules.constructor.rpm.spec_source_out)
+  | | \-url (kentauros.modules.constructor.rpm.spec_source_out)
   | \-uploader (kentauros.modules)
   |   \-abstract (kentauros.modules.uploader.copr)
   |   \-copr (kentauros.modules.uploader)
@@ -288,31 +197,31 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2728</td>
-<td>41.08</td>
-<td>2728</td>
-<td>=</td>
+<td>2559</td>
+<td>41.75</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
-<td>2226</td>
-<td>33.52</td>
-<td>2226</td>
-<td>=</td>
+<td>2017</td>
+<td>32.91</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>223</td>
-<td>3.36</td>
-<td>223</td>
-<td>=</td>
+<td>200</td>
+<td>3.26</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1464</td>
-<td>22.04</td>
-<td>1464</td>
-<td>=</td>
+<td>1353</td>
+<td>22.08</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 </table>
 </div>
@@ -328,14 +237,14 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <th>nb duplicated lines</th>
 <td>0</td>
-<td>0</td>
-<td>=</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 <tr class="odd">
 <th>percent duplicated lines</th>
 <td>0.000</td>
-<td>0.000</td>
-<td>=</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 </table>
 </div>
@@ -350,27 +259,27 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>convention</td>
-<td>4</td>
-<td>4</td>
-<td>=</td>
+<td>0</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
 <td>4</td>
-<td>4</td>
-<td>=</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 <tr class="even">
 <td>warning</td>
-<td>11</td>
-<td>11</td>
-<td>=</td>
+<td>4</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 <tr class="odd">
 <td>error</td>
 <td>0</td>
-<td>0</td>
-<td>=</td>
+<td>NC</td>
+<td>NC</td>
 </tr>
 </table>
 </div>
@@ -385,53 +294,32 @@ tinydb (kentauros.instance)</pre></div>
 <th>convention</th>
 </tr>
 <tr class="even">
-<td>kentauros.modules.pkgformatter.abstract</td>
-<td>0.00</td>
-<td>63.64</td>
-<td>0.00</td>
-<td>25.00</td>
-</tr>
-<tr class="odd">
 <td>kentauros.modules.uploader.copr</td>
 <td>0.00</td>
-<td>18.18</td>
+<td>50.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>kentauros.modules.constructor.srpm</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>25.00</td>
 <td>50.00</td>
 <td>0.00</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>kentauros.modules.constructor.rpm.__init__</td>
 <td>0.00</td>
-<td>9.09</td>
+<td>25.00</td>
 <td>0.00</td>
 <td>0.00</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>kentauros.run</td>
 <td>0.00</td>
 <td>0.00</td>
 <td>50.00</td>
 <td>0.00</td>
-</tr>
-<tr class="odd">
-<td>kentauros.modules.pkgformatter.rpm</td>
-<td>0.00</td>
-<td>0.00</td>
-<td>0.00</td>
-<td>50.00</td>
-</tr>
-<tr class="even">
-<td>kentauros.modules.pkgformatter.rpm_spec.__init__</td>
-<td>0.00</td>
-<td>0.00</td>
-<td>0.00</td>
-<td>25.00</td>
 </tr>
 </table>
 </div>
@@ -441,14 +329,6 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="header">
 <th>message id</th>
 <th>occurrences</th>
-</tr>
-<tr class="even">
-<td>abstract-method</td>
-<td>7</td>
-</tr>
-<tr class="odd">
-<td>missing-docstring</td>
-<td>4</td>
 </tr>
 <tr class="even">
 <td>fixme</td>
@@ -470,7 +350,7 @@ tinydb (kentauros.instance)</pre></div>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.92/10 (previous run: 9.92/10, +0.00)</div>
+Your code has been rated at 9.97/10</div>
 </div>
 </body>
 </html>
