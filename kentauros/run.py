@@ -31,12 +31,14 @@ def print_parameters():
     ktr = Kentauros()
     logger = KtrLogger(LOG_PREFIX)
 
-    print_flush()
+    if ktr.debug or ktr.verby < 2:
+        print_flush()
 
     logger.log("Debugging:                          " + str(ktr.debug), 0)
     logger.log("Logger Verbosity:                   " + str(ktr.verby) + "/2", 1)
 
-    print_flush()
+    if ktr.debug:
+        print_flush()
 
     logger.dbg("Base directory:                     " + ktr.get_basedir())
     logger.dbg("Package configuration directory:    " + ktr.get_confdir())
