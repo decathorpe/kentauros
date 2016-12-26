@@ -412,7 +412,6 @@ popd
 %{_includedir}/GL/glx_mangle.h
 %{_includedir}/GL/glxext.h
 %{_includedir}/GL/glcorearb.h
-%{_includedir}/GL/mesa_glinterop.h
 %dir %{_includedir}/GL/internal
 %{_includedir}/GL/internal/dri_interface.h
 %{_libdir}/pkgconfig/dri.pc
