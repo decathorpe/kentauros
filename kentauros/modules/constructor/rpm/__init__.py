@@ -185,7 +185,7 @@ class RPMSpec:
         self.contents = contents_new
 
 
-def do_release_bump(path: str, comment: str=None):
+def do_release_bump(path: str, comment: str=None) -> bool:
     """
     This function calls `rpmdev-bumpspec` with the specified arguments to bump the release number
     and create a changelog entry with a given comment.
@@ -214,6 +214,6 @@ def do_release_bump(path: str, comment: str=None):
     cmd.append('--comment=' + comment)
 
     logger.log_command(cmd)
-    subprocess.call(cmd)
+    ret = subprocess.call(cmd)
 
-    # TODO: error handling
+    return not ret

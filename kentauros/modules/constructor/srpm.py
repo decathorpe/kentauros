@@ -48,11 +48,7 @@ class SrpmConstructor(Constructor):
 
         ktr = Kentauros()
 
-        self.tempdir = None
-        self.rpmbdir = None
-        self.specdir = None
-        self.srpmdir = None
-        self.srcsdir = None
+        self.dirs = dict()
 
         self.path = os.path.join(ktr.get_specdir(),
                                  self.cpkg.get_conf_name(),
@@ -220,69 +216,62 @@ class SrpmConstructor(Constructor):
         logger = KtrLogger(LOG_PREFIX)
 
         # make sure to finally call self.clean()!
-        self.tempdir = tempfile.mkdtemp()
+        self.dirs["tempdir"] = tempfile.mkdtemp()
 
-        logger.log("Temporary directory " + self.tempdir + " created.", 1)
+        logger.log("Temporary directory " + self.dirs["tempdir"] + " created.", 1)
 
-        self.rpmbdir = os.path.join(self.tempdir, "rpmbuild")
-        self.specdir = os.path.join(self.tempdir, "rpmbuild", "SPECS")
-        self.srpmdir = os.path.join(self.tempdir, "rpmbuild", "SRPMS")
-        self.srcsdir = os.path.join(self.tempdir, "rpmbuild", "SOURCES")
+        self.dirs["rpmbbuild_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild")
+        self.dirs["spec_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SPECS")
+        self.dirs["srpm_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SRPMS")
+        self.dirs["source_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SOURCES")
 
         # create $TEMPDIR/rpmbuild
-        if not os.path.exists(self.rpmbdir):
-            os.mkdir(self.rpmbdir)
+        if not os.path.exists(self.dirs["rpmbbuild_dir"]):
+            os.mkdir(self.dirs["rpmbbuild_dir"])
 
-        logger.log("Temporary rpmbuild directory created: " + self.tempdir, 1)
+        logger.log("Temporary rpmbuild directory created: " + self.dirs["tempdir"], 1)
 
         # create $TEMPDIR/rpmbuild/{SPECS,SRPMS,SOURCES}
-        for directory in [self.specdir, self.srpmdir, self.srcsdir]:
+        for directory in [self.dirs["spec_dir"], self.dirs["srpm_dir"], self.dirs["source_dir"]]:
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
         logger.log("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.", 1)
 
-    def prepare(self) -> bool:
+    def _check_source_presence(self) -> bool:
         """
-        This method prepares all files necessary for source package assembly.
-
-        This includes
-
-        - copying every file (not directories) from package source directory to `rpmbuild/SOURCES`,
-        - removing the latest tarball from the package source directory if it should not be kept,
-        - copying the package configuration file to `rpmbuild/SOURCES`
-        - preparing the `package.spec` file in `rpmbuild/SPECS` from the file in the spec directory,
-        - defining macros for git and bzr version string additions,
-        - setting `Version:` and `Release:` tags according to configuration,
-        - appending a changelog entry automatically for every different build,
-        - copying back the modified spec file to preserve added changelog entries.
-
-        Returns:
-            bool:           returns `True` if the preparation was successful.
+        This method checks if the Source's output directory is present.
         """
 
-        ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
-        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
-
-        if not os.path.exists(self.rpmbdir):
-            warnings.warn("Make sure to call Constructor.init() before .prepare()!", Warning)
-            self.init()
-
-        # check if sources are present
-        if not os.path.exists(self.cpkg.get_module("source").sdir):
+        if os.path.exists(self.cpkg.get_module("source").sdir):
+            return True
+        else:
             logger.log("No Package source files are present. Aborting.")
             return False
 
-        # copy sources to rpmbuild/SOURCES
+    def _copy_sources(self):
+        """
+        This method copies all files (not directories) in the sources directory to the
+        `rpmbuild/SOURCES` directory.
+        """
+
+        logger = KtrLogger(LOG_PREFIX)
+
         for entry in os.listdir(self.cpkg.get_module("source").sdir):
             entry_path = os.path.join(self.cpkg.get_module("source").sdir, entry)
             if os.path.isfile(entry_path):
-                shutil.copy2(entry_path, self.srcsdir)
+                shutil.copy2(entry_path, self.dirs["source_dir"])
                 logger.log("File copied to SOURCES: " + entry_path, 1)
 
-        # remove tarballs if they should not be kept
+    def _cleanup_sources(self):
+        """
+        This method cleans up the Source's output directory according to settings.
+        """
+
+        logger = KtrLogger(LOG_PREFIX)
+
         if not self.cpkg.get_module("source").get_keep():
 
             # if source is a tarball (or similar) from the beginning:
@@ -293,75 +282,159 @@ class SrpmConstructor(Constructor):
             else:
                 tarballs = glob.glob(os.path.join(self.cpkg.get_module("source").sdir,
                                                   self.cpkg.get_name()) + "*.tar.gz")
+
                 # remove only the newest one to be safe
                 tarballs.sort(reverse=True)
+
                 if os.path.isfile(tarballs[0]):
                     assert self.cpkg.get_module("source").sdir in tarballs[0]
                     os.remove(tarballs[0])
                     logger.log("Tarball removed: " + tarballs[0], 1)
 
-        # copy package.conf to rpmbuild/SOURCES
-        shutil.copy2(self.cpkg.file, self.srcsdir)
+    def _copy_configuration(self):
+        """
+        This method copies the package configuration file to the `rpmbuild/SOURCES` directory in
+        case it is included in the package build.
+        """
+
+        logger = KtrLogger(LOG_PREFIX)
+
+        shutil.copy2(self.cpkg.file, self.dirs["source_dir"])
         logger.log("Package configuration copied to SOURCES: " + self.cpkg.file, 1)
 
-        # construct preamble and new version string
+    def _get_old_status(self) -> tuple:
+        """
+        This method tries to determine the old Version and Release strings from the best available
+        source. If the local state database has not yet been updated with those values, the .spec
+        file is parsed as a fallback.
+
+        Returns:
+            tuple:      (version, release)
+        """
+
+        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
+
         old_version = self._get_last_version(spec)
         old_release = self._get_last_release(spec)
-        new_version = self.cpkg.get_version()
 
-        # TODO: check if release resetting / incrementing logic works now
+        return old_version, old_release
+
+    def _get_spec_destination(self):
+        """This method calculates the destination of the .spec file in the `rpmbuild/SPECS dir."""
+        return os.path.join(self.dirs["spec_dir"], self.cpkg.get_name() + ".spec")
+
+    def _prepare_spec(self) -> str:
+        """
+        This method sets the `Version` and `Source0` tags in the template spec file and resets the
+        `Release` tag to `0%{dist}` if the version has changed (to the best of the program's
+        knowledge). A preamble to the .spec file containing all necessary macros / definitions is
+        generated (and returned). Lastly, the spec is exported to the destination file.
+
+        Returns:
+            str:        the contents of the .spec preamble
+        """
+
+        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
 
         spec.set_version()
         spec.set_source()
 
-        # if old version and new version are different, force release reset to 0
-        rel_reset = (new_version != old_version)
+        old_version = self._get_old_status()[0]
+        new_version = self.cpkg.get_version()
 
         # start constructing release string from old release string
-        if rel_reset:
+        if new_version != old_version:
             spec.do_release_reset()
 
         # write preamble to new spec file
         preamble = spec.build_preamble_string()
 
-        # calculate absolute path of new spec file and copy it over
-        new_spec_path = os.path.join(self.specdir, self.cpkg.get_name() + ".spec")
-        spec.export_to_file(new_spec_path)
+        # write the content of the spec file to destination
+        spec.export_to_file(self._get_spec_destination())
 
-        # use "rpmdev-bumpspec" to increment release number and create changelog entries
+        return preamble
+
+    def _copy_specs_around(self) -> bool:
+        """
+        This method handles the package's .spec file.
+
+        Variables containing the old and new Version and Release strings are calculated (from all
+        available sources of information, including the old spec file and the local state database).
+
+        A preamble to the spec file is generated based on which macros are expected to be set for
+        different types of sources and is prepended to the output .spec file.
+
+        Based on the information about old and new Version and Release strings, whether a VCS update
+        triggered this build or the build was forced, the new Version string is generated.
+
+        * The Release string might not change in case there are no changes to the package and a
+          simple construct action has been triggered. No changelog entry is added.
+        * If the Version string has changed between builds (or it is the first package build), the
+          Release is set to 1 and a changelog entry is added to the .spec file.
+        * If a package rebuild is forced (by the `--force` CLI argument, the Release is incremented
+          by 1 and a changelog message is added to the .spec file.
+        * If a build has been triggered because of an updated VCS snapshot, the Release is reset to
+          1 and a changelog entry is added. This only works if the state database has all necessary
+          information.
+        """
+
+        ktr = Kentauros()
+        logger = KtrLogger(LOG_PREFIX)
+
+        new_version = self.cpkg.get_version()
+        old_version, old_release = self._get_old_status()
+
         force = ktr.cli.get_force()
 
         logger.dbg("Old Version: " + old_version)
         logger.dbg("New Version: " + new_version)
         logger.dbg("Old Release: " + old_release)
 
-        # if major version has changed, put it into the changelog
-        if (old_version != new_version) or (old_release[0] == "0"):
-            do_release_bump(new_spec_path,
-                            "Update to version " + self.cpkg.get_version() + ".")
+        # prepare the spec file and get the generated preamble
+        preamble = self._prepare_spec()
+
+        # use "rpmdev-bumpspec" to increment release number and create changelog entries:
+        new_spec_path = self._get_spec_destination()
+
+        # Case 1:
+        # No changes, only package construction action triggered
+        if (new_version == old_version) and not force:
+            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
+            success = True
+
+        # Case 2:
+        # Major version update: bump Version, reset Release, add changelog entry
+        elif (new_version != old_version) or (old_release[0] == "0"):
+            success = do_release_bump(new_spec_path,
+                                      "Update to version " + self.cpkg.get_version() + ".")
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
 
-        # else if nothing changed but "force" was set (packaging changes)
-        # old_version =!= new_version, rel_reset !=!= True
+        # Case 3:
+        # Sources didn't change but rebuild was forced: bump Release, add changelog entry
         elif force:
             message = ktr.cli.get_message()
             if message is None:
-                do_release_bump(new_spec_path, "Update for packaging changes.")
+                success = do_release_bump(new_spec_path, "Update for packaging changes.")
             else:
-                do_release_bump(new_spec_path, message)
+                success = do_release_bump(new_spec_path, message)
 
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
 
-        # else if version has not changed, but snapshot has been updated:
-        # old_version =!= new_version
-        elif rel_reset:
+        # Case 4:
+        # Version unchanged, but updated snapshot: reset+bump Release, add changelog entry
+        elif new_version != old_version:
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
             new_rpm_spec.do_release_reset()
-            do_release_bump(new_spec_path, "Update to latest snapshot.")
+            success = do_release_bump(new_spec_path, "Update to latest snapshot.")
             new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
 
+        # Case 5:
+        # Something I cannot think of right now.
         else:
             logger.err("Something went wrong.")
+            return False
+
+        if not success:
             return False
 
         self.last_release = new_rpm_spec.get_release()
@@ -370,12 +443,44 @@ class SrpmConstructor(Constructor):
         # copy new spec file back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as backup)
         # BUT: remove preamble again, it would break things otherwise
+        # Handling the ChangeLog seperately (SUSE style?) would be nice here.
 
         new_rpm_spec.contents = new_rpm_spec.contents.replace(preamble, "")
         shutil.copy2(self.path, self.path + ".old")
         new_rpm_spec.export_to_file(self.path)
 
         return True
+
+    def prepare(self) -> bool:
+        """
+        This method prepares all files necessary for source package assembly.
+
+        Returns:
+            bool:           returns `True` if the preparation was successful.
+        """
+
+        if not os.path.exists(self.dirs["rpmbbuild_dir"]):
+            warnings.warn("Make sure to call Constructor.init() before .prepare()!", Warning)
+            self.init()
+
+        # check if sources are present
+        if not self._check_source_presence():
+            return False
+
+        # copy sources to rpmbuild/SOURCES
+        self._copy_sources()
+
+        # remove tarballs if they should not be kept
+        self._cleanup_sources()
+
+        # copy package.conf to rpmbuild/SOURCES
+        self._copy_configuration()
+
+        # copy modified .spec file to rpmbuild/SPECS
+        # copy back file with changelog additions and possible Release bump
+        success = self._copy_specs_around()
+
+        return success
 
     def build(self):
         """
@@ -388,7 +493,7 @@ class SrpmConstructor(Constructor):
         logger = KtrLogger(LOG_PREFIX)
 
         old_home = os.environ['HOME']
-        os.environ['HOME'] = self.tempdir
+        os.environ['HOME'] = self.dirs["tempdir"]
 
         # construct rpmbuild command
         cmd = ["rpmbuild"]
@@ -400,7 +505,7 @@ class SrpmConstructor(Constructor):
             cmd.append("--verbose")
 
         cmd.append("-bs")
-        cmd.append(os.path.join(self.specdir, self.cpkg.get_name() + ".spec"))
+        cmd.append(os.path.join(self.dirs["spec_dir"], self.cpkg.get_name() + ".spec"))
 
         logger.log_command(cmd)
 
@@ -418,7 +523,7 @@ class SrpmConstructor(Constructor):
 
         logger = KtrLogger(LOG_PREFIX)
 
-        srpms = glob.glob(os.path.join(self.srpmdir, "*.src.rpm"))
+        srpms = glob.glob(os.path.join(self.dirs["srpm_dir"], "*.src.rpm"))
 
         os.makedirs(self.pdir, exist_ok=True)
 
@@ -427,7 +532,7 @@ class SrpmConstructor(Constructor):
             logger.log("File copied: " + srpm, 0)
 
     def cleanup(self):
-        shutil.rmtree(self.tempdir)
+        shutil.rmtree(self.dirs["tempdir"])
 
     def execute(self) -> bool:
         self.init()
