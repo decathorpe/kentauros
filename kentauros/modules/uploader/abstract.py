@@ -6,7 +6,6 @@ upload classes.
 
 import abc
 
-from kentauros.instance import Kentauros
 from kentauros.modules.module import PkgModule
 
 
@@ -23,12 +22,6 @@ class Uploader(PkgModule, metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
-        ktr = Kentauros()
-
-        if ktr.debug:
-            from kentauros.package import Package
-            assert isinstance(package, Package)
-
         self.upkg = package
 
     @abc.abstractmethod

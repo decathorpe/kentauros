@@ -32,10 +32,6 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
     def __init__(self, package):
         ktr = Kentauros()
 
-        if ktr.debug:
-            from kentauros.package import Package
-            assert isinstance(package, Package)
-
         self.bpkg = package
         self.pdir = os.path.join(ktr.get_packdir(), self.bpkg.get_conf_name())
 

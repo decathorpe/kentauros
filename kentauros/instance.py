@@ -121,9 +121,7 @@ class Kentauros:
         """
 
         if self.debug:
-            from kentauros.package import Package
             assert isinstance(conf_name, str)
-            assert isinstance(package, Package)
 
         if conf_name in self.packages:
             return False

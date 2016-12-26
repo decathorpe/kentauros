@@ -35,10 +35,6 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
     def __init__(self, package):
         ktr = Kentauros()
 
-        if ktr.debug:
-            from kentauros.package import Package
-            assert isinstance(package, Package)
-
         self.spkg = package
         self.sdir = os.path.join(ktr.get_datadir(), self.spkg.get_conf_name())
 
