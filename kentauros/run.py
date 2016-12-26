@@ -25,7 +25,7 @@ stdout or stderr from inside this subpackage.
 
 def print_parameters():
     """
-    This function prints the general execution parameters.
+    This function prints the kentauros program parameters.
     """
 
     ktr = Kentauros()
@@ -50,6 +50,104 @@ def print_parameters():
     print_flush()
 
 
+def get_packages_cli() -> list:
+    """
+    This function parses the package configuration names supplied via CLI arguments, removes any
+    that do not match with a present configuration file in the respective directory, and returns
+    the checked list.
+
+    Returns:
+        list:       list of strings of package configuration names
+    """
+
+    ktr = Kentauros()
+    logger = KtrLogger(LOG_PREFIX)
+
+    packages = list()
+
+    for pkg in ktr.cli.get_packages():
+        pkg_conf_path = os.path.join(ktr.get_confdir(), pkg + ".conf")
+
+        if os.path.exists(pkg_conf_path):
+            packages.append(pkg)
+        else:
+            logger.err("Package configuration for '" + pkg + "' could not be found.")
+
+    packages.sort()
+
+    return packages
+
+
+def get_packages_all() -> list:
+    """
+    This function parses the content of the package configuration files directory and returns the
+    package configuration names.
+
+    Returns:
+        list:       list of strings of package configuration names
+    """
+
+    ktr = Kentauros()
+
+    packages = list()
+
+    pkg_conf_paths = glob.glob(os.path.join(ktr.get_confdir(), "*.conf"))
+
+    for pkg_conf_path in pkg_conf_paths:
+        packages.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
+
+    packages.sort()
+
+    return packages
+
+
+def get_packages() -> list:
+    """
+    This function returns the set of all packages that are specified as command line arguments or
+    all packages that have configuration files present, depending on whether the `--all` CLI flag
+    has been set.
+
+    Returns:
+        list:       list of package configuration names
+    """
+
+    ktr = Kentauros()
+
+    # if only specified packages are to be processed:
+    # process packages from CLI only
+    if not ktr.cli.get_packages_all():
+        packages = get_packages_cli()
+
+    # if all package are to be processed:
+    # get package configs present in the package configuration directory
+    else:
+        packages = get_packages_all()
+
+    return packages
+
+
+def init_package_objects(packages: list):
+    """
+    This function parses the list of package configuration names and initialises the `Package`
+    objects. If no errors occur during initialisation, the `Package` instance is added to the
+    kentauros instance's list of packages.
+    """
+
+    ktr = Kentauros()
+    logger = KtrLogger(LOG_PREFIX)
+
+    for name in packages:
+        assert isinstance(name, str)
+
+        try:
+            pkg = Package(name)
+        except PackageError:
+            logger.log("Package with configuration file '" + name + "' is invalid, skipping.")
+            continue
+
+        ktr.add_package(name, pkg)
+
+
 def run() -> int:
     """
     This function is corresponding to (one of) the "main" function of the `kentauros` package and is
@@ -61,58 +159,32 @@ def run() -> int:
 
     print_parameters()
 
-    # if no action is specified: exit
+    # if no action is specified: exit(0)
     if ktr.cli.get_action() == ActionType.NONE:
         logger.log("No action specified. Exiting.")
         logger.log("Use 'ktr --help' for more information.")
         print_flush()
         return 0
 
+    # initialise directory structure and exit(1) if it fails
     if not ktr_bootstrap():
         return 1
 
-    packages = list()
+    # get packages from CLI (all or specific ones)
+    packages = get_packages()
 
-    # if only specified packages are to be processed: process packages from CLI only
-    if not ktr.cli.get_packages_all():
-        packages = ktr.cli.get_packages().copy()
-
-        for pkg in packages:
-            pkg_conf_path = os.path.join(ktr.get_confdir(), pkg + ".conf")
-
-            if not os.path.exists(pkg_conf_path):
-                logger.err("Package configuration for '" + pkg + "' could not be found.")
-                packages.remove(pkg)
-
-    # if all package are to be processed: get package configs present in the package configuration
-    # directory
-    else:
-        pkg_conf_paths = glob.glob(os.path.join(ktr.get_confdir(), "*.conf"))
-
-        for pkg_conf_path in pkg_conf_paths:
-            packages.append(os.path.basename(pkg_conf_path).replace(".conf", ""))
-
+    # if no package configurations are found: exit(0)
     if not packages:
         logger.log("No packages have been specified or found. Exiting.")
         print_flush()
         return 0
-
-    packages.sort()
 
     # log list of found packages
     logger.log_list("Packages", packages)
     print_flush()
 
     # generate package objects
-    for name in packages:
-        assert isinstance(name, str)
-
-        try:
-            pkg = Package(name)
-            ktr.add_package(name, pkg)
-        except PackageError:
-            logger.log("Package with configuration file '" + name + "' is invalid, skipping.")
-            continue
+    init_package_objects(packages)
 
     actions_success = list()
     actions_failure = list()
