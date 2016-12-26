@@ -54,7 +54,7 @@ class SrpmConstructor(Constructor):
         self.srpmdir = None
         self.srcsdir = None
 
-        self.path = os.path.join(ktr.conf.get_specdir(),
+        self.path = os.path.join(ktr.get_specdir(),
                                  self.cpkg.get_conf_name(),
                                  self.cpkg.get_name() + ".spec")
 
@@ -446,7 +446,7 @@ class SrpmConstructor(Constructor):
         logger = KtrLogger(LOG_PREFIX)
 
         try:
-            assert Kentauros().conf.get_packdir() in self.pdir
+            assert Kentauros().get_packdir() in self.pdir
             assert os.path.isabs(self.pdir)
             shutil.rmtree(self.pdir)
             return True

@@ -145,7 +145,7 @@ class CoprUploader(Uploader):
         ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
-        package_dir = os.path.join(ktr.conf.get_packdir(), self.upkg.get_conf_name())
+        package_dir = os.path.join(ktr.get_packdir(), self.upkg.get_conf_name())
 
         # get all srpms in the package directory
         srpms = glob.glob(os.path.join(package_dir, self.upkg.get_name() + "*.src.rpm"))

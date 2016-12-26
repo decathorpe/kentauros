@@ -6,6 +6,7 @@ program run. Additionally, this subpackage holds logging and error printing func
 """
 
 
+import configparser
 import os
 import warnings
 
@@ -13,7 +14,6 @@ from collections import OrderedDict
 
 from tinydb import TinyDB, Query
 
-from kentauros.config import ktr_get_conf
 from kentauros.init.cli import CLIArgs
 from kentauros.init.env import get_env_debug, get_env_verby
 
@@ -39,6 +39,7 @@ class Kentauros:
     """
 
     initialised = False
+    workdir = os.getcwd()
 
     cli = None
     debug = None
@@ -51,10 +52,61 @@ class Kentauros:
             Kentauros.cli = CLIArgs()
             Kentauros.debug = get_env_debug() or self.cli.get_debug()
             Kentauros.verby = __smaller_int__(get_env_verby(), self.cli.get_verby())
-            Kentauros.conf = ktr_get_conf()
             Kentauros.packages = OrderedDict()
 
+            config_path = os.path.join(self.workdir, "kentaurosrc")
+
+            if os.path.exists(config_path):
+                Kentauros.conf = configparser.ConfigParser()
+                Kentauros.conf.read(config_path)
+
             Kentauros.initialised = True
+
+    def get_basedir(self) -> str:
+        """
+        This method tries to parse the kentauros configuration file for a specified base
+        directory. If it is not specified, it returns the current directory as a fallback value.
+
+        Returns:
+            str:    kentauros base directory
+        """
+
+        if self.conf is None:
+            return Kentauros.workdir
+
+        try:
+            path = self.conf.get("main", "basedir")
+        except KeyError:
+            return Kentauros.workdir
+
+        if path == "./":
+            path = Kentauros.workdir
+        elif path[0:2] == "./":
+            path = os.path.join(Kentauros.workdir, path[2:])
+        elif not os.path.isabs(path):
+            path = os.path.join(Kentauros.workdir, path)
+
+        return path
+
+    def get_confdir(self) -> str:
+        """Returns the string "configs" appended to the base directory."""
+        return os.path.join(self.get_basedir(), "configs")
+
+    def get_datadir(self) -> str:
+        """Returns the string "sources" appended to the base directory."""
+        return os.path.join(self.get_basedir(), "sources")
+
+    def get_expodir(self) -> str:
+        """Returns the string "exports" appended to the base directory."""
+        return os.path.join(self.get_basedir(), "exports")
+
+    def get_packdir(self) -> str:
+        """Returns the string "packages" appended to the base directory."""
+        return os.path.join(self.get_basedir(), "packages")
+
+    def get_specdir(self) -> str:
+        """Returns the string "specs" appended to the base directory."""
+        return os.path.join(self.get_basedir(), "specs")
 
     def add_package(self, conf_name: str, package):
         """
@@ -118,7 +170,7 @@ class Kentauros:
             int:            ID of the package in the database
         """
 
-        with TinyDB(os.path.join(self.conf.get_basedir(), "state.json")) as db:
+        with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
             package = Query()
             if not db.search(package.name == conf_name):
                 entries["name"] = conf_name
@@ -140,7 +192,7 @@ class Kentauros:
 
         assert isinstance(conf_name, str)
 
-        with TinyDB(os.path.join(self.conf.get_basedir(), "state.json")) as db:
+        with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
             package = Query()
             results = db.search(package.name == conf_name)
 

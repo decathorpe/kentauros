@@ -40,7 +40,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             assert isinstance(package, Package)
 
         self.spkg = package
-        self.sdir = os.path.join(ktr.conf.get_datadir(), self.spkg.get_conf_name())
+        self.sdir = os.path.join(ktr.get_datadir(), self.spkg.get_conf_name())
 
         self.dest = None
         self.stype = None
@@ -61,21 +61,21 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def export(self):
+    def export(self) -> bool:
         """
         It is expected that an appropriately named tarball is present within the package's source
         directory after this method has been executed.
         """
 
     @abc.abstractmethod
-    def get(self):
+    def get(self) -> bool:
         """
         It is expected that an appropriately named source file or directory is present within the
         package's source directory after this method has been executed.
         """
 
     @abc.abstractmethod
-    def update(self):
+    def update(self) -> bool:
         """
         It is expected that the source repository present within the package's source directory is
         up-to-date with upstream sources after this method has been executed, except when package
@@ -107,7 +107,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
 
         # try to be careful with "rm -r"
         assert os.path.isabs(self.dest)
-        assert ktr.conf.get_datadir() in self.dest
+        assert ktr.get_datadir() in self.dest
 
         # remove source destination first
 

@@ -20,5 +20,5 @@ at the moment, the following actions are supported:
 
 * uploading source packages to cloud build service:
 
-  * copr for fedora and RHEL/EPEL packages
+  * copr for fedora, RHEL/EPEL and Mageia packages
 """

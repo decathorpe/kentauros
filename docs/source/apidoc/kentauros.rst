@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
 
     kentauros.actions
-    kentauros.config
     kentauros.init
     kentauros.modules
 

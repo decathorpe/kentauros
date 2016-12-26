@@ -61,7 +61,7 @@ class Package:
         ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
-        self.file = os.path.join(ktr.conf.get_confdir(), conf_name + ".conf")
+        self.file = os.path.join(ktr.get_confdir(), conf_name + ".conf")
         self.conf = ConfigParser()
         self.conf_name = conf_name
 

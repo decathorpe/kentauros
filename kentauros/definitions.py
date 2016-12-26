@@ -46,28 +46,6 @@ class PkgModuleType(Enum):
     UPLOADER = 5
 
 
-class KtrConfType(Enum):
-    """
-    This Enum defines the types of configuration file locations kentauros supports and tries to read
-    from. For all of them, their full qualifier and a 3-letter abbreviation (if longer than 3
-    letters) is given for comfort.
-    """
-
-    CLI = 0
-    ENV = 1
-    PRJ = 2
-    USR = 3
-    SYS = 4
-    DEF = 5
-    FBK = 6
-
-    PROJECT = 2
-    USER = 3
-    SYSTEM = 4
-    DEFAULT = 5
-    FALLBACK = 6
-
-
 @unique
 class ActionType(Enum):
     """
@@ -75,6 +53,7 @@ class ActionType(Enum):
     a default *NONE* type.
     """
 
+    NONE = 0
     IMPORT = 10
     STATUS = 11
     VERIFY = 12

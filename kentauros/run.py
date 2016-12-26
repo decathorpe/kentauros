@@ -7,6 +7,8 @@ script.
 import glob
 import os
 
+from kentauros.definitions import ActionType
+
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger, print_flush
 
@@ -36,12 +38,12 @@ def print_parameters():
 
     print_flush()
 
-    logger.dbg("Base directory:                     " + ktr.conf.basedir)
-    logger.dbg("Package configuration directory:    " + ktr.conf.get_confdir())
-    logger.dbg("Package sources directory:          " + ktr.conf.get_datadir())
-    logger.dbg("Binary package directory:           " + ktr.conf.get_expodir())
-    logger.dbg("Source package directory:           " + ktr.conf.get_packdir())
-    logger.dbg("Package specification directory:    " + ktr.conf.get_specdir())
+    logger.dbg("Base directory:                     " + ktr.get_basedir())
+    logger.dbg("Package configuration directory:    " + ktr.get_confdir())
+    logger.dbg("Package sources directory:          " + ktr.get_datadir())
+    logger.dbg("Binary package directory:           " + ktr.get_expodir())
+    logger.dbg("Source package directory:           " + ktr.get_packdir())
+    logger.dbg("Package specification directory:    " + ktr.get_specdir())
 
     print_flush()
 
@@ -58,7 +60,7 @@ def run() -> int:
     print_parameters()
 
     # if no action is specified: exit
-    if ktr.cli.get_action() is None:
+    if ktr.cli.get_action() == ActionType.NONE:
         logger.log("No action specified. Exiting.")
         logger.log("Use 'ktr --help' for more information.")
         print_flush()
@@ -74,7 +76,7 @@ def run() -> int:
         packages = ktr.cli.get_packages().copy()
 
         for pkg in packages:
-            pkg_conf_path = os.path.join(ktr.conf.get_confdir(), pkg + ".conf")
+            pkg_conf_path = os.path.join(ktr.get_confdir(), pkg + ".conf")
 
             if not os.path.exists(pkg_conf_path):
                 logger.err("Package configuration for '" + pkg + "' could not be found.")
@@ -83,7 +85,7 @@ def run() -> int:
     # if all package are to be processed: get package configs present in the package configuration
     # directory
     else:
-        pkg_conf_paths = glob.glob(os.path.join(ktr.conf.get_confdir(), "*.conf"))
+        pkg_conf_paths = glob.glob(os.path.join(ktr.get_confdir(), "*.conf"))
 
         for pkg_conf_path in pkg_conf_paths:
             packages.append(os.path.basename(pkg_conf_path).replace(".conf", ""))

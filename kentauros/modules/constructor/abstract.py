@@ -37,7 +37,7 @@ class Constructor(PkgModule, metaclass=abc.ABCMeta):
             assert isinstance(package, Package)
 
         self.cpkg = package
-        self.pdir = os.path.join(ktr.conf.get_packdir(), self.cpkg.get_conf_name())
+        self.pdir = os.path.join(ktr.get_packdir(), self.cpkg.get_conf_name())
 
     @abc.abstractmethod
     def status(self) -> dict:

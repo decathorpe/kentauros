@@ -135,7 +135,6 @@ class BzrSource(Source):
             str: either revision string from repo, last stored rev string or `""` when unsuccessful
         """
 
-        # ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
         # if sources are not accessible (anymore), return "" or last saved rev
@@ -313,7 +312,7 @@ class BzrSource(Source):
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
             logger.err("Sources need to be .get() before .update() can be run.")
-            return None
+            return False
 
         # get old commit ID
         rev_old = self.rev()
@@ -357,7 +356,7 @@ class BzrSource(Source):
             if not self.get_keep_repo():
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
-                assert ktr.conf.get_datadir() in self.dest
+                assert ktr.get_datadir() in self.dest
                 shutil.rmtree(self.dest)
                 logger.log("bzr repository deleted after export to tarball", 1)
 

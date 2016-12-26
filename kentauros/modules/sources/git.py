@@ -195,7 +195,7 @@ class GitSource(Source):
         if not os.access(self.dest, os.R_OK):
             if self.saved_date is None:
                 logger.dbg("Sources need to be get before their age can be read.")
-                return None
+                return ""
             else:
                 return self.saved_date
 
@@ -232,7 +232,7 @@ class GitSource(Source):
         if not os.access(self.dest, os.R_OK):
             if self.saved_commit is None:
                 logger.dbg("Sources need to be get before commit hash can be read.")
-                return None
+                return ""
             else:
                 return self.saved_commit
 
@@ -481,7 +481,7 @@ class GitSource(Source):
             if not self.get_keep():
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
-                assert ktr.conf.get_datadir() in self.dest
+                assert ktr.get_datadir() in self.dest
                 shutil.rmtree(self.dest)
                 logger.log("git repository has been deleted after exporting to tarball.", 1)
 

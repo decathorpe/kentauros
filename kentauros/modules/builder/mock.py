@@ -223,7 +223,7 @@ class MockBuilder(Builder):
     def __init__(self, package):
         super().__init__(package)
 
-        self.edir = os.path.join(Kentauros().conf.get_expodir(), self.bpkg.get_conf_name())
+        self.edir = os.path.join(Kentauros().get_expodir(), self.bpkg.get_conf_name())
 
     def __str__(self) -> str:
         return "Mock Builder for Package '" + self.bpkg.get_conf_name() + "'"
@@ -347,7 +347,7 @@ class MockBuilder(Builder):
         ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
-        package_dir = os.path.join(ktr.conf.get_packdir(), self.bpkg.get_conf_name())
+        package_dir = os.path.join(ktr.get_packdir(), self.bpkg.get_conf_name())
 
         # get all srpms in the package directory
         srpms = glob.glob(os.path.join(package_dir, self.bpkg.get_name() + "*.src.rpm"))
@@ -467,7 +467,7 @@ class MockBuilder(Builder):
         logger = KtrLogger(LOG_PREFIX)
 
         try:
-            assert Kentauros().conf.get_expodir() in self.edir
+            assert Kentauros().get_expodir() in self.edir
             assert os.path.isabs(self.edir)
             shutil.rmtree(self.edir)
             return True

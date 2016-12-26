@@ -59,8 +59,8 @@ def ktr_bootstrap() -> bool:
 
     ktr = Kentauros()
 
-    for path in [ktr.conf.get_basedir(), ktr.conf.get_confdir(), ktr.conf.get_datadir(),
-                 ktr.conf.get_expodir(), ktr.conf.get_packdir(), ktr.conf.get_specdir()]:
+    for path in [ktr.get_basedir(), ktr.get_confdir(), ktr.get_datadir(),
+                 ktr.get_expodir(), ktr.get_packdir(), ktr.get_specdir()]:
         if not ktr_mkdirp(path):
             return False
 

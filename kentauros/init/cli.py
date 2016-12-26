@@ -13,7 +13,7 @@ import os
 
 import argcomplete
 
-from kentauros.definitions import ActionType, KtrConfType
+from kentauros.definitions import ActionType
 
 
 # pylint: disable=unused-argument
@@ -50,7 +50,6 @@ def get_cli_parser_base() -> ArgumentParser:
     * `--debug` (`-d`) switch to enable debug messages in kentauros
     * `--verbose` (`-v`, `-vv`) switch to control how many informational messages will be printed
       (twice for extra verbosity)
-    * `--basedir=BASEDIR` argument to set base directory for kentauros files (optional)
 
     Returns:
         ArgumentParser: basic CLI argument parser
@@ -77,13 +76,6 @@ def get_cli_parser_base() -> ArgumentParser:
         default=0,
         dest="verby",
         help="enable verbose output. use twice for extra verbosity")
-
-    # --basedir switch
-    cli_parser.add_argument(
-        "--basedir",
-        action="store",
-        default=None,
-        help="specify base directory for kentauros data")
 
     return cli_parser
 
@@ -261,32 +253,6 @@ class CLIArgs:
             print("DEBUG: Verbosity levels only range from 0 to 2.", flush=True)
             return 0
 
-    def get_priconf(self) -> KtrConfType:
-        """
-        This method returns the preferred configuration file location (as an instance of
-        :py:class:`KtrConfType`).
-
-        Returns:
-            KtrConfType:    type of the preferred configuration
-        """
-
-        try:
-            return KtrConfType[self.args.priconf.upper()]
-        except AttributeError:
-            return None
-        except KeyError:
-            return None
-
-    def get_ktr_basedir(self) -> str:
-        """
-        This method returns kentauros `BASEDIR` specified by command line argument.
-
-        Returns:
-            str:  specified `BASEDIR`
-        """
-
-        return self.args.basedir
-
     def get_action(self) -> ActionType:
         """
         This method returns which package action has been specified at the command line. If this is
@@ -298,7 +264,7 @@ class CLIArgs:
 
         if 'action' in self.args:
             return self.args.action
-        return None
+        return ActionType.NONE
 
     def get_packages(self) -> list:
         """
@@ -352,4 +318,4 @@ class CLIArgs:
         if 'message' in self.args:
             return self.args.message
         else:
-            return None
+            return ""
