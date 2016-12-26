@@ -7,9 +7,37 @@ return parsed CLI arguments, depending on where the `kentauros` module is used f
 
 from argparse import ArgumentParser
 
+import configparser
+import glob
+import os
+
 import argcomplete
 
 from kentauros.definitions import ActionType, KtrConfType
+
+
+# pylint: disable=unused-argument
+def package_name_completer(prefix, **kwargs):
+    """
+    This function returns a list of package names (found in the package configs directory by glob)
+    that start with the 'prefix' argument.
+
+    Arguments:
+        str prefix: string prefix
+
+    Returns:
+        list:       list of matching package names
+    """
+
+    config = configparser.ConfigParser()
+    config.read("kentaurosrc")
+
+    basedir = os.path.abspath(config.get("main", "basedir"))
+    paths = os.path.join(basedir, "configs", "*.conf")
+
+    files = glob.glob(paths)
+
+    return (os.path.basename(v).replace(".conf", "") for v in files if v.startswith(prefix))
 
 
 def get_cli_parser_base() -> ArgumentParser:
@@ -90,7 +118,7 @@ def get_cli_parser(cli_parser: ArgumentParser) -> ArgumentParser:
         "package",
         action="store",
         nargs="*",
-        help="package name")
+        help="package name").completer = package_name_completer
     package_parser.add_argument(
         "-a", "--all",
         action="store_const",

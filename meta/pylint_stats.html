@@ -29,6 +29,22 @@
 <td>Too many statements (52/40)</td>
 </tr>
 <tr class="even">
+<td>info</td>
+<td>kentauros.init.cli</td>
+<td>&#160;</td>
+<td>19</td>
+<td>0</td>
+<td>Locally disabling unused-argument (W0613)</td>
+</tr>
+<tr class="odd">
+<td>info</td>
+<td>kentauros.init.cli</td>
+<td>&#160;</td>
+<td>20</td>
+<td>0</td>
+<td>Suppressed 'unused-argument' (from line 19)</td>
+</tr>
+<tr class="even">
 <td>warning</td>
 <td>kentauros.modules.constructor.rpm.__init__</td>
 <td>&#160;</td>
@@ -69,7 +85,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2315 statements analysed.</p><div>
+<p>2325 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -106,8 +122,8 @@
 </tr>
 <tr class="odd">
 <td>function</td>
-<td>42</td>
-<td>42</td>
+<td>43</td>
+<td>43</td>
 <td>=</td>
 <td>100.00</td>
 <td>0.00</td>
@@ -123,6 +139,7 @@ kentauros
   \-actions (kentauros.run)
   | \-abstract (kentauros.actions.chain)
   | \-build (kentauros.actions)
+  | \-chain (kentauros.actions)
   | \-clean (kentauros.actions)
   | \-common (kentauros.actions.chain)
   | \-construct (kentauros.actions)
@@ -137,13 +154,13 @@ kentauros
   | \-common (kentauros.config)
   | \-envvar (kentauros.config)
   | \-fallback (kentauros.config)
-  \-conntest (kentauros.modules.uploader.copr)
+  \-conntest (kentauros.modules.sources.git)
   \-definitions (kentauros.actions.chain)
   \-init 
   | \-cli (kentauros.config)
-  | \-env (kentauros.config.common)
-  \-instance (kentauros.actions.chain)
-  \-logger (kentauros.actions.chain)
+  | \-env (kentauros.config)
+  \-instance (kentauros.modules.constructor.srpm)
+  \-logger (kentauros.modules.constructor.srpm)
   \-modules (kentauros.package)
   | \-builder (kentauros.modules)
   | | \-abstract (kentauros.modules.builder.mock)
@@ -151,14 +168,13 @@ kentauros
   | \-constructor (kentauros.modules)
   | | \-abstract (kentauros.modules.constructor.srpm)
   | | \-rpm (kentauros.modules.constructor.srpm)
-  | | | \-spec_common (kentauros.modules.constructor.rpm)
-  | | | \-spec_preamble_out (kentauros.modules.constructor.rpm)
-  | | | \-spec_source_out (kentauros.modules.constructor.rpm)
-  | | | \-spec_version_out (kentauros.modules.constructor.rpm)
-  | | \-srpm (kentauros.modules.constructor)
+  | |   \-spec_common (kentauros.modules.constructor.rpm)
+  | |   \-spec_preamble_out (kentauros.modules.constructor.rpm)
+  | |   \-spec_source_out (kentauros.modules.constructor.rpm)
+  | |   \-spec_version_out (kentauros.modules.constructor.rpm)
   | \-module (kentauros.modules.uploader.abstract)
   | \-sources (kentauros.modules)
-  | | \-abstract (kentauros.modules.constructor.rpm)
+  | | \-abstract (kentauros.modules.sources.git)
   | | \-bzr (kentauros.modules.constructor.rpm.spec_source_out)
   | | \-git (kentauros.modules.constructor.rpm.spec_source_out)
   | | \-local (kentauros.modules.constructor.rpm.spec_source_out)
@@ -181,31 +197,31 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2564</td>
-<td>41.82</td>
-<td>2564</td>
+<td>2574</td>
+<td>41.79</td>
+<td>2574</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
+<td>2027</td>
+<td>32.91</td>
 <td>2017</td>
-<td>32.90</td>
-<td>2017</td>
-<td>=</td>
+<td>+10.00</td>
 </tr>
 <tr class="even">
 <td>comment</td>
-<td>197</td>
+<td>198</td>
 <td>3.21</td>
 <td>197</td>
-<td>=</td>
+<td>+1.00</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1353</td>
-<td>22.07</td>
-<td>1353</td>
-<td>=</td>
+<td>1360</td>
+<td>22.08</td>
+<td>1358</td>
+<td>+2.00</td>
 </tr>
 </table>
 </div>
@@ -244,8 +260,8 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <td>convention</td>
 <td>0</td>
-<td>0</td>
-<td>=</td>
+<td>4</td>
+<td>-4.00</td>
 </tr>
 <tr class="odd">
 <td>refactor</td>
@@ -256,8 +272,8 @@ tinydb (kentauros.instance)</pre></div>
 <tr class="even">
 <td>warning</td>
 <td>2</td>
-<td>2</td>
-<td>=</td>
+<td>3</td>
+<td>-1.00</td>
 </tr>
 <tr class="odd">
 <td>error</td>
@@ -323,11 +339,19 @@ tinydb (kentauros.instance)</pre></div>
 <td>too-many-branches</td>
 <td>1</td>
 </tr>
+<tr class="even">
+<td>suppressed-message</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>locally-disabled</td>
+<td>1</td>
+</tr>
 </table>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 9.97/10 (previous run: 9.97/10, +0.00)</div>
+Your code has been rated at 9.97/10 (previous run: 9.95/10, +0.02)</div>
 </div>
 </body>
 </html>
