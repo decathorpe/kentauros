@@ -46,7 +46,7 @@ def print_parameters():
     print_flush()
 
 
-def run():
+def run() -> int:
     """
     This function is corresponding to (one of) the "main" function of the `kentauros` package and is
     the entry point used by the `ktr.py` script from git and the script installed at installation.
@@ -62,10 +62,10 @@ def run():
         logger.log("No action specified. Exiting.")
         logger.log("Use 'ktr --help' for more information.")
         print_flush()
-        return
+        return 0
 
     if not ktr_bootstrap():
-        raise SystemExit()
+        return 1
 
     packages = list()
 
@@ -91,7 +91,7 @@ def run():
     if not packages:
         logger.log("No packages have been specified or found. Exiting.")
         print_flush()
-        raise SystemExit()
+        return 0
 
     packages.sort()
 
@@ -141,4 +141,4 @@ def run():
 
     print_flush()
 
-    raise SystemExit()
+    return 0

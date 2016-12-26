@@ -18,4 +18,4 @@ sys.path.insert(0, os.getcwd())
 
 from kentauros.run import run
 
-run()
+sys.exit(run())

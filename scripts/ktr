@@ -6,6 +6,9 @@
 This script launches kentauros by executing the appropriate function as entry point.
 """
 
+
+import sys
+
 from kentauros.run import run
 
-run()
+sys.exit(run())
