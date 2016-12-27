@@ -15,7 +15,9 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
+
 from kentauros.modules.sources.abstract import Source
+from kentauros.modules.sources.source_error import SourceError
 
 
 LOG_PREFIX = "ktr/sources/git"
@@ -188,16 +190,20 @@ class GitSource(Source):
 
             return date_str
 
-        # ktr = Kentauros()
+        ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
-        # if sources are not accessible (anymore), return None or last saved rev
+        # if sources are not accessible (anymore), return "" or last saved date
         if not os.access(self.dest, os.R_OK):
-            if self.saved_date is None:
-                logger.dbg("Sources need to be get before their age can be read.")
-                return ""
-            else:
+            state = ktr.state_read(self.spkg.get_conf_name())
+
+            if self.saved_date is not None:
                 return self.saved_date
+            elif state is not None:
+                if "git_last_date" in state:
+                    return state["git_last_date"]
+            else:
+                raise SourceError("Sources need to be get before the commit date can be read.")
 
         cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
 
@@ -212,8 +218,6 @@ class GitSource(Source):
         date = date_str_from_raw(date_raw)
 
         self.saved_date = date
-        # ktr.state_write(self.spkg.get_conf_name(), dict(git_last_date=date))
-
         return date
 
     def commit(self) -> str:
@@ -226,15 +230,20 @@ class GitSource(Source):
             str:        commit hash
         """
 
+        ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
-        # if sources are not accessible (anymore), return None or last saved rev
+        # if sources are not accessible (anymore), return None or last saved commit hash
         if not os.access(self.dest, os.R_OK):
-            if self.saved_commit is None:
-                logger.dbg("Sources need to be get before commit hash can be read.")
-                return ""
-            else:
+            state = ktr.state_read(self.spkg.get_conf_name())
+
+            if self.saved_commit is not None:
                 return self.saved_commit
+            elif state is not None:
+                if "git_last_commit" in state:
+                    return state["git_last_commit"]
+            else:
+                raise SourceError("Sources need to be get before commit hash can be read.")
 
         cmd = ["git", "rev-parse", "HEAD"]
 

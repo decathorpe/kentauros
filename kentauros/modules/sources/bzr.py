@@ -13,7 +13,9 @@ from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
+
 from kentauros.modules.sources.abstract import Source
+from kentauros.modules.sources.source_error import SourceError
 
 
 LOG_PREFIX = "ktr/sources/bzr"
@@ -135,15 +137,20 @@ class BzrSource(Source):
             str: either revision string from repo, last stored rev string or `""` when unsuccessful
         """
 
+        ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
         # if sources are not accessible (anymore), return "" or last saved rev
         if not os.access(self.dest, os.R_OK):
-            if self.saved_rev is None:
-                logger.dbg("Sources need to be get before rev can be determined.")
-                return ""
-            else:
+            state = ktr.state_read(self.spkg.get_conf_name())
+
+            if self.saved_rev is not None:
                 return self.saved_rev
+            elif state is not None:
+                if "bzr_last_rev" in state:
+                    return state["bzr_last_rev"]
+            else:
+                raise SourceError("Sources need to be get before rev can be determined.")
 
         cmd = ["bzr", "revno"]
 

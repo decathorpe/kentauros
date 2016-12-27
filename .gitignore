@@ -1,7 +1,6 @@
 examples/exports/*
 examples/packages/*
 examples/sources/*
-examples/state.json
 
 .idea
 

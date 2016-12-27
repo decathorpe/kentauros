@@ -148,14 +148,31 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             bool:       success status of source getting or updating
         """
 
+        logger = KtrLogger(LOG_PREFIX)
+
+        old_status = self.status()
+
         get_success = self.get()
         if get_success:
-            return self.export()
+            new_status = self.status()
+
+            if new_status == old_status:
+                logger.log("The downloaded Source is not newer than the last known source state.")
+                return False
+            else:
+                return self.export()
 
         update_success = self.update()
         if update_success:
-            return self.export()
+            new_status = self.status()
 
+            if new_status == old_status:
+                logger.log("The \"updated\" Source is not newer than the last known source state.")
+                return False
+            else:
+                return self.export()
+
+        logger.log("The Source did not change.")
         return False
 
     def refresh(self) -> bool:
