@@ -8,6 +8,9 @@ kentauros is a small, automatable (e.g. systemd timers) build script.
 
 ## the following actions are provided:
 
+- `import`: populate the state database with initial values for packages
+- `status`: print package information and state as provided by the database
+- `verify`: verify package configuration + check for presence of needed binaries
 - `clean`: clean up including sources, exported packages, source packages, etc.)
 - `prepare`: get / update / export sources (from git, bzr, url or local file)
 - `construct`: assemble source packages from sources (.src.rpm supported)
