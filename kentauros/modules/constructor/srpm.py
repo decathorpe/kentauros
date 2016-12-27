@@ -36,11 +36,7 @@ class SrpmConstructor(Constructor):
 
     Attributes:
         bool active:        determines if this instance is active
-        str tempdir:        absolute path of temporary "HOME" directory
-        str rpmbdir:        absolute path of ``rpmbuild`` directory
-        str specdir:        absolute path of ``rpmbuild/SPECS`` directory
-        str srpmdir:        absolute path of ``rpmbuild/SRPMS`` directory
-        str srcsdir:        absolute path of ``rpmbuild/SOURCES`` directory
+        str dirs:           dictionary containing some directory paths
     """
 
     def __init__(self, package):
@@ -220,14 +216,14 @@ class SrpmConstructor(Constructor):
 
         logger.log("Temporary directory " + self.dirs["tempdir"] + " created.", 1)
 
-        self.dirs["rpmbbuild_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild")
+        self.dirs["rpmbuild_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild")
         self.dirs["spec_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SPECS")
         self.dirs["srpm_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SRPMS")
         self.dirs["source_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SOURCES")
 
         # create $TEMPDIR/rpmbuild
-        if not os.path.exists(self.dirs["rpmbbuild_dir"]):
-            os.mkdir(self.dirs["rpmbbuild_dir"])
+        if not os.path.exists(self.dirs["rpmbuild_dir"]):
+            os.mkdir(self.dirs["rpmbuild_dir"])
 
         logger.log("Temporary rpmbuild directory created: " + self.dirs["tempdir"], 1)
 
@@ -320,7 +316,7 @@ class SrpmConstructor(Constructor):
         return old_version, old_release
 
     def _get_spec_destination(self):
-        """This method calculates the destination of the .spec file in the `rpmbuild/SPECS dir."""
+        """This method calculates the destination of the .spec file in the `rpmbuild/SPECS` dir."""
         return os.path.join(self.dirs["spec_dir"], self.cpkg.get_name() + ".spec")
 
     def _prepare_spec(self) -> str:
@@ -443,7 +439,7 @@ class SrpmConstructor(Constructor):
         # copy new spec file back to ktr/specdir to preserve version tracking,
         # release number and changelog consistency (keep old version once as backup)
         # BUT: remove preamble again, it would break things otherwise
-        # Handling the ChangeLog seperately (SUSE style?) would be nice here.
+        # Handling the ChangeLog separately (SUSE style?) would be nice here.
 
         new_rpm_spec.contents = new_rpm_spec.contents.replace(preamble, "")
         shutil.copy2(self.path, self.path + ".old")
@@ -459,7 +455,7 @@ class SrpmConstructor(Constructor):
             bool:           returns `True` if the preparation was successful.
         """
 
-        if not os.path.exists(self.dirs["rpmbbuild_dir"]):
+        if not os.path.exists(self.dirs["rpmbuild_dir"]):
             warnings.warn("Make sure to call Constructor.init() before .prepare()!", Warning)
             self.init()
 
