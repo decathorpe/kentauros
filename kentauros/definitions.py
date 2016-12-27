@@ -40,10 +40,9 @@ class PkgModuleType(Enum):
     """
 
     SOURCE = 1
-    PKGFORMATTER = 2
-    CONSTRUCTOR = 3
-    BUILDER = 4
-    UPLOADER = 5
+    CONSTRUCTOR = 2
+    BUILDER = 3
+    UPLOADER = 4
 
 
 @unique
