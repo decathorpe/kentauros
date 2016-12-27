@@ -44,6 +44,14 @@ kentauros.modules.sources.no_source module
     :undoc-members:
     :show-inheritance:
 
+kentauros.modules.sources.source_error module
+---------------------------------------------
+
+.. automodule:: kentauros.modules.sources.source_error
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros.modules.sources.url module
 ------------------------------------
 
