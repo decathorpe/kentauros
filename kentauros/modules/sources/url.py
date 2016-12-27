@@ -152,7 +152,7 @@ class UrlSource(Source):
         return True
 
     def update(self) -> bool:
-        return True
+        return False
 
     def export(self) -> bool:
         return True
