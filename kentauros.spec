@@ -1,7 +1,7 @@
-Summary:        Small build system, written in python
 Name:           kentauros
+Summary:        Modular, automatic and configurable package build system
 Version:        0.9.90
-Release:        0%{?dist}
+Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -46,10 +46,6 @@ uploading to copr works.
 %py3_install
 
 
-%clean
-rm -rf %{buildroot}
-
-
 %files
 %{_bindir}/ktr
 
@@ -60,6 +56,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Dec 27 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.90-1
+- Update to version 0.9.90.
+
 * Fri Dec 23 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.15-1
 - Update to version 0.9.15.
 - Remove deprecated check scriptlet.
