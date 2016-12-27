@@ -10,6 +10,7 @@ from kentauros.modules.sources.bzr import BzrSource
 from kentauros.modules.sources.git import GitSource
 from kentauros.modules.sources.url import UrlSource
 from kentauros.modules.sources.local import LocalSource
+from kentauros.modules.sources.no_source import NoSource
 
 
 def spec_version_bzr(source: BzrSource) -> str:
@@ -20,7 +21,7 @@ def spec_version_bzr(source: BzrSource) -> str:
         BzrSource source:   source repository a version string will be generated for
 
     Returns:
-        str:                version string in the format ``$VERSION+rev%{rev}``
+        str:                version string in the format `$VERSION+rev%{rev}`
     """
 
     assert isinstance(source, BzrSource)
@@ -36,7 +37,7 @@ def spec_version_git(source: GitSource) -> str:
         GitSource source:   source repository a version string will be generated for
 
     Returns:
-        str:                version string in the format ``$VERSION+git%{date}.%{commit}``
+        str:                version string in the format `$VERSION+git%{date}.%{commit}`
     """
 
     assert isinstance(source, GitSource)
@@ -53,7 +54,7 @@ def spec_version_local(source: LocalSource) -> str:
         LocalSource source:     source a version string will be generated for
 
     Returns:
-        str:                    version string in the format ``$VERSION``
+        str:                    version string in the format `$VERSION`
     """
 
     assert isinstance(source, LocalSource)
@@ -69,10 +70,26 @@ def spec_version_url(source: UrlSource) -> str:
         UrlSource source:   source a version string will be generated for
 
     Returns:
-        str:                version string in the format ``$VERSION``
+        str:                version string in the format `$VERSION`
     """
 
     assert isinstance(source, UrlSource)
+    ver_str = source.spkg.get_version()
+    return ver_str
+
+
+def spec_version_nosource(source: NoSource) -> str:
+    """
+    This function returns the version string for packages built without sources.
+
+    Arguments:
+        NoSource source:    source a version string will be generated for
+
+    Returns:
+        str:                version string in the format `$VERSION`
+    """
+
+    assert isinstance(source, NoSource)
     ver_str = source.spkg.get_version()
     return ver_str
 
@@ -85,4 +102,5 @@ generator functions.
 SPEC_VERSION_DICT[SourceType.BZR] = spec_version_bzr
 SPEC_VERSION_DICT[SourceType.GIT] = spec_version_git
 SPEC_VERSION_DICT[SourceType.LOCAL] = spec_version_local
+SPEC_VERSION_DICT[SourceType.NONE] = spec_version_nosource
 SPEC_VERSION_DICT[SourceType.URL] = spec_version_url

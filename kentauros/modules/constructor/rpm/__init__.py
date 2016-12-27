@@ -117,10 +117,11 @@ class RPMSpec:
 
         for line in self.get_lines():
             assert isinstance(line, str)
-            if line[0:8] != "Source0:":
+            if (line[0:8] != "Source0:") and (line[0:7] != "Source:"):
                 contents_new += (line + "\n")
             else:
-                contents_new += SPEC_SOURCE_DICT[self.source.stype](self.source)
+                if self.source is not None:
+                    contents_new += SPEC_SOURCE_DICT[self.source.stype](self.source)
 
         self.contents = contents_new
 
@@ -216,4 +217,4 @@ def do_release_bump(path: str, comment: str=None) -> bool:
     logger.log_command(cmd)
     ret = subprocess.call(cmd)
 
-    return not ret
+    return ret == 0

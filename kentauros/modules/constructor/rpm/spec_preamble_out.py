@@ -10,6 +10,7 @@ from kentauros.modules.sources.bzr import BzrSource
 from kentauros.modules.sources.git import GitSource
 from kentauros.modules.sources.url import UrlSource
 from kentauros.modules.sources.local import LocalSource
+from kentauros.modules.sources.no_source import NoSource
 
 
 def spec_preamble_bzr(source: BzrSource) -> str:
@@ -21,7 +22,7 @@ def spec_preamble_bzr(source: BzrSource) -> str:
         BzrSource source:   source repository the revision will be determined from
 
     Returns:
-        str:                string containing the ``%defines rev $REV`` line
+        str:                string containing the `%defines rev $REV` line
     """
 
     assert isinstance(source, BzrSource)
@@ -39,7 +40,7 @@ def spec_preamble_git(source: GitSource) -> str:
         GitSource source:   source repository the commit hash and date will be determined from
 
     Returns:
-        str:                string with the "%defines commit COMMIT" and "%defines date $DATE" lines
+        str:                string with the `%defines commit COMMIT` and `%defines date $DATE` lines
     """
 
     assert isinstance(source, GitSource)
@@ -54,7 +55,7 @@ def spec_preamble_url(source: UrlSource) -> str:
     *url*.
 
     Arguments:
-        UrlSource source:   source the ``%defines`` will be determined from
+        UrlSource source:   source the `%defines` will be determined from
 
     Returns:
         str:                empty string
@@ -70,13 +71,28 @@ def spec_preamble_local(source: LocalSource) -> str:
     *local path*.
 
     Arguments:
-        LocalSource source:     source the ``%defines`` will be determined from
+        LocalSource source:     source the `%defines` will be determined from
 
     Returns:
         str:                    empty string
     """
 
     assert isinstance(source, LocalSource)
+    return ""
+
+
+def spec_preamble_nosource(source: NoSource) -> str:
+    """
+    This function returns an empty string.
+
+    Arguments:
+        NoSource source:    source the  `%defines` will be determined from
+
+    Returns:
+        str:                empty string
+    """
+
+    assert isinstance(source, NoSource)
     return ""
 
 
@@ -88,4 +104,5 @@ functions.
 SPEC_PREAMBLE_DICT[SourceType.BZR] = spec_preamble_bzr
 SPEC_PREAMBLE_DICT[SourceType.GIT] = spec_preamble_git
 SPEC_PREAMBLE_DICT[SourceType.LOCAL] = spec_preamble_local
+SPEC_PREAMBLE_DICT[SourceType.NONE] = spec_preamble_nosource
 SPEC_PREAMBLE_DICT[SourceType.URL] = spec_preamble_url

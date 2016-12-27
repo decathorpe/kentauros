@@ -5,6 +5,7 @@ file.
 
 
 import os
+import warnings
 
 from kentauros.definitions import SourceType
 
@@ -12,6 +13,7 @@ from kentauros.modules.sources.bzr import BzrSource
 from kentauros.modules.sources.git import GitSource
 from kentauros.modules.sources.url import UrlSource
 from kentauros.modules.sources.local import LocalSource
+from kentauros.modules.sources.no_source import NoSource
 
 from kentauros.modules.constructor.rpm.spec_common import format_tag_line
 
@@ -96,6 +98,22 @@ def spec_source_url(source: UrlSource) -> str:
     return src_str
 
 
+def spec_source_nosource(source: NoSource) -> str:
+    """
+    This function returns an empty string, as it should never be called.
+
+    Arguments:
+        NoSource source:    source the  `%defines` will be determined from
+
+    Returns:
+        str:                empty string
+    """
+
+    warnings.warn("This function should never be called.", Warning)
+    assert isinstance(source, NoSource)
+    return ""
+
+
 SPEC_SOURCE_DICT = dict()
 """ This dictionary maps `SourceType` enum members to their respective RPM spec Source tag string
 generator functions.
@@ -104,4 +122,5 @@ generator functions.
 SPEC_SOURCE_DICT[SourceType.BZR] = spec_source_bzr
 SPEC_SOURCE_DICT[SourceType.GIT] = spec_source_git
 SPEC_SOURCE_DICT[SourceType.LOCAL] = spec_source_local
+SPEC_SOURCE_DICT[SourceType.NONE] = spec_source_nosource
 SPEC_SOURCE_DICT[SourceType.URL] = spec_source_url

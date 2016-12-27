@@ -1,7 +1,7 @@
 """
-This sub-module contains only contains the :py:class:`BzrSource` class, which has methods for
-handling sources that have `source.type=bzr` specified and `source.orig` set to a bzr repository URL
-(or an `lp:` abbreviation) in the package's configuration file.
+This sub-module only contains the :py:class:`BzrSource` class, which has methods for handling
+sources that have `source.type=bzr` specified and `source.orig` set to a bzr repository URL (or an
+`lp:` abbreviation) in the package's configuration file.
 """
 
 
