@@ -318,7 +318,7 @@ class SrpmConstructor(Constructor):
 
         return old_version, old_release
 
-    def _get_spec_destination(self):
+    def _get_spec_destination(self) -> str:
         """This method calculates the destination of the .spec file in the `rpmbuild/SPECS` dir."""
         return os.path.join(self.dirs["spec_dir"], self.cpkg.get_name() + ".spec")
 
@@ -395,9 +395,15 @@ class SrpmConstructor(Constructor):
         # use "rpmdev-bumpspec" to increment release number and create changelog entries:
         new_spec_path = self._get_spec_destination()
 
+        # Case 0:
+        # Initial package build, bump Release from 0 to 1
+        if (old_version == "") or (old_release[0] == "0"):
+            success = do_release_bump(new_spec_path, "Initial package.")
+            new_rpm_spec = RPMSpec(new_spec_path, self.source)
+
         # Case 1:
         # No changes, only package construction action triggered
-        if (new_version == old_version) and not force:
+        elif (new_version == old_version) and (not force):
             new_rpm_spec = RPMSpec(new_spec_path, self.source)
             success = True
 
