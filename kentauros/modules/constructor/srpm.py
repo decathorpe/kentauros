@@ -9,10 +9,11 @@ import os
 import shutil
 import subprocess
 import tempfile
-import warnings
 
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
+
+from kentauros.modules.sources.no_source import NoSource
 
 from kentauros.modules.constructor.abstract import Constructor
 from kentauros.modules.constructor.rpm import RPMSpec, do_release_bump
@@ -50,6 +51,12 @@ class SrpmConstructor(Constructor):
                                  self.cpkg.get_conf_name(),
                                  self.cpkg.get_name() + ".spec")
 
+        self.source = self.cpkg.get_module("source")
+        self.no_source = (self.source is None)
+
+        if self.no_source:
+            self.source = NoSource(package)
+
         self.last_release = None
         self.last_version = None
 
@@ -77,6 +84,7 @@ class SrpmConstructor(Constructor):
 
         # check if the configuration file is valid
         expected_keys = []
+        expected_binaries = ["rpmbuild", "rpmdev-bumpspec"]
 
         for key in expected_keys:
             if key not in self.cpkg.conf["srpm"]:
@@ -92,17 +100,12 @@ class SrpmConstructor(Constructor):
             success = False
 
         # check if rpmbuild and rpmdev-bumpspec are installed
-        try:
-            subprocess.check_output(["which", "rpmbuild"]).decode().rstrip("\n")
-        except subprocess.CalledProcessError:
-            logger.log("Install rpm-build to use the srpm constructor.")
-            success = False
-
-        try:
-            subprocess.check_output(["which", "rpmdev-bumpspec"]).decode().rstrip("\n")
-        except subprocess.CalledProcessError:
-            logger.log("Install rpmdevtools to use the srpm constructor.")
-            success = False
+        for binary in expected_binaries:
+            try:
+                subprocess.check_output(["which", binary]).decode().rstrip("\n")
+            except subprocess.CalledProcessError:
+                logger.log("Install " + binary + " to use the srpm constructor.")
+                success = False
 
         return success
 
@@ -188,7 +191,7 @@ class SrpmConstructor(Constructor):
                     rpm_last_version=self.last_version)
 
     def status_string(self) -> str:
-        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
+        spec = RPMSpec(self.path, self.source)
 
         string = ("SRPM constructor module:\n" +
                   "  Last Version:     {}\n".format(self._get_last_version(spec)) +
@@ -197,7 +200,7 @@ class SrpmConstructor(Constructor):
         return string
 
     def imports(self) -> dict:
-        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
+        spec = RPMSpec(self.path, self.source)
 
         return dict(rpm_last_release=spec.get_release(),
                     rpm_last_version=spec.get_version())
@@ -241,7 +244,7 @@ class SrpmConstructor(Constructor):
 
         logger = KtrLogger(LOG_PREFIX)
 
-        if os.path.exists(self.cpkg.get_module("source").sdir):
+        if os.path.exists(self.source.sdir):
             return True
         else:
             logger.log("No Package source files are present. Aborting.")
@@ -255,8 +258,8 @@ class SrpmConstructor(Constructor):
 
         logger = KtrLogger(LOG_PREFIX)
 
-        for entry in os.listdir(self.cpkg.get_module("source").sdir):
-            entry_path = os.path.join(self.cpkg.get_module("source").sdir, entry)
+        for entry in os.listdir(self.source.sdir):
+            entry_path = os.path.join(self.source.sdir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.dirs["source_dir"])
                 logger.log("File copied to SOURCES: " + entry_path, 1)
@@ -268,22 +271,22 @@ class SrpmConstructor(Constructor):
 
         logger = KtrLogger(LOG_PREFIX)
 
-        if not self.cpkg.get_module("source").get_keep():
+        if not self.source.get_keep():
 
             # if source is a tarball (or similar) from the beginning:
-            if os.path.isfile(self.cpkg.get_module("source").dest):
-                os.remove(self.cpkg.get_module("source").dest)
+            if os.path.isfile(self.source.dest):
+                os.remove(self.source.dest)
 
             # otherwise it is in kentauros' standard .tar.gz format:
             else:
-                tarballs = glob.glob(os.path.join(self.cpkg.get_module("source").sdir,
+                tarballs = glob.glob(os.path.join(self.source.sdir,
                                                   self.cpkg.get_name()) + "*.tar.gz")
 
                 # remove only the newest one to be safe
                 tarballs.sort(reverse=True)
 
                 if os.path.isfile(tarballs[0]):
-                    assert self.cpkg.get_module("source").sdir in tarballs[0]
+                    assert self.source.sdir in tarballs[0]
                     os.remove(tarballs[0])
                     logger.log("Tarball removed: " + tarballs[0], 1)
 
@@ -308,7 +311,7 @@ class SrpmConstructor(Constructor):
             tuple:      (version, release)
         """
 
-        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
+        spec = RPMSpec(self.path, self.source)
 
         old_version = self._get_last_version(spec)
         old_release = self._get_last_release(spec)
@@ -330,7 +333,7 @@ class SrpmConstructor(Constructor):
             str:        the contents of the .spec preamble
         """
 
-        spec = RPMSpec(self.path, self.cpkg.get_module("source"))
+        spec = RPMSpec(self.path, self.source)
 
         spec.set_version()
         spec.set_source()
@@ -395,7 +398,7 @@ class SrpmConstructor(Constructor):
         # Case 1:
         # No changes, only package construction action triggered
         if (new_version == old_version) and not force:
-            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
+            new_rpm_spec = RPMSpec(new_spec_path, self.source)
             success = True
 
         # Case 2:
@@ -403,7 +406,7 @@ class SrpmConstructor(Constructor):
         elif (new_version != old_version) or (old_release[0] == "0"):
             success = do_release_bump(new_spec_path,
                                       "Update to version " + self.cpkg.get_version() + ".")
-            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
+            new_rpm_spec = RPMSpec(new_spec_path, self.source)
 
         # Case 3:
         # Sources didn't change but rebuild was forced: bump Release, add changelog entry
@@ -414,21 +417,15 @@ class SrpmConstructor(Constructor):
             else:
                 success = do_release_bump(new_spec_path, message)
 
-            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
+            new_rpm_spec = RPMSpec(new_spec_path, self.source)
 
         # Case 4:
         # Version unchanged, but updated snapshot: reset+bump Release, add changelog entry
-        elif new_version != old_version:
-            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
+        else:
+            new_rpm_spec = RPMSpec(new_spec_path, self.source)
             new_rpm_spec.do_release_reset()
             success = do_release_bump(new_spec_path, "Update to latest snapshot.")
-            new_rpm_spec = RPMSpec(new_spec_path, self.cpkg.get_module("source"))
-
-        # Case 5:
-        # Something I cannot think of right now.
-        else:
-            logger.err("Something went wrong.")
-            return False
+            new_rpm_spec = RPMSpec(new_spec_path, self.source)
 
         if not success:
             return False
@@ -455,19 +452,23 @@ class SrpmConstructor(Constructor):
             bool:           returns `True` if the preparation was successful.
         """
 
-        if not os.path.exists(self.dirs["rpmbuild_dir"]):
-            warnings.warn("Make sure to call Constructor.init() before .prepare()!", Warning)
-            self.init()
+        logger = KtrLogger(LOG_PREFIX)
 
-        # check if sources are present
-        if not self._check_source_presence():
-            return False
+        if self.no_source:
+            logger.dbg("This package does not define a source module.")
+
+        else:
+            # if source module is defined check if sources are present
+            if not self._check_source_presence():
+                return False
 
         # copy sources to rpmbuild/SOURCES
-        self._copy_sources()
+        if not self.no_source:
+            self._copy_sources()
 
         # remove tarballs if they should not be kept
-        self._cleanup_sources()
+        if not self.no_source:
+            self._cleanup_sources()
 
         # copy package.conf to rpmbuild/SOURCES
         self._copy_configuration()
