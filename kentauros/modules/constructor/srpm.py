@@ -187,8 +187,14 @@ class SrpmConstructor(Constructor):
         return old_release
 
     def status(self) -> dict:
-        return dict(rpm_last_release=self.last_release,
-                    rpm_last_version=self.last_version)
+        spec = RPMSpec(self.path, self.source)
+
+        if (self.last_version is None) or (self.last_release is None):
+            return dict(rpm_last_release=spec.get_release(),
+                        rpm_last_version=spec.get_version())
+        else:
+            return dict(rpm_last_release=self.last_release,
+                        rpm_last_version=self.last_version)
 
     def status_string(self) -> str:
         spec = RPMSpec(self.path, self.source)
