@@ -5,7 +5,6 @@ This submodule contains the :py:class:`ChainAction` class.
 
 from kentauros.definitions import ActionType
 
-from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
 from kentauros.actions.abstract import Action
