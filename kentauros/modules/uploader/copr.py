@@ -142,6 +142,9 @@ class CoprUploader(Uploader):
             bool:       returns *False* if anything goes wrong, *True* otherwise
         """
 
+        if not self.get_active():
+            return True
+
         ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
