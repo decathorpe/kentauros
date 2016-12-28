@@ -207,3 +207,30 @@ class Kentauros:
             warnings.warn("Got more than one result from the state db. Something went wrong here.",
                           Warning)
             return results[0]
+
+    def state_delete(self, conf_name: str) -> int:
+        """
+        This method deletes the entries for the given package from the database and returns its ID.
+
+        Arguments:
+            str conf_name:  package configuration name
+
+        Returns:
+            int:            ID of the removed entry
+        """
+
+        assert isinstance(conf_name, str)
+
+        with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
+            results = db.remove(name=conf_name)
+
+        if len(results) == 1:
+            return results[0]
+        elif len(results) == 0:
+            warnings.warn("Got no result from the state db for this package configuration name.",
+                          Warning)
+            return None
+        else:
+            warnings.warn("Got more than one result from the state db. Something went wrong here.",
+                          Warning)
+            return results[0]
