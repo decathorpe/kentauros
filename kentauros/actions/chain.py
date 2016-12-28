@@ -46,9 +46,7 @@ class ChainAction(Action):
             bool:   ``True`` if chain went all the way through, ``False`` if not
         """
 
-        ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
-        force = ktr.cli.get_force()
 
         success = True
 
@@ -57,14 +55,7 @@ class ChainAction(Action):
 
             if not succeeded:
                 logger.err("Execution of module '" + str(module) + "' wasn't successful.")
-
-                if force:
-                    logger.log("Execution is forced to continue.")
-                    success = success and succeeded
-                    continue
-                else:
-                    success = False
-                    break
+                break
 
         self.update_status()
 
