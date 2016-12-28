@@ -142,7 +142,7 @@ class MockBuild:
         else:
             self.dist = dist
 
-    def get_command(self):
+    def get_command(self) -> list:
         """
         This method returns the argument list needed by the subprocess method call, assembled from
         dist and path.
@@ -169,7 +169,7 @@ class MockBuild:
 
         return cmd
 
-    def build(self):
+    def build(self) -> int:
         """
         This method starts the mock build (and waits for already running builds with the same
         chroot to finish before that).
@@ -203,8 +203,12 @@ class MockBuild:
         cmd = self.get_command()
         logger.log_command(cmd)
 
-        ret = subprocess.call(cmd)
-        return ret
+        try:
+            ret = subprocess.call(cmd)
+            return ret
+        except PermissionError:
+            logger.log("Mock build has been cancelled.")
+            return 1
 
 
 class MockBuilder(Builder):
@@ -278,7 +282,7 @@ class MockBuilder(Builder):
 
         return success
 
-    def get_active(self):
+    def get_active(self) -> bool:
         """
         Returns:
             bool:   boolean value indicating whether this builder should be active
@@ -286,7 +290,7 @@ class MockBuilder(Builder):
 
         return self.bpkg.conf.getboolean("mock", "active")
 
-    def get_dists(self):
+    def get_dists(self) -> list:
         """
         Returns:
             list:   list of chroots that are going to be used for sequential builds
@@ -299,7 +303,7 @@ class MockBuilder(Builder):
 
         return dists
 
-    def get_export(self):
+    def get_export(self) -> bool:
         """
         Returns:
             bool:   boolean value indicating whether this builder should export built packages
@@ -307,7 +311,7 @@ class MockBuilder(Builder):
 
         return self.bpkg.conf.getboolean("mock", "export")
 
-    def get_keep(self):
+    def get_keep(self) -> bool:
         """
         Returns:
             bool:   boolean value indicating whether this builder should keep source packages
