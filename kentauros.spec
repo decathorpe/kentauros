@@ -1,6 +1,6 @@
 Name:           kentauros
 Summary:        Modular, automatic and configurable package build system
-Version:        0.9.90
+Version:        0.9.91
 Release:        1%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
@@ -56,6 +56,9 @@ uploading to copr works.
 
 
 %changelog
+* Wed Dec 28 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.91-1
+- Update to version 0.9.91.
+
 * Tue Dec 27 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.90-1
 - Update to version 0.9.90.
 
