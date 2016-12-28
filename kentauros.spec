@@ -1,7 +1,7 @@
 Name:           kentauros
 Summary:        Modular, automatic and configurable package build system
 Version:        0.9.93
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2
 URL:            http://github.com/decathorpe/kentauros
 
@@ -17,6 +17,8 @@ BuildRequires:  python3-tinydb
 Requires:       python3-argcomplete
 Requires:       python3-dateutil
 Requires:       python3-tinydb
+
+Recommends:     python3-ujson
 
 Recommends:     bzr
 Recommends:     git
@@ -56,6 +58,9 @@ uploading to copr works.
 
 
 %changelog
+* Wed Dec 28 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.93-2
+- Recommend python3-ujson.
+
 * Wed Dec 28 2016 Fabio Valentini <decathorpe@gmail.com> - 0.9.93-1
 - Update to version 0.9.93.
 
