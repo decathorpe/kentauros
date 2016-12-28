@@ -151,6 +151,12 @@ def get_cli_parser(cli_parser: ArgumentParser) -> ArgumentParser:
         description="clean sources of specified package(s)",
         help="clean package sources",
         parents=[package_parser])
+    clean_parser.add_argument(
+        "-r", "--remove",
+        action="store_const",
+        const=True,
+        default=False,
+        help="also remove package from the database")
     clean_parser.set_defaults(action=ActionType.CLEAN)
 
     construct_parser = parsers.add_parser(
@@ -306,6 +312,20 @@ class CLIArgs:
 
         if 'force' in self.args:
             return self.args.force
+        else:
+            return False
+
+    def get_remove(self) -> bool:
+        """
+        This method simply returns whether the `--remove` or `-r` switch has been set at the command
+        line.
+
+        Returns:
+            bool:   remove package from database as part of cleanup *on* or *off*
+        """
+
+        if 'remove' in self.args:
+            return self.args.remove
         else:
             return False
 

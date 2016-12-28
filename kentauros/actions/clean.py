@@ -4,6 +4,8 @@ This submodule contains the :py:class:`CleanAction` class.
 
 
 from kentauros.definitions import ActionType
+
+from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
 from kentauros.actions.abstract import Action
@@ -36,6 +38,7 @@ class CleanAction(Action):
             bool:           always ``True`` at the moment
         """
 
+        ktr = Kentauros()
         logger = KtrLogger(LOGPREFIX)
 
         success = True
@@ -47,6 +50,17 @@ class CleanAction(Action):
                 logger.log("Module '" + str(module) + "' did not clean up successfully.")
 
             success = success and cleanup
+
+        if ktr.cli.get_remove():
+            pkgid = ktr.state_delete(self.kpkg.get_conf_name())
+
+            if pkgid is None:
+                logger.log("Package not present in the database.")
+            else:
+                assert isinstance(pkgid, int)
+
+                logger.log("Removed package " + self.kpkg.get_conf_name() + " from the database.")
+                logger.log("Removed package had ID: " + str(pkgid), 0)
 
         if success:
             logger.log(self.kpkg.get_conf_name() + ": Success!")

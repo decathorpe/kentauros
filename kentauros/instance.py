@@ -222,7 +222,8 @@ class Kentauros:
         assert isinstance(conf_name, str)
 
         with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
-            results = db.remove(name=conf_name)
+            package = Query()
+            results = db.remove(package.name == conf_name)
 
         if len(results) == 1:
             return results[0]
