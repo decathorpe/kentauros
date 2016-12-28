@@ -14,6 +14,8 @@ from collections import OrderedDict
 
 from tinydb import TinyDB, Query
 
+from kentauros.definitions import ActionType
+
 from kentauros.init.cli import CLIArgs
 from kentauros.init.env import get_env_debug, get_env_verby
 
@@ -194,12 +196,14 @@ class Kentauros:
             package = Query()
             results = db.search(package.name == conf_name)
 
-        if len(results) > 1:
-            warnings.warn("Got more than one result from the state db. Something went wrong here.",
-                          Warning)
+        if len(results) == 1:
             return results[0]
         elif len(results) == 0:
-            warnings.warn("Got no result from the state db. Package state not yet stored.", Warning)
+            if self.cli.get_action() != ActionType.IMPORT:
+                warnings.warn("Got no result from the state db. Package state not yet stored.",
+                              Warning)
             return None
         else:
+            warnings.warn("Got more than one result from the state db. Something went wrong here.",
+                          Warning)
             return results[0]
