@@ -60,6 +60,8 @@ class SrpmConstructor(Constructor):
         self.last_release = None
         self.last_version = None
 
+        self.success = True
+
     def __str__(self) -> str:
         return "SRPM Constructor for Package '" + self.cpkg.get_conf_name() + "'"
 
@@ -401,46 +403,63 @@ class SrpmConstructor(Constructor):
         # use "rpmdev-bumpspec" to increment release number and create changelog entries:
         new_spec_path = self._get_spec_destination()
 
-        # Case 0:
-        # Initial package build, bump Release from 0 to 1
+        version_changed = old_version != new_version
+
+        # Case 0: Initial package build
+        # Old Version is empty or old Release is 0
         if (old_version == "") or (old_release[0] == "0"):
-            success = do_release_bump(new_spec_path, "Initial package.")
-            new_rpm_spec = RPMSpec(new_spec_path, self.source)
+            message = ktr.cli.get_message()
+
+            if message is None:
+                self.success = do_release_bump(new_spec_path, "Initial package.")
+            else:
+                self.success = do_release_bump(new_spec_path, message)
 
         # Case 1:
-        # No changes, only package construction action triggered
-        elif (new_version == old_version) and (not force):
-            new_rpm_spec = RPMSpec(new_spec_path, self.source)
-            success = True
+        # Package Version did NOT change
+        elif not version_changed:
 
-        # Case 2:
-        # Major version update: bump Version, reset Release, add changelog entry
-        elif (new_version != old_version) or (old_release[0] == "0"):
-            success = do_release_bump(new_spec_path,
-                                      "Update to version " + self.cpkg.get_version() + ".")
-            new_rpm_spec = RPMSpec(new_spec_path, self.source)
+            # Cases 1.1 and 1.2 can happen at the same time
+            # In this case, the "packaging changes" are applied to the spec first, and
+            # the "source changes" after that.
 
-        # Case 3:
-        # Sources didn't change but rebuild was forced: bump Release, add changelog entry
-        elif force:
-            message = ktr.cli.get_message()
-            if message is None:
-                success = do_release_bump(new_spec_path, "Update for packaging changes.")
-            else:
-                success = do_release_bump(new_spec_path, message)
+            # Case 1.1: Packaging changes
+            # Package Version did NOT change but construction was forced (because of spec changes?)
+            if force:
+                message = ktr.cli.get_message()
 
-            new_rpm_spec = RPMSpec(new_spec_path, self.source)
+                if message is None:
+                    self.success = do_release_bump(new_spec_path, "Update for packaging changes.")
+                else:
+                    self.success = do_release_bump(new_spec_path, message)
 
-        # Case 4:
-        # Version unchanged, but updated snapshot: reset+bump Release, add changelog entry
+            # Case 1.2: Snapshot update
+            # Package Version did NOT change BUT VCS sources were updated
+            if self.source.updated:
+                new_rpm_spec = RPMSpec(new_spec_path, self.source)
+                new_rpm_spec.do_release_reset()
+                self.success = do_release_bump(new_spec_path, "Update to latest snapshot.")
+
+            # Case 1.3: Package ReConstruction only
+            # Version did NOT change, construction was NOT forced and sources were NOT updated
+            if (not force) and (not self.source.updated):
+                self.success = True
+
+        # Case 2: Version update
+        # Package Version DID change
+        elif version_changed:
+            self.success = do_release_bump(new_spec_path,
+                                           "Update to version " + self.cpkg.get_version() + ".")
+
+        # Case 3: LOGIC ERROR BEEP BOOP BOOP
         else:
-            new_rpm_spec = RPMSpec(new_spec_path, self.source)
-            new_rpm_spec.do_release_reset()
-            success = do_release_bump(new_spec_path, "Update to latest snapshot.")
-            new_rpm_spec = RPMSpec(new_spec_path, self.source)
-
-        if not success:
+            logger.err("Can't figure out what to do. This shouldn't have happened.")
             return False
+
+        if not self.success:
+            return False
+
+        new_rpm_spec = RPMSpec(new_spec_path, self.source)
 
         self.last_release = new_rpm_spec.get_release()
         self.last_version = new_rpm_spec.get_version()

@@ -26,6 +26,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
     in the form of generalised implementations of `get`, `refresh` and `formatver` methods.
 
     Attributes:
+        bool updated:       indicates whether the source was updated since the state in the DB
         str sdir:           source directory of the package this source belongs to
         str dest:           destination path when downloading / copying sources
         Package spkg:       stores the package argument given at initialisation
@@ -34,6 +35,8 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
 
     def __init__(self, package):
         ktr = Kentauros()
+
+        self.updated = False
 
         self.spkg = package
         self.sdir = os.path.join(ktr.get_datadir(), self.spkg.get_conf_name())
@@ -160,6 +163,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
                 logger.log("The downloaded Source is not newer than the last known source state.")
                 return False
             else:
+                self.updated = True
                 return self.export()
 
         update_success = self.update()
@@ -170,6 +174,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
                 logger.log("The \"updated\" Source is not newer than the last known source state.")
                 return False
             else:
+                self.updated = True
                 return self.export()
 
         logger.log("The Source did not change.")
