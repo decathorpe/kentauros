@@ -410,6 +410,12 @@ class SrpmConstructor(Constructor):
         if (old_version == "") or (old_release[0] == "0"):
             message = ktr.cli.get_message()
 
+            if old_release[0] != 0:
+                new_rpm_spec = RPMSpec(new_spec_path, self.source)
+                new_rpm_spec.do_release_reset()
+                new_rpm_spec.export_to_file(new_spec_path)
+                del new_rpm_spec
+
             if message is None:
                 self.success = do_release_bump(new_spec_path, "Initial package.")
             else:
@@ -438,6 +444,9 @@ class SrpmConstructor(Constructor):
             if self.source.updated:
                 new_rpm_spec = RPMSpec(new_spec_path, self.source)
                 new_rpm_spec.do_release_reset()
+                new_rpm_spec.export_to_file(new_spec_path)
+                del new_rpm_spec
+
                 self.success = do_release_bump(new_spec_path, "Update to latest snapshot.")
 
             # Case 1.3: Package ReConstruction only
