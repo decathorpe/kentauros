@@ -151,8 +151,10 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             bool:       success status of source getting or updating
         """
 
+        ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
+        force = ktr.cli.get_force()
         old_status = self.status()
 
         get_success = self.get()
@@ -176,6 +178,10 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             else:
                 self.updated = True
                 return self.export()
+
+        if force:
+            logger.log("Force-Exporting the Sources despite no source changes.")
+            return self.export()
 
         logger.log("The Source did not change.")
         return False
