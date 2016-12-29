@@ -161,7 +161,7 @@ class RPMSpec:
         file_contents += self.contents
 
         if path == self.path:
-            raise RPMSpecError("Overriding the original .spec file is not supported.")
+            os.remove(path)
 
         with open(path, "w") as file:
             file.write(file_contents)
