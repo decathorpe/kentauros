@@ -62,7 +62,7 @@ class Package:
         logger = KtrLogger(LOG_PREFIX)
 
         self.file = os.path.join(ktr.get_confdir(), conf_name + ".conf")
-        self.conf = ConfigParser()
+        self.conf = ConfigParser(interpolation=None)
         self.conf_name = conf_name
 
         if not os.path.exists(self.file):
