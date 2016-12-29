@@ -53,7 +53,8 @@ class ChainAction(Action):
             succeeded = module.execute()
 
             if not succeeded:
-                logger.err("Execution of module '" + str(module) + "' wasn't successful.")
+                logger.log("Execution of module unsuccessful: " + str(module))
+                success = False
                 break
 
         self.update_status()
