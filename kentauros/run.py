@@ -202,6 +202,8 @@ def run() -> int:
         action = ACTION_DICT[action_type](name)
         success = action.execute()
 
+        print_flush()
+
         if success:
             actions_success.append(name)
         else:
