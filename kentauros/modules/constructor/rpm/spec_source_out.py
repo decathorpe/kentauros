@@ -31,11 +31,7 @@ def spec_source_bzr(source: BzrSource) -> str:
 
     assert isinstance(source, BzrSource)
 
-    src_str = ("# The tarball is generated from a checkout of the specified branch and\n" +
-               "# by executing 'bzr export' and has the usual format\n" +
-               "# ('%{name}-%{version}.tar.gz'), where %{version} contains the upstream\n" +
-               "# version number with a '+bzr%{rev}' suffix specifying the bzr revision.\n" +
-               format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
+    src_str = (format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
 
     return src_str
 
@@ -53,12 +49,7 @@ def spec_source_git(source: GitSource) -> str:
 
     assert isinstance(source, GitSource)
 
-    src_str = ("# The tarball is generated from a clone of the specified branch and\n" +
-               "# by executing 'git archive' and has the usual format\n" +
-               "# ('%{name}-%{version}.tar.gz'), where %{version} contains the upstream\n" +
-               "# version number with a '+git%{commit}.%{date}' suffix specifying the git\n"
-               "# commit hash (8 characters) and the commit date and time (UTC).\n" +
-               format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
+    src_str = (format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
 
     return src_str
 
