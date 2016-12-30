@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 
 from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger, print_flush
+from kentauros.logger import KtrLogger
 
 from kentauros.modules.sources.no_source import NoSource
 
@@ -399,8 +399,6 @@ class SrpmConstructor(Constructor):
 
         # prepare the spec file and get the generated preamble
         preamble = self._prepare_spec()
-
-        print_flush(preamble)
 
         # use "rpmdev-bumpspec" to increment release number and create changelog entries:
         new_spec_path = self._get_spec_destination()

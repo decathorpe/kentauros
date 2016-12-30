@@ -4,6 +4,12 @@ This submodule contains the :py:class:`VerifyAction` class.
 
 
 from kentauros.definitions import ActionType
+
+from kentauros.instance import Kentauros
+from kentauros.logger import KtrLogger
+from kentauros.modules.module import PkgModule
+
+from kentauros.actions.common import LOGPREFIX
 from kentauros.actions.abstract import Action
 
 
@@ -30,4 +36,20 @@ class VerifyAction(Action):
         initialisation.
         """
 
-        return True
+        ktr = Kentauros()
+        logger = KtrLogger(LOGPREFIX)
+
+        verify_success = True
+        for module in self.kpkg.modules.values():
+            assert isinstance(module, PkgModule)
+
+            success = module.verify()
+
+            if success and ktr.cli.get_action() == ActionType.VERIFY:
+                logger.log("Verification succeeded for module: " + str(module))
+
+            if not success:
+                logger.log("Verification failed for module: " + str(module))
+                verify_success = False
+
+        return verify_success

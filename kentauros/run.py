@@ -12,7 +12,8 @@ from kentauros.definitions import ActionType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger, print_flush
 
-from kentauros.actions import ACTION_DICT, ImportAction
+from kentauros.actions import ACTION_DICT, ImportAction, VerifyAction
+
 from kentauros.bootstrap import ktr_bootstrap
 from kentauros.package import Package, PackageError
 
@@ -141,8 +142,9 @@ def init_package_objects(packages: list):
 
         try:
             pkg = Package(name)
-        except PackageError:
-            logger.log("Package with configuration file '" + name + "' is invalid, skipping.")
+        except PackageError as error:
+            logger.log("Invalid package configuration file:")
+            logger.log(error.value)
             continue
 
         ktr.add_package(name, pkg)
@@ -193,7 +195,9 @@ def run() -> int:
     for name in ktr.get_package_names():
         assert isinstance(name, str)
 
-        logger.log("-----------------------------" + "-" * len(name))
+        action_type = ktr.cli.get_action()
+
+        logger.log("------------------------------" + "-" * len(name))
         logger.log("Executing actions on package: " + name)
         logger.log("------------------------------" + "-" * len(name))
 
@@ -202,7 +206,30 @@ def run() -> int:
             import_action = ImportAction(name)
             import_action.execute()
 
-        action_type = ktr.cli.get_action()
+        verification = VerifyAction(name)
+        verified = verification.execute()
+
+        if action_type == ActionType.VERIFY:
+            if verified:
+                logger.log("Package successfully verified.")
+                actions_success.append(name)
+            else:
+                logger.log("Package did not pass verification.")
+                actions_failure.append(name)
+
+            print_flush()
+            continue
+
+        else:
+            if verified:
+                logger.dbg("Package successfully verified.")
+            else:
+                logger.log("Package configuration file is invalid, skipping package.")
+                actions_failure.append(name)
+
+                print_flush()
+                continue
+
         action = ACTION_DICT[action_type](name)
         success = action.execute()
 

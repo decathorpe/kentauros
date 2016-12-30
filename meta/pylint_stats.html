@@ -13,6 +13,14 @@
 <th>msg</th>
 </tr>
 <tr class="even">
+<td>refactor</td>
+<td>kentauros.run</td>
+<td>run</td>
+<td>153</td>
+<td>0</td>
+<td>Too many statements (58/50)</td>
+</tr>
+<tr class="odd">
 <td>info</td>
 <td>kentauros.init.cli</td>
 <td>&#160;</td>
@@ -20,7 +28,7 @@
 <td>0</td>
 <td>Locally disabling unused-argument (W0613)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>info</td>
 <td>kentauros.init.cli</td>
 <td>&#160;</td>
@@ -28,13 +36,13 @@
 <td>0</td>
 <td>Suppressed 'unused-argument' (from line 19)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>refactor</td>
 <td>kentauros.modules.constructor.srpm</td>
 <td>SrpmConstructor._copy_specs_around</td>
 <td>364</td>
 <td>4</td>
-<td>Too many statements (52/50)</td>
+<td>Too many statements (51/50)</td>
 </tr>
 </table>
 </div>
@@ -45,7 +53,7 @@
 <body>
 <div>
 <h1>Report</h1>
-<p>2305 statements analysed.</p><div>
+<p>2332 statements analysed.</p><div>
 <h2>Statistics by type</h2>
 <table>
 <tr class="header">
@@ -97,11 +105,11 @@ dateutil
   \-parser (kentauros.modules.sources.git)
 kentauros 
   \-actions (kentauros.run)
-  | \-abstract (kentauros.actions.build,kentauros.actions.prepare,kentauros.actions.clean,kentauros.actions.importing,kentauros.actions.verify,kentauros.actions.upload,kentauros.actions.construct,kentauros.actions.chain,kentauros.actions.status)
+  | \-abstract (kentauros.actions.upload,kentauros.actions.clean,kentauros.actions.build,kentauros.actions.chain,kentauros.actions.importing,kentauros.actions.construct,kentauros.actions.status,kentauros.actions.verify,kentauros.actions.prepare)
   | \-build (kentauros.actions)
   | \-chain (kentauros.actions)
   | \-clean (kentauros.actions)
-  | \-common (kentauros.actions.build,kentauros.actions.prepare,kentauros.actions.clean,kentauros.actions.upload,kentauros.actions.construct,kentauros.actions.chain)
+  | \-common (kentauros.actions.clean,kentauros.actions.upload,kentauros.actions.build,kentauros.actions.chain,kentauros.actions.construct,kentauros.actions.verify,kentauros.actions.prepare)
   | \-construct (kentauros.actions)
   | \-importing (kentauros.actions)
   | \-prepare (kentauros.actions)
@@ -109,13 +117,13 @@ kentauros
   | \-upload (kentauros.actions)
   | \-verify (kentauros.actions)
   \-bootstrap (kentauros.run)
-  \-conntest (kentauros.modules.sources.bzr,kentauros.modules.sources.url,kentauros.modules.uploader.copr,kentauros.modules.sources.git)
-  \-definitions (kentauros.actions.build,kentauros.actions.clean,kentauros.instance,kentauros.actions.importing,kentauros.modules.sources.url,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.sources.local,kentauros.init.cli,kentauros.modules,kentauros.actions.chain,kentauros.modules.sources,kentauros.modules.constructor,kentauros.modules.uploader,kentauros.actions.upload,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.actions,kentauros.modules.builder,kentauros.actions.prepare,kentauros.actions.verify,kentauros.package,kentauros.modules.constructor.rpm.spec_version_out,kentauros.run,kentauros.modules.sources.git,kentauros.modules.sources.bzr,kentauros.actions.construct,kentauros.modules.sources.no_source,kentauros.actions.status)
+  \-conntest (kentauros.modules.sources.url,kentauros.modules.sources.git,kentauros.modules.uploader.copr,kentauros.modules.sources.bzr)
+  \-definitions (kentauros.init.cli,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules,kentauros.actions,kentauros.package,kentauros.actions.verify,kentauros.actions.prepare,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.status,kentauros.modules.sources.git,kentauros.modules.builder,kentauros.actions.upload,kentauros.modules.sources,kentauros.actions.importing,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor,kentauros.modules.sources.no_source,kentauros.modules.sources.bzr,kentauros.instance,kentauros.actions.build,kentauros.run,kentauros.actions.chain,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.sources.url,kentauros.modules.sources.local,kentauros.modules.uploader)
   \-init 
   | \-cli (kentauros.instance)
   | \-env (kentauros.instance)
-  \-instance (kentauros.run,kentauros.modules.sources.abstract,kentauros.actions.clean,kentauros.modules.uploader.copr,kentauros.modules.sources.git,kentauros.modules.constructor.rpm,kentauros.actions.abstract,kentauros.modules.sources.url,kentauros.package,kentauros.modules.sources.bzr,kentauros.modules.builder.mock,kentauros.modules.constructor.abstract,kentauros.logger,kentauros.modules.builder.abstract,kentauros.modules.constructor.srpm,kentauros.bootstrap)
-  \-logger (kentauros.run,kentauros.modules.sources.abstract,kentauros.actions.prepare,kentauros.actions.build,kentauros.modules.uploader.copr,kentauros.modules.sources.git,kentauros.modules.constructor.rpm,kentauros.actions.clean,kentauros.modules.sources.url,kentauros.actions.upload,kentauros.package,kentauros.modules.sources.bzr,kentauros.modules.builder.mock,kentauros.actions.construct,kentauros.actions.status,kentauros.actions.chain,kentauros.modules.sources.local,kentauros.modules.constructor.srpm,kentauros.bootstrap)
+  \-instance (kentauros.bootstrap,kentauros.logger,kentauros.modules.sources.abstract,kentauros.modules.constructor.abstract,kentauros.modules.uploader.copr,kentauros.actions.clean,kentauros.run,kentauros.modules.builder.abstract,kentauros.modules.builder.mock,kentauros.actions.abstract,kentauros.modules.constructor.rpm,kentauros.modules.constructor.srpm,kentauros.package,kentauros.actions.verify,kentauros.modules.sources.url,kentauros.modules.sources.git,kentauros.modules.sources.bzr)
+  \-logger (kentauros.bootstrap,kentauros.modules.sources.abstract,kentauros.actions.upload,kentauros.actions.clean,kentauros.modules.uploader.copr,kentauros.actions.build,kentauros.run,kentauros.modules.builder.mock,kentauros.actions.chain,kentauros.modules.sources.local,kentauros.modules.constructor.srpm,kentauros.modules.constructor.rpm,kentauros.actions.prepare,kentauros.actions.construct,kentauros.package,kentauros.actions.verify,kentauros.modules.sources.url,kentauros.modules.sources.git,kentauros.actions.status,kentauros.modules.sources.bzr)
   \-modules (kentauros.package)
   | \-builder (kentauros.modules)
   | | \-abstract (kentauros.modules.builder.mock)
@@ -128,15 +136,15 @@ kentauros
   | | | \-spec_source_out (kentauros.modules.constructor.rpm)
   | | | \-spec_version_out (kentauros.modules.constructor.rpm)
   | | \-srpm (kentauros.modules.constructor)
-  | \-module (kentauros.modules.builder.abstract,kentauros.modules.sources.abstract,kentauros.modules.uploader.abstract,kentauros.modules.constructor.abstract,kentauros.package)
+  | \-module (kentauros.modules.builder.abstract,kentauros.modules.sources.abstract,kentauros.modules.uploader.abstract,kentauros.modules.constructor.abstract,kentauros.actions.verify)
   | \-sources (kentauros.modules)
-  | | \-abstract (kentauros.modules.sources.git,kentauros.modules.constructor.rpm,kentauros.modules.sources.url,kentauros.modules.sources.bzr,kentauros.modules.sources.no_source,kentauros.modules.sources.local)
-  | | \-bzr (kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out)
-  | | \-git (kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out)
-  | | \-local (kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out)
-  | | \-no_source (kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.srpm,kentauros.modules.constructor.rpm.spec_source_out)
-  | | \-source_error (kentauros.modules.sources.bzr,kentauros.modules.sources.git)
-  | | \-url (kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out)
+  | | \-abstract (kentauros.modules.sources.git,kentauros.modules.constructor.rpm,kentauros.modules.sources.no_source,kentauros.modules.sources.url,kentauros.modules.sources.local,kentauros.modules.sources.bzr)
+  | | \-bzr (kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.sources,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_version_out)
+  | | \-git (kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.sources,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_version_out)
+  | | \-local (kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.sources,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_version_out)
+  | | \-no_source (kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.srpm,kentauros.modules.constructor.rpm.spec_version_out)
+  | | \-source_error (kentauros.modules.sources.git,kentauros.modules.sources.bzr)
+  | | \-url (kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.sources,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_version_out)
   | \-uploader (kentauros.modules)
   |   \-abstract (kentauros.modules.uploader.copr)
   |   \-copr (kentauros.modules.uploader)
@@ -155,30 +163,30 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>code</td>
-<td>2549</td>
-<td>41.83</td>
-<td>2549</td>
+<td>2579</td>
+<td>42.03</td>
+<td>2579</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>docstring</td>
 <td>1973</td>
-<td>32.38</td>
+<td>32.15</td>
 <td>1973</td>
 <td>=</td>
 </tr>
 <tr class="even">
 <td>comment</td>
 <td>200</td>
-<td>3.28</td>
+<td>3.26</td>
 <td>200</td>
 <td>=</td>
 </tr>
 <tr class="odd">
 <td>empty</td>
-<td>1372</td>
-<td>22.51</td>
-<td>1372</td>
+<td>1384</td>
+<td>22.56</td>
+<td>1384</td>
 <td>=</td>
 </tr>
 </table>
@@ -223,8 +231,8 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="odd">
 <td>refactor</td>
-<td>1</td>
-<td>1</td>
+<td>2</td>
+<td>2</td>
 <td>=</td>
 </tr>
 <tr class="even">
@@ -252,10 +260,17 @@ tinydb (kentauros.instance)</pre></div>
 <th>convention</th>
 </tr>
 <tr class="even">
+<td>kentauros.run</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>50.00</td>
+<td>0.00</td>
+</tr>
+<tr class="odd">
 <td>kentauros.modules.constructor.srpm</td>
 <td>0.00</td>
 <td>0.00</td>
-<td>100.00</td>
+<td>50.00</td>
 <td>0.00</td>
 </tr>
 </table>
@@ -269,7 +284,7 @@ tinydb (kentauros.instance)</pre></div>
 </tr>
 <tr class="even">
 <td>too-many-statements</td>
-<td>1</td>
+<td>2</td>
 </tr>
 <tr class="odd">
 <td>suppressed-message</td>
@@ -283,7 +298,7 @@ tinydb (kentauros.instance)</pre></div>
 </div>
 <div>
 <h2>Global evaluation</h2>
-Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)</div>
+Your code has been rated at 9.99/10 (previous run: 9.99/10, +0.00)</div>
 </div>
 </body>
 </html>
