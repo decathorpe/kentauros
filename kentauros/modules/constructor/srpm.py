@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 
 from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
+from kentauros.logger import KtrLogger, print_flush
 
 from kentauros.modules.sources.no_source import NoSource
 
@@ -400,6 +400,8 @@ class SrpmConstructor(Constructor):
         # prepare the spec file and get the generated preamble
         preamble = self._prepare_spec()
 
+        print_flush(preamble)
+
         # use "rpmdev-bumpspec" to increment release number and create changelog entries:
         new_spec_path = self._get_spec_destination()
 
@@ -479,8 +481,12 @@ class SrpmConstructor(Constructor):
         # Handling the ChangeLog separately (SUSE style?) would be nice here.
 
         new_rpm_spec.contents = new_rpm_spec.contents.replace(preamble, "")
-        shutil.copy2(self.path, self.path + ".old")
-        new_rpm_spec.export_to_file(self.path)
+
+        if os.path.exists(self.path + ".old"):
+            os.remove(self.path + ".old")
+
+        os.rename(self.path, self.path + ".old")
+        new_rpm_spec.write_contents_to_file(self.path)
 
         return True
 

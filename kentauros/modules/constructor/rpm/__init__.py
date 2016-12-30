@@ -157,6 +157,8 @@ class RPMSpec:
             str path:   path to write the modified .spec contents to
         """
 
+        assert isinstance(path, str)
+
         file_contents = str()
         file_contents += self.build_preamble_string()
         file_contents += self.contents
@@ -166,6 +168,23 @@ class RPMSpec:
 
         with open(path, "w") as file:
             file.write(file_contents)
+
+    def write_contents_to_file(self, path: str):
+        """
+        This method writes the .spec file's (modified in memory) contents to another file,
+        specified by the `path` argument (BUT without prepending the preamble).
+
+        Arguments:
+            str path:   path to write the modified .spec contents to
+        """
+
+        assert isinstance(path, str)
+
+        if path == self.path:
+            os.remove(path)
+
+        with open(path, "w") as file:
+            file.write(self.contents)
 
     def do_release_reset(self):
         """
