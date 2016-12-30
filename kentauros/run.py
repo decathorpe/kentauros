@@ -193,6 +193,10 @@ def run() -> int:
     for name in ktr.get_package_names():
         assert isinstance(name, str)
 
+        logger.log("-----------------------------" + "-" * len(name))
+        logger.log("Executing actions on package: " + name)
+        logger.log("------------------------------" + "-" * len(name))
+
         if ktr.state_read(name) is None:
             logger.log("Importing new package '" + name + "' into the database.")
             import_action = ImportAction(name)
