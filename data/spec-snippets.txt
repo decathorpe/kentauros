@@ -3,7 +3,7 @@ Source explanation in case of git:
 # The tarball is generated from a clone of the specified branch and
 # by executing 'git archive' and has the usual format
 # ('%{name}-%{version}.tar.gz'), where %{version} contains the upstream
-# version number with a '+git%{commit}.%{date}' suffix specifying the git
+# version number with a '+git%{date.time}.%{commit}' suffix specifying the git
 # commit hash (8 characters) and the commit date and time (UTC).
 
 Source explanation in case of bzr:
