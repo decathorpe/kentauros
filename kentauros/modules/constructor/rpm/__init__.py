@@ -54,13 +54,14 @@ class RPMSpec:
 
     def get_lines(self) -> list:
         """
-        This method splits the contents of the .spec file into lines and returns a list of them.
+        This method splits the contents of the .spec file into lines and returns a list of them. It
+        also removes the trailing newline at the end of files so they don't multiply like rabbits.
 
         Returns:
             list:   list of lines
         """
 
-        return self.contents.split("\n")
+        return self.contents.split("\n")[:-1]
 
     def get_version(self) -> str:
         """
