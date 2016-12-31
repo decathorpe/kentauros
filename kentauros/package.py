@@ -162,10 +162,10 @@ class Package:
         output_str = input_str
 
         if "%{name}" in output_str:
-            output_str.replace("%{name}", self.get_name())
+            output_str = output_str.replace("%{name}", self.get_name())
 
         if "%{version}" in output_str:
-            output_str.replace("%{version}", self.get_version())
+            output_str = output_str.replace("%{version}", self.get_version())
 
         return output_str
 
