@@ -46,9 +46,8 @@ class UploadAction(Action):
 
         success = uploader.execute()
 
-        self.update_status()
-
         if success:
+            self.update_status()
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
