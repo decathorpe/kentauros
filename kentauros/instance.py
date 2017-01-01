@@ -228,7 +228,8 @@ class Kentauros:
 
         # compare entries with current status
         if __dict_is_subset__(old_state, entries):
-            print(LOG_PREFIX + ": Not disturbing DB with redundant changes.")
+            if self.debug:
+                print(LOG_PREFIX + ": Not disturbing DB with redundant changes.")
             return -1
 
         with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
