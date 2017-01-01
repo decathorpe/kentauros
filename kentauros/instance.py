@@ -33,6 +33,20 @@ def __smaller_int__(int1: int, int2: int):
         return int2
 
 
+def __dict_is_subset__(sup: dict, sub: dict) -> bool:
+    for key in sub.keys():
+        # if the key is not yet present: update
+        if key not in sup.keys():
+            return False
+
+        # if the values for the same key are different: update
+        if sub[key] != sup[key]:
+            return False
+
+    # if all keys and values for existing keys are identical: don't update
+    return True
+
+
 class Kentauros:
     """
     This class stores settings and variables that must be the same during the execution of code from
@@ -157,32 +171,6 @@ class Kentauros:
 
         return self.packages.keys()
 
-    def state_write(self, conf_name: str, entries: dict) -> int:
-        """
-        This method inserts or updates a package's entry in the state database with the dictionary
-        entries given.
-
-        Arguments:
-            str package:    package configuration name
-            dict entries:   dict containing the key-value pairs to insert or update in the db
-
-        Returns:
-            int:            ID of the package in the database
-        """
-
-        if entries == dict():
-            if self.debug:
-                print(LOG_PREFIX + ": Not updating DB with empty changes.")
-            return -1
-
-        with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
-            package = Query()
-            if not db.search(package.name == conf_name):
-                entries["name"] = conf_name
-                return db.insert(entries)
-            else:
-                return db.update(entries, package.name == conf_name)[0]
-
     def state_read(self, conf_name: str) -> dict:
         """
         This method reads the entries for the given package from the database and returns them as
@@ -212,6 +200,41 @@ class Kentauros:
             warnings.warn("Got more than one result from the state db. Something went wrong here.",
                           Warning)
             return results[0]
+
+    def state_write(self, conf_name: str, entries: dict) -> int:
+        """
+        This method inserts or updates a package's entry in the state database with the dictionary
+        entries given.
+
+        Arguments:
+            str package:    package configuration name
+            dict entries:   dict containing the key-value pairs to insert or update in the db
+
+        Returns:
+            int:            ID of the package in the database
+        """
+
+        # do not disturb the database with empty changes
+        if entries == dict():
+            if self.debug:
+                print(LOG_PREFIX + ": Not disturbing DB with empty changes.")
+            return -1
+
+        # read old state for comparison with to "upsert" values
+        old_state = self.state_read(conf_name)
+
+        # compare entries with current status
+        if __dict_is_subset__(old_state, entries):
+            print(LOG_PREFIX + ": Not disturbing DB with redundant changes.")
+            return -1
+
+        with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
+            package = Query()
+            if not db.search(package.name == conf_name):
+                entries["name"] = conf_name
+                return db.insert(entries)
+            else:
+                return db.update(entries, package.name == conf_name)[0]
 
     def state_delete(self, conf_name: str) -> int:
         """
