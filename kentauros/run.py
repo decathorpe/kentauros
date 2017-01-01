@@ -51,6 +51,19 @@ def print_parameters():
     print_flush()
 
 
+def print_no_package_error():
+    """
+    This function prints an error and helpful information if no action is specified.
+    """
+
+    logger = KtrLogger(LOG_PREFIX)
+
+    logger.log("No action specified. Exiting.")
+    logger.log("Use 'ktr --help' for more information.")
+
+    print_flush()
+
+
 def get_packages_cli() -> list:
     """
     This function parses the package configuration names supplied via CLI arguments, removes any
@@ -150,43 +163,67 @@ def init_package_objects(packages: list):
         ktr.add_package(name, pkg)
 
 
-def run() -> int:
+def print_package_header(name: str):
     """
-    This function is corresponding to (one of) the "main" function of the `kentauros` package and is
-    the entry point used by the `ktr.py` script from git and the script installed at installation.
+    This function prints a small banner to indicate which package actions are executed for next.
+
+    Arguments:
+        str name:   package configuration name
+    """
+
+    assert isinstance(name, str)
+
+    logger = KtrLogger(LOG_PREFIX)
+
+    logger.log("------------------------------" + "-" * len(name))
+    logger.log("Executing actions on package: " + name)
+    logger.log("------------------------------" + "-" * len(name))
+
+
+def do_import_action(name: str):
+    """
+    This function executes the Import action for the given package configuration.
+
+    Arguments:
+        str name:   package configuration name
+    """
+
+    assert isinstance(name, str)
+
+    logger = KtrLogger(LOG_PREFIX)
+
+    logger.log("Importing new package '" + name + "' into the database.")
+    import_action = ImportAction(name)
+    import_action.execute()
+
+
+def do_verify_action(name: str) -> bool:
+    """
+    This function executes the Verify action for the given package configuration.
+
+    Arguments:
+        str name:   package configuration name
+    """
+
+    assert isinstance(name, str)
+
+    logger = KtrLogger(LOG_PREFIX)
+
+    logger.dbg("Verifying package '" + name + "'.")
+    verification = VerifyAction(name)
+    return verification.execute()
+
+
+def do_process_packages() -> (list, list):
+    """
+    This function processes all packages and executes the specified action on them.
+
+    Returns:
+        list, list:     list of successful package actions, list of unsuccessful package actions
     """
 
     ktr = Kentauros()
     logger = KtrLogger(LOG_PREFIX)
-
-    print_parameters()
-
-    # if no action is specified: exit(0)
-    if ktr.cli.get_action() == ActionType.NONE:
-        logger.log("No action specified. Exiting.")
-        logger.log("Use 'ktr --help' for more information.")
-        print_flush()
-        return 0
-
-    # initialise directory structure and exit(1) if it fails
-    if not ktr_bootstrap():
-        return 1
-
-    # get packages from CLI (all or specific ones)
-    packages = get_packages()
-
-    # if no package configurations are found: exit(0)
-    if not packages:
-        logger.log("No packages have been specified or found. Exiting.")
-        print_flush()
-        return 0
-
-    # log list of found packages
-    logger.log_list("Packages", packages)
-    print_flush()
-
-    # generate package objects
-    init_package_objects(packages)
 
     actions_success = list()
     actions_failure = list()
@@ -197,17 +234,12 @@ def run() -> int:
 
         action_type = ktr.cli.get_action()
 
-        logger.log("------------------------------" + "-" * len(name))
-        logger.log("Executing actions on package: " + name)
-        logger.log("------------------------------" + "-" * len(name))
+        print_package_header(name)
 
         if ktr.state_read(name) is None:
-            logger.log("Importing new package '" + name + "' into the database.")
-            import_action = ImportAction(name)
-            import_action.execute()
+            do_import_action(name)
 
-        verification = VerifyAction(name)
-        verified = verification.execute()
+        verified = do_verify_action(name)
 
         if action_type == ActionType.VERIFY:
             if verified:
@@ -240,8 +272,49 @@ def run() -> int:
         else:
             actions_failure.append(name)
 
+    return actions_success, actions_failure
+
+
+def run() -> int:
+    """
+    This function is corresponding to (one of) the "main" function of the `kentauros` package and is
+    the entry point used by the `ktr.py` script from git and the script installed at installation.
+    """
+
+    ktr = Kentauros()
+    logger = KtrLogger(LOG_PREFIX)
+
+    print_parameters()
+
+    # if no action is specified: exit(0)
+    if ktr.cli.get_action() == ActionType.NONE:
+        print_no_package_error()
+        return 0
+
+    # initialise directory structure and exit(1) if it fails
+    if not ktr_bootstrap():
+        return 1
+
+    # get packages from CLI (all or specific ones)
+    packages = get_packages()
+
+    # if no package configurations are found: exit(0)
+    if not packages:
+        logger.log("No packages have been specified or found. Exiting.")
+        print_flush()
+        return 0
+
+    # log list of found packages
+    logger.log_list("Packages", packages)
     print_flush()
 
+    # generate package objects
+    init_package_objects(packages)
+
+    # execute package actions
+    actions_success, actions_failure = do_process_packages()
+
+    # print execution success
     if actions_success:
         logger.log_list("Successful actions", actions_success)
 
