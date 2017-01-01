@@ -34,6 +34,9 @@ def __smaller_int__(int1: int, int2: int):
 
 
 def __dict_is_subset__(sup: dict, sub: dict) -> bool:
+    if sup is None:
+        return False
+
     for key in sub.keys():
         # if the key is not yet present: update
         if key not in sup.keys():
