@@ -170,6 +170,11 @@ class Kentauros:
             int:            ID of the package in the database
         """
 
+        if entries == dict():
+            if self.debug:
+                print(LOG_PREFIX + ": Not updating DB with empty changes.")
+            return -1
+
         with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
             package = Query()
             if not db.search(package.name == conf_name):
