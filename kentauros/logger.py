@@ -59,11 +59,11 @@ class KtrLogger:
         assert isinstance(msg, str)
 
         if prefix is not None:
-            print_flush("DEBUG: " + prefix + " " + msg)
+            print_flush("DEBUG: " + prefix + ": " + msg)
             return
 
         if self.log_prefix is not None:
-            print_flush("DEBUG: " + self.log_prefix + " " + msg)
+            print_flush("DEBUG: " + self.log_prefix + ": " + msg)
             return
 
         print_flush("DEBUG: " + msg)
