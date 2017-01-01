@@ -361,6 +361,127 @@ class SrpmConstructor(Constructor):
 
         return preamble
 
+    @staticmethod
+    def _print_debug_info(new_version, old_version, old_release):
+        """
+        This method prints debug information about old and new Version and Release strings.
+        """
+
+        assert isinstance(new_version, str)
+        assert isinstance(old_version, str)
+        assert isinstance(old_release, str)
+
+        logger = KtrLogger(LOG_PREFIX)
+
+        logger.dbg("Old Version: " + old_version)
+        logger.dbg("New Version: " + new_version)
+        logger.dbg("Old Release: " + old_release)
+
+    def _do_initial_build_prep(self, old_release: str, new_spec_path: str):
+        """
+        This method prepares the .spec file for an initial package build.
+
+        Arguments:
+            str old_release:        old release string
+            str new_spec_path:      path of new .spec file
+        """
+
+        assert isinstance(old_release, str)
+        assert isinstance(new_spec_path, str)
+
+        ktr = Kentauros()
+
+        message = ktr.cli.get_message()
+
+        if old_release[0] != 0:
+            new_rpm_spec = RPMSpec(new_spec_path, self.source)
+            new_rpm_spec.do_release_reset()
+            new_rpm_spec.export_to_file(new_spec_path)
+
+        if message is None:
+            return do_release_bump(new_spec_path, "Initial package.")
+        else:
+            return do_release_bump(new_spec_path, message)
+
+    @staticmethod
+    def _do_packaging_only_build_prep(new_spec_path: str):
+        """
+        This method prepares the .spec file for a packaging-only change.
+
+        Arguments:
+            str new_spec_path:      path of new .spec file
+        """
+
+        assert isinstance(new_spec_path, str)
+
+        ktr = Kentauros()
+
+        message = ktr.cli.get_message()
+
+        if message is None:
+            return do_release_bump(new_spec_path, "Update for packaging changes.")
+        else:
+            return do_release_bump(new_spec_path, message)
+
+    def _do_snapshot_update_build_prep(self, new_spec_path: str):
+        """
+        This method prepares the .spec file for a snapshot update.
+
+        Arguments:
+            str new_spec_path:      path of new .spec file
+        """
+
+        assert isinstance(new_spec_path, str)
+
+        new_rpm_spec = RPMSpec(new_spec_path, self.source)
+        new_rpm_spec.do_release_reset()
+        new_rpm_spec.export_to_file(new_spec_path)
+
+        return do_release_bump(new_spec_path, "Update to latest snapshot.")
+
+    def _do_version_update_build_prep(self, new_spec_path: str):
+        """
+        This method prepares the .spec file for a version update.
+
+        Arguments:
+            str new_spec_path:      path of new .spec file
+        """
+
+        assert isinstance(new_spec_path, str)
+
+        return do_release_bump(new_spec_path, "Update to version " + self.cpkg.get_version() + ".")
+
+    def _restore_spec_template(self, new_spec_path: str, preamble: str):
+        """
+        This method restores the original .spec file template (without added preamble, but with
+        possibly added changelog entries).
+
+        Args:
+            str new_spec_path:      path of the new spec file
+            str preamble:           determined preamble string
+        """
+
+        assert isinstance(new_spec_path, str)
+        assert isinstance(preamble, str)
+
+        new_rpm_spec = RPMSpec(new_spec_path, self.source)
+
+        self.last_release = new_rpm_spec.get_release()
+        self.last_version = new_rpm_spec.get_version()
+
+        # copy new spec file back to ktr/specdir to preserve version tracking,
+        # release number and changelog consistency (keep old version once as backup)
+        # BUT: remove preamble again, it would break things otherwise
+        # Handling the ChangeLog separately (SUSE style?) would be nice here.
+
+        new_rpm_spec.contents = new_rpm_spec.contents.replace(preamble, "")
+
+        if os.path.exists(self.path + ".old"):
+            os.remove(self.path + ".old")
+
+        os.rename(self.path, self.path + ".old")
+        new_rpm_spec.write_contents_to_file(self.path)
+
     def _copy_specs_around(self) -> bool:
         """
         This method handles the package's .spec file.
@@ -393,9 +514,8 @@ class SrpmConstructor(Constructor):
 
         force = ktr.cli.get_force()
 
-        logger.dbg("Old Version: " + old_version)
-        logger.dbg("New Version: " + new_version)
-        logger.dbg("Old Release: " + old_release)
+        # print debug info
+        self._print_debug_info(new_version, old_version, old_release)
 
         # prepare the spec file and get the generated preamble
         preamble = self._prepare_spec()
@@ -408,18 +528,7 @@ class SrpmConstructor(Constructor):
         # Case 0: Initial package build
         # Old Version is empty or old Release is 0
         if (old_version == "") or (old_release[0] == "0"):
-            message = ktr.cli.get_message()
-
-            if old_release[0] != 0:
-                new_rpm_spec = RPMSpec(new_spec_path, self.source)
-                new_rpm_spec.do_release_reset()
-                new_rpm_spec.export_to_file(new_spec_path)
-                del new_rpm_spec
-
-            if message is None:
-                self.success = do_release_bump(new_spec_path, "Initial package.")
-            else:
-                self.success = do_release_bump(new_spec_path, message)
+            self.success = self._do_initial_build_prep(old_release, new_spec_path)
 
         # Case 1:
         # Package Version did NOT change
@@ -432,22 +541,12 @@ class SrpmConstructor(Constructor):
             # Case 1.1: Packaging changes
             # Package Version did NOT change but construction was forced (because of spec changes?)
             if force:
-                message = ktr.cli.get_message()
-
-                if message is None:
-                    self.success = do_release_bump(new_spec_path, "Update for packaging changes.")
-                else:
-                    self.success = do_release_bump(new_spec_path, message)
+                self.success = self._do_packaging_only_build_prep(new_spec_path)
 
             # Case 1.2: Snapshot update
             # Package Version did NOT change BUT VCS sources were updated
             if self.source.updated:
-                new_rpm_spec = RPMSpec(new_spec_path, self.source)
-                new_rpm_spec.do_release_reset()
-                new_rpm_spec.export_to_file(new_spec_path)
-                del new_rpm_spec
-
-                self.success = do_release_bump(new_spec_path, "Update to latest snapshot.")
+                self.success = self._do_snapshot_update_build_prep(new_spec_path)
 
             # Case 1.3: Package ReConstruction only
             # Version did NOT change, construction was NOT forced and sources were NOT updated
@@ -457,8 +556,7 @@ class SrpmConstructor(Constructor):
         # Case 2: Version update
         # Package Version DID change
         elif version_changed:
-            self.success = do_release_bump(new_spec_path,
-                                           "Update to version " + self.cpkg.get_version() + ".")
+            self.success = self._do_version_update_build_prep(new_spec_path)
 
         # Case 3: LOGIC ERROR BEEP BOOP BOOP
         else:
@@ -468,23 +566,7 @@ class SrpmConstructor(Constructor):
         if not self.success:
             return False
 
-        new_rpm_spec = RPMSpec(new_spec_path, self.source)
-
-        self.last_release = new_rpm_spec.get_release()
-        self.last_version = new_rpm_spec.get_version()
-
-        # copy new spec file back to ktr/specdir to preserve version tracking,
-        # release number and changelog consistency (keep old version once as backup)
-        # BUT: remove preamble again, it would break things otherwise
-        # Handling the ChangeLog separately (SUSE style?) would be nice here.
-
-        new_rpm_spec.contents = new_rpm_spec.contents.replace(preamble, "")
-
-        if os.path.exists(self.path + ".old"):
-            os.remove(self.path + ".old")
-
-        os.rename(self.path, self.path + ".old")
-        new_rpm_spec.write_contents_to_file(self.path)
+        self._restore_spec_template(new_spec_path, preamble)
 
         return True
 
