@@ -252,11 +252,38 @@ class SrpmConstructor(Constructor):
 
         logger = KtrLogger(LOG_PREFIX)
 
-        if os.path.exists(self.source.sdir):
+        # source is a NoSource
+        if self.source.dest is None:
             return True
-        else:
-            logger.log("No Package source files are present. Aborting.")
+
+        # source directory is non-existent
+        if not os.path.exists(self.source.sdir):
+            logger.log("Package source directory does not exist. Aborting.")
             return False
+
+        # get source directory contents
+        contents = os.listdir(self.source.sdir)
+
+        # directory empty: abort
+        if not contents:
+            logger.log("Package source directory is empty. Aborting.")
+            return False
+
+        # look for files (directories are not enough)
+        file_found = False
+
+        for entry in contents:
+            if os.path.isfile(entry):
+                file_found = True
+
+        # no files were found: abort construction
+        if not file_found:
+            logger.log("Package source directory contains no files. Aborting.")
+            return False
+
+        # files found: everything can continue
+        else:
+            return True
 
     def _copy_sources(self):
         """
