@@ -16,7 +16,7 @@ from kentauros.logger import KtrLogger
 from kentauros.modules.sources.no_source import NoSource
 
 from kentauros.modules.constructor.abstract import Constructor
-from kentauros.modules.constructor.rpm import RPMSpec, do_release_bump
+from kentauros.modules.constructor.rpm import RPMSpec, do_release_bump, parse_release
 
 
 LOG_PREFIX = "ktr/constructor/srpm"
@@ -420,7 +420,7 @@ class SrpmConstructor(Constructor):
 
         message = ktr.cli.get_message()
 
-        if old_release[0] != 0:
+        if int(parse_release(old_release)[0]) != 0:
             new_rpm_spec = RPMSpec(new_spec_path, self.source)
             new_rpm_spec.do_release_reset()
             new_rpm_spec.export_to_file(new_spec_path)
@@ -554,7 +554,7 @@ class SrpmConstructor(Constructor):
 
         # Case 0: Initial package build
         # Old Version is empty or old Release is 0
-        if (old_version == "") or (old_release[0] == "0"):
+        if (old_version == "") or (int(parse_release(old_release)[0]) == 0):
             self.success = self._do_initial_build_prep(old_release, new_spec_path)
 
         # Case 1:

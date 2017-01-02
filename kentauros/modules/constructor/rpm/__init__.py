@@ -23,6 +23,39 @@ inside this subpackage.
 """
 
 
+def parse_release(release: str) -> (str, str):
+    """
+    This function splits the Release string into the leading numeric part and the trailing
+    alphanumeric part.
+
+    Arguments:
+        str release:    Release string
+
+    Returns:
+        str, str:       numeric part, trailing part
+    """
+
+    if "%{dist}" in release:
+        parts = release.split("%{dist}")
+        part1 = parts[0]
+        part2 = "%{dist}" + parts[1]
+    else:
+        part1 = release
+        part2 = ""
+
+    num_string = str()
+
+    for char in part1:
+        if char.isnumeric():
+            num_string += char
+        else:
+            break
+
+    abc_string = part1.lstrip("0123456789")
+
+    return num_string, abc_string + part2
+
+
 class RPMSpec:
     """
     This class serves as the go-to swiss army knife for handling everything concerning RPM spec
@@ -191,8 +224,7 @@ class RPMSpec:
         This method resets the release number to 0suffix.
         """
 
-        old_rel = self.get_release()
-        new_rel = str(0) + old_rel[1:]
+        new_rel = str(0) + parse_release(self.get_release())[1]
 
         contents_new = str()
 
