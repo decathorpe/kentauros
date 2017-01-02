@@ -267,7 +267,7 @@ class SrpmConstructor(Constructor):
         file_found = False
 
         for entry in contents:
-            if os.path.isfile(entry):
+            if os.path.isfile(os.path.join(self.source.sdir, entry)):
                 file_found = True
 
         # no files were found: abort construction
