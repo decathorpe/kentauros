@@ -131,26 +131,22 @@ class SrpmConstructor(Constructor):
         saved_state = ktr.state_read(self.cpkg.get_conf_name())
 
         if saved_state is None:
-            logger.dbg("Package " +
-                       self.cpkg.get_conf_name() +
-                       " not yet in state database.")
+            logger.dbg("Package " + self.cpkg.get_conf_name() + " not yet in state database.")
             logger.dbg("Falling back to legacy version detection.")
-            old_version = spec.get_version()
-        elif "rpm_last_release" not in saved_state:
-            logger.dbg("Package " +
-                       self.cpkg.get_conf_name() +
-                       " has never been built before.")
-            old_version = ""
-        elif "package_version" not in saved_state:
-            logger.dbg("Package " +
-                       self.cpkg.get_conf_name() +
-                       " has no version set in state database.")
-            logger.dbg("Falling back to legacy version detection.")
-            old_version = spec.get_version()
-        else:
-            old_version = saved_state["package_version"]
+            return spec.get_version()
 
-        return old_version
+        if "rpm_last_version" in saved_state:
+            return saved_state["rpm_last_version"]
+
+        logger.dbg("Package " + self.cpkg.get_conf_name() + " has never been built before.")
+
+        if "package_version" in saved_state:
+            return saved_state["package_version"]
+
+        logger.dbg("Package " + self.cpkg.get_conf_name() + " has no version set in state DB.")
+        logger.dbg("Falling back to legacy version detection.")
+
+        return spec.get_version()
 
     def _get_last_release(self, spec: RPMSpec):
         """
@@ -172,21 +168,19 @@ class SrpmConstructor(Constructor):
         saved_state = ktr.state_read(self.cpkg.get_conf_name())
 
         if saved_state is None:
-            logger.dbg("Package " +
-                       self.cpkg.get_conf_name() +
-                       " not yet in state database.")
+            logger.dbg("Package " + self.cpkg.get_conf_name() + " not yet in state database.")
             logger.dbg("Falling back to legacy release detection.")
-            old_release = spec.get_release()
-        elif "rpm_last_release" not in saved_state:
-            logger.dbg("Package " +
-                       self.cpkg.get_conf_name() +
-                       " has no release set in state database.")
-            logger.dbg("Falling back to legacy release detection.")
-            old_release = spec.get_release()
-        else:
-            old_release = saved_state["rpm_last_release"]
+            return spec.get_release()
 
-        return old_release
+        if "rpm_last_release" in saved_state:
+            return saved_state["rpm_last_release"]
+
+        logger.dbg("Package " + self.cpkg.get_conf_name() + " has never been built before.")
+
+        logger.dbg("Package " + self.cpkg.get_conf_name() + " has no release set in state DB.")
+        logger.dbg("Falling back to legacy release detection.")
+
+        return spec.get_release()
 
     def status(self) -> dict:
         spec = RPMSpec(self.path, self.source)
