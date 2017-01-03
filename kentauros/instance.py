@@ -188,7 +188,8 @@ class Kentauros:
 
         assert isinstance(conf_name, str)
 
-        with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
+        with TinyDB(os.path.join(self.get_basedir(), "state.json"),
+                    indent=4, sort_keys=True) as db:
             package = Query()
             results = db.search(package.name == conf_name)
 
@@ -232,7 +233,8 @@ class Kentauros:
                 print(LOG_PREFIX + ": Not disturbing DB with redundant changes.")
             return -1
 
-        with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
+        with TinyDB(os.path.join(self.get_basedir(), "state.json"),
+                    indent=4, sort_keys=True) as db:
             package = Query()
             if not db.search(package.name == conf_name):
                 entries["name"] = conf_name
@@ -253,7 +255,8 @@ class Kentauros:
 
         assert isinstance(conf_name, str)
 
-        with TinyDB(os.path.join(self.get_basedir(), "state.json")) as db:
+        with TinyDB(os.path.join(self.get_basedir(), "state.json"),
+                    indent=4, sort_keys=True) as db:
             package = Query()
             results = db.remove(package.name == conf_name)
 
