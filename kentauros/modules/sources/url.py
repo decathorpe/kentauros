@@ -97,13 +97,36 @@ class UrlSource(Source):
         return self.spkg.replace_vars(self.spkg.conf.get("url", "orig"))
 
     def status(self) -> dict:
-        return dict()
+        """
+        This method returns a dictionary containing the package version of the tarball that was last
+        downloaded (as the status is only updated after successful actions).
+
+        Returns:
+            dict:   key-value pairs (property: value)
+        """
+
+        state = dict(url_last_version=self.spkg.get_version())
+        return state
 
     def status_string(self) -> str:
-        return str()
+        ktr = Kentauros()
+
+        state = ktr.state_read(self.spkg.get_conf_name())
+
+        if "url_last_version" in state:
+            string = ("url source module:\n" +
+                      "  Last download:    {}\n".format(state["url_last_version"]))
+        else:
+            string = ("url source module:\n" +
+                      "  Last download:    None\n")
+
+        return string
 
     def imports(self) -> dict:
-        return dict()
+        if os.path.exists(self.dest):
+            return dict(url_last_version=self.spkg.get_version())
+        else:
+            return dict()
 
     def get(self) -> bool:
         """
