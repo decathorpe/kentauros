@@ -37,8 +37,17 @@ class UrlSource(Source):
     def __init__(self, package):
         super().__init__(package)
 
+        ktr = Kentauros()
+
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.URL
+
+        state = ktr.state_read(self.spkg.get_conf_name())
+
+        if "url_last_version" in state:
+            self.last_version = state["url_last_version"]
+        else:
+            self.last_version = None
 
     def __str__(self) -> str:
         return "URL Source for Package '" + self.spkg.get_conf_name() + "'"
@@ -105,8 +114,11 @@ class UrlSource(Source):
             dict:   key-value pairs (property: value)
         """
 
-        state = dict(url_last_version=self.spkg.get_version())
-        return state
+        if self.last_version is None:
+            return dict()
+        else:
+            state = dict(url_last_version=self.last_version)
+            return state
 
     def status_string(self) -> str:
         ktr = Kentauros()
@@ -170,9 +182,12 @@ class UrlSource(Source):
 
         # wget source from origin to destination
         logger.log_command(cmd, 1)
-        subprocess.call(cmd)
+        ret = subprocess.call(cmd)
 
-        return True
+        if not ret:
+            self.last_version = self.spkg.get_version()
+
+        return not ret
 
     def update(self) -> bool:
         return False
