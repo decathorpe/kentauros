@@ -44,7 +44,9 @@ class UrlSource(Source):
 
         state = ktr.state_read(self.spkg.get_conf_name())
 
-        if "url_last_version" in state:
+        if state is None:
+            self.last_version = None
+        elif "url_last_version" in state:
             self.last_version = state["url_last_version"]
         else:
             self.last_version = None
