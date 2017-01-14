@@ -330,7 +330,7 @@ class SrpmConstructor(Constructor):
         shutil.copy2(self.cpkg.file, self.dirs["source_dir"])
         logger.log("Package configuration copied to SOURCES: " + self.cpkg.file, 1)
 
-    def _get_old_status(self) -> tuple:
+    def _get_old_status(self) -> (str, str):
         """
         This method tries to determine the old Version and Release strings from the best available
         source. If the local state database has not yet been updated with those values, the .spec
@@ -530,7 +530,9 @@ class SrpmConstructor(Constructor):
         ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
-        new_version = self.cpkg.get_version()
+        spec = RPMSpec(self.path, self.source)
+
+        new_version = spec.build_version_string()
         old_version, old_release = self._get_old_status()
 
         force = ktr.cli.get_force()
