@@ -368,7 +368,7 @@ class SrpmConstructor(Constructor):
         spec.set_source()
 
         old_version = self._get_old_status()[0]
-        new_version = self.cpkg.get_version()
+        new_version = spec.build_version_string()
 
         # start constructing release string from old release string
         if new_version != old_version:
