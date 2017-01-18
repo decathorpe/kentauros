@@ -29,10 +29,19 @@ def package_name_completer(prefix, **kwargs):
         list:       list of matching package names
     """
 
-    config = configparser.ConfigParser()
-    config.read("kentaurosrc")
+    if os.path.exists("kentaurosrc"):
+        config = configparser.ConfigParser()
+        config.read("kentaurosrc")
 
-    basedir = os.path.abspath(config.get("main", "basedir"))
+        try:
+            basedir = os.path.abspath(config.get("main", "basedir"))
+        except configparser.NoSectionError:
+            basedir = os.path.abspath(os.getcwd())
+        except configparser.NoOptionError:
+            basedir = os.path.abspath(os.getcwd())
+    else:
+        basedir = os.path.abspath(os.getcwd())
+
     paths = os.path.join(basedir, "configs", "*.conf")
 
     files = glob.glob(paths)
