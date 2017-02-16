@@ -20,6 +20,14 @@ kentauros.modules.sources.bzr module
     :undoc-members:
     :show-inheritance:
 
+kentauros.modules.sources.fedpkg module
+---------------------------------------
+
+.. automodule:: kentauros.modules.sources.fedpkg
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros.modules.sources.git module
 ------------------------------------
 

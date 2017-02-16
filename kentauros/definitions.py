@@ -100,6 +100,7 @@ class SourceType(Enum):
     GIT = 20
     BZR = 21
     LOCAL = 30
+    FEDPKG = 40
 
 
 @unique
