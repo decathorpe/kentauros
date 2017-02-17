@@ -8,6 +8,7 @@ constructors.
 
 
 from kentauros.modules.sources.bzr import BzrSource
+from kentauros.modules.sources.fedpkg import FedPkgSource
 from kentauros.modules.sources.git import GitSource
 from kentauros.modules.sources.url import UrlSource
 from kentauros.modules.sources.local import LocalSource
@@ -24,3 +25,4 @@ SOURCE_TYPE_DICT[SourceType.BZR] = BzrSource
 SOURCE_TYPE_DICT[SourceType.GIT] = GitSource
 SOURCE_TYPE_DICT[SourceType.LOCAL] = LocalSource
 SOURCE_TYPE_DICT[SourceType.URL] = UrlSource
+SOURCE_TYPE_DICT[SourceType.FEDPKG] = FedPkgSource
