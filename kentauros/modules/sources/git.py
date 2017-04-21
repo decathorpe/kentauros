@@ -487,7 +487,7 @@ class GitSource(Source):
             not keeping the repository around was specified in the configuration file.
             """
 
-            if not self.get_keep():
+            if not self.get_keep_repo():
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
                 assert ktr.get_datadir() in self.dest
