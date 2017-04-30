@@ -425,7 +425,7 @@ class GitSource(Source):
         logger = KtrLogger(LOG_PREFIX)
 
         # if specific commit is requested, do not pull updates (obviously)
-        if self.get_commit() == "HEAD":
+        if self.get_commit() != "HEAD":
             return False
 
         # check for connectivity to server
