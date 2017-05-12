@@ -238,7 +238,7 @@ class BzrSource(Source):
         # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             rev = self.rev()
-            logger.log("Sources already downloaded. Latest revision: " + str(rev), 1)
+            logger.log("Sources already downloaded. Latest revision: " + str(rev), 2)
             return False
 
         # check for connectivity to server
