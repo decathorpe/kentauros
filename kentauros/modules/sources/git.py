@@ -5,11 +5,12 @@ in the package's configuration file.
 """
 
 
+import datetime
 import os
 import shutil
 import subprocess
 
-import dateutil.parser
+from git import Repo
 
 from kentauros.conntest import is_connected
 from kentauros.definitions import SourceType
@@ -154,44 +155,15 @@ class GitSource(Source):
         This method provides an easy way of getting the date and time of the requested commit in a
         standardised format (``YYMMDD.HHmmSS``). It also stores the latest parsed date between
         method invocations, if the source goes away and the commit datetime string is needed again.
+        
+        The returned value represents the date and time of 'committing', not of 'authoring' the
+        commit, and has been converted to UTC.
 
         Returns:
             str:        commit date.time string (``YYMMDD.HHmmSS``)
         """
 
-        def prepend_zero(string):
-            """
-            This local function prepends '0' to one-digit time value strings.
-            """
-
-            if len(string) == 1:
-                return "0" + string
-            else:
-                return string
-
-        def date_str_from_raw(raw_date: str):
-            """
-            This local function parses a datetime object and returns a simple string.
-            """
-
-            assert isinstance(raw_date, str)
-
-            date_obj = dateutil.parser.parse(raw_date)
-
-            year_str = str(date_obj.year)[2:]
-            month_str = prepend_zero(str(date_obj.month))
-            day_str = prepend_zero(str(date_obj.day))
-
-            hour_str = prepend_zero(str(date_obj.hour))
-            minute_str = prepend_zero(str(date_obj.minute))
-            second_str = prepend_zero(str(date_obj.second))
-
-            date_str = year_str + month_str + day_str + "." + hour_str + minute_str + second_str
-
-            return date_str
-
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
 
         # if sources are not accessible (anymore), return "" or last saved date
         if not os.access(self.dest, os.R_OK):
@@ -205,17 +177,12 @@ class GitSource(Source):
             else:
                 raise SourceError("Sources need to be get before the commit date can be read.")
 
-        cmd = ["git", "show", "-s", "--date=short", "--format=%cI"]
+        repo = Repo(self.dest)
+        date_raw = repo.head.commit.committed_datetime.astimezone(datetime.timezone.utc)
 
-        prev_dir = os.getcwd()
-        os.chdir(self.dest)
-
-        logger.log_command(cmd, 1)
-        date_raw = subprocess.check_output(cmd).decode().rstrip('\r\n')
-
-        os.chdir(prev_dir)
-
-        date = date_str_from_raw(date_raw)
+        date = "{:02d}{:02d}{:02d}.{:02d}{:02d}{:02d}".format(
+            date_raw.year % 100, date_raw.month, date_raw.day,
+            date_raw.hour, date_raw.minute, date_raw.second)
 
         self.saved_date = date
         return date
@@ -425,7 +392,7 @@ class GitSource(Source):
         logger = KtrLogger(LOG_PREFIX)
 
         # if specific commit is requested, do not pull updates (obviously)
-        if self.get_commit() == "HEAD":
+        if self.get_commit() != "HEAD":
             return False
 
         # check for connectivity to server
@@ -487,7 +454,7 @@ class GitSource(Source):
             not keeping the repository around was specified in the configuration file.
             """
 
-            if not self.get_keep():
+            if not self.get_keep_repo():
                 # try to be careful with "rm -r"
                 assert os.path.isabs(self.dest)
                 assert ktr.get_datadir() in self.dest

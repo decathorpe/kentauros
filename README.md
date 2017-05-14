@@ -31,10 +31,10 @@ To be able to run test scripts and the provided `ktr.py` script, it is necessary
 to install some package dependencies, for example on fedora:
 
 - python3-argcomplete
-- python3-dateutil
+- python3-GitPython (when using git sources)
 - python3-tinydb
-- python3-pylint for generating stats before commits: `./make-stats.sh`
-- python3-sphinx for generating and building docs locally: `./make-docs.sh`
+- python3-pylint (for generating stats before commits: `./make-stats.sh`)
+- python3-sphinx (for generating and building docs locally: `./make-docs.sh`)
 
 Also, since the package examples need certain binaries to work, these packages
 might also be necessary:

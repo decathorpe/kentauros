@@ -19,7 +19,7 @@ setup(
     keywords="development packaging",
     url="http://github.com/decathorpe/kentauros",
     packages=find_packages(exclude=['data', 'docs', 'examples', 'meta', 'scripts']),
-    install_requires=["argcomplete", "tinydb", "python-dateutil"],
+    install_requires=["argcomplete", "tinydb", "GitPython"],
     scripts=['scripts/ktr'],
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.conf'])],
@@ -31,5 +31,6 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5']
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6']
 )

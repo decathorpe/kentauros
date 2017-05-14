@@ -1,21 +1,21 @@
 Name:           kentauros
 Summary:        Modular, automatic and configurable package build system
-Version:        1.0.1
+Version:        1.0.4
 Release:        1%{?dist}
 License:        GPLv2
-URL:            http://github.com/decathorpe/kentauros
 
-Source0:        https://github.com/decathorpe/%{name}/archive/%{version}.tar.gz
+URL:            https://github.com/decathorpe/%{name}
+Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
+BuildRequires:  python3-GitPython
 BuildRequires:  python3-argcomplete
-BuildRequires:  python3-dateutil
 BuildRequires:  python3-devel
 BuildRequires:  python3-tinydb
 
+Requires:       python3-GitPython
 Requires:       python3-argcomplete
-Requires:       python3-dateutil
 Requires:       python3-tinydb
 
 Recommends:     python3-ujson
@@ -37,7 +37,7 @@ uploading to copr works.
 
 
 %prep
-%setup -q -n %{name}-%{version}
+%autosetup
 
 
 %build
@@ -58,6 +58,15 @@ uploading to copr works.
 
 
 %changelog
+* Fri May 12 2017 Fabio Valentini <decathorpe@gmail.com> - 1.0.4-1
+- Update to version 1.0.4.
+
+* Sun Apr 30 2017 Fabio Valentini <decathorpe@gmail.com> - 1.0.3-1
+- Update to version 1.0.3.
+
+* Fri Apr 21 2017 Fabio Valentini <decathorpe@gmail.com> - 1.0.2-1
+- Update to version 1.0.2.
+
 * Wed Jan 18 2017 Fabio Valentini <decathorpe@gmail.com> - 1.0.1-1
 - Update to version 1.0.1.
 
