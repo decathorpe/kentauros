@@ -64,7 +64,7 @@ class FedPkgSource(Source):
         success = True
 
         # check if the configuration file is valid
-        expected_keys = ["name"]
+        expected_keys = ["keep", "orig"]
 
         for key in expected_keys:
             if key not in self.spkg.conf["fedpkg"]:
@@ -170,18 +170,12 @@ class FedPkgSource(Source):
             return False
 
         # construct fedpkg command
-        cmd_clone = ["fedpkg"]
+        cmd_clone = ["fedpkg", "clone"]
 
         if (ktr.verby == 2) and not ktr.debug:
-            cmd_clone.append("--quiet")
+            cmd_clone.append("-q")
         if (ktr.verby == 0) or ktr.debug:
-            cmd_clone.append("--verbose")
-
-        cmd_clone.append("clone")
-        cmd_clone.append(self.get_orig())
-
-        prev_dir = os.getcwd()
-        os.chdir(self.sdir)
+            cmd_clone.append("-v")
 
         logger.log_command(cmd_clone, 1)
 
@@ -190,8 +184,6 @@ class FedPkgSource(Source):
         except subprocess.CalledProcessError:
             logger.err("fedpkg clone unsuccessful.")
             return False
-        finally:
-            os.chdir(prev_dir)
 
         return True
 
@@ -241,8 +233,6 @@ class FedPkgSource(Source):
         ktr = Kentauros()
         logger = KtrLogger(LOG_PREFIX)
 
-        # TODO: do the stuff below for all specified branches
-
         cmd = ["fedpkg", "srpm"]
 
         if not os.access(self.dest, os.R_OK):
@@ -263,12 +253,7 @@ class FedPkgSource(Source):
 
         for srpm in srpms:
             logger.log("Copying srpm file: " + srpm)
-
-            path = os.path.join(os.getcwd(), srpm)
-            dest = os.path.join(ktr.get_packdir(), self.spkg.get_conf_name())
-            os.makedirs(dest, exist_ok=True)
-
-            shutil.move(path, os.path.join(dest, srpm))
+            shutil.move(srpm, os.path.join(ktr.get_packdir(), self.spkg.get_conf_name(), srpm))
 
         os.chdir(prev_dir)
         return not ret
