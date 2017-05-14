@@ -155,7 +155,7 @@ class GitSource(Source):
         This method provides an easy way of getting the date and time of the requested commit in a
         standardised format (``YYMMDD.HHmmSS``). It also stores the latest parsed date between
         method invocations, if the source goes away and the commit datetime string is needed again.
-        
+
         The returned value represents the date and time of 'committing', not of 'authoring' the
         commit, and has been converted to UTC.
 
@@ -178,7 +178,8 @@ class GitSource(Source):
                 raise SourceError("Sources need to be get before the commit date can be read.")
 
         repo = Repo(self.dest)
-        date_raw = repo.head.commit.committed_datetime.astimezone(datetime.timezone.utc)
+        commit = repo.commit(self.get_commit())
+        date_raw = commit.committed_datetime.astimezone(datetime.timezone.utc)
 
         date = "{:02d}{:02d}{:02d}.{:02d}{:02d}{:02d}".format(
             date_raw.year % 100, date_raw.month, date_raw.day,
@@ -198,7 +199,6 @@ class GitSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
 
         # if sources are not accessible (anymore), return None or last saved commit hash
         if not os.access(self.dest, os.R_OK):
@@ -212,18 +212,11 @@ class GitSource(Source):
             else:
                 raise SourceError("Sources need to be get before commit hash can be read.")
 
-        cmd = ["git", "rev-parse", "HEAD"]
+        repo = Repo(self.dest)
+        commit = repo.commit(self.get_commit()).hexsha
 
-        prev_dir = os.getcwd()
-        os.chdir(self.dest)
-
-        logger.log_command(cmd, 1)
-        rev = subprocess.check_output(cmd).decode().rstrip("\n")
-
-        os.chdir(prev_dir)
-
-        self.saved_commit = rev
-        return rev
+        self.saved_commit = commit
+        return commit
 
     def status(self) -> dict:
         """
