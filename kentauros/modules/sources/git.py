@@ -30,7 +30,7 @@ class GitSource(Source):
     """
     This Source subclass holds information and methods for handling git sources.
 
-    - If the `git` command is not found on the system, this module will fail validation.
+    - If the `git` command is not found on the system, `self.active` is automatically set to `False`
     - For the purpose of checking connectivity to the remote server, the URL is stored in
       `self.remote`.
     - If neither `branch` nor `commit` hash has been set in the package configuration file,
