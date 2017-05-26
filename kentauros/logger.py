@@ -35,13 +35,13 @@ class KtrLogger:
         log_prefix: stores a custom prefix for log messages
     """
 
-    def __init__(self, log_prefix: str=None):
+    def __init__(self, log_prefix: str = None):
         if log_prefix is not None:
             assert isinstance(log_prefix, str)
 
         self.log_prefix = log_prefix
 
-    def dbg(self, msg: str, prefix: str=None):
+    def dbg(self, msg: str, prefix: str = None):
         """
         This method prints messages with a "DEBUG: " prefix to stdout, but only if the *KTR_DEBUG*
         environment variable has been set or the `--debug` or `-d` flag has been supplied at the
@@ -68,7 +68,7 @@ class KtrLogger:
 
         print_flush("DEBUG: " + msg)
 
-    def err(self, msg: str, prefix: str=None):
+    def err(self, msg: str, prefix: str = None):
         """
         This method prints messages with an "ERROR: " prefix to standard error output, regardless
         of environment variables and CLI settings supplied.
@@ -85,7 +85,8 @@ class KtrLogger:
         else:
             self.log(msg, prefix="ERROR: " + prefix, outfile=sys.stderr)
 
-    def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout, sep: str=":"):
+    def log(self, msg: str, pri: int = 2, prefix: str = None,
+            outfile=sys.stdout, sep: str = ":"):
         """
         This method prints messages to standard output, depending on the priority argument and the
         verbosity level determined from environment variables and CLI switches.
@@ -118,7 +119,7 @@ class KtrLogger:
 
             print_flush(msg, file=outfile)
 
-    def log_command(self, cmd_list: list, pri: int=2, prefix: str=None):
+    def log_command(self, cmd_list: list, pri: int = 2, prefix: str = None):
         """
         This method prints commands that are then executed by use of the :py:func:`subprocess.call`
         or :py:func:`subprocess.check_output` functions. Its priority behaviour is the same as the
@@ -156,7 +157,7 @@ class KtrLogger:
             self.log(cmd_string, pri, spacing)
             return
 
-    def log_list(self, header: str, lst: list, pri: int=2, prefix: str=None):
+    def log_list(self, header: str, lst: list, pri: int = 2, prefix: str = None):
         """
         This method prints lists, with one element on each line. Its priority behaviour is the same
         as the :py:meth:`Kentauros.log` function's.

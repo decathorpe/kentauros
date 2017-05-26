@@ -238,7 +238,7 @@ class RPMSpec:
         self.contents = contents_new
 
 
-def do_release_bump(path: str, comment: str=None) -> bool:
+def do_release_bump(path: str, comment: str = None) -> bool:
     """
     This function calls `rpmdev-bumpspec` with the specified arguments to bump the release number
     and create a changelog entry with a given comment.

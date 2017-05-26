@@ -31,7 +31,7 @@ class PackageError(Exception):
         str value: informational string accompanying the exception
     """
 
-    def __init__(self, value: str=""):
+    def __init__(self, value: str = ""):
         super().__init__()
         self.value = value
 

@@ -132,7 +132,7 @@ class MockBuild:
         str dist:   stores the chroot that the package will be built in
     """
 
-    def __init__(self, mock: str, path: str, dist: str=None):
+    def __init__(self, mock: str, path: str, dist: str = None):
         self.mock = mock
         self.path = path
 

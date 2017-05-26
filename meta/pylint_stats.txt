@@ -1,115 +1,6 @@
-************* Module kentauros.bootstrap
-R: 34, 4: Unnecessary "else" after "return" (no-else-return)
-R: 35, 8: Unnecessary "else" after "return" (no-else-return)
-************* Module kentauros.instance
-R: 30, 4: Unnecessary "else" after "return" (no-else-return)
-C:198,13: Do not use `len(SEQUENCE)` as condition value (len-as-condition)
-R:239,12: Unnecessary "else" after "return" (no-else-return)
-R:263, 8: Unnecessary "else" after "return" (no-else-return)
-C:265,13: Do not use `len(SEQUENCE)` as condition value (len-as-condition)
-************* Module kentauros.logger
-C: 38, 0: Exactly one space required around keyword argument assignment
-    def __init__(self, log_prefix: str=None):
-                                      ^ (bad-whitespace)
-C: 44, 0: Exactly one space required around keyword argument assignment
-    def dbg(self, msg: str, prefix: str=None):
-                                       ^ (bad-whitespace)
-C: 71, 0: Exactly one space required around keyword argument assignment
-    def err(self, msg: str, prefix: str=None):
-                                       ^ (bad-whitespace)
-C: 88, 0: Exactly one space required around keyword argument assignment
-    def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout, sep: str=":"):
-                                    ^ (bad-whitespace)
-C: 88, 0: Exactly one space required around keyword argument assignment
-    def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout, sep: str=":"):
-                                                   ^ (bad-whitespace)
-C: 88, 0: Exactly one space required around keyword argument assignment
-    def log(self, msg: str, pri: int=2, prefix: str=None, outfile=sys.stdout, sep: str=":"):
-                                                                                      ^ (bad-whitespace)
-C:121, 0: Exactly one space required around keyword argument assignment
-    def log_command(self, cmd_list: list, pri: int=2, prefix: str=None):
-                                                  ^ (bad-whitespace)
-C:121, 0: Exactly one space required around keyword argument assignment
-    def log_command(self, cmd_list: list, pri: int=2, prefix: str=None):
-                                                                 ^ (bad-whitespace)
-C:159, 0: Exactly one space required around keyword argument assignment
-    def log_list(self, header: str, lst: list, pri: int=2, prefix: str=None):
-                                                       ^ (bad-whitespace)
-C:159, 0: Exactly one space required around keyword argument assignment
-    def log_list(self, header: str, lst: list, pri: int=2, prefix: str=None):
-                                                                      ^ (bad-whitespace)
-************* Module kentauros.package
-C: 34, 0: Exactly one space required around keyword argument assignment
-    def __init__(self, value: str=""):
-                                 ^ (bad-whitespace)
-************* Module kentauros.init.env
-R: 19, 4: Unnecessary "else" after "return" (no-else-return)
-R: 34, 4: Unnecessary "else" after "return" (no-else-return)
-R: 50, 4: Unnecessary "else" after "return" (no-else-return)
 ************* Module kentauros.init.cli
 I: 19, 0: Locally disabling unused-argument (W0613) (locally-disabled)
-R:267, 8: Unnecessary "else" after "return" (no-else-return)
-R:294, 8: Unnecessary "else" after "return" (no-else-return)
-R:308, 8: Unnecessary "else" after "return" (no-else-return)
-R:322, 8: Unnecessary "else" after "return" (no-else-return)
-R:336, 8: Unnecessary "else" after "return" (no-else-return)
-R:349, 8: Unnecessary "else" after "return" (no-else-return)
 I: 20, 0: Suppressed 'unused-argument' (from line 19) (suppressed-message)
-************* Module kentauros.modules.sources.abstract
-R:164,12: Unnecessary "else" after "return" (no-else-return)
-R:175,12: Unnecessary "else" after "return" (no-else-return)
-************* Module kentauros.modules.sources.git
-R:127, 8: Unnecessary "else" after "return" (no-else-return)
-R:140, 8: Unnecessary "else" after "return" (no-else-return)
-R:258, 8: Unnecessary "else" after "return" (no-else-return)
-************* Module kentauros.modules.sources.bzr
-R:199, 8: Unnecessary "else" after "return" (no-else-return)
-************* Module kentauros.modules.sources.url
-R:119, 8: Unnecessary "else" after "return" (no-else-return)
-R:140, 8: Unnecessary "else" after "return" (no-else-return)
-************* Module kentauros.modules.builder.mock
-C:135, 0: Exactly one space required around keyword argument assignment
-    def __init__(self, mock: str, path: str, dist: str=None):
-                                                      ^ (bad-whitespace)
-************* Module kentauros.modules.constructor.srpm
-R:188, 8: Unnecessary "else" after "return" (no-else-return)
-R:274, 8: Unnecessary "else" after "return" (no-else-return)
-R:422, 8: Unnecessary "else" after "return" (no-else-return)
-R:442, 8: Unnecessary "else" after "return" (no-else-return)
-************* Module kentauros.modules.constructor.rpm.__init__
-C:241, 0: Exactly one space required around keyword argument assignment
-def do_release_bump(path: str, comment: str=None) -> bool:
-                                           ^ (bad-whitespace)
-************* Module ktr
-R:  1, 0: Similar lines in 2 files
-==kentauros.modules.sources.bzr:341
-==kentauros.modules.sources.git:428
-        return rev_new != rev_old
-
-    def export(self) -> bool:
-        """
-        This method executes the export from the package source repository to a tarball with pretty
-        file name. It also respects the `git.keep=False` setting in the package configuration file -
-        the git repository will be deleted from disk after the export if this flag is set.
-
-        Returns:
-            bool:   *True* if successful or already done, *False* at failure
-        """
-
-        ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
-
-        def remove_not_keep():
-            """
-            This local function removes the git repository and is called after source export, if
-            not keeping the repository around was specified in the configuration file.
-            """
-
-            if not self.get_keep_repo():
-                # try to be careful with "rm -r"
-                assert os.path.isabs(self.dest)
-                assert ktr.get_datadir() in self.dest
-                shutil.rmtree(self.dest) (duplicate-code)
 
 
 Report
@@ -196,13 +87,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |2677   |41.91 |2675     |+2.00      |
+|code      |2678   |41.92 |2678     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |2046   |32.03 |2046     |=          |
+|docstring |2046   |32.02 |2046     |=          |
 +----------+-------+------+---------+-----------+
 |comment   |216    |3.38  |216      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1449   |22.68 |1448     |+1.00      |
+|empty     |1449   |22.68 |1449     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -213,9 +104,9 @@ Duplication
 +-------------------------+------+---------+-----------+
 |                         |now   |previous |difference |
 +=========================+======+=========+===========+
-|nb duplicated lines      |26    |26       |=          |
+|nb duplicated lines      |0     |0        |=          |
 +-------------------------+------+---------+-----------+
-|percent duplicated lines |0.413 |0.413    |-0.00      |
+|percent duplicated lines |0.000 |0.000    |=          |
 +-------------------------+------+---------+-----------+
 
 
@@ -226,51 +117,14 @@ Messages by category
 +-----------+-------+---------+-----------+
 |type       |number |previous |difference |
 +===========+=======+=========+===========+
-|convention |15     |0        |+15.00     |
+|convention |0      |0        |=          |
 +-----------+-------+---------+-----------+
-|refactor   |27     |1        |+26.00     |
+|refactor   |0      |0        |=          |
 +-----------+-------+---------+-----------+
 |warning    |0      |0        |=          |
 +-----------+-------+---------+-----------+
 |error      |0      |0        |=          |
 +-----------+-------+---------+-----------+
-
-
-
-% errors / warnings by module
------------------------------
-
-+-------------------------------------------+------+--------+---------+-----------+
-|module                                     |error |warning |refactor |convention |
-+===========================================+======+========+=========+===========+
-|kentauros.init.cli                         |0.00  |0.00    |22.22    |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.srpm         |0.00  |0.00    |14.81    |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.instance                         |0.00  |0.00    |11.11    |13.33      |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.git              |0.00  |0.00    |11.11    |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.init.env                         |0.00  |0.00    |11.11    |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.url              |0.00  |0.00    |7.41     |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.abstract         |0.00  |0.00    |7.41     |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.bootstrap                        |0.00  |0.00    |7.41     |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|ktr                                        |0.00  |0.00    |3.70     |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.bzr              |0.00  |0.00    |3.70     |0.00       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.logger                           |0.00  |0.00    |0.00     |66.67      |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.package                          |0.00  |0.00    |0.00     |6.67       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.rpm.__init__ |0.00  |0.00    |0.00     |6.67       |
-+-------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.builder.mock             |0.00  |0.00    |0.00     |6.67       |
-+-------------------------------------------+------+--------+---------+-----------+
 
 
 
@@ -280,22 +134,14 @@ Messages
 +-------------------+------------+
 |message id         |occurrences |
 +===================+============+
-|no-else-return     |26          |
-+-------------------+------------+
-|bad-whitespace     |13          |
-+-------------------+------------+
-|len-as-condition   |2           |
-+-------------------+------------+
 |suppressed-message |1           |
 +-------------------+------------+
 |locally-disabled   |1           |
 +-------------------+------------+
-|duplicate-code     |1           |
-+-------------------+------------+
 
 
 
 
--------------------------------------------------------------------
-Your code has been rated at 9.83/10 (previous run: 10.00/10, -0.17)
+--------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
 
