@@ -378,7 +378,7 @@ class SrpmConstructor(Constructor):
         preamble = spec.build_preamble_string()
 
         # write the content of the spec file to destination
-        spec.export_to_file(self._get_spec_destination())
+        spec.write_contents_to_file(self._get_spec_destination())
 
         return preamble
 
@@ -417,7 +417,7 @@ class SrpmConstructor(Constructor):
         if int(parse_release(old_release)[0]) != 0:
             new_rpm_spec = RPMSpec(new_spec_path, self.source)
             new_rpm_spec.do_release_reset()
-            new_rpm_spec.export_to_file(new_spec_path)
+            new_rpm_spec.write_contents_to_file(new_spec_path)
 
         if message is None:
             return do_release_bump(new_spec_path, "Initial package.")
@@ -456,7 +456,7 @@ class SrpmConstructor(Constructor):
 
         new_rpm_spec = RPMSpec(new_spec_path, self.source)
         new_rpm_spec.do_release_reset()
-        new_rpm_spec.export_to_file(new_spec_path)
+        new_rpm_spec.write_contents_to_file(new_spec_path)
 
         return do_release_bump(new_spec_path, "Update to latest snapshot.")
 
@@ -588,6 +588,9 @@ class SrpmConstructor(Constructor):
 
         if not self.success:
             return False
+
+        new_spec = RPMSpec(new_spec_path, self.source)
+        new_spec.export_to_file(new_spec_path)
 
         self._restore_spec_template(new_spec_path, preamble)
 
