@@ -94,7 +94,7 @@ def spec_source_nosource(source: NoSource) -> str:
     This function returns an empty string, as it should never be called.
 
     Arguments:
-        NoSource source:    source the  `%defines` will be determined from
+        NoSource source:    source a Source tag will be generated for
 
     Returns:
         str:                empty string

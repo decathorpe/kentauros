@@ -15,24 +15,24 @@ from kentauros.modules.sources.no_source import NoSource
 
 def spec_preamble_bzr(source: BzrSource) -> str:
     """
-    This function returns the "%defines" necessary for packages built from *bzr* repositories.
+    This function returns the "%global" necessary for packages built from *bzr* repositories.
     This includes a definition of "rev" just now.
 
     Arguments:
         BzrSource source:   source repository the revision will be determined from
 
     Returns:
-        str:                string containing the `%defines rev $REV` line
+        str:                string containing the `%global rev $REV` line
     """
 
     assert isinstance(source, BzrSource)
-    rev_define = "%define rev " + source.rev() + "\n"
+    rev_define = "%global rev " + source.rev() + "\n"
     return rev_define + "\n"
 
 
 def spec_preamble_git(source: GitSource) -> str:
     """
-    This function returns the "%defines" necessary for packages built from *git* repositories. This
+    This function returns the "%globals" necessary for packages built from *git* repositories. This
     includes a definition of "commit" and "date" just now. The value of "commit" here are the first
     8 characters of the corresponding git commit hash.
 
@@ -40,22 +40,22 @@ def spec_preamble_git(source: GitSource) -> str:
         GitSource source:   source repository the commit hash and date will be determined from
 
     Returns:
-        str:                string with the `%defines commit COMMIT` and `%defines date $DATE` lines
+        str:                string with the `%global commit COMMIT` and `%global date $DATE` lines
     """
 
     assert isinstance(source, GitSource)
-    date_define = "%define date " + source.date() + "\n"
-    commit_define = "%define commit " + source.commit()[0:8] + "\n"
+    date_define = "%global date " + source.date() + "\n"
+    commit_define = "%global commit " + source.commit()[0:8] + "\n"
     return date_define + commit_define + "\n"
 
 
 def spec_preamble_url(source: UrlSource) -> str:
     """
-    This function returns the "%defines" necessary for packages built from tarballs specified by
+    This function returns the "%global" necessary for packages built from tarballs specified by
     *url*.
 
     Arguments:
-        UrlSource source:   source the `%defines` will be determined from
+        UrlSource source:   source the `%global` will be determined from
 
     Returns:
         str:                empty string
@@ -67,11 +67,11 @@ def spec_preamble_url(source: UrlSource) -> str:
 
 def spec_preamble_local(source: LocalSource) -> str:
     """
-    This function returns the "%defines" necessary for packages built from tarballs specified by a
+    This function returns the "%global" necessary for packages built from tarballs specified by a
     *local path*.
 
     Arguments:
-        LocalSource source:     source the `%defines` will be determined from
+        LocalSource source:     source the `%global` will be determined from
 
     Returns:
         str:                    empty string
@@ -86,7 +86,7 @@ def spec_preamble_nosource(source: NoSource) -> str:
     This function returns an empty string.
 
     Arguments:
-        NoSource source:    source the  `%defines` will be determined from
+        NoSource source:    source the  `%global` will be determined from
 
     Returns:
         str:                empty string

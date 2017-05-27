@@ -1,6 +1,6 @@
 """
-This sub-module contains the functions that generate the necessary "%defines" for the .spec file,
-which are included as that file's preamble.
+This sub-module contains the functions that generate the necessary "Version:" tags for the .spec
+file.
 """
 
 
