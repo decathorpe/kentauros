@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 ./ktr.py -d clean -a
 
 git checkout -- examples/state.json
