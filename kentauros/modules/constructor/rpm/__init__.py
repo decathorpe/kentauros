@@ -192,15 +192,12 @@ class RPMSpec:
 
         assert isinstance(path, str)
 
-        file_contents = str()
-        file_contents += self.build_preamble_string()
-        file_contents += self.contents
-
         if path == self.path:
             os.remove(path)
 
         with open(path, "w") as file:
-            file.write(file_contents)
+            file.write(self.build_preamble_string())
+            file.write(self.contents)
 
     def write_contents_to_file(self, path: str):
         """

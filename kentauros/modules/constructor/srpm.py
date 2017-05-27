@@ -548,6 +548,10 @@ class SrpmConstructor(Constructor):
 
         version_changed = old_version != new_version
 
+        # export spec *with* preamble definitions to destination
+        new_spec = RPMSpec(new_spec_path, self.source)
+        new_spec.export_to_file(new_spec_path)
+
         # Case 0: Initial package build
         # Old Version is empty or old Release is 0
         if (old_version == "") or (int(parse_release(old_release)[0]) == 0):
@@ -588,9 +592,6 @@ class SrpmConstructor(Constructor):
 
         if not self.success:
             return False
-
-        new_spec = RPMSpec(new_spec_path, self.source)
-        new_spec.export_to_file(new_spec_path)
 
         self._restore_spec_template(new_spec_path, preamble)
 
