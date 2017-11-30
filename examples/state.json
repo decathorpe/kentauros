@@ -1,1 +1,30 @@
-{"_default": {"1": {"package_version": "0.23", "name": "desktop-file-utils", "package_name": "desktop-file-utils", "rpm_last_version": "", "rpm_last_release": "0%{?dist}"}, "2": {"git_last_commit": "", "package_version": "0.23", "rpm_last_version": "", "package_name": "desktop-file-utils", "git_last_date": "", "name": "desktop-file-utils-git", "git_commit": "HEAD", "git_branch": "master", "rpm_last_release": "0%{?dist}"}, "3": {"package_version": "0.4.0.1", "name": "granite", "package_name": "granite", "rpm_last_version": "", "rpm_last_release": "0%{?dist}"}, "4": {"package_version": "0.4.0.1", "bzr_rev": "", "bzr_branch": "", "rpm_last_version": "", "bzr_last_rev": "", "package_name": "granite", "name": "granite-bzr", "rpm_last_release": "0%{?dist}"}, "5": {"package_version": "0.4.0.1", "bzr_rev": "", "bzr_branch": "0.4", "rpm_last_version": "", "bzr_last_rev": "", "package_name": "granite", "name": "granite-bzr-0.4", "rpm_last_release": "0%{?dist}"}, "6": {"package_version": "12.0.3", "name": "mesa", "package_name": "mesa", "rpm_last_version": "", "rpm_last_release": "0%{?dist}"}, "7": {"git_last_commit": "", "package_version": "12.1.0~devel", "rpm_last_version": "", "package_name": "mesa", "git_last_date": "", "name": "mesa-git", "git_commit": "HEAD", "git_branch": "master", "rpm_last_release": "0%{?dist}"}, "8": {"git_last_commit": "", "package_version": "12.0.3", "rpm_last_version": "", "package_name": "mesa", "git_last_date": "", "name": "mesa-git-12.0", "git_commit": "HEAD", "git_branch": "12.0", "rpm_last_release": "0%{?dist}"}}}
+{
+    "_default": {
+        "1": {
+            "name": "desktop-file-utils",
+            "package_name": "desktop-file-utils",
+            "package_version": "0.23",
+            "rpm_last_release": "0%{?dist}",
+            "rpm_last_version": ""
+        },
+        "2": {
+            "git_branch": "master",
+            "git_commit": "HEAD",
+            "git_last_commit": "",
+            "git_last_date": "",
+            "name": "desktop-file-utils-git",
+            "package_name": "desktop-file-utils",
+            "package_version": "0.23",
+            "rpm_last_release": "0%{?dist}",
+            "rpm_last_version": ""
+        },
+        "3": {
+            "name": "granite",
+            "package_name": "granite",
+            "package_version": "0.5",
+            "rpm_last_release": "1%{?dist}",
+            "rpm_last_version": "0.5",
+            "url_last_version": "0.5"
+        }
+    }
+}
