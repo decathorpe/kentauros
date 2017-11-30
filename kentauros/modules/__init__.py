@@ -6,20 +6,51 @@ This subpackage contains all plug-able kentauros modules.
 from kentauros.definitions import PkgModuleType
 from kentauros.definitions import SourceType, ConstructorType, BuilderType, UploaderType
 
-from kentauros.modules.sources import SOURCE_TYPE_DICT
-from kentauros.modules.constructor import CONSTRUCTOR_TYPE_DICT
-from kentauros.modules.builder import BUILDER_TYPE_DICT
-from kentauros.modules.uploader import UPLOADER_TYPE_DICT
+from kentauros.modules.module import PkgModule
+from kentauros.modules.sources import get_source
+from kentauros.modules.constructor import get_constructor
+from kentauros.modules.builder import get_builder
+from kentauros.modules.uploader import get_uploader
 
 
-PKG_MODULE_DICT = dict()
-PKG_MODULE_DICT[PkgModuleType.SOURCE] = SOURCE_TYPE_DICT
-PKG_MODULE_DICT[PkgModuleType.CONSTRUCTOR] = CONSTRUCTOR_TYPE_DICT
-PKG_MODULE_DICT[PkgModuleType.BUILDER] = BUILDER_TYPE_DICT
-PKG_MODULE_DICT[PkgModuleType.UPLOADER] = UPLOADER_TYPE_DICT
+def _get_pkg_module(mtype: PkgModuleType, stype, package) -> PkgModule:
+    """
+    This function constructs a `PkgModule` from a `PkgModuleType` enum member, a `PkgModuleType`
+    subtype, and a package.
+    """
 
-PKG_MODULE_TYPE_DICT = dict()
-PKG_MODULE_TYPE_DICT[PkgModuleType.SOURCE] = SourceType
-PKG_MODULE_TYPE_DICT[PkgModuleType.CONSTRUCTOR] = ConstructorType
-PKG_MODULE_TYPE_DICT[PkgModuleType.BUILDER] = BuilderType
-PKG_MODULE_TYPE_DICT[PkgModuleType.UPLOADER] = UploaderType
+    pkg_module_dict = dict()
+
+    pkg_module_dict[PkgModuleType.SOURCE] = get_source
+    pkg_module_dict[PkgModuleType.CONSTRUCTOR] = get_constructor
+    pkg_module_dict[PkgModuleType.BUILDER] = get_builder
+    pkg_module_dict[PkgModuleType.UPLOADER] = get_uploader
+
+    return pkg_module_dict[mtype](stype, package)
+
+
+def _get_pkg_module_type(mtype: PkgModuleType):
+    """
+    This function constructs a `PkgModuleType` subtype from a `PkgModuleType` enum member.
+    """
+
+    pkg_module_type_dict = dict()
+
+    pkg_module_type_dict[PkgModuleType.SOURCE] = SourceType
+    pkg_module_type_dict[PkgModuleType.CONSTRUCTOR] = ConstructorType
+    pkg_module_type_dict[PkgModuleType.BUILDER] = BuilderType
+    pkg_module_type_dict[PkgModuleType.UPLOADER] = UploaderType
+
+    return pkg_module_type_dict[mtype]
+
+
+def get_module(mtype: PkgModuleType, mimpl: str, package) -> PkgModule:
+    """
+    This function constructs a `PkgModule` from a `PkgModuleType` enum member, an implementer
+    string, and a package.
+    """
+
+    pkg_module_type = _get_pkg_module_type(mtype)[mimpl]
+    pkg_module = _get_pkg_module(mtype, pkg_module_type, package)
+
+    return pkg_module

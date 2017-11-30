@@ -12,7 +12,7 @@ from kentauros.definitions import ActionType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger, print_flush
 
-from kentauros.actions import ACTION_DICT, ImportAction, VerifyAction
+from kentauros.actions import ImportAction, VerifyAction, get_action
 
 from kentauros.bootstrap import ktr_bootstrap
 from kentauros.package import Package, PackageError
@@ -262,7 +262,7 @@ def do_process_packages() -> (list, list):
                 print_flush()
                 continue
 
-        action = ACTION_DICT[action_type](name)
+        action = get_action(action_type, name)
         success = action.execute()
 
         print_flush()

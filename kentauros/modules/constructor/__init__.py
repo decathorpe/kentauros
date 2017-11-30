@@ -9,12 +9,17 @@ constructors.
 
 from kentauros.definitions import ConstructorType
 
+from kentauros.modules.constructor.abstract import Constructor
 from kentauros.modules.constructor.srpm import SrpmConstructor
 
 
-CONSTRUCTOR_TYPE_DICT = dict()
-""" This dictionary maps `ConstructorType` enum members to their respective `Constructor`
-subclass constructors.
-"""
+def get_constructor(ctype: ConstructorType, package) -> Constructor:
+    """
+    This function constructs a `Constructor` from a `ConstructorType` enum member and a package.
+    """
 
-CONSTRUCTOR_TYPE_DICT[ConstructorType.SRPM] = SrpmConstructor
+    constructor_dict = dict()
+
+    constructor_dict[ConstructorType.SRPM] = SrpmConstructor
+
+    return constructor_dict[ctype](package)

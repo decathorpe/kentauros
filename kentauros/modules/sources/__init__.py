@@ -7,6 +7,7 @@ constructors.
 """
 
 
+from kentauros.modules.sources.abstract import Source
 from kentauros.modules.sources.bzr import BzrSource
 from kentauros.modules.sources.git import GitSource
 from kentauros.modules.sources.url import UrlSource
@@ -15,12 +16,16 @@ from kentauros.modules.sources.local import LocalSource
 from kentauros.definitions import SourceType
 
 
-SOURCE_TYPE_DICT = dict()
-""" This dictionary maps :py:class:`SourceType` enum members to their respective :py:class:`Source`
-subclass constructors.
-"""
+def get_source(stype: SourceType, package) -> Source:
+    """
+    This function constructs a `Source` from a `SourceType` enum member and a package.
+    """
 
-SOURCE_TYPE_DICT[SourceType.BZR] = BzrSource
-SOURCE_TYPE_DICT[SourceType.GIT] = GitSource
-SOURCE_TYPE_DICT[SourceType.LOCAL] = LocalSource
-SOURCE_TYPE_DICT[SourceType.URL] = UrlSource
+    source_dict = dict()
+
+    source_dict[SourceType.BZR] = BzrSource
+    source_dict[SourceType.GIT] = GitSource
+    source_dict[SourceType.LOCAL] = LocalSource
+    source_dict[SourceType.URL] = UrlSource
+
+    return source_dict[stype](package)

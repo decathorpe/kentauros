@@ -8,12 +8,16 @@ enums to their respective class constructors.
 
 from kentauros.definitions import UploaderType
 
+from kentauros.modules.uploader.abstract import Uploader
 from kentauros.modules.uploader.copr import CoprUploader
 
 
-UPLOADER_TYPE_DICT = dict()
-""" This dictionary maps :py:class:`UploaderType` enum members to their respective
-:py:class:`Uploader` subclass constructors.
-"""
+def get_uploader(utype: UploaderType, package) -> Uploader:
+    """
+    This function constructs an `Uploader` from an `UploaderType` enum member and a package.
+    """
+    uploader_dict = dict()
 
-UPLOADER_TYPE_DICT[UploaderType.COPR] = CoprUploader
+    uploader_dict[UploaderType.COPR] = CoprUploader
+
+    return uploader_dict[utype](package)

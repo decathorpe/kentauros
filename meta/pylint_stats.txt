@@ -5,7 +5,7 @@ I: 20, 0: Suppressed 'unused-argument' (from line 19) (suppressed-message)
 
 Report
 ======
-2422 statements analysed.
+2441 statements analysed.
 
 Statistics by type
 ------------------
@@ -19,7 +19,7 @@ Statistics by type
 +---------+-------+-----------+-----------+------------+---------+
 |method   |240    |240        |=          |100.00      |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
-|function |48     |48         |=          |100.00      |0.00     |
+|function |56     |56         |=          |100.00      |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
 
 
@@ -32,7 +32,7 @@ External dependencies
     git (kentauros.modules.sources.git)
     kentauros 
       \-actions (kentauros.run)
-      | \-abstract (kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.importing,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify)
+      | \-abstract (kentauros.actions,kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.importing,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify)
       | \-build (kentauros.actions)
       | \-chain (kentauros.actions)
       | \-clean (kentauros.actions)
@@ -53,19 +53,19 @@ External dependencies
       \-logger (kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.bootstrap,kentauros.modules.builder.mock,kentauros.modules.constructor.rpm,kentauros.modules.constructor.srpm,kentauros.modules.sources.abstract,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.url,kentauros.modules.uploader.copr,kentauros.package,kentauros.run)
       \-modules (kentauros.package)
       | \-builder (kentauros.modules)
-      | | \-abstract (kentauros.modules.builder.mock)
+      | | \-abstract (kentauros.modules.builder,kentauros.modules.builder.mock)
       | | \-mock (kentauros.modules.builder)
       | \-constructor (kentauros.modules)
-      | | \-abstract (kentauros.modules.constructor.srpm)
+      | | \-abstract (kentauros.modules.constructor,kentauros.modules.constructor.srpm)
       | | \-rpm (kentauros.modules.constructor.srpm)
       | | | \-spec_common (kentauros.modules.constructor.rpm,kentauros.modules.constructor.rpm.spec_source_out)
       | | | \-spec_preamble_out (kentauros.modules.constructor.rpm)
       | | | \-spec_source_out (kentauros.modules.constructor.rpm)
       | | | \-spec_version_out (kentauros.modules.constructor.rpm)
       | | \-srpm (kentauros.modules.constructor)
-      | \-module (kentauros.actions.verify,kentauros.modules.builder.abstract,kentauros.modules.constructor.abstract,kentauros.modules.sources.abstract,kentauros.modules.uploader.abstract)
+      | \-module (kentauros.actions.verify,kentauros.modules,kentauros.modules.builder.abstract,kentauros.modules.constructor.abstract,kentauros.modules.sources.abstract,kentauros.modules.uploader.abstract)
       | \-sources (kentauros.modules)
-      | | \-abstract (kentauros.modules.constructor.rpm,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.no_source,kentauros.modules.sources.url)
+      | | \-abstract (kentauros.modules.constructor.rpm,kentauros.modules.sources,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.no_source,kentauros.modules.sources.url)
       | | \-bzr (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources)
       | | \-git (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources)
       | | \-local (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources)
@@ -73,7 +73,7 @@ External dependencies
       | | \-source_error (kentauros.modules.sources.bzr,kentauros.modules.sources.git)
       | | \-url (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources)
       | \-uploader (kentauros.modules)
-      |   \-abstract (kentauros.modules.uploader.copr)
+      |   \-abstract (kentauros.modules.uploader,kentauros.modules.uploader.copr)
       |   \-copr (kentauros.modules.uploader)
       \-package (kentauros.actions.abstract,kentauros.run)
       \-run (ktr)
@@ -87,13 +87,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |2676   |41.90 |2676     |=          |
+|code      |2705   |42.00 |2705     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |2046   |32.03 |2046     |=          |
+|docstring |2057   |31.94 |2057     |=          |
 +----------+-------+------+---------+-----------+
-|comment   |217    |3.40  |217      |=          |
+|comment   |217    |3.37  |217      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1448   |22.67 |1448     |=          |
+|empty     |1462   |22.70 |1462     |=          |
 +----------+-------+------+---------+-----------+
 
 

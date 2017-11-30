@@ -10,12 +10,17 @@ constructors.
 
 from kentauros.definitions import BuilderType
 
+from kentauros.modules.builder.abstract import Builder
 from kentauros.modules.builder.mock import MockBuilder
 
 
-BUILDER_TYPE_DICT = dict()
-""" This dictionary maps `BuilderType` enum members to their respective
-`Builder` subclass constructors.
-"""
+def get_builder(btype: BuilderType, package) -> Builder:
+    """
+    This function constructs a `Builder` from a `BuilderType` enum member and a package.
+    """
 
-BUILDER_TYPE_DICT[BuilderType.MOCK] = MockBuilder
+    builder_dict = dict()
+
+    builder_dict[BuilderType.MOCK] = MockBuilder
+
+    return builder_dict[btype](package)

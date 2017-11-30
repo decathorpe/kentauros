@@ -8,6 +8,7 @@ enums to their respective class constructors.
 
 from kentauros.definitions import ActionType
 
+from kentauros.actions.abstract import Action
 from kentauros.actions.build import BuildAction
 from kentauros.actions.chain import ChainAction
 from kentauros.actions.clean import CleanAction
@@ -19,19 +20,23 @@ from kentauros.actions.upload import UploadAction
 from kentauros.actions.verify import VerifyAction
 
 
-ACTION_DICT = dict()
-"""This dictionary maps :py:class:`ActionType` enum members to their respective :py:class:`Action`
-subclass constructors.
-"""
+def get_action(action_type: ActionType, name: str) -> Action:
+    """
+    This function constructs an `Action` from an `ActionType` enum member and a package name.
+    """
 
-ACTION_DICT[ActionType.PREPARE] = PrepareAction
-ACTION_DICT[ActionType.CONSTRUCT] = ConstructAction
-ACTION_DICT[ActionType.BUILD] = BuildAction
-ACTION_DICT[ActionType.UPLOAD] = UploadAction
+    action_dict = dict()
 
-ACTION_DICT[ActionType.CHAIN] = ChainAction
-ACTION_DICT[ActionType.CLEAN] = CleanAction
+    action_dict[ActionType.PREPARE] = PrepareAction
+    action_dict[ActionType.CONSTRUCT] = ConstructAction
+    action_dict[ActionType.BUILD] = BuildAction
+    action_dict[ActionType.UPLOAD] = UploadAction
 
-ACTION_DICT[ActionType.IMPORT] = ImportAction
-ACTION_DICT[ActionType.STATUS] = StatusAction
-ACTION_DICT[ActionType.VERIFY] = VerifyAction
+    action_dict[ActionType.CHAIN] = ChainAction
+    action_dict[ActionType.CLEAN] = CleanAction
+
+    action_dict[ActionType.IMPORT] = ImportAction
+    action_dict[ActionType.STATUS] = StatusAction
+    action_dict[ActionType.VERIFY] = VerifyAction
+
+    return action_dict[action_type](name)

@@ -14,7 +14,7 @@ from kentauros.definitions import PkgModuleType
 from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
-from kentauros.modules import PKG_MODULE_DICT, PKG_MODULE_TYPE_DICT
+from kentauros.modules import get_module
 
 
 LOG_PREFIX = "ktr/package"
@@ -88,10 +88,9 @@ class Package:
 
         for module_type in module_type_list:
             module_type_enum = PkgModuleType[module_type.upper()]
-            module_implement = str(self.conf.get("modules", module_type)).upper()
+            module_implementer = str(self.conf.get("modules", module_type)).upper()
 
-            module = PKG_MODULE_DICT[module_type_enum][
-                PKG_MODULE_TYPE_DICT[module_type_enum][module_implement]](self)
+            module = get_module(module_type_enum, module_implementer, self)
 
             self.modules[module_type] = module
 
