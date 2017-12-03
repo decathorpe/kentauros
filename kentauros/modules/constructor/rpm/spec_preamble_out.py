@@ -26,8 +26,12 @@ def spec_preamble_bzr(source: BzrSource) -> str:
     """
 
     assert isinstance(source, BzrSource)
-    rev_define = "%global rev " + source.rev() + "\n"
-    return rev_define + "\n"
+
+    rev_define = "%global revision " + source.rev() + "\n"
+    date_define = "%global date " + source.date() + "\n"
+    time_define = "%global time " + source.time() + "\n"
+
+    return rev_define + date_define + time_define + "\n"
 
 
 def spec_preamble_git(source: GitSource) -> str:
@@ -44,9 +48,13 @@ def spec_preamble_git(source: GitSource) -> str:
     """
 
     assert isinstance(source, GitSource)
+
+    commit_define = "%global commit " + source.commit() + "\n"
+    shortcommit_define = "%global shortcommit %(c=%{commit}; echo ${c:0:7})" + "\n"
     date_define = "%global date " + source.date() + "\n"
-    commit_define = "%global commit " + source.commit()[0:8] + "\n"
-    return date_define + commit_define + "\n"
+    time_define = "%global time " + source.time() + "\n"
+
+    return commit_define + shortcommit_define + date_define + time_define + "\n"
 
 
 def spec_preamble_url(source: UrlSource) -> str:

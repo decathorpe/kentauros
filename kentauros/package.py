@@ -4,7 +4,7 @@ from the corresponding `package.conf` file. After parsing the package configurat
 sub-modules are added according to configuration.
 """
 
-
+import enum
 import os
 
 from collections import OrderedDict
@@ -15,7 +15,6 @@ from kentauros.instance import Kentauros
 from kentauros.logger import KtrLogger
 
 from kentauros.modules import get_module
-
 
 LOG_PREFIX = "ktr/package"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
@@ -37,6 +36,12 @@ class PackageError(Exception):
 
     def __str__(self):
         return repr(self.value)
+
+
+class ReleaseType(enum.Enum):
+    STABLE = 0
+    POST = 1
+    PRE = 2
 
 
 class Package:
@@ -146,6 +151,21 @@ class Package:
 
         return self.conf.get("package", "version")
 
+    def get_release_type(self) -> ReleaseType:
+        return ReleaseType[self.conf.get("package", "release").upper()]
+
+    def get_version_separator(self) -> str:
+        release_type = self.get_release_type()
+
+        ktr = Kentauros()
+
+        separator_dict = dict()
+        separator_dict[ReleaseType.STABLE] = ""
+        separator_dict[ReleaseType.POST] = ktr.conf.get("main", "version_separator_post")
+        separator_dict[ReleaseType.PRE] = ktr.conf.get("main", "version_separator_pre")
+
+        return separator_dict[release_type]
+
     def replace_vars(self, input_str: str) -> str:
         """
         This method replaces variables in configuration file values with the appropriate values set
@@ -233,6 +253,14 @@ class Package:
         if "-" in self.conf.get("package", "version"):
             logger.err("Hyphens are not a valid part of a version string.")
             logger.err("Replace it with another character, e.g. '~' or '+'.")
+            success = False
+
+        # release =
+        if "release" not in self.conf["package"]:
+            logger.log("Package configuration type doesn't specify release type.")
+        elif self.conf.get("package", "release") not in ["stable", "pre", "post"]:
+            logger.log("Package release type not supported ({} is not in [stable, post, pre])."
+                       .format(self.conf.get("package", "release")))
             success = False
 
         # modules =

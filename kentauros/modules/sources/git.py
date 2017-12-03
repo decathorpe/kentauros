@@ -48,9 +48,8 @@ class GitSource(Source):
 
         self.dest = os.path.join(self.sdir, self.spkg.get_name())
         self.stype = SourceType.GIT
-
-        self.saved_commit = None
         self.saved_date = None
+        self.saved_commit = None
 
     def __str__(self) -> str:
         return "git Source for Package '" + self.spkg.get_conf_name() + "'"
@@ -150,43 +149,51 @@ class GitSource(Source):
 
         return self.spkg.conf.getboolean("git", "shallow")
 
-    def date(self) -> str:
-        """
-        This method provides an easy way of getting the date and time of the requested commit in a
-        standardised format (``YYMMDD.HHmmSS``). It also stores the latest parsed date between
-        method invocations, if the source goes away and the commit datetime string is needed again.
-
-        The returned value represents the date and time of 'committing', not of 'authoring' the
-        commit, and has been converted to UTC.
-
-        Returns:
-            str:        commit date.time string (``YYMMDD.HHmmSS``)
-        """
-
+    def datetime(self) -> datetime.datetime:
         ktr = Kentauros()
+        logger = KtrLogger(LOG_PREFIX)
 
-        # if sources are not accessible (anymore), return "" or last saved date
+        # initialize datetime with fallback value 'now'
+        dt = datetime.datetime.now()
+
         if not os.access(self.dest, os.R_OK):
+            print(self.dest)
             state = ktr.state_read(self.spkg.get_conf_name())
 
             if self.saved_date is not None:
                 return self.saved_date
             elif state is not None:
                 if "git_last_date" in state:
-                    return state["git_last_date"]
+                    saved_dt = state["git_last_date"]
+
+                    if saved_dt == "":
+                        logger.dbg("Saved git commit date not available. Returning 'now'.")
+                        dt = datetime.datetime.now()
+                    else:
+                        dt = datetime.datetime.strptime(saved_dt, "%Y%m%d %H%M%S")
             else:
-                raise SourceError("Sources need to be get before the commit date can be read.")
+                raise SourceError("Sources need to be 'get' before the commit date can be read.")
+        else:
+            repo = Repo(self.dest)
+            commit = repo.commit(self.get_commit())
+            dt = commit.committed_datetime.astimezone(datetime.timezone.utc)
 
-        repo = Repo(self.dest)
-        commit = repo.commit(self.get_commit())
-        date_raw = commit.committed_datetime.astimezone(datetime.timezone.utc)
+        self.saved_date = dt
+        return dt
 
-        date = "{:02d}{:02d}{:02d}.{:02d}{:02d}{:02d}".format(
-            date_raw.year % 100, date_raw.month, date_raw.day,
-            date_raw.hour, date_raw.minute, date_raw.second)
+    def datetime_str(self) -> str:
+        dt = self.datetime()
 
-        self.saved_date = date
-        return date
+        return "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}".format(
+            dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+
+    def date(self) -> str:
+        dt = self.datetime()
+        return "{:04d}{:02d}{:02d}".format(dt.year, dt.month, dt.day)
+
+    def time(self) -> str:
+        dt = self.datetime()
+        return "{:02d}{:02d}{:02d}".format(dt.hour, dt.minute, dt.second)
 
     def commit(self) -> str:
         """
@@ -231,7 +238,7 @@ class GitSource(Source):
         state = dict(git_branch=self.get_branch(),
                      git_commit=self.get_commit(),
                      git_last_commit=self.commit(),
-                     git_last_date=self.date())
+                     git_last_date=self.datetime_str())
 
         return state
 
@@ -275,18 +282,28 @@ class GitSource(Source):
             str:        nicely formatted version string
         """
 
-        # base version
-        ver = self.spkg.get_version()
+        ktr = Kentauros()
+        logger = KtrLogger(LOG_PREFIX)
 
-        # date and time of commit
-        ver += "+git"
-        ver += self.date()
+        template: str = ktr.conf.get("main", "version_template_git")
 
-        # first 8 chars of git commit ID
-        ver += "."
-        ver += self.commit()[0:8]
+        if "%{version}" in template:
+            template = template.replace("%{version}", self.spkg.get_version())
+        if "%{version_sep}" in template:
+            template = template.replace("%{version_sep}", self.spkg.get_version_separator())
+        if "%{date}" in template:
+            template = template.replace("%{date}", self.date())
+        if "%{time}" in template:
+            template = template.replace("%{time}", self.time())
+        if "%{commit}" in template:
+            template = template.replace("%{commit}", self.commit())
+        if "%{shortcommit}" in template:
+            template = template.replace("%{shortcommit}", self.commit()[0:7])
 
-        return ver
+        if "%{" in template:
+            logger.log("Unrecognized variables present in git version template.")
+
+        return template
 
     def get(self) -> bool:
         """

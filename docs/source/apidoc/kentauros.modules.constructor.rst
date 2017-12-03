@@ -1,5 +1,5 @@
-kentauros.modules.constructor package
-=====================================
+kentauros\.modules\.constructor package
+=======================================
 
 Subpackages
 -----------
@@ -11,16 +11,16 @@ Subpackages
 Submodules
 ----------
 
-kentauros.modules.constructor.abstract module
----------------------------------------------
+kentauros\.modules\.constructor\.abstract module
+------------------------------------------------
 
 .. automodule:: kentauros.modules.constructor.abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.modules.constructor.srpm module
------------------------------------------
+kentauros\.modules\.constructor\.srpm module
+--------------------------------------------
 
 .. automodule:: kentauros.modules.constructor.srpm
     :members:

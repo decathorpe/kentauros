@@ -5,6 +5,7 @@ sources that have `source.type=bzr` specified and `source.orig` set to a bzr rep
 """
 
 
+import datetime
 import os
 import shutil
 import subprocess
@@ -22,6 +23,36 @@ LOG_PREFIX = "ktr/sources/bzr"
 """This string specifies the prefix for log and error messages printed to stdout or stderr from
 inside this subpackage.
 """
+
+
+class BzrCommand:
+    def __init__(self, path: str, *args, bzr=None):
+        if bzr is None:
+            self.exec = "bzr"
+        else:
+            self.exec = bzr
+
+        self.path = path
+        self.args = list(args)
+
+    def execute(self) -> str:
+        logger = KtrLogger(LOG_PREFIX)
+
+        cmd = [self.exec]
+        cmd.extend(self.args)
+
+        cwd = os.getcwd()
+        os.chdir(self.path)
+
+        try:
+            out = subprocess.check_output(cmd).decode().rstrip("\n")
+            return out
+        except subprocess.CalledProcessError as error:
+            logger.err("Running the bzr command resulted in an error:")
+            logger.err(repr(error))
+            return ""
+        finally:
+            os.chdir(cwd)
 
 
 class BzrSource(Source):
@@ -43,6 +74,7 @@ class BzrSource(Source):
 
         self.dest = os.path.join(self.sdir, self.spkg.get_name())
         self.stype = SourceType.BZR
+        self.saved_date = None
         self.saved_rev = None
 
         orig = self.get_orig()
@@ -165,6 +197,34 @@ class BzrSource(Source):
         self.saved_rev = rev
         return rev
 
+    def datetime(self) -> datetime.datetime:
+        logger = KtrLogger(LOG_PREFIX)
+
+        info = BzrCommand(self.dest, "version-info").execute()
+
+        for line in info:
+            if line[0:6] == "date: ":
+                date_string = line.replace("date: ", "")
+                return datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S %z")
+
+        logger.err("No date information present in the output of 'bzr version-info'.")
+        logger.err("Assuming 'now' as fallback date/time.")
+        return datetime.datetime.now()
+
+    def datetime_str(self) -> str:
+        dt = self.datetime()
+
+        return "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}".format(
+            dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+
+    def date(self) -> str:
+        dt = self.datetime()
+        return "{:04d}{:02d}{:02d}".format(dt.year, dt.month, dt.day)
+
+    def time(self) -> str:
+        dt = self.datetime()
+        return "{:02d}{:02d}{:02d}".format(dt.hour, dt.minute, dt.second)
+
     def status(self) -> dict:
         """
         This method returns statistics describing this BzrSource object and its associated file(s).
@@ -177,6 +237,7 @@ class BzrSource(Source):
 
         state = dict(bzr_branch=self.get_branch(),
                      bzr_rev=self.get_revno(),
+                     bzr_last_date=self.datetime_str(),
                      bzr_last_rev=self.rev())
 
         return state
@@ -213,11 +274,26 @@ class BzrSource(Source):
             str: nice version string (base version + "+bzr" + revision)
         """
 
-        ver = self.spkg.get_version()   # base version
-        ver += "+rev"                   # bzr prefix
-        ver += self.rev()               # revision number as string
+        ktr = Kentauros()
+        logger = KtrLogger(LOG_PREFIX)
 
-        return ver
+        template: str = ktr.conf.get("main", "version_template_bzr")
+
+        if "%{version}" in template:
+            template = template.replace("%{version}", self.spkg.get_version())
+        if "%{version_sep}" in template:
+            template = template.replace("%{version_sep}", self.spkg.get_version_separator())
+        if "%{date}" in template:
+            template = template.replace("%{date}", self.date())
+        if "%{time}" in template:
+            template = template.replace("%{time}", self.time())
+        if "%{revision}" in template:
+            template = template.replace("%{revision}", self.rev())
+
+        if "%{" in template:
+            logger.log("Unrecognized variables present in bzr version template.")
+
+        return template
 
     def get(self) -> bool:
         """

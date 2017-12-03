@@ -76,7 +76,7 @@ class Kentauros:
             config_path = os.path.join(self.workdir, "kentaurosrc")
 
             if os.path.exists(config_path):
-                Kentauros.conf = configparser.ConfigParser()
+                Kentauros.conf = configparser.ConfigParser(interpolation=None)
                 Kentauros.conf.read(config_path)
 
             Kentauros.initialised = True

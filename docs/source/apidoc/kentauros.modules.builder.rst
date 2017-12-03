@@ -1,19 +1,19 @@
-kentauros.modules.builder package
-=================================
+kentauros\.modules\.builder package
+===================================
 
 Submodules
 ----------
 
-kentauros.modules.builder.abstract module
------------------------------------------
+kentauros\.modules\.builder\.abstract module
+--------------------------------------------
 
 .. automodule:: kentauros.modules.builder.abstract
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros.modules.builder.mock module
--------------------------------------
+kentauros\.modules\.builder\.mock module
+----------------------------------------
 
 .. automodule:: kentauros.modules.builder.mock
     :members:

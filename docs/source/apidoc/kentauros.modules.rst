@@ -1,5 +1,5 @@
-kentauros.modules package
-=========================
+kentauros\.modules package
+==========================
 
 Subpackages
 -----------
@@ -14,8 +14,8 @@ Subpackages
 Submodules
 ----------
 
-kentauros.modules.module module
--------------------------------
+kentauros\.modules\.module module
+---------------------------------
 
 .. automodule:: kentauros.modules.module
     :members:
