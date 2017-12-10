@@ -3,13 +3,13 @@ This submodule contains the :py:class:`CleanAction` class.
 """
 
 
-from kentauros.definitions import ActionType
+from ..definitions import ActionType
+from ..instance import Kentauros
+from ..logcollector import LogCollector
+from ..modules.module import PkgModule
+from ..result import KtrResult
 
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
-
-from kentauros.actions.abstract import Action
-from kentauros.actions.common import LOGPREFIX
+from .abstract import Action
 
 
 class CleanAction(Action):
@@ -24,11 +24,16 @@ class CleanAction(Action):
         ActionType atype:   here: stores ``ActionType.CLEAN``
     """
 
+    NAME = "Clean Action"
+
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
         self.atype = ActionType.CLEAN
 
-    def execute(self) -> bool:
+    def name(self) -> str:
+        return self.NAME
+
+    def execute(self) -> KtrResult:
         """
         This method cleans up the sources of to the package specified at initialisation. It executes
         the :py:meth:`Source.clean()` method of the :py:class:`Source` instance in the specified
@@ -39,17 +44,20 @@ class CleanAction(Action):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
         for module in self.kpkg.get_modules():
-            cleanup = module.clean()
+            assert isinstance(module, PkgModule)
 
-            if not cleanup:
+            res: KtrResult = module.clean()
+
+            if not res.success:
+                logger.merge(res.messages)
                 logger.log("Module '" + str(module) + "' did not clean up successfully.")
 
-            success = success and cleanup
+            success = success and res.success
 
         if ktr.cli.get_remove():
             pkgid = ktr.state_delete(self.kpkg.get_conf_name())
@@ -60,11 +68,11 @@ class CleanAction(Action):
                 assert isinstance(pkgid, int)
 
                 logger.log("Removed package " + self.kpkg.get_conf_name() + " from the database.")
-                logger.log("Removed package had ID: " + str(pkgid), 0)
+                logger.log("Removed package had ID: " + str(pkgid))
 
         if success:
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return success
+        return KtrResult(success, logger)

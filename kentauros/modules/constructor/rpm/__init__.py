@@ -6,21 +6,16 @@ This subpackage serves the purpose of handling RPM spec files.
 import os
 import subprocess
 
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
+from ....instance import Kentauros
+from ....logcollector import LogCollector
+from ....result import KtrResult
 
-from kentauros.modules.sources.abstract import Source
+from ...sources.abstract import Source
 
-from kentauros.modules.constructor.rpm.spec_common import RPMSpecError, format_tag_line
-from kentauros.modules.constructor.rpm.spec_preamble_out import SPEC_PREAMBLE_DICT
-from kentauros.modules.constructor.rpm.spec_source_out import SPEC_SOURCE_DICT
-from kentauros.modules.constructor.rpm.spec_version_out import SPEC_VERSION_DICT
-
-
-LOG_PREFIX = "ktr/constructor/rpm"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from .spec_common import RPMSpecError, format_tag_line
+from .spec_preamble_out import SPEC_PREAMBLE_DICT
+from .spec_source_out import SPEC_SOURCE_DICT
+from .spec_version_out import SPEC_VERSION_DICT
 
 
 def parse_release(release: str) -> (str, str):
@@ -235,7 +230,7 @@ class RPMSpec:
         self.contents = contents_new
 
 
-def do_release_bump(path: str, comment: str = None) -> bool:
+def do_release_bump(path: str, comment: str = None) -> KtrResult:
     """
     This function calls `rpmdev-bumpspec` with the specified arguments to bump the release number
     and create a changelog entry with a given comment.
@@ -245,7 +240,7 @@ def do_release_bump(path: str, comment: str = None) -> bool:
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOG_PREFIX)
+    logger = LogCollector("RPM .spec Handler")
 
     if not os.path.exists(path):
         raise FileNotFoundError()
@@ -263,7 +258,8 @@ def do_release_bump(path: str, comment: str = None) -> bool:
     cmd.append(path)
     cmd.append('--comment=' + comment)
 
-    logger.log_command(cmd)
+    logger.cmd(cmd)
     ret = subprocess.call(cmd)
+    success = (ret == 0)
 
-    return ret == 0
+    return KtrResult(success, logger)

@@ -11,7 +11,7 @@ BuildArch:      noarch
 
 BuildRequires:  python3-GitPython
 BuildRequires:  python3-argcomplete
-BuildRequires:  python3-devel
+BuildRequires:  python3-devel >= 3.5
 BuildRequires:  python3-tinydb
 
 Requires:       python3-GitPython

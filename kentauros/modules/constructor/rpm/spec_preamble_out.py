@@ -4,13 +4,13 @@ file, which depend on the type of source that is used.
 """
 
 
-from kentauros.definitions import SourceType
+from ....definitions import SourceType
 
-from kentauros.modules.sources.bzr import BzrSource
-from kentauros.modules.sources.git import GitSource
-from kentauros.modules.sources.url import UrlSource
-from kentauros.modules.sources.local import LocalSource
-from kentauros.modules.sources.no_source import NoSource
+from ...sources.bzr import BzrSource
+from ...sources.git import GitSource
+from ...sources.url import UrlSource
+from ...sources.local import LocalSource
+from ...sources.no_source import NoSource
 
 
 def spec_preamble_bzr(source: BzrSource) -> str:

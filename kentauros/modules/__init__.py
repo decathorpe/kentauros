@@ -3,14 +3,13 @@ This subpackage contains all plug-able kentauros modules.
 """
 
 
-from kentauros.definitions import PkgModuleType
-from kentauros.definitions import SourceType, ConstructorType, BuilderType, UploaderType
+from ..definitions import PkgModuleType, SourceType, ConstructorType, BuilderType, UploaderType
 
-from kentauros.modules.module import PkgModule
-from kentauros.modules.sources import get_source
-from kentauros.modules.constructor import get_constructor
-from kentauros.modules.builder import get_builder
-from kentauros.modules.uploader import get_uploader
+from .module import PkgModule
+from .sources import get_source
+from .constructor import get_constructor
+from .builder import get_builder
+from .uploader import get_uploader
 
 
 def _get_pkg_module(mtype: PkgModuleType, stype, package) -> PkgModule:

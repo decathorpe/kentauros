@@ -3,14 +3,13 @@ This submodule contains the :py:class:`VerifyAction` class.
 """
 
 
-from kentauros.definitions import ActionType
+from ..definitions import ActionType
+from ..instance import Kentauros
+from ..logcollector import LogCollector
+from ..result import KtrResult
+from ..modules.module import PkgModule
 
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
-from kentauros.modules.module import PkgModule
-
-from kentauros.actions.common import LOGPREFIX
-from kentauros.actions.abstract import Action
+from .abstract import Action
 
 
 class VerifyAction(Action):
@@ -25,11 +24,16 @@ class VerifyAction(Action):
         ActionType atype:   here: stores `ActionType.VERIFY`
     """
 
+    NAME = "Verify Action"
+
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
         self.atype = ActionType.VERIFY
 
-    def execute(self) -> bool:
+    def name(self) -> str:
+        return self.NAME
+
+    def execute(self) -> KtrResult:
         """
         This method executes a verification of the package configuration and checks if every file
         necessary for actions is present (and valid). The real checks are done during package
@@ -37,19 +41,20 @@ class VerifyAction(Action):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOGPREFIX)
+        logger = LogCollector(self.name())
 
         verify_success = True
         for module in self.kpkg.modules.values():
             assert isinstance(module, PkgModule)
 
-            success = module.verify()
+            res: KtrResult = module.verify()
+            logger.merge(res.messages)
 
-            if success and ktr.cli.get_action() == ActionType.VERIFY:
+            if res.success and ktr.cli.get_action() == ActionType.VERIFY:
                 logger.log("Verification succeeded for module: " + str(module))
 
-            if not success:
+            if not res.success:
                 logger.log("Verification failed for module: " + str(module))
                 verify_success = False
 
-        return verify_success
+        return KtrResult(verify_success, logger)

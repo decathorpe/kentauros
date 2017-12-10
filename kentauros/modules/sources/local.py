@@ -8,15 +8,11 @@ of a local file in the package's configuration file.
 import os
 import shutil
 
-from kentauros.definitions import SourceType
-from kentauros.logger import KtrLogger
-from kentauros.modules.sources.abstract import Source
+from ...definitions import SourceType
+from ...logcollector import LogCollector
+from ...result import KtrResult
 
-
-LOG_PREFIX = "ktr/sources/local"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from .abstract import Source
 
 
 class LocalSource(Source):
@@ -27,6 +23,8 @@ class LocalSource(Source):
         Package package:    package instance this source belongs to
     """
 
+    NAME = "Local Source"
+
     def __init__(self, package):
         super().__init__(package)
 
@@ -36,7 +34,10 @@ class LocalSource(Source):
     def __str__(self) -> str:
         return "Local Source for Package '" + self.spkg.get_conf_name() + "'"
 
-    def verify(self) -> bool:
+    def name(self):
+        return self.NAME
+
+    def verify(self) -> KtrResult:
         """
         This method runs several checks to ensure local copying can proceed. It is automatically
         executed at package initialisation. This includes:
@@ -47,7 +48,7 @@ class LocalSource(Source):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
@@ -61,7 +62,7 @@ class LocalSource(Source):
                            "' key.")
                 success = False
 
-        return success
+        return KtrResult(success, logger)
 
     def get_keep(self) -> bool:
         return self.spkg.conf.getboolean("local", "keep")
@@ -83,7 +84,7 @@ class LocalSource(Source):
     def imports(self) -> dict:
         return dict()
 
-    def get(self) -> bool:
+    def get(self) -> KtrResult:
         """
         This method attempts to copy the specified source from the location specified in the package
         configuration file to the determined destination. If the destination file already exists,
@@ -93,7 +94,7 @@ class LocalSource(Source):
             bool:   *True* if source was copied successfully, *False* if not
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -101,16 +102,16 @@ class LocalSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            logger.log("Sources already present.", 1)
-            return False
+            logger.log("Sources already present.")
+            return KtrResult(False, logger)
 
         # copy file from origin to destination
         shutil.copy2(self.get_orig(), self.dest)
 
-        return True
+        return KtrResult(True, logger)
 
-    def export(self) -> bool:
-        return True
+    def export(self) -> KtrResult:
+        return KtrResult.true()
 
-    def update(self) -> bool:
-        return True
+    def update(self) -> KtrResult:
+        return KtrResult.true()

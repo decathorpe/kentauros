@@ -3,10 +3,12 @@ This submodule contains the :py:class:`StatusAction` class.
 """
 
 
-from kentauros.definitions import ActionType
+from ..definitions import ActionType
+from ..logcollector import LogCollector
+from ..result import KtrResult
+from ..modules.module import PkgModule
 
-from kentauros.logger import print_flush
-from kentauros.actions.abstract import Action
+from .abstract import Action
 
 
 class StatusAction(Action):
@@ -22,11 +24,16 @@ class StatusAction(Action):
         ActionType atype:   here: stores `ActionType.STATUS`
     """
 
+    NAME = "Status Action"
+
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
         self.atype = ActionType.STATUS
 
-    def execute(self) -> bool:
+    def name(self) -> str:
+        return self.NAME
+
+    def execute(self) -> KtrResult:
         """
         This method prints a pretty summary of a package's configuration values to the console.
         Currently, this does nothing whatsoever.
@@ -34,11 +41,11 @@ class StatusAction(Action):
 
         modules = self.kpkg.get_modules()
 
-        print_flush()
-
-        print_flush(self.kpkg.status_string(), end="")
+        logger = LogCollector(self.name())
+        logger.log(self.kpkg.status_string())
 
         for module in modules:
-            print_flush(module.status_string(), end="")
+            assert isinstance(module, PkgModule)
+            logger.log(module.status_string())
 
-        return True
+        return KtrResult(True, logger)

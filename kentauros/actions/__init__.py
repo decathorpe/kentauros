@@ -6,18 +6,18 @@ enums to their respective class constructors.
 """
 
 
-from kentauros.definitions import ActionType
+from ..definitions import ActionType
 
-from kentauros.actions.abstract import Action
-from kentauros.actions.build import BuildAction
-from kentauros.actions.chain import ChainAction
-from kentauros.actions.clean import CleanAction
-from kentauros.actions.construct import ConstructAction
-from kentauros.actions.importing import ImportAction
-from kentauros.actions.prepare import PrepareAction
-from kentauros.actions.status import StatusAction
-from kentauros.actions.upload import UploadAction
-from kentauros.actions.verify import VerifyAction
+from .abstract import Action
+from .build import BuildAction
+from .chain import ChainAction
+from .clean import CleanAction
+from .construct import ConstructAction
+from .importing import ImportAction
+from .prepare import PrepareAction
+from .status import StatusAction
+from .upload import UploadAction
+from .verify import VerifyAction
 
 
 def get_action(action_type: ActionType, name: str) -> Action:

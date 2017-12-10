@@ -3,11 +3,12 @@ This submodule contains the :py:class:`UploadAction` class.
 """
 
 
-from kentauros.definitions import ActionType
-from kentauros.logger import KtrLogger
+from ..definitions import ActionType
+from ..logcollector import LogCollector
+from ..result import KtrResult
+from ..modules.module import PkgModule
 
-from kentauros.actions.abstract import Action
-from kentauros.actions.common import LOGPREFIX
+from .abstract import Action
 
 
 class UploadAction(Action):
@@ -22,11 +23,16 @@ class UploadAction(Action):
         ActionType atype:   here: stores `ActionType.UPLOAD`
     """
 
+    NAME = "Upload Action"
+
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
         self.atype = ActionType.UPLOAD
 
-    def execute(self) -> bool:
+    def name(self) -> str:
+        return self.NAME
+
+    def execute(self) -> KtrResult:
         """
         This method executes the :py:meth:`Uploader.upload()` method to execute the source upload,
         if possible - this only has effect for packages with a valid uploader specified in the
@@ -36,20 +42,21 @@ class UploadAction(Action):
             bool:           always *True*, future error checking still missing
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = LogCollector(self.name())
 
-        uploader = self.kpkg.get_module("uploader")
+        uploader: PkgModule = self.kpkg.get_module("uploader")
 
         if uploader is None:
             logger.log("This package doesn't define an uploader module. Aborting.")
-            return True
+            return KtrResult(True, logger)
 
-        success = uploader.execute()
+        res: KtrResult = uploader.execute()
+        logger.merge(res.messages)
 
-        if success:
+        if res.success:
             self.update_status()
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return success
+        return KtrResult(res.success, logger)

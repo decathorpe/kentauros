@@ -36,14 +36,6 @@ kentauros\.actions\.clean module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.actions\.common module
----------------------------------
-
-.. automodule:: kentauros.actions.common
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros\.actions\.construct module
 ------------------------------------
 

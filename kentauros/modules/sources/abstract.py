@@ -8,15 +8,11 @@ import abc
 import os
 import shutil
 
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
-from kentauros.modules.module import PkgModule
+from ...instance import Kentauros
+from ...logcollector import LogCollector
+from ...result import KtrResult
 
-
-LOG_PREFIX = "ktr/sources"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from ..module import PkgModule
 
 
 class Source(PkgModule, metaclass=abc.ABCMeta):
@@ -60,21 +56,21 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def export(self) -> bool:
+    def export(self) -> KtrResult:
         """
         It is expected that an appropriately named tarball is present within the package's source
         directory after this method has been executed.
         """
 
     @abc.abstractmethod
-    def get(self) -> bool:
+    def get(self) -> KtrResult:
         """
         It is expected that an appropriately named source file or directory is present within the
         package's source directory after this method has been executed.
         """
 
     @abc.abstractmethod
-    def update(self) -> bool:
+    def update(self) -> KtrResult:
         """
         It is expected that the source repository present within the package's source directory is
         up-to-date with upstream sources after this method has been executed, except when package
@@ -88,7 +84,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         This might include, for example, the current git commit hash, bzr revision number, etc.
         """
 
-    def clean(self) -> bool:
+    def clean(self) -> KtrResult:
         """
         This method cleans up all of a package's sources - excluding other files in the packages's
         source directory, which may include patches or other, additional files - they are preserved.
@@ -98,11 +94,11 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         if not os.path.exists(self.sdir):
-            logger.log("Nothing here to be cleaned.", 0)
-            return True
+            logger.log("Nothing here to be cleaned.")
+            return KtrResult(True, logger)
 
         # try to be careful with "rm -r"
         assert os.path.isabs(self.dest)
@@ -123,7 +119,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         if not os.listdir(self.sdir):
             os.rmdir(self.sdir)
 
-        return True
+        return KtrResult(True, logger)
 
     def formatver(self) -> str:
         """
@@ -137,7 +133,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
 
         return self.spkg.conf.get("source", "version")
 
-    def execute(self) -> bool:
+    def execute(self) -> KtrResult:
         """
         This method provides a generic way of preparing a package's sources. This will invoke the
         :py:meth:`Source.get()` method or the :py:meth:`Source.update()` method and the
@@ -152,41 +148,51 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         force = ktr.cli.get_force()
         old_status = self.status()
 
-        get_success = self.get()
-        if get_success:
+        res = self.get()
+        logger.merge(res.messages)
+
+        if res.success:
             new_status = self.status()
 
             if new_status == old_status:
                 logger.log("The downloaded Source is not newer than the last known source state.")
-                return False
+                return KtrResult(False, logger)
             else:
                 self.updated = True
-                return self.export()
+                res = self.export()
+                logger.merge(res.messages)
+                return KtrResult(res.success, logger)
 
-        update_success = self.update()
-        if update_success:
+        res = self.update()
+        logger.merge(res.messages)
+
+        if res.success:
             new_status = self.status()
 
             if new_status == old_status:
                 logger.log("The \"updated\" Source is not newer than the last known source state.")
-                return False
+                return KtrResult(False, logger)
             else:
                 self.updated = True
-                return self.export()
+                res = self.export()
+                logger.merge(res.messages)
+                return KtrResult(res.success, logger)
 
         if force:
             logger.log("Force-Exporting the Sources despite no source changes.")
-            return self.export()
+            res = self.export()
+            logger.merge(res.messages)
+            return KtrResult(res.success, logger)
 
         logger.log("The Source did not change.")
-        return False
+        return KtrResult(False, logger)
 
-    def refresh(self) -> bool:
+    def refresh(self) -> KtrResult:
         """
         This method provides a generic way of refreshing a package's sources. This will invoke the
         generic :py:meth:`Source.clean()` method and the :py:meth:`Source.get()` method (as
@@ -196,6 +202,12 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             bool:       success status of source getting
         """
 
-        self.clean()
-        success = self.get()
-        return success
+        logger = LogCollector(self.name())
+
+        res = self.clean()
+        logger.merge(res.messages)
+
+        res = self.get()
+        logger.merge(res.messages)
+
+        return KtrResult(res.success, logger)

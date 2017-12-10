@@ -6,7 +6,9 @@ upload classes.
 
 import abc
 
-from kentauros.modules.module import PkgModule
+from ...result import KtrResult
+
+from ..module import PkgModule
 
 
 class Uploader(PkgModule, metaclass=abc.ABCMeta):
@@ -31,7 +33,7 @@ class Uploader(PkgModule, metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def upload(self):
+    def upload(self) -> KtrResult:
         """
         This method executes the source package upload with the settings specified in the package
         configuration.

@@ -3,9 +3,8 @@ This submodule contains the :py:class:`ImportAction` class.
 """
 
 
-from kentauros.definitions import ActionType
-
-from kentauros.actions.abstract import Action
+from ..definitions import ActionType
+from .abstract import Action
 
 
 class ImportAction(Action):
@@ -20,9 +19,14 @@ class ImportAction(Action):
         ActionType atype:   here: stores `ActionType.IMPORT`
     """
 
+    NAME = "Import Action"
+
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
         self.atype = ActionType.IMPORT
+
+    def name(self) -> str:
+        return self.NAME
 
     def execute(self) -> bool:
         """

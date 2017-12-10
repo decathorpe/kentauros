@@ -13,7 +13,7 @@ import os
 
 import argcomplete
 
-from kentauros.definitions import ActionType
+from ..definitions import ActionType
 
 
 # pylint: disable=unused-argument

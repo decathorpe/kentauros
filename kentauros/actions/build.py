@@ -3,12 +3,12 @@ This submodule contains the :py:class:`BuildAction` class.
 """
 
 
-from kentauros.definitions import ActionType
+from ..definitions import ActionType
+from ..logcollector import LogCollector
+from ..modules.module import PkgModule
+from ..result import KtrResult
 
-from kentauros.logger import KtrLogger
-
-from kentauros.actions.abstract import Action
-from kentauros.actions.common import LOGPREFIX
+from .abstract import Action
 
 
 class BuildAction(Action):
@@ -23,25 +23,32 @@ class BuildAction(Action):
         ActionType atype:   here: stores ``ActionType.BUILD``
     """
 
+    NAME = "Build Action"
+
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
         self.atype = ActionType.BUILD
 
-    def execute(self) -> bool:
-        logger = KtrLogger(LOGPREFIX)
+    def name(self) -> str:
+        return self.NAME
 
-        builder = self.kpkg.get_module("builder")
+    def execute(self) -> KtrResult:
+        logger = LogCollector(self.NAME)
+
+        builder: PkgModule = self.kpkg.get_module("builder")
 
         if builder is None:
             logger.log("This package doesn't define a builder module. Aborting.")
-            return True
+            return KtrResult(True, logger)
 
-        success = builder.execute()
+        res = builder.execute()
 
-        if success:
+        if res.success:
             self.update_status()
+            logger.merge(res.messages)
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
+            logger.merge(res.messages)
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return success
+        return KtrResult(res.success, logger)

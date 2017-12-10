@@ -3,12 +3,12 @@ This submodule contains the :py:class:`ChainAction` class.
 """
 
 
-from kentauros.definitions import ActionType
+from ..definitions import ActionType
+from ..logcollector import LogCollector
+from ..modules.module import PkgModule
+from ..result import KtrResult
 
-from kentauros.logger import KtrLogger
-
-from kentauros.actions.abstract import Action
-from kentauros.actions.common import LOGPREFIX
+from .abstract import Action
 
 
 class ChainAction(Action):
@@ -32,11 +32,16 @@ class ChainAction(Action):
         ActionType atype:   here: stores ``ActionType.CHAIN``
     """
 
+    NAME = "Chain Action"
+
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
         self.atype = ActionType.CHAIN
 
-    def execute(self) -> bool:
+    def name(self) -> str:
+        return self.NAME
+
+    def execute(self) -> KtrResult:
         """
         This method runs the "chain reaction" corresponding to the package specified at
         initialisation, with the configuration from the package configuration file.
@@ -45,14 +50,17 @@ class ChainAction(Action):
             bool:   ``True`` if chain went all the way through, ``False`` if not
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
         for module in self.kpkg.get_modules():
-            succeeded = module.execute()
+            assert isinstance(module, PkgModule)
 
-            if not succeeded:
+            res: KtrResult = module.execute()
+            logger.merge(res.messages)
+
+            if not res.success:
                 logger.log("Execution of module unsuccessful: " + str(module))
                 success = False
                 break
@@ -63,4 +71,4 @@ class ChainAction(Action):
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return success
+        return KtrResult(success, logger)

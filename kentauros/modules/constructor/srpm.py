@@ -9,20 +9,16 @@ import os
 import shutil
 import subprocess
 import tempfile
+import warnings
 
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
+from ...instance import Kentauros
+from ...result import KtrResult
+from ...logcollector import LogCollector
 
-from kentauros.modules.sources.no_source import NoSource
+from ..sources.no_source import NoSource
 
-from kentauros.modules.constructor.abstract import Constructor
-from kentauros.modules.constructor.rpm import RPMSpec, do_release_bump, parse_release
-
-
-LOG_PREFIX = "ktr/constructor/srpm"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from .abstract import Constructor
+from .rpm import RPMSpec, do_release_bump, parse_release
 
 
 class SrpmConstructor(Constructor):
@@ -39,6 +35,8 @@ class SrpmConstructor(Constructor):
         bool active:        determines if this instance is active
         str dirs:           dictionary containing some directory paths
     """
+
+    NAME = "SRPM Constructor"
 
     def __init__(self, package):
         super().__init__(package)
@@ -65,7 +63,10 @@ class SrpmConstructor(Constructor):
     def __str__(self) -> str:
         return "SRPM Constructor for Package '" + self.cpkg.get_conf_name() + "'"
 
-    def verify(self) -> bool:
+    def name(self):
+        return self.NAME
+
+    def verify(self) -> KtrResult:
         """
         This method runs several checks to ensure srpm builds can proceed. It is automatically
         executed at package initialisation. This includes:
@@ -80,7 +81,7 @@ class SrpmConstructor(Constructor):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
@@ -109,9 +110,9 @@ class SrpmConstructor(Constructor):
                 logger.log("Install " + binary + " to use the srpm constructor.")
                 success = False
 
-        return success
+        return KtrResult(success, logger)
 
-    def _get_last_version(self, spec: RPMSpec):
+    def _get_last_version(self, spec: RPMSpec, logger: LogCollector) -> str:
         """
         This method tries to read the latest state from the state database - if that is not
         available, the .spec file is parsed as a fallback.
@@ -126,7 +127,6 @@ class SrpmConstructor(Constructor):
         assert isinstance(spec, RPMSpec)
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
 
         saved_state = ktr.state_read(self.cpkg.get_conf_name())
 
@@ -148,7 +148,7 @@ class SrpmConstructor(Constructor):
 
         return spec.get_version()
 
-    def _get_last_release(self, spec: RPMSpec):
+    def _get_last_release(self, spec: RPMSpec, logger: LogCollector):
         """
         This method tries to read the latest state from the state database - if that is not
         available, the .spec file is parsed as a fallback.
@@ -163,7 +163,6 @@ class SrpmConstructor(Constructor):
         assert isinstance(spec, RPMSpec)
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
 
         saved_state = ktr.state_read(self.cpkg.get_conf_name())
 
@@ -196,8 +195,8 @@ class SrpmConstructor(Constructor):
         spec = RPMSpec(self.path, self.source)
 
         string = ("SRPM constructor module:\n" +
-                  "  Last Version:     {}\n".format(self._get_last_version(spec)) +
-                  "  Last Release:     {}\n".format(self._get_last_release(spec)))
+                  "  Last Version:     {}\n".format(self._get_last_version(spec, LogCollector())) +
+                  "  Last Release:     {}\n".format(self._get_last_release(spec, LogCollector())))
 
         return string
 
@@ -207,19 +206,19 @@ class SrpmConstructor(Constructor):
         return dict(rpm_last_release=spec.get_release(),
                     rpm_last_version=spec.get_version())
 
-    def init(self):
+    def init(self) -> KtrResult:
         """
         This method creates a temporary directory (which is then set to `$HOME` in the
         :py:meth:`SrpmConstructor.build()` method) and other necessary sub-directories (here:
         `SOURCES`, `SRPMS`, `SPECS`).
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         # make sure to finally call self.clean()!
         self.dirs["tempdir"] = tempfile.mkdtemp()
 
-        logger.log("Temporary directory " + self.dirs["tempdir"] + " created.", 1)
+        logger.log("Temporary directory " + self.dirs["tempdir"] + " created.")
 
         self.dirs["rpmbuild_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild")
         self.dirs["spec_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SPECS")
@@ -230,21 +229,21 @@ class SrpmConstructor(Constructor):
         if not os.path.exists(self.dirs["rpmbuild_dir"]):
             os.mkdir(self.dirs["rpmbuild_dir"])
 
-        logger.log("Temporary rpmbuild directory created: " + self.dirs["tempdir"], 1)
+        logger.log("Temporary rpmbuild directory created: " + self.dirs["tempdir"])
 
         # create $TEMPDIR/rpmbuild/{SPECS,SRPMS,SOURCES}
         for directory in [self.dirs["spec_dir"], self.dirs["srpm_dir"], self.dirs["source_dir"]]:
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
-        logger.log("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.", 1)
+        logger.log("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.")
 
-    def _check_source_presence(self) -> bool:
+        return KtrResult(True, logger)
+
+    def _check_source_presence(self, logger: LogCollector) -> bool:
         """
         This method checks if the Source's output directory is present.
         """
-
-        logger = KtrLogger(LOG_PREFIX)
 
         # source is a NoSource
         if self.source.dest is None:
@@ -279,26 +278,22 @@ class SrpmConstructor(Constructor):
         else:
             return True
 
-    def _copy_sources(self):
+    def _copy_sources(self, logger: LogCollector):
         """
         This method copies all files (not directories) in the sources directory to the
         `rpmbuild/SOURCES` directory.
         """
 
-        logger = KtrLogger(LOG_PREFIX)
-
         for entry in os.listdir(self.source.sdir):
             entry_path = os.path.join(self.source.sdir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.dirs["source_dir"])
-                logger.log("File copied to SOURCES: " + entry_path, 1)
+                logger.log("File copied to SOURCES: " + entry_path)
 
-    def _cleanup_sources(self):
+    def _cleanup_sources(self, logger: LogCollector):
         """
         This method cleans up the Source's output directory according to settings.
         """
-
-        logger = KtrLogger(LOG_PREFIX)
 
         if not self.source.get_keep():
 
@@ -317,20 +312,18 @@ class SrpmConstructor(Constructor):
                 if os.path.isfile(tarballs[0]):
                     assert self.source.sdir in tarballs[0]
                     os.remove(tarballs[0])
-                    logger.log("Tarball removed: " + tarballs[0], 1)
+                    logger.log("Tarball removed: " + tarballs[0])
 
-    def _copy_configuration(self):
+    def _copy_configuration(self, logger: LogCollector):
         """
         This method copies the package configuration file to the `rpmbuild/SOURCES` directory in
         case it is included in the package build.
         """
 
-        logger = KtrLogger(LOG_PREFIX)
-
         shutil.copy2(self.cpkg.file, self.dirs["source_dir"])
-        logger.log("Package configuration copied to SOURCES: " + self.cpkg.file, 1)
+        logger.log("Package configuration copied to SOURCES: " + self.cpkg.file)
 
-    def _get_old_status(self) -> (str, str):
+    def _get_old_status(self, logger: LogCollector) -> (str, str):
         """
         This method tries to determine the old Version and Release strings from the best available
         source. If the local state database has not yet been updated with those values, the .spec
@@ -342,8 +335,8 @@ class SrpmConstructor(Constructor):
 
         spec = RPMSpec(self.path, self.source)
 
-        old_version = self._get_last_version(spec)
-        old_release = self._get_last_release(spec)
+        old_version = self._get_last_version(spec, logger)
+        old_release = self._get_last_release(spec, logger)
 
         return old_version, old_release
 
@@ -351,7 +344,7 @@ class SrpmConstructor(Constructor):
         """This method calculates the destination of the .spec file in the `rpmbuild/SPECS` dir."""
         return os.path.join(self.dirs["spec_dir"], self.cpkg.get_name() + ".spec")
 
-    def _prepare_spec(self) -> str:
+    def _prepare_spec(self, logger: LogCollector) -> str:
         """
         This method sets the `Version` and `Source0` tags in the template spec file and resets the
         `Release` tag to `0%{dist}` if the version has changed (to the best of the program's
@@ -367,7 +360,7 @@ class SrpmConstructor(Constructor):
         spec.set_version()
         spec.set_source()
 
-        old_version = self._get_old_status()[0]
+        old_version = self._get_old_status(logger)[0]
         new_version = spec.build_version_string()
 
         # start constructing release string from old release string
@@ -392,13 +385,16 @@ class SrpmConstructor(Constructor):
         assert isinstance(old_version, str)
         assert isinstance(old_release, str)
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(SrpmConstructor.NAME)
 
         logger.dbg("Old Version: " + old_version)
         logger.dbg("New Version: " + new_version)
         logger.dbg("Old Release: " + old_release)
 
-    def _do_initial_build_prep(self, old_release: str, new_spec_path: str):
+        warnings.warn("Log messages might be lost!", RuntimeWarning)
+        logger.print()
+
+    def _do_initial_build_prep(self, old_release: str, new_spec_path: str) -> KtrResult:
         """
         This method prepares the .spec file for an initial package build.
 
@@ -425,7 +421,7 @@ class SrpmConstructor(Constructor):
             return do_release_bump(new_spec_path, message)
 
     @staticmethod
-    def _do_packaging_only_build_prep(new_spec_path: str):
+    def _do_packaging_only_build_prep(new_spec_path: str) -> KtrResult:
         """
         This method prepares the .spec file for a packaging-only change.
 
@@ -444,7 +440,7 @@ class SrpmConstructor(Constructor):
         else:
             return do_release_bump(new_spec_path, message)
 
-    def _do_snapshot_update_build_prep(self, new_spec_path: str):
+    def _do_snapshot_update_build_prep(self, new_spec_path: str) -> KtrResult:
         """
         This method prepares the .spec file for a snapshot update.
 
@@ -460,7 +456,7 @@ class SrpmConstructor(Constructor):
 
         return do_release_bump(new_spec_path, "Update to latest snapshot.")
 
-    def _do_version_update_build_prep(self, new_spec_path: str):
+    def _do_version_update_build_prep(self, new_spec_path: str) -> KtrResult:
         """
         This method prepares the .spec file for a version update.
 
@@ -503,7 +499,7 @@ class SrpmConstructor(Constructor):
         os.rename(self.path, self.path + ".old")
         new_rpm_spec.write_contents_to_file(self.path)
 
-    def _copy_specs_around(self) -> bool:
+    def _copy_specs_around(self, logger: LogCollector) -> bool:
         """
         This method handles the package's .spec file.
 
@@ -528,12 +524,11 @@ class SrpmConstructor(Constructor):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
 
         spec = RPMSpec(self.path, self.source)
 
         new_version = spec.build_version_string()
-        old_version, old_release = self._get_old_status()
+        old_version, old_release = self._get_old_status(logger)
 
         force = ktr.cli.get_force()
 
@@ -541,7 +536,7 @@ class SrpmConstructor(Constructor):
         self._print_debug_info(new_version, old_version, old_release)
 
         # prepare the spec file and get the generated preamble
-        preamble = self._prepare_spec()
+        preamble = self._prepare_spec(logger)
 
         # use "rpmdev-bumpspec" to increment release number and create changelog entries:
         new_spec_path = self._get_spec_destination()
@@ -597,7 +592,7 @@ class SrpmConstructor(Constructor):
 
         return True
 
-    def prepare(self) -> bool:
+    def prepare(self) -> KtrResult:
         """
         This method prepares all files necessary for source package assembly.
 
@@ -605,34 +600,34 @@ class SrpmConstructor(Constructor):
             bool:           returns `True` if the preparation was successful.
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         if self.no_source:
             logger.dbg("This package does not define a source module.")
 
         else:
             # if source module is defined check if sources are present
-            if not self._check_source_presence():
-                return False
+            if not self._check_source_presence(logger):
+                return KtrResult(False, logger)
 
         # copy sources to rpmbuild/SOURCES
         if not self.no_source:
-            self._copy_sources()
+            self._copy_sources(logger)
 
         # remove tarballs if they should not be kept
         if not self.no_source:
-            self._cleanup_sources()
+            self._cleanup_sources(logger)
 
         # copy package.conf to rpmbuild/SOURCES
-        self._copy_configuration()
+        self._copy_configuration(logger)
 
         # copy modified .spec file to rpmbuild/SPECS
         # copy back file with changelog additions and possible Release bump
-        success = self._copy_specs_around()
+        success = self._copy_specs_around(logger)
 
-        return success
+        return KtrResult(success, logger)
 
-    def build(self):
+    def build(self) -> KtrResult:
         """
         This method executes the actual SRPM package assembly. It sets `$HOME` to the created
         temporary directory and executes `rpmbuild -bs` with the copy of the package spec file in
@@ -640,7 +635,7 @@ class SrpmConstructor(Constructor):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         old_home = os.environ['HOME']
         os.environ['HOME'] = self.dirs["tempdir"]
@@ -657,21 +652,25 @@ class SrpmConstructor(Constructor):
         cmd.append("-bs")
         cmd.append(os.path.join(self.dirs["spec_dir"], self.cpkg.get_name() + ".spec"))
 
-        logger.log_command(cmd)
+        logger.cmd(cmd)
 
         try:
             subprocess.call(cmd)
+        except subprocess.CalledProcessError as error:
+            raise NotImplementedError(error)
         finally:
             os.environ['HOME'] = old_home
 
-    def export(self):
+        return KtrResult(True, logger)
+
+    def export(self) -> KtrResult:
         """
         This method copies the assembled source packages from `rpmbuild/SRPMS` to the directory for
         built packages as specified in the kentauros configuration. If multiple SRPM packages are
         found, they all are copied.
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         srpms = glob.glob(os.path.join(self.dirs["srpm_dir"], "*.src.rpm"))
 
@@ -679,40 +678,53 @@ class SrpmConstructor(Constructor):
 
         for srpm in srpms:
             shutil.copy2(srpm, self.pdir)
-            logger.log("File copied: " + srpm, 0)
+            logger.log("File copied: " + srpm)
 
-    def cleanup(self):
+        return KtrResult(True, logger)
+
+    def cleanup(self) -> KtrResult:
         shutil.rmtree(self.dirs["tempdir"])
+        return KtrResult.true()
 
-    def execute(self) -> bool:
-        self.init()
+    def execute(self) -> KtrResult:
+        logger = LogCollector(self.name())
 
-        success = self.prepare()
-        if not success:
-            self.clean()
-            KtrLogger(LOG_PREFIX).log("Source package assembly unsuccessful.", 2)
-            return False
+        res = self.init()
+        logger.merge(res.messages)
 
-        self.build()
-        self.export()
-        self.cleanup()
+        res = self.prepare()
+        logger.merge(res.messages)
+        if not res.success:
+            res = self.clean()
+            logger.merge(res.messages)
+            logger.log("Source package assembly unsuccessful.")
+            return KtrResult(False, logger)
 
-        return True
+        res = self.build()
+        logger.merge(res.messages)
 
-    def clean(self) -> bool:
+        res = self.export()
+        logger.merge(res.messages)
+
+        res = self.cleanup()
+        logger.merge(res.messages)
+
+        return KtrResult(True, logger)
+
+    def clean(self) -> KtrResult:
         if not os.path.exists(self.pdir):
-            return True
+            return KtrResult.true()
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         try:
             assert Kentauros().get_packdir() in self.pdir
             assert os.path.isabs(self.pdir)
             shutil.rmtree(self.pdir)
-            return True
+            return KtrResult.true()
         except AssertionError:
             logger.err("The Package exports directory looks weird. Doing nothing.")
-            return False
+            return KtrResult(False, logger)
         except OSError:
             logger.err("The Package exports directory couldn't be removed.")
-            return False
+            return KtrResult(False, logger)

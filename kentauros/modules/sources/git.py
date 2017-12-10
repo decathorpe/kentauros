@@ -9,22 +9,22 @@ import datetime
 import os
 import shutil
 import subprocess
+import warnings
 
 from git import Repo
 
-from kentauros.conntest import is_connected
-from kentauros.definitions import SourceType
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
+from ...conntest import is_connected
+from ...definitions import SourceType
+from ...instance import Kentauros
+from ...logcollector import LogCollector
+from ...result import KtrResult
 
-from kentauros.modules.sources.abstract import Source
-from kentauros.modules.sources.source_error import SourceError
+from .abstract import Source
+from .source_error import SourceError
 
-
-LOG_PREFIX = "ktr/sources/git"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+# TODO: simplify commit, branch, etc. handling to "ref" handling
+# TODO: "ref" can be a branch name, commit hash, or tag!
+# TODO: Introduce GitCommand class (c.f. BzrCommand)
 
 
 class GitSource(Source):
@@ -43,6 +43,8 @@ class GitSource(Source):
         Package package:  package instance this :py:class:`GitSource` belongs to
     """
 
+    NAME = "git Source"
+
     def __init__(self, package):
         super().__init__(package)
 
@@ -54,7 +56,10 @@ class GitSource(Source):
     def __str__(self) -> str:
         return "git Source for Package '" + self.spkg.get_conf_name() + "'"
 
-    def verify(self) -> bool:
+    def name(self):
+        return self.NAME
+
+    def verify(self) -> KtrResult:
         """
         This method runs several checks to ensure git commands can proceed. It is automatically
         executed at package initialisation. This includes:
@@ -68,7 +73,7 @@ class GitSource(Source):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
@@ -94,9 +99,14 @@ class GitSource(Source):
             logger.log("Install git to use the specified source.")
             success = False
 
-        return success
+        return KtrResult(success, logger)
 
     def get_keep(self) -> bool:
+        """
+        Returns:
+            bool:   boolean value indicating whether the exported tarball should be kept
+        """
+
         return self.spkg.conf.getboolean("git", "keep")
 
     def get_keep_repo(self) -> bool:
@@ -151,7 +161,7 @@ class GitSource(Source):
 
     def datetime(self) -> datetime.datetime:
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         # initialize datetime with fallback value 'now'
         dt = datetime.datetime.now()
@@ -177,6 +187,9 @@ class GitSource(Source):
             repo = Repo(self.dest)
             commit = repo.commit(self.get_commit())
             dt = commit.committed_datetime.astimezone(datetime.timezone.utc)
+
+        warnings.warn("Log Messages might be lost!", RuntimeWarning)
+        logger.print()
 
         self.saved_date = dt
         return dt
@@ -283,7 +296,7 @@ class GitSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         template: str = ktr.conf.get("main", "version_template_git")
 
@@ -303,9 +316,12 @@ class GitSource(Source):
         if "%{" in template:
             logger.log("Unrecognized variables present in git version template.")
 
+        warnings.warn("Log Messages might be lost!", RuntimeWarning)
+        logger.print()
+
         return template
 
-    def get(self) -> bool:
+    def get(self) -> KtrResult:
         """
         This method executes the git repository download to the package source directory. This
         respects the branch and commit set in the package configuration file.
@@ -315,7 +331,7 @@ class GitSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -324,14 +340,14 @@ class GitSource(Source):
         # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             rev = self.commit()
-            logger.log("Sources already downloaded. Latest commit id:", 2)
-            logger.log(rev, 2)
-            return False
+            logger.log("Sources already downloaded. Latest commit id:")
+            logger.log(rev)
+            return KtrResult(False, logger)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            logger.log("No connection to remote host detected. Cancelling source checkout.", 2)
-            return False
+            logger.log("No connection to remote host detected. Cancelling source checkout.")
+            return KtrResult(False, logger)
 
         # construct clone command
         cmd_clone = ["git", "clone"]
@@ -356,7 +372,7 @@ class GitSource(Source):
         cmd_clone.append(self.dest)
 
         # clone git repo from origin to destination
-        logger.log_command(cmd_clone, 1)
+        logger.cmd(cmd_clone)
         subprocess.call(cmd_clone)
 
         # if commit is specified: checkout commit
@@ -369,7 +385,7 @@ class GitSource(Source):
             os.chdir(self.dest)
 
             # checkout commit
-            logger.log_command(cmd_checkout, 1)
+            logger.cmd(cmd_checkout)
             subprocess.call(cmd_checkout)
 
             # go to previous dir
@@ -383,12 +399,12 @@ class GitSource(Source):
         if self.get_commit() != "HEAD":
             if self.get_commit() != rev:
                 logger.err("Something went wrong, requested commit not checked out.")
-                return False
+                return KtrResult(False, logger)
 
         # return True if successful
-        return True
+        return KtrResult(True, logger)
 
-    def update(self) -> bool:
+    def update(self) -> KtrResult:
         """
         This method executes a git repository update as specified in the package configuration file.
         If a specific commit has been set in the config file, this method will not attempt to
@@ -399,16 +415,16 @@ class GitSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         # if specific commit is requested, do not pull updates (obviously)
         if self.get_commit() != "HEAD":
-            return False
+            return KtrResult(False, logger)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            logger.log("No connection to remote host detected. Cancelling source update.", 2)
-            return False
+            logger.log("No connection to remote host detected. Cancelling source update.")
+            return KtrResult(False, logger)
 
         # construct git command
         cmd = ["git", "pull", "--rebase"]
@@ -422,7 +438,7 @@ class GitSource(Source):
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
             logger.err("Sources need to be get before an update can be run.")
-            return False
+            return KtrResult(False, logger)
 
         # get old commit ID
         rev_old = self.commit()
@@ -432,7 +448,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        logger.log_command(cmd, 1)
+        logger.cmd(cmd)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -443,9 +459,25 @@ class GitSource(Source):
         self.date()
 
         # return True if update found, False if not
-        return rev_new != rev_old
+        updated = rev_new != rev_old
+        return KtrResult(updated, logger)
 
-    def export(self) -> bool:
+    def _remove_not_keep(self, logger: LogCollector):
+        """
+        This local function removes the git repository and is called after source export, if
+        not keeping the repository around was specified in the configuration file.
+        """
+
+        ktr = Kentauros()
+
+        if not self.get_keep_repo():
+            # try to be careful with "rm -r"
+            assert os.path.isabs(self.dest)
+            assert ktr.get_datadir() in self.dest
+            shutil.rmtree(self.dest)
+            logger.log("git repository has been deleted after exporting to tarball.")
+
+    def export(self) -> KtrResult:
         """
         This method executes the export from the package source repository to a tarball with pretty
         file name. It also respects the `git.keep=False` setting in the package configuration file -
@@ -455,21 +487,7 @@ class GitSource(Source):
             bool:   *True* if successful or already done, *False* at failure
         """
 
-        ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
-
-        def remove_not_keep():
-            """
-            This local function removes the git repository and is called after source export, if
-            not keeping the repository around was specified in the configuration file.
-            """
-
-            if not self.get_keep_repo():
-                # try to be careful with "rm -r"
-                assert os.path.isabs(self.dest)
-                assert ktr.get_datadir() in self.dest
-                shutil.rmtree(self.dest)
-                logger.log("git repository has been deleted after exporting to tarball.", 1)
+        logger = LogCollector(self.name())
 
         # construct git command to export HEAD or specified commit
         cmd = ["git", "archive", self.get_commit()]
@@ -477,7 +495,7 @@ class GitSource(Source):
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
             logger.err("Sources need to be get before they can be exported.")
-            return False
+            return KtrResult(False, logger)
 
         version = self.formatver()
         name_version = self.spkg.get_name() + "-" + version
@@ -492,10 +510,10 @@ class GitSource(Source):
 
         # check if file has already been exported
         if os.path.exists(file_name):
-            logger.log("Tarball has already been exported.", 1)
+            logger.log("Tarball has already been exported.")
             # remove git repo if keep is False
-            remove_not_keep()
-            return True
+            self._remove_not_keep(logger)
+            return KtrResult(True, logger)
 
         # remember previous directory
         prev_dir = os.getcwd()
@@ -504,7 +522,7 @@ class GitSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        logger.log_command(cmd, 1)
+        logger.cmd(cmd)
         subprocess.call(cmd)
 
         # update saved rev and date
@@ -512,7 +530,7 @@ class GitSource(Source):
         self.date()
 
         # remove git repo if keep is False
-        remove_not_keep()
+        self._remove_not_keep(logger)
 
         os.chdir(prev_dir)
-        return True
+        return KtrResult(True, logger)

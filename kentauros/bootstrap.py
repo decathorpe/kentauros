@@ -7,8 +7,8 @@ determine which directories those should be.
 
 import os
 
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
+from .instance import Kentauros
+from .logcollector import LogCollector
 
 
 LOG_PREFIX = "ktr/bootstrap"
@@ -17,7 +17,7 @@ inside this subpackage.
 """
 
 
-def ktr_mkdirp(path: str) -> bool:
+def ktr_mkdirp(path: str, logger: LogCollector) -> bool:
     """
     This function checks for directory existence and the ability to write to it. If the directory
     does not exist, it will be created.
@@ -28,8 +28,6 @@ def ktr_mkdirp(path: str) -> bool:
     Returns:
         bool:       success (or not)
     """
-
-    logger = KtrLogger(LOG_PREFIX)
 
     if os.path.exists(path):
         if os.access(path, os.W_OK):
@@ -47,7 +45,7 @@ def ktr_mkdirp(path: str) -> bool:
         return True
 
 
-def ktr_bootstrap() -> bool:
+def ktr_bootstrap(logger: LogCollector) -> bool:
     """
     This function has to be called before any other actions are attempted on packages. It ensures
     that the required directory structure is present. If it fails, kentauros execution will be
@@ -61,7 +59,7 @@ def ktr_bootstrap() -> bool:
 
     for path in [ktr.get_basedir(), ktr.get_confdir(), ktr.get_datadir(),
                  ktr.get_expodir(), ktr.get_packdir(), ktr.get_specdir()]:
-        if not ktr_mkdirp(path):
+        if not ktr_mkdirp(path, logger):
             return False
 
     return True

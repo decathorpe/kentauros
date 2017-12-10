@@ -4,22 +4,17 @@ from the corresponding `package.conf` file. After parsing the package configurat
 sub-modules are added according to configuration.
 """
 
-import enum
-import os
-
 from collections import OrderedDict
 from configparser import ConfigParser
+import enum
+import os
+import warnings
 
-from kentauros.definitions import PkgModuleType
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
-
-from kentauros.modules import get_module
-
-LOG_PREFIX = "ktr/package"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from .definitions import PkgModuleType
+from .instance import Kentauros
+from .logcollector import LogCollector
+from .modules import get_module, PkgModule
+from .result import KtrResult
 
 
 class PackageError(Exception):
@@ -63,7 +58,6 @@ class Package:
         assert isinstance(conf_name, str)
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
 
         self.file = os.path.join(ktr.get_confdir(), conf_name + ".conf")
         self.conf = ConfigParser(interpolation=None)
@@ -74,11 +68,12 @@ class Package:
 
         success = self.conf.read(self.file)
         if not success:
-            logger.err("Package configuration could not be read.")
-            logger.err("Path: " + self.file)
-            raise PackageError("Package configuration could not be read.")
+            raise PackageError("Package .conf file ({}) could not be read.".format(self.file))
 
-        if not self.verify():
+        res = self.verify()
+        if not res.success:
+            warnings.warn("Log messages might be lost!", RuntimeWarning)
+            res.messages.print()
             raise PackageError("Package configuration file is invalid.")
 
         self.name = self.conf.get("package", "name")
@@ -99,7 +94,7 @@ class Package:
 
             self.modules[module_type] = module
 
-    def get_module(self, module_type: str):
+    def get_module(self, module_type: str) -> PkgModule:
         """
         This method gets a specific package module from the module dictionary.
 
@@ -114,10 +109,11 @@ class Package:
 
         try:
             return self.modules[module_type]
-        except KeyError:
-            return None
+        except KeyError as error:
+            raise PackageError("No module found for type {}. Error: {}".format(str(module_type),
+                                                                               repr(error)))
 
-    def get_modules(self):
+    def get_modules(self) -> list:
         """
         This method gets all a package's modules.
 
@@ -216,7 +212,7 @@ class Package:
 
         return string
 
-    def verify(self) -> bool:
+    def verify(self) -> KtrResult:
         """
         This method verifies that the absolute minimum for proceeding with package initialisation is
         set. This also ensures the validity of some entries.
@@ -227,7 +223,7 @@ class Package:
 
         assert isinstance(self.conf, ConfigParser)
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector("Package {}".format(self.conf_name))
 
         success = True
 
@@ -302,4 +298,4 @@ class Package:
                            "'.")
                 success = False
 
-        return success
+        return KtrResult(success, logger)

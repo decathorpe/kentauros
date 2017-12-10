@@ -14,16 +14,10 @@ from collections import OrderedDict
 
 from tinydb import TinyDB, Query
 
-from kentauros.definitions import ActionType
+from .definitions import ActionType
 
-from kentauros.init.cli import CLIArgs
-from kentauros.init.env import get_env_debug, get_env_verby
-
-
-LOG_PREFIX = "ktr/instance"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from .init.cli import CLIArgs
+from .init.env import get_env_debug, get_env_verby
 
 
 def __smaller_int__(int1: int, int2: int):
@@ -221,7 +215,8 @@ class Kentauros:
         # do not disturb the database with empty changes
         if entries == dict():
             if self.debug:
-                print(LOG_PREFIX + ": Not disturbing DB with empty changes.")
+                # print("Not disturbing DB with empty changes.")
+                pass
             return -1
 
         # read old state for comparison with to "upsert" values
@@ -230,7 +225,8 @@ class Kentauros:
         # compare entries with current status
         if __dict_is_subset__(old_state, entries):
             if self.debug:
-                print(LOG_PREFIX + ": Not disturbing DB with redundant changes.")
+                # print("Not disturbing DB with redundant changes.")
+                pass
             return -1
 
         with TinyDB(os.path.join(self.get_basedir(), "state.json"),

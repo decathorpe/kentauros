@@ -7,14 +7,9 @@ constructors.
 import abc
 import os
 
-from kentauros.instance import Kentauros
-from kentauros.modules.module import PkgModule
-
-
-LOG_PREFIX = "ktr/constructor"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from ...instance import Kentauros
+from ...modules.module import PkgModule
+from ...result import KtrResult
 
 
 class Constructor(PkgModule, metaclass=abc.ABCMeta):
@@ -43,31 +38,31 @@ class Constructor(PkgModule, metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def init(self):
+    def init(self) -> KtrResult:
         """
         This method creates the directory structure needed by other methods of this class.
         """
 
     @abc.abstractmethod
-    def prepare(self) -> bool:
+    def prepare(self) -> KtrResult:
         """
         This method prepares all files necessary for the actual assembly of the source package.
         """
 
     @abc.abstractmethod
-    def build(self):
+    def build(self) -> KtrResult:
         """
         This method assembles the source package from files prepared previously.
         """
 
     @abc.abstractmethod
-    def export(self):
+    def export(self) -> KtrResult:
         """
         This method exports the assembled source packages to the specified package directory.
         """
 
     @abc.abstractmethod
-    def cleanup(self):
+    def cleanup(self) -> KtrResult:
         """
         This method cleans up all temporary files and directories.
         """

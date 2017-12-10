@@ -7,14 +7,9 @@ builders.
 import abc
 import os
 
-from kentauros.instance import Kentauros
-from kentauros.modules.module import PkgModule
-
-
-LOG_PREFIX = "ktr/builder"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from ...instance import Kentauros
+from ...modules.module import PkgModule
+from ...result import KtrResult
 
 
 class Builder(PkgModule, metaclass=abc.ABCMeta):
@@ -30,6 +25,7 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
     """
 
     def __init__(self, package):
+        super().__init__()
         ktr = Kentauros()
 
         self.bpkg = package
@@ -42,13 +38,13 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def build(self):
+    def build(self) -> KtrResult:
         """
         This method executes the builder commands.
         """
 
     @abc.abstractmethod
-    def export(self):
+    def export(self) -> KtrResult:
         """
         This method exports the built packages (if any) to the directory
         specified for package exports.

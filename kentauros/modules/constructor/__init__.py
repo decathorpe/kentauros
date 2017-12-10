@@ -7,10 +7,10 @@ constructors.
 """
 
 
-from kentauros.definitions import ConstructorType
+from ...definitions import ConstructorType
 
-from kentauros.modules.constructor.abstract import Constructor
-from kentauros.modules.constructor.srpm import SrpmConstructor
+from .abstract import Constructor
+from .srpm import SrpmConstructor
 
 
 def get_constructor(ctype: ConstructorType, package) -> Constructor:

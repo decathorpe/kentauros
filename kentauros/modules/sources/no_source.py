@@ -6,14 +6,11 @@ source module is defined in the package configuration file.
 
 import warnings
 
-from kentauros.definitions import SourceType
-from kentauros.modules.sources.abstract import Source
+from ...definitions import SourceType
+from ...result import KtrResult
 
+from .abstract import Source
 
-LOG_PREFIX = "ktr/sources/none"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
 
 ERROR_STRING = "kentauros is attempting to run an unsupported method on a NoSource object."
 
@@ -27,6 +24,8 @@ class NoSource(Source):
         Package package:    package instance this :py:class:`NoSource` belongs to
     """
 
+    NAME = "Dummy Source"
+
     def __init__(self, package):
         super().__init__(package)
 
@@ -35,13 +34,16 @@ class NoSource(Source):
     def __str__(self) -> str:
         return "placeholder Source for Package '" + self.spkg.get_conf_name() + "'"
 
-    def verify(self) -> bool:
-        warnings.warn(ERROR_STRING, Warning)
-        return True
+    def name(self):
+        return self.NAME
 
-    def get_keep(self) -> bool:
+    def verify(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return True
+        return KtrResult.true()
+
+    def get_keep(self) -> KtrResult:
+        warnings.warn(ERROR_STRING, Warning)
+        return KtrResult.true()
 
     def get_orig(self) -> str:
         warnings.warn(ERROR_STRING, Warning)
@@ -62,14 +64,14 @@ class NoSource(Source):
     def formatver(self) -> str:
         return self.spkg.get_version()
 
-    def get(self) -> bool:
+    def get(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return True
+        return KtrResult.true()
 
-    def update(self) -> bool:
+    def update(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return True
+        return KtrResult.true()
 
-    def export(self) -> bool:
+    def export(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return True
+        return KtrResult.true()

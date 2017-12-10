@@ -8,10 +8,10 @@ constructors.
 """
 
 
-from kentauros.definitions import BuilderType
+from ...definitions import BuilderType
 
-from kentauros.modules.builder.abstract import Builder
-from kentauros.modules.builder.mock import MockBuilder
+from .abstract import Builder
+from .mock import MockBuilder
 
 
 def get_builder(btype: BuilderType, package) -> Builder:

@@ -9,20 +9,19 @@ import datetime
 import os
 import shutil
 import subprocess
+import warnings
 
-from kentauros.conntest import is_connected
-from kentauros.definitions import SourceType
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
+from ...conntest import is_connected
+from ...definitions import SourceType
+from ...instance import Kentauros
+from ...logcollector import LogCollector
+from ...result import KtrResult
 
-from kentauros.modules.sources.abstract import Source
-from kentauros.modules.sources.source_error import SourceError
+from .abstract import Source
+from .source_error import SourceError
 
 
-LOG_PREFIX = "ktr/sources/bzr"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+# TODO: Use BzrCommand class for everything
 
 
 class BzrCommand:
@@ -35,9 +34,7 @@ class BzrCommand:
         self.path = path
         self.args = list(args)
 
-    def execute(self) -> str:
-        logger = KtrLogger(LOG_PREFIX)
-
+    def execute(self, logger: LogCollector) -> str:
         cmd = [self.exec]
         cmd.extend(self.args)
 
@@ -69,6 +66,8 @@ class BzrSource(Source):
         Package package:    package instance this :py:class:`Source` belongs to
     """
 
+    NAME = "bzr Source"
+
     def __init__(self, package):
         super().__init__(package)
 
@@ -87,7 +86,10 @@ class BzrSource(Source):
     def __str__(self) -> str:
         return "bzr Source for Package '" + self.spkg.get_conf_name() + "'"
 
-    def verify(self) -> bool:
+    def name(self):
+        return self.NAME
+
+    def verify(self) -> KtrResult:
         """
         This method runs several checks to ensure bzr commands can proceed. It is automatically
         executed at package initialisation. This includes:
@@ -99,7 +101,7 @@ class BzrSource(Source):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
@@ -120,9 +122,14 @@ class BzrSource(Source):
             logger.log("Install bzr to use the specified source.")
             success = False
 
-        return success
+        return KtrResult(success, logger)
 
     def get_keep(self) -> bool:
+        """
+        Returns:
+            bool:   boolean value indicating whether the exported tarball should be kept
+        """
+
         return self.spkg.conf.getboolean("bzr", "keep")
 
     def get_keep_repo(self) -> bool:
@@ -170,7 +177,7 @@ class BzrSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         # if sources are not accessible (anymore), return "" or last saved rev
         if not os.access(self.dest, os.R_OK):
@@ -189,18 +196,21 @@ class BzrSource(Source):
         prev_dir = os.getcwd()
         os.chdir(self.dest)
 
-        logger.log_command(cmd, 0)
+        logger.cmd(cmd)
         rev = subprocess.check_output(cmd).decode().rstrip("\n")
 
         os.chdir(prev_dir)
+
+        warnings.warn("Log Messages might be lost!", RuntimeWarning)
+        logger.print()
 
         self.saved_rev = rev
         return rev
 
     def datetime(self) -> datetime.datetime:
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
-        info = BzrCommand(self.dest, "version-info").execute()
+        info = BzrCommand(self.dest, "version-info").execute(logger)
 
         for line in info:
             if line[0:6] == "date: ":
@@ -209,6 +219,10 @@ class BzrSource(Source):
 
         logger.err("No date information present in the output of 'bzr version-info'.")
         logger.err("Assuming 'now' as fallback date/time.")
+
+        warnings.warn("Log Messages might be lost!", RuntimeWarning)
+        logger.print()
+
         return datetime.datetime.now()
 
     def datetime_str(self) -> str:
@@ -275,7 +289,7 @@ class BzrSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         template: str = ktr.conf.get("main", "version_template_bzr")
 
@@ -293,9 +307,12 @@ class BzrSource(Source):
         if "%{" in template:
             logger.log("Unrecognized variables present in bzr version template.")
 
+        warnings.warn("Log Messages might be lost!", RuntimeWarning)
+        logger.print()
+
         return template
 
-    def get(self) -> bool:
+    def get(self) -> KtrResult:
         """
         This method executes the bzr repository download to the package source directory. This
         respects the branch and revision set in the package configuration file.
@@ -304,26 +321,27 @@ class BzrSource(Source):
             bool:  `True` if successful, `False` if not or source already exists
         """
 
-        ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
-
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
+        logger = LogCollector(self.name())
+
         # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             rev = self.rev()
-            logger.log("Sources already downloaded. Latest revision: " + str(rev), 2)
-            return False
+            logger.log("Sources already downloaded. Latest revision: " + str(rev))
+            return KtrResult(False, logger)
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            logger.log("No connection to remote host detected. Cancelling source checkout.", 2)
-            return False
+            logger.log("No connection to remote host detected. Cancelling source checkout.")
+            return KtrResult(False, logger)
 
         # construct bzr command
         cmd = ["bzr", "branch"]
+
+        ktr = Kentauros()
 
         # add --verbose or --quiet depending on settings
         if (ktr.verby == 2) and not ktr.debug:
@@ -346,7 +364,7 @@ class BzrSource(Source):
         cmd.append(self.dest)
 
         # branch bzr repo from origin to destination
-        logger.log_command(cmd, 1)
+        logger.cmd(cmd)
         subprocess.call(cmd)
 
         # get commit ID
@@ -356,12 +374,12 @@ class BzrSource(Source):
         if self.get_revno():
             if self.get_revno() != rev:
                 logger.err("Something went wrong, requested commit not available.")
-                return False
+                return KtrResult(False, logger)
 
         # return True if successful
-        return True
+        return KtrResult(True, logger)
 
-    def update(self) -> bool:
+    def update(self) -> KtrResult:
         """
         This method executes a bzr repository update as specified in the package configuration file.
         If a specific revision has been set in the config file, this method will not attempt to
@@ -371,20 +389,21 @@ class BzrSource(Source):
             bool: `True` if update available and successful, `False` otherwise
         """
 
-        ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
-
         # if specific revision is requested, do not pull updates (obviously)
         if self.get_revno():
-            return False
+            return KtrResult.false()
+
+        logger = LogCollector(self.name())
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            logger.log("No connection to remote host detected. Cancelling source checkout.", 2)
-            return False
+            logger.log("No connection to remote host detected. Cancelling source checkout.")
+            return KtrResult(False, logger)
 
         # construct bzr command
         cmd = ["bzr", "pull"]
+
+        ktr = Kentauros()
 
         # add --verbose or --quiet depending on settings
         if (ktr.verby == 2) and not ktr.debug:
@@ -395,7 +414,7 @@ class BzrSource(Source):
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
             logger.err("Sources need to be .get() before .update() can be run.")
-            return False
+            return KtrResult(False, logger)
 
         # get old commit ID
         rev_old = self.rev()
@@ -405,7 +424,7 @@ class BzrSource(Source):
         os.chdir(self.dest)
 
         # get updates
-        logger.log_command(cmd, 1)
+        logger.cmd(cmd)
         subprocess.call(cmd)
 
         # go back to previous dir
@@ -415,9 +434,26 @@ class BzrSource(Source):
         rev_new = self.rev()
 
         # return True if update found, False if not
-        return rev_new != rev_old
+        updated = rev_new != rev_old
+        return KtrResult(updated, logger)
 
-    def export(self) -> bool:
+    def _remove_or_keep(self, logger: LogCollector):
+        """
+        This private method removes the bzr repository and is called after source export, if
+        not keeping the repository around was specified in the configuration file.
+        """
+
+        ktr = Kentauros()
+
+        if not self.get_keep_repo():
+            # try to be careful with "rm -r"
+            assert os.path.isabs(self.dest)
+            assert ktr.get_datadir() in self.dest
+
+            shutil.rmtree(self.dest)
+            logger.log("bzr repository deleted after export to tarball")
+
+    def export(self) -> KtrResult:
         """
         This method executes the export from the package source repository to a tarball with pretty
         file name. It also respects the `bzr.keep=False` setting in the package configuration file -
@@ -428,20 +464,7 @@ class BzrSource(Source):
         """
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
-
-        def remove_not_keep():
-            """
-            This local function removes the bzr repository and is called after source export, if
-            not keeping the repository around was specified in the configuration file.
-            """
-
-            if not self.get_keep_repo():
-                # try to be careful with "rm -r"
-                assert os.path.isabs(self.dest)
-                assert ktr.get_datadir() in self.dest
-                shutil.rmtree(self.dest)
-                logger.log("bzr repository deleted after export to tarball", 1)
+        logger = LogCollector(self.name())
 
         # construct bzr command
         cmd = ["bzr", "export"]
@@ -460,7 +483,7 @@ class BzrSource(Source):
         # check if bzr repo exists
         if not os.access(self.dest, os.R_OK):
             logger.err("Sources need to be get before they can be exported.")
-            return False
+            return KtrResult(False, logger)
 
         version = self.formatver()
         name_version = self.spkg.get_name() + "-" + version
@@ -471,10 +494,10 @@ class BzrSource(Source):
 
         # check if file has already been exported
         if os.path.exists(file_name):
-            logger.log("Tarball has already been exported.", 1)
+            logger.log("Tarball has already been exported.")
             # remove bzr repo if keep is False
-            remove_not_keep()
-            return False
+            self._remove_or_keep(logger)
+            return KtrResult(False, logger)
 
         # remember previous directory
         prev_dir = os.getcwd()
@@ -483,14 +506,14 @@ class BzrSource(Source):
         os.chdir(self.dest)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        logger.log_command(cmd, 1)
+        logger.cmd(cmd)
         subprocess.call(cmd)
 
         # update saved rev
         self.rev()
 
         # remove bzr repo if keep is False
-        remove_not_keep()
+        self._remove_or_keep(logger)
 
         os.chdir(prev_dir)
-        return True
+        return KtrResult(True, logger)

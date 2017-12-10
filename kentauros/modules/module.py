@@ -6,11 +6,22 @@ modules must provide.
 
 import abc
 
+from ..result import KtrResult
+
 
 class PkgModule(metaclass=abc.ABCMeta):
     """
     This abstract class defines the properties that all package modules must have.
     """
+
+    @abc.abstractmethod
+    def name(self) -> str:
+        """
+        This method is expected to return a nice name describing the sub-module.
+
+        Returns:
+            str:    string containing the name of the sub-module
+        """
 
     @abc.abstractmethod
     def __str__(self) -> str:
@@ -22,7 +33,7 @@ class PkgModule(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def execute(self) -> bool:
+    def execute(self) -> KtrResult:
         """
         This method is expected to execute the package module and return a boolean, indicating
         whether the execution finished successfully or not.
@@ -32,7 +43,7 @@ class PkgModule(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def clean(self) -> bool:
+    def clean(self) -> KtrResult:
         """
         This method is expected to clean up a sub-module's files and folders, if it creates any
         during its execution.
@@ -70,7 +81,7 @@ class PkgModule(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def verify(self) -> bool:
+    def verify(self) -> KtrResult:
         """
         This method checks if all configuration values needed for this module are present and valid.
 

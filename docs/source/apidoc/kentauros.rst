@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     kentauros.actions
+    kentauros.cli
     kentauros.init
     kentauros.modules
 
@@ -45,10 +46,10 @@ kentauros\.instance module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.logger module
-------------------------
+kentauros\.logcollector module
+------------------------------
 
-.. automodule:: kentauros.logger
+.. automodule:: kentauros.logcollector
     :members:
     :undoc-members:
     :show-inheritance:
@@ -57,6 +58,14 @@ kentauros\.package module
 -------------------------
 
 .. automodule:: kentauros.package
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros\.result module
+------------------------
+
+.. automodule:: kentauros.result
     :members:
     :undoc-members:
     :show-inheritance:

@@ -7,13 +7,13 @@ constructors.
 """
 
 
-from kentauros.modules.sources.abstract import Source
-from kentauros.modules.sources.bzr import BzrSource
-from kentauros.modules.sources.git import GitSource
-from kentauros.modules.sources.url import UrlSource
-from kentauros.modules.sources.local import LocalSource
+from ...definitions import SourceType
 
-from kentauros.definitions import SourceType
+from .abstract import Source
+from .bzr import BzrSource
+from .git import GitSource
+from .url import UrlSource
+from .local import LocalSource
 
 
 def get_source(stype: SourceType, package) -> Source:

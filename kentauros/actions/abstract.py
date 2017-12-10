@@ -6,8 +6,9 @@ action implementations.
 
 import abc
 
-from kentauros.instance import Kentauros
-from kentauros.package import Package
+from ..instance import Kentauros
+from ..package import Package
+from ..result import KtrResult
 
 
 class Action(metaclass=abc.ABCMeta):
@@ -28,8 +29,6 @@ class Action(metaclass=abc.ABCMeta):
         assert isinstance(pkg_name, str)
 
         ktr = Kentauros()
-
-        self.name = pkg_name
         self.kpkg = ktr.get_package(pkg_name)
 
         assert self.kpkg is not None
@@ -38,7 +37,11 @@ class Action(metaclass=abc.ABCMeta):
         self.atype = None
 
     @abc.abstractmethod
-    def execute(self):
+    def name(self) -> str:
+        pass
+
+    @abc.abstractmethod
+    def execute(self) -> KtrResult:
         """
         This method runs the action corresponding to the :py:class:`Action` instance on the package
         specified at initialisation. It is overridden by subclasses to contain the real code for the

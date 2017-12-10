@@ -7,39 +7,30 @@ script.
 import glob
 import os
 
-from kentauros.definitions import ActionType
-
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger, print_flush
-
-from kentauros.actions import ImportAction, VerifyAction, get_action
-
-from kentauros.bootstrap import ktr_bootstrap
-from kentauros.package import Package, PackageError
+from .actions import ImportAction, VerifyAction, get_action
+from .bootstrap import ktr_bootstrap
+from .definitions import ActionType
+from .instance import Kentauros
+from .logcollector import LogCollector
+from .package import Package, PackageError
+from .result import KtrResult
 
 
-LOG_PREFIX = "ktr"
-"""This string specifies the prefix for log and error messages printed to
-stdout or stderr from inside this subpackage.
-"""
-
-
-def print_parameters():
+def print_parameters(logger: LogCollector):
     """
     This function prints the kentauros program parameters.
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOG_PREFIX)
 
     if ktr.debug or ktr.verby < 2:
-        print_flush()
+        logger.log("\n")
 
-    logger.log("Debugging:                          " + str(ktr.debug), 0)
-    logger.log("Logger Verbosity:                   " + str(ktr.verby) + "/2", 1)
+    logger.log("Debugging:                          " + str(ktr.debug))
+    logger.log("Logger Verbosity:                   " + str(ktr.verby) + "/2")
 
     if ktr.debug:
-        print_flush()
+        logger.log("\n")
 
     logger.dbg("Base directory:                     " + ktr.get_basedir())
     logger.dbg("Package configuration directory:    " + ktr.get_confdir())
@@ -48,20 +39,18 @@ def print_parameters():
     logger.dbg("Source package directory:           " + ktr.get_packdir())
     logger.dbg("Package specification directory:    " + ktr.get_specdir())
 
-    print_flush()
+    logger.log("\n")
 
 
-def print_no_package_error():
+def print_no_package_error(logger: LogCollector):
     """
     This function prints an error and helpful information if no action is specified.
     """
 
-    logger = KtrLogger(LOG_PREFIX)
-
     logger.log("No action specified. Exiting.")
     logger.log("Use 'ktr --help' for more information.")
 
-    print_flush()
+    logger.log("\n")
 
 
 def get_packages_cli() -> list:
@@ -75,7 +64,6 @@ def get_packages_cli() -> list:
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOG_PREFIX)
 
     packages = list()
 
@@ -85,7 +73,7 @@ def get_packages_cli() -> list:
         if os.path.exists(pkg_conf_path):
             packages.append(pkg)
         else:
-            logger.err("Package configuration for '" + pkg + "' could not be found.")
+            raise PackageError("Package configuration for '" + pkg + "' could not be found.")
 
     packages.sort()
 
@@ -140,7 +128,7 @@ def get_packages() -> list:
     return packages
 
 
-def init_package_objects(packages: list):
+def init_package_objects(packages: list, logger: LogCollector):
     """
     This function parses the list of package configuration names and initialises the `Package`
     objects. If no errors occur during initialisation, the `Package` instance is added to the
@@ -148,7 +136,6 @@ def init_package_objects(packages: list):
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOG_PREFIX)
 
     for name in packages:
         assert isinstance(name, str)
@@ -163,7 +150,7 @@ def init_package_objects(packages: list):
         ktr.add_package(name, pkg)
 
 
-def print_package_header(name: str):
+def print_package_header(name: str, logger: LogCollector):
     """
     This function prints a small banner to indicate which package actions are executed for next.
 
@@ -173,14 +160,12 @@ def print_package_header(name: str):
 
     assert isinstance(name, str)
 
-    logger = KtrLogger(LOG_PREFIX)
-
     logger.log("------------------------------" + "-" * len(name))
     logger.log("Executing actions on package: " + name)
     logger.log("------------------------------" + "-" * len(name))
 
 
-def do_import_action(name: str):
+def do_import_action(name: str, logger: LogCollector):
     """
     This function executes the Import action for the given package configuration.
 
@@ -190,14 +175,12 @@ def do_import_action(name: str):
 
     assert isinstance(name, str)
 
-    logger = KtrLogger(LOG_PREFIX)
-
     logger.log("Importing new package '" + name + "' into the database.")
     import_action = ImportAction(name)
     import_action.execute()
 
 
-def do_verify_action(name: str) -> bool:
+def do_verify_action(name: str, logger: LogCollector) -> bool:
     """
     This function executes the Verify action for the given package configuration.
 
@@ -207,14 +190,16 @@ def do_verify_action(name: str) -> bool:
 
     assert isinstance(name, str)
 
-    logger = KtrLogger(LOG_PREFIX)
-
     logger.dbg("Verifying package '" + name + "'.")
     verification = VerifyAction(name)
-    return verification.execute()
+
+    res = verification.execute()
+    logger.merge(res.messages)
+
+    return res.success
 
 
-def do_process_packages() -> (list, list):
+def do_process_packages(logger: LogCollector) -> (list, list):
     """
     This function processes all packages and executes the specified action on them.
 
@@ -223,7 +208,6 @@ def do_process_packages() -> (list, list):
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOG_PREFIX)
 
     actions_success = list()
     actions_failure = list()
@@ -234,12 +218,12 @@ def do_process_packages() -> (list, list):
 
         action_type = ktr.cli.get_action()
 
-        print_package_header(name)
+        print_package_header(name, logger)
 
         if ktr.state_read(name) is None:
-            do_import_action(name)
+            do_import_action(name, logger)
 
-        verified = do_verify_action(name)
+        verified = do_verify_action(name, logger)
 
         if action_type == ActionType.VERIFY:
             if verified:
@@ -249,7 +233,7 @@ def do_process_packages() -> (list, list):
                 logger.log("Package did not pass verification.")
                 actions_failure.append(name)
 
-            print_flush()
+            logger.log("\n")
             continue
 
         else:
@@ -259,15 +243,16 @@ def do_process_packages() -> (list, list):
                 logger.log("Package configuration file is invalid, skipping package.")
                 actions_failure.append(name)
 
-                print_flush()
+                logger.log("\n")
                 continue
 
         action = get_action(action_type, name)
-        success = action.execute()
+        res: KtrResult = action.execute()
+        logger.merge(res.messages)
 
-        print_flush()
+        logger.log("\n")
 
-        if success:
+        if res.success:
             actions_success.append(name)
         else:
             actions_failure.append(name)
@@ -282,45 +267,48 @@ def run() -> int:
     """
 
     ktr = Kentauros()
-    logger = KtrLogger(LOG_PREFIX)
+    logger = LogCollector()
 
-    print_parameters()
+    try:
+        print_parameters(logger)
 
-    # if no action is specified: exit(0)
-    if ktr.cli.get_action() == ActionType.NONE:
-        print_no_package_error()
-        return 0
+        # if no action is specified: exit(0)
+        if ktr.cli.get_action() == ActionType.NONE:
+            print_no_package_error(logger)
+            return 0
 
-    # initialise directory structure and exit(1) if it fails
-    if not ktr_bootstrap():
-        return 1
+        # initialise directory structure and exit(1) if it fails
+        if not ktr_bootstrap(logger):
+            return 1
 
-    # get packages from CLI (all or specific ones)
-    packages = get_packages()
+        # get packages from CLI (all or specific ones)
+        packages = get_packages()
 
-    # if no package configurations are found: exit(0)
-    if not packages:
-        logger.log("No packages have been specified or found. Exiting.")
-        print_flush()
-        return 0
+        # if no package configurations are found: exit(0)
+        if not packages:
+            logger.log("No packages have been specified or found. Exiting.")
+            logger.log("\n")
+            return 0
 
-    # log list of found packages
-    logger.log_list("Packages", packages)
-    print_flush()
+        # log list of found packages
+        logger.lst("Packages", packages)
+        logger.log("\n")
 
-    # generate package objects
-    init_package_objects(packages)
+        # generate package objects
+        init_package_objects(packages, logger)
 
-    # execute package actions
-    actions_success, actions_failure = do_process_packages()
+        # execute package actions
+        actions_success, actions_failure = do_process_packages(logger)
 
-    # print execution success
-    if actions_success:
-        logger.log_list("Successful actions", actions_success)
+        # print execution success
+        if actions_success:
+            logger.lst("Successful actions", actions_success)
 
-    if actions_failure:
-        logger.log_list("Failed actions", actions_failure)
+        if actions_failure:
+            logger.lst("Failed actions", actions_failure)
 
-    print_flush()
+        logger.log("\n")
+    finally:
+        logger.print(warnings=True, debug=ktr.debug)
 
     return 0

@@ -12,15 +12,12 @@ import shutil
 import subprocess
 import time
 
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
-from kentauros.modules.builder.abstract import Builder
+from ...instance import Kentauros
+from ...logcollector import LogCollector
+from ...result import KtrResult
 
+from .abstract import Builder
 
-LOG_PREFIX = "ktr/builder/mock"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
 
 DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
 DEFAULT_VAR_PATH = "/var/lib/mock"
@@ -105,13 +102,10 @@ def get_mock_cmd() -> str:
         str:    path to the mock binary
     """
 
-    logger = KtrLogger(LOG_PREFIX)
-
     mock_cmd = subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
 
     # check if the right binary is used or if something is messing up $PATH
     if mock_cmd == "/usr/sbin/mock":
-        logger.log("Something is messing with your $PATH variable.", 2)
         mock_cmd = "/usr/bin/mock"
 
     return mock_cmd
@@ -132,6 +126,8 @@ class MockBuild:
         str dist:   stores the chroot that the package will be built in
     """
 
+    NAME = "Mock Build"
+
     def __init__(self, mock: str, path: str, dist: str = None):
         self.mock = mock
         self.path = path
@@ -141,6 +137,16 @@ class MockBuild:
             self.dist = get_default_mock_dist()
         else:
             self.dist = dist
+
+    def name(self):
+        """
+        This method returns the module name for generating log messages.
+
+        Returns:
+            str:    module name for log messages
+        """
+
+        return self.NAME
 
     def get_command(self) -> list:
         """
@@ -169,7 +175,7 @@ class MockBuild:
 
         return cmd
 
-    def build(self) -> int:
+    def build(self) -> KtrResult:
         """
         This method starts the mock build (and waits for already running builds with the same
         chroot to finish before that).
@@ -178,7 +184,7 @@ class MockBuild:
             int:    return code of the subprocess call
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
@@ -193,7 +199,7 @@ class MockBuild:
                 try:
                     fcntl.lockf(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 except IOError:
-                    logger.log("The specified build chroot is busy, waiting.", 2)
+                    logger.log("The specified build chroot is busy, waiting.")
                     time.sleep(120)
                 else:
                     build_wait = False
@@ -201,14 +207,14 @@ class MockBuild:
                     lock_file.close()
 
         cmd = self.get_command()
-        logger.log_command(cmd)
+        logger.cmd(cmd)
 
         try:
             ret = subprocess.call(cmd)
-            return ret
+            return KtrResult(ret == 0, logger)
         except PermissionError:
             logger.log("Mock build has been cancelled.")
-            return 1
+            return KtrResult(False, logger)
 
 
 class MockBuilder(Builder):
@@ -229,10 +235,13 @@ class MockBuilder(Builder):
 
         self.edir = os.path.join(Kentauros().get_expodir(), self.bpkg.get_conf_name())
 
+    def name(self) -> str:
+        return "Mock Builder"
+
     def __str__(self) -> str:
         return "Mock Builder for Package '" + self.bpkg.get_conf_name() + "'"
 
-    def verify(self) -> bool:
+    def verify(self) -> KtrResult:
         """
         This method runs several checks to ensure mock builds can proceed. It is automatically
         executed at package initialisation. This includes:
@@ -246,7 +255,7 @@ class MockBuilder(Builder):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
@@ -280,7 +289,7 @@ class MockBuilder(Builder):
             logger.err("Don't attempt to run mock as root.")
             success = False
 
-        return success
+        return KtrResult(success, logger)
 
     def get_active(self) -> bool:
         """
@@ -328,7 +337,7 @@ class MockBuilder(Builder):
     def imports(self) -> dict:
         return dict()
 
-    def build(self) -> bool:
+    def build(self) -> KtrResult:
         """
         This method constructs the :py:class:`MockBuilder` instances, which contain the commands
         for executing the builds, and executes them in turn. It also checks if the executing user is
@@ -345,11 +354,12 @@ class MockBuilder(Builder):
             bool:   ``True`` if all builds succeeded, ``False`` if not
         """
 
+        logger = LogCollector(self.name())
+
         if not self.get_active():
-            return True
+            return KtrResult(True, logger)
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
 
         package_dir = os.path.join(ktr.get_packdir(), self.bpkg.get_conf_name())
 
@@ -357,14 +367,14 @@ class MockBuilder(Builder):
         srpms = glob.glob(os.path.join(package_dir, self.bpkg.get_name() + "*.src.rpm"))
 
         if not srpms:
-            logger.log("No source packages were found. Construct them first.", 2)
-            return False
+            logger.log("No source packages were found. Construct them first.")
+            return KtrResult(False, logger)
 
         # figure out which srpm to build
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        logger.log_list("Specified chroots", self.get_dists())
+        logger.log("Specified chroots: " + str(" ").join(self.get_dists()))
 
         # generate build queue
         build_queue = list()
@@ -390,14 +400,16 @@ class MockBuilder(Builder):
             os.remove(srpm)
 
         if builds_success:
-            logger.log_list("Build successes", builds_success)
+            for build in builds_success:
+                logger.log("Build succesful: " + str(build))
 
         if builds_failure:
-            logger.log_list("Build failures", builds_failure)
+            for build in builds_failure:
+                logger.log("Build failed: " + str(build))
 
-        return not builds_failure
+        return KtrResult(not builds_failure, logger)
 
-    def export(self) -> bool:
+    def export(self) -> KtrResult:
         """
         This method copies the build results (if any) from the mock result directory to the
         directory specified for binary package exports.
@@ -407,22 +419,22 @@ class MockBuilder(Builder):
         """
 
         if not self.get_active():
-            return True
+            return KtrResult.true()
 
         if not self.get_export():
-            return True
+            return KtrResult.true()
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         os.makedirs(self.edir, exist_ok=True)
 
         if not os.path.exists(self.edir):
             logger.err("Package exports directory could not be created.")
-            return False
+            return KtrResult(False, logger)
 
         if not os.access(self.edir, os.W_OK):
             logger.err("Package exports directory can not be written to.")
-            return False
+            return KtrResult(False, logger)
 
         mock_result_dirs = list()
 
@@ -445,39 +457,41 @@ class MockBuilder(Builder):
         for file in file_results:
             shutil.copy2(file, self.edir)
 
-        return True
+        return KtrResult(True, logger)
 
-    def execute(self) -> bool:
-        logger = KtrLogger(LOG_PREFIX)
+    def execute(self) -> KtrResult:
+        logger = LogCollector(self.name())
 
-        success = self.build()
+        res = self.build()
+        logger.merge(res.messages)
 
-        if not success:
+        if not res.success:
             logger.log("Binary package building unsuccessful, aborting action.")
-            return False
+            return KtrResult(False, logger)
 
-        success = self.export()
+        res = self.export()
+        logger.merge(res.messages)
 
-        if not success:
+        if not res.success:
             logger.log("Binary package exporting unsuccessful, aborting action.")
-            return False
+            return KtrResult(False, logger)
+        else:
+            return KtrResult(True, logger)
 
-        return success
-
-    def clean(self) -> bool:
+    def clean(self) -> KtrResult:
         if not os.path.exists(self.edir):
-            return True
+            return KtrResult.true()
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         try:
             assert Kentauros().get_expodir() in self.edir
             assert os.path.isabs(self.edir)
             shutil.rmtree(self.edir)
-            return True
+            return KtrResult(True, logger)
         except AssertionError:
             logger.err("The Package exports directory looks weird. Doing nothing.")
-            return False
+            return KtrResult(False, logger)
         except OSError:
             logger.err("The Package exports directory couldn't be removed.")
-            return False
+            return KtrResult(False, logger)

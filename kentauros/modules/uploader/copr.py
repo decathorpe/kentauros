@@ -8,16 +8,12 @@ import glob
 import os
 import subprocess
 
-from kentauros.conntest import is_connected
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
-from kentauros.modules.uploader.abstract import Uploader
+from ...conntest import is_connected
+from ...instance import Kentauros
+from ...logcollector import LogCollector
+from ...result import KtrResult
 
-
-LOG_PREFIX = "ktr/uploader/copr"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from .abstract import Uploader
 
 DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
 
@@ -35,6 +31,8 @@ class CoprUploader(Uploader):
         bool active:        determines if this instance is active
     """
 
+    NAME = "COPR Uploader"
+
     def __init__(self, package):
         super().__init__(package)
 
@@ -43,7 +41,10 @@ class CoprUploader(Uploader):
     def __str__(self) -> str:
         return "COPR Uploader for Package '" + self.upkg.get_conf_name() + "'"
 
-    def verify(self) -> bool:
+    def name(self):
+        return self.NAME
+
+    def verify(self) -> KtrResult:
         """
         This method runs several checks to ensure copr uploads can proceed. It is automatically
         executed at package initialisation. This includes:
@@ -55,7 +56,7 @@ class CoprUploader(Uploader):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
@@ -76,7 +77,7 @@ class CoprUploader(Uploader):
             logger.log("Install copr-cli to use the specified builder.")
             success = False
 
-        return success
+        return KtrResult(success, logger)
 
     def get_active(self):
         """
@@ -132,7 +133,7 @@ class CoprUploader(Uploader):
     def imports(self) -> dict:
         return dict()
 
-    def upload(self) -> bool:
+    def upload(self) -> KtrResult:
         """
         This method executes the upload of the newest SRPM package found in the package directory.
         The invocation of `copr-cli` also includes the chroot settings set in the package
@@ -143,10 +144,10 @@ class CoprUploader(Uploader):
         """
 
         if not self.get_active():
-            return True
+            return KtrResult.true()
 
         ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         package_dir = os.path.join(ktr.get_packdir(), self.upkg.get_conf_name())
 
@@ -155,7 +156,7 @@ class CoprUploader(Uploader):
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.")
-            return False
+            return KtrResult(False, logger)
 
         # figure out which srpm to build
         srpms.sort(reverse=True)
@@ -178,22 +179,23 @@ class CoprUploader(Uploader):
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            logger.log("No connection to remote host detected. Cancelling upload.", 2)
-            return False
+            logger.log("No connection to remote host detected. Cancelling upload.")
+            return KtrResult(False, logger)
 
-        logger.log_command(cmd, 1)
+        logger.cmd(cmd)
         ret = subprocess.call(cmd)
+        success = not ret
 
-        if ret:
-            logger.log("copr-cli command did not complete successfully.")
-            return False
-        else:
+        if success:
             if not self.get_keep():
                 os.remove(srpm)
-            return True
+        else:
+            logger.log("copr-cli command did not complete successfully.")
 
-    def execute(self) -> bool:
+        return KtrResult(success, logger)
+
+    def execute(self) -> KtrResult:
         return self.upload()
 
-    def clean(self) -> bool:
-        return True
+    def clean(self) -> KtrResult:
+        return KtrResult.true()

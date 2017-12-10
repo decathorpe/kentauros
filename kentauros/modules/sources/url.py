@@ -8,17 +8,13 @@ in the package's configuration file.
 import os
 import subprocess
 
-from kentauros.conntest import is_connected
-from kentauros.definitions import SourceType
-from kentauros.instance import Kentauros
-from kentauros.logger import KtrLogger
-from kentauros.modules.sources.abstract import Source
+from ...conntest import is_connected
+from ...definitions import SourceType
+from ...instance import Kentauros
+from ...logcollector import LogCollector
+from ...result import KtrResult
 
-
-LOG_PREFIX = "ktr/sources/url"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
+from .abstract import Source
 
 
 class UrlSource(Source):
@@ -33,6 +29,8 @@ class UrlSource(Source):
     Arguments:
         Package package:    package instance this :py:class:`UrlSource` belongs to
     """
+
+    NAME = "URL Source"
 
     def __init__(self, package):
         super().__init__(package)
@@ -54,7 +52,10 @@ class UrlSource(Source):
     def __str__(self) -> str:
         return "URL Source for Package '" + self.spkg.get_conf_name() + "'"
 
-    def verify(self) -> bool:
+    def name(self):
+        return self.NAME
+
+    def verify(self) -> KtrResult:
         """
         This method runs several checks to ensure wget commands can proceed. It is automatically
         executed at package initialisation. This includes:
@@ -66,7 +67,7 @@ class UrlSource(Source):
             bool:   verification success
         """
 
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         success = True
 
@@ -86,18 +87,15 @@ class UrlSource(Source):
         except subprocess.CalledProcessError:
             logger.log("Install wget to use the specified source.")
 
-        return success
+        return KtrResult(success, logger)
 
     def get_keep(self) -> bool:
-        return self.spkg.conf.getboolean("url", "keep")
-
-    def get_keep_repo(self) -> bool:
         """
         Returns:
             bool:   boolean value indicating whether the downloaded file should be kept
         """
 
-        return self.spkg.conf.getboolean("url", "keep_repo")
+        return self.spkg.conf.getboolean("url", "keep")
 
     def get_orig(self) -> str:
         """
@@ -142,7 +140,7 @@ class UrlSource(Source):
         else:
             return dict()
 
-    def get(self) -> bool:
+    def get(self) -> KtrResult:
         """
         This method executes the download of the file specified by the URL to the package source
         directory.
@@ -151,8 +149,7 @@ class UrlSource(Source):
             bool:  *True* if successful, *False* if not or source already exists
         """
 
-        ktr = Kentauros()
-        logger = KtrLogger(LOG_PREFIX)
+        logger = LogCollector(self.name())
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -160,16 +157,18 @@ class UrlSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            logger.log("Sources already downloaded.", 1)
-            return False
+            logger.log("Sources already downloaded.")
+            return KtrResult(False, logger)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            logger.log("No connection to remote host detected. Cancelling source download.", 2)
-            return False
+            logger.log("No connection to remote host detected. Cancelling source download.")
+            return KtrResult(False, logger)
 
         # construct wget commands
         cmd = ["wget"]
+
+        ktr = Kentauros()
 
         # add --verbose or --quiet depending on settings
         if (ktr.verby == 2) and not ktr.debug:
@@ -183,16 +182,18 @@ class UrlSource(Source):
         cmd.append(self.dest)
 
         # wget source from origin to destination
-        logger.log_command(cmd, 1)
+        logger.cmd(cmd)
         ret = subprocess.call(cmd)
 
-        if not ret:
+        success = not ret
+
+        if success:
             self.last_version = self.spkg.get_version()
 
-        return not ret
+        return KtrResult(success, logger)
 
-    def update(self) -> bool:
-        return False
+    def update(self) -> KtrResult:
+        return KtrResult.false()
 
-    def export(self) -> bool:
-        return True
+    def export(self) -> KtrResult:
+        return KtrResult.true()

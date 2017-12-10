@@ -3,11 +3,12 @@ This submodule contains the :py:class:`PrepareAction` class.
 """
 
 
-from kentauros.definitions import ActionType
-from kentauros.logger import KtrLogger
+from ..definitions import ActionType
+from ..logcollector import LogCollector
+from ..result import KtrResult
+from ..modules.module import PkgModule
 
-from kentauros.actions.abstract import Action
-from kentauros.actions.common import LOGPREFIX
+from .abstract import Action
 
 
 class PrepareAction(Action):
@@ -23,11 +24,16 @@ class PrepareAction(Action):
         ActionType atype:   here: stores `ActionType.PREPARE`
     """
 
+    NAME = "Prepare Action"
+
     def __init__(self, pkg_name: str):
         super().__init__(pkg_name)
         self.atype = ActionType.PREPARE
 
-    def execute(self) -> bool:
+    def name(self) -> str:
+        return self.NAME
+
+    def execute(self) -> KtrResult:
         """
         This method executes the :py:meth:`Source.prepare()` method to execute source preparation.
         This includes downloading or copying to destination, updating if necessary, and exporting to
@@ -37,20 +43,21 @@ class PrepareAction(Action):
             bool:           *True* when successful, *False* if sub-action fails
         """
 
-        logger = KtrLogger(LOGPREFIX)
+        logger = LogCollector(self.name())
 
-        source = self.kpkg.get_module("source")
+        source: PkgModule = self.kpkg.get_module("source")
 
         if source is None:
             logger.log("This package doesn't define a source module. Aborting.")
-            return True
+            return KtrResult(True, logger)
 
-        success = source.execute()
+        res: KtrResult = source.execute()
+        logger.merge(res.messages)
 
-        if success:
+        if res.success:
             self.update_status()
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return success
+        return KtrResult(res.success, logger)

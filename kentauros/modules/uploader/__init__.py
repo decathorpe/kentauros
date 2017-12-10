@@ -6,10 +6,10 @@ enums to their respective class constructors.
 """
 
 
-from kentauros.definitions import UploaderType
+from ...definitions import UploaderType
 
-from kentauros.modules.uploader.abstract import Uploader
-from kentauros.modules.uploader.copr import CoprUploader
+from .abstract import Uploader
+from .copr import CoprUploader
 
 
 def get_uploader(utype: UploaderType, package) -> Uploader:
