@@ -33,22 +33,21 @@ class BuildAction(Action):
         return self.NAME
 
     def execute(self) -> KtrResult:
-        logger = LogCollector(self.NAME)
+        logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         builder: PkgModule = self.kpkg.get_module("builder")
 
         if builder is None:
             logger.log("This package doesn't define a builder module. Aborting.")
-            return KtrResult(True, logger)
+            return ret.submit(True)
 
-        res = builder.execute()
+        res: KtrResult = builder.execute()
+        ret.collect(res)
 
         if res.success:
-            self.update_status()
-            logger.merge(res.messages)
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
-            logger.merge(res.messages)
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return KtrResult(res.success, logger)
+        return ret.submit(res.success)

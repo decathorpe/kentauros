@@ -43,20 +43,20 @@ class UploadAction(Action):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         uploader: PkgModule = self.kpkg.get_module("uploader")
 
         if uploader is None:
             logger.log("This package doesn't define an uploader module. Aborting.")
-            return KtrResult(True, logger)
+            return ret.submit(True)
 
         res: KtrResult = uploader.execute()
-        logger.merge(res.messages)
+        ret.collect(res)
 
         if res.success:
-            self.update_status()
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return KtrResult(res.success, logger)
+        return ret.submit(res.success)

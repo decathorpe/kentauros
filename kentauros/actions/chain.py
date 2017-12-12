@@ -51,6 +51,9 @@ class ChainAction(Action):
         """
 
         logger = LogCollector(self.name())
+        state = dict()
+
+        ret = KtrResult(messages=logger, state=state)
 
         success = True
 
@@ -58,7 +61,7 @@ class ChainAction(Action):
             assert isinstance(module, PkgModule)
 
             res: KtrResult = module.execute()
-            logger.merge(res.messages)
+            ret.collect(res)
 
             if not res.success:
                 logger.log("Execution of module unsuccessful: " + str(module))
@@ -66,9 +69,8 @@ class ChainAction(Action):
                 break
 
         if success:
-            self.update_status()
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return KtrResult(success, logger)
+        return ret.submit(success)

@@ -34,20 +34,20 @@ class ConstructAction(Action):
 
     def execute(self) -> KtrResult:
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         constructor: PkgModule = self.kpkg.get_module("constructor")
 
         if constructor is None:
             logger.log("This package doesn't define a constructor module. Aborting.")
-            return KtrResult(True, logger)
+            return ret.submit(True)
 
         res = constructor.execute()
-        logger.merge(res.messages)
+        ret.collect(res)
 
         if res.success:
-            self.update_status()
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return KtrResult(res.success, logger)
+        return ret.submit(res.success)

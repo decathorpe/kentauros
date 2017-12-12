@@ -2,8 +2,9 @@
 This submodule contains the :py:class:`ImportAction` class.
 """
 
-
 from ..definitions import ActionType
+from ..result import KtrResult
+
 from .abstract import Action
 
 
@@ -28,12 +29,10 @@ class ImportAction(Action):
     def name(self) -> str:
         return self.NAME
 
-    def execute(self) -> bool:
+    def execute(self) -> KtrResult:
         """
         This method prints a pretty summary of a package's configuration values to the console.
         Currently, this does nothing whatsoever.
         """
 
-        self.import_status()
-
-        return True
+        return self.import_status()

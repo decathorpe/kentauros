@@ -44,20 +44,20 @@ class PrepareAction(Action):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         source: PkgModule = self.kpkg.get_module("source")
 
         if source is None:
             logger.log("This package doesn't define a source module. Aborting.")
-            return KtrResult(True, logger)
+            return ret.submit(True)
 
         res: KtrResult = source.execute()
-        logger.merge(res.messages)
+        ret.collect(res)
 
         if res.success:
-            self.update_status()
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return KtrResult(res.success, logger)
+        return ret.submit(res.success)

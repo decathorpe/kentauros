@@ -42,19 +42,20 @@ class VerifyAction(Action):
 
         ktr = Kentauros()
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
-        verify_success = True
+        success = True
         for module in self.kpkg.modules.values():
             assert isinstance(module, PkgModule)
 
             res: KtrResult = module.verify()
-            logger.merge(res.messages)
+            ret.collect(res)
 
             if res.success and ktr.cli.get_action() == ActionType.VERIFY:
                 logger.log("Verification succeeded for module: " + str(module))
 
             if not res.success:
                 logger.log("Verification failed for module: " + str(module))
-                verify_success = False
+                success = False
 
-        return KtrResult(verify_success, logger)
+        return ret.submit(success)

@@ -2,6 +2,7 @@
 This submodule contains the :py:class:`CleanAction` class.
 """
 
+import warnings
 
 from ..definitions import ActionType
 from ..instance import Kentauros
@@ -44,22 +45,26 @@ class CleanAction(Action):
         """
 
         ktr = Kentauros()
-        logger = LogCollector(self.name())
 
         success = True
+        logger = LogCollector(self.name())
+        state = dict()
+
+        ret = KtrResult(messages=logger, state=state)
 
         for module in self.kpkg.get_modules():
             assert isinstance(module, PkgModule)
 
             res: KtrResult = module.clean()
+            ret.collect(res)
 
             if not res.success:
-                logger.merge(res.messages)
                 logger.log("Module '" + str(module) + "' did not clean up successfully.")
 
             success = success and res.success
 
         if ktr.cli.get_remove():
+            warnings.warn("Calling this method is dangerous!", DeprecationWarning)
             pkgid = ktr.state_delete(self.kpkg.get_conf_name())
 
             if pkgid is None:
@@ -75,4 +80,4 @@ class CleanAction(Action):
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
 
-        return KtrResult(success, logger)
+        return ret.submit(success)

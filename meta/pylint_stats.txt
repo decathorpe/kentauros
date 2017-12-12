@@ -1,15 +1,76 @@
 ************* Module kentauros.package
-R:215, 4: Too many branches (16/15) (too-many-branches)
-R:215, 4: Too many statements (45/40) (too-many-statements)
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  1, 0: Missing class docstring (missing-docstring)
+R:  1, 0: Too few public methods (0/1) (too-few-public-methods)
+************* Module kentauros.task
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  8, 0: Missing class docstring (missing-docstring)
+C: 17, 4: Missing method docstring (missing-docstring)
+W:  2, 0: Unused LogCollector imported from logcollector (unused-import)
+************* Module kentauros.context
+W: 15, 0: FIXME (fixme)
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  5, 0: Missing class docstring (missing-docstring)
+C: 19, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.oldpackage
+C: 36, 0: Missing class docstring (missing-docstring)
+C:152, 4: Missing method docstring (missing-docstring)
+C:155, 4: Missing method docstring (missing-docstring)
+R:218, 4: Too many branches (16/15) (too-many-branches)
+R:218, 4: Too many statements (45/40) (too-many-statements)
 ************* Module kentauros.init.cli
 I: 19, 0: Locally disabling unused-argument (W0613) (locally-disabled)
 I: 20, 0: Suppressed 'unused-argument' (from line 19) (suppressed-message)
-************* Module kentauros.modules.sources.bzr
-W: 24, 0: TODO: Use BzrCommand class for everything (fixme)
+************* Module kentauros.modules.constructor.srpm
+E:687,15: Class 'KtrResult' has no 'true' member (no-member)
+E:716,19: Class 'KtrResult' has no 'true' member (no-member)
+E:724,19: Class 'KtrResult' has no 'true' member (no-member)
+************* Module kentauros.modules.sources.local
+E: 79,15: Class 'KtrResult' has no 'true' member (no-member)
+E: 85,15: Class 'KtrResult' has no 'true' member (no-member)
+E:114,15: Class 'KtrResult' has no 'true' member (no-member)
+E:117,15: Class 'KtrResult' has no 'true' member (no-member)
 ************* Module kentauros.modules.sources.git
 W: 25, 0: TODO: simplify commit, branch, etc. handling to "ref" handling (fixme)
 W: 26, 0: TODO: "ref" can be a branch name, commit hash, or tag! (fixme)
 W: 27, 0: TODO: Introduce GitCommand class (c.f. BzrCommand) (fixme)
+C:162, 4: Missing method docstring (missing-docstring)
+C:197, 4: Missing method docstring (missing-docstring)
+C:203, 4: Missing method docstring (missing-docstring)
+C:207, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.modules.sources.no_source
+E: 42,15: Class 'KtrResult' has no 'true' member (no-member)
+E: 46,15: Class 'KtrResult' has no 'true' member (no-member)
+E: 54,15: Class 'KtrResult' has no 'true' member (no-member)
+E: 62,15: Class 'KtrResult' has no 'true' member (no-member)
+E: 69,15: Class 'KtrResult' has no 'true' member (no-member)
+E: 73,15: Class 'KtrResult' has no 'true' member (no-member)
+E: 77,15: Class 'KtrResult' has no 'true' member (no-member)
+************* Module kentauros.modules.sources.url
+E:196,15: Class 'KtrResult' has no 'false' member (no-member)
+E:199,15: Class 'KtrResult' has no 'true' member (no-member)
+************* Module kentauros.modules.sources.abstract
+W:134, 0: FIXME (fixme)
+************* Module kentauros.modules.sources.bzr
+C: 21, 0: Missing class docstring (missing-docstring)
+C: 33, 4: Missing method docstring (missing-docstring)
+C:201, 4: Missing method docstring (missing-docstring)
+C:219, 4: Missing method docstring (missing-docstring)
+C:229, 4: Missing method docstring (missing-docstring)
+C:238, 4: Missing method docstring (missing-docstring)
+R:431, 4: Too many return statements (7/6) (too-many-return-statements)
+************* Module kentauros.modules.uploader.copr
+E:128,15: Class 'KtrResult' has no 'true' member (no-member)
+E:134,15: Class 'KtrResult' has no 'true' member (no-member)
+E:147,19: Class 'KtrResult' has no 'true' member (no-member)
+E:201,15: Class 'KtrResult' has no 'true' member (no-member)
+************* Module kentauros.cli
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  7, 0: Missing function docstring (missing-docstring)
+C: 62, 0: Missing function docstring (missing-docstring)
+C:101, 0: Missing function docstring (missing-docstring)
+C:139, 0: Missing function docstring (missing-docstring)
+C:161, 0: Missing function docstring (missing-docstring)
 ************* Module ktr
 R:  1, 0: Similar lines in 2 files
 ==kentauros.cli.__init__:179
@@ -39,7 +100,7 @@ R:  1, 0: Similar lines in 2 files
 
 Report
 ======
-2702 statements analysed.
+2837 statements analysed.
 
 Statistics by type
 ------------------
@@ -47,11 +108,11 @@ Statistics by type
 +---------+-------+-----------+-----------+------------+---------+
 |type     |number |old number |difference |%documented |%badname |
 +=========+=======+===========+===========+============+=========+
-|module   |49     |49         |=          |97.96       |0.00     |
+|module   |52     |52         |=          |92.31       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
-|class    |44     |44         |=          |95.45       |0.00     |
+|class    |47     |47         |=          |89.36       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
-|method   |280    |280        |=          |95.71       |0.00     |
+|method   |290    |290        |=          |95.52       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
 |function |58     |58         |=          |91.38       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
@@ -69,32 +130,34 @@ External dependencies
       | \-abstract (kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.importing,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify)
       \-bootstrap (kentauros.run)
       \-conntest (kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.url,kentauros.modules.uploader.copr)
-      \-definitions (kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.importing,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.init.cli,kentauros.instance,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.no_source,kentauros.modules.sources.url,kentauros.package,kentauros.run)
+      \-context (kentauros.task)
+      \-definitions (kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.importing,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.init.cli,kentauros.instance,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.no_source,kentauros.modules.sources.url,kentauros.oldpackage,kentauros.run)
       \-init 
       | \-cli (kentauros.instance)
       | \-env (kentauros.instance)
-      \-instance (kentauros.actions.abstract,kentauros.actions.clean,kentauros.actions.verify,kentauros.bootstrap,kentauros.modules.builder.abstract,kentauros.modules.builder.mock,kentauros.modules.constructor.abstract,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.constructor.srpm,kentauros.modules.sources.abstract,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.url,kentauros.modules.uploader.copr,kentauros.package,kentauros.run)
-      \-logcollector (kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.bootstrap,kentauros.modules.builder.mock,kentauros.modules.constructor.srpm,kentauros.modules.sources.abstract,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.url,kentauros.modules.uploader.copr,kentauros.package,kentauros.result,kentauros.run)
-      \-modules (kentauros.package)
+      \-instance (kentauros.actions.abstract,kentauros.actions.clean,kentauros.actions.verify,kentauros.bootstrap,kentauros.modules.builder.abstract,kentauros.modules.builder.mock,kentauros.modules.constructor.abstract,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.constructor.srpm,kentauros.modules.sources.abstract,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.url,kentauros.modules.uploader.copr,kentauros.oldpackage,kentauros.run)
+      \-logcollector (kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.bootstrap,kentauros.modules.builder.mock,kentauros.modules.constructor.srpm,kentauros.modules.sources.abstract,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.url,kentauros.modules.uploader.copr,kentauros.oldpackage,kentauros.result,kentauros.run,kentauros.task)
+      \-modules (kentauros.oldpackage)
       | \-builder 
       | | \-abstract (kentauros.modules.builder.mock)
       | \-constructor 
       | | \-abstract (kentauros.modules.constructor.srpm)
       | | \-rpm (kentauros.modules.constructor.srpm)
       | |   \-spec_common (kentauros.modules.constructor.rpm.spec_source_out)
-      | \-module (kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.modules.builder.abstract,kentauros.modules.constructor.abstract,kentauros.modules.sources.abstract,kentauros.modules.uploader.abstract)
+      | \-module (kentauros.actions.abstract,kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.modules.builder.abstract,kentauros.modules.constructor.abstract,kentauros.modules.sources.abstract,kentauros.modules.uploader.abstract,kentauros.task)
       | \-sources 
       | | \-abstract (kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.no_source,kentauros.modules.sources.url)
       | | \-bzr (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out)
       | | \-git (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out)
       | | \-local (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out)
       | | \-no_source (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.constructor.srpm)
-      | | \-source_error (kentauros.modules.sources.bzr,kentauros.modules.sources.git)
+      | | \-source_error (kentauros.modules.sources.git)
       | | \-url (kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_version_out)
       | \-uploader 
       |   \-abstract (kentauros.modules.uploader.copr)
-      \-package (kentauros.actions.abstract,kentauros.run)
-      \-result (kentauros.actions.abstract,kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.modules.builder.abstract,kentauros.modules.builder.mock,kentauros.modules.constructor.abstract,kentauros.modules.constructor.srpm,kentauros.modules.module,kentauros.modules.sources.abstract,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.no_source,kentauros.modules.sources.url,kentauros.modules.uploader.abstract,kentauros.modules.uploader.copr,kentauros.package,kentauros.run)
+      \-oldpackage (kentauros.actions.abstract,kentauros.run)
+      \-package (kentauros.task)
+      \-result (kentauros.actions.abstract,kentauros.actions.build,kentauros.actions.chain,kentauros.actions.clean,kentauros.actions.construct,kentauros.actions.importing,kentauros.actions.prepare,kentauros.actions.status,kentauros.actions.upload,kentauros.actions.verify,kentauros.modules.builder.abstract,kentauros.modules.builder.mock,kentauros.modules.constructor.abstract,kentauros.modules.constructor.srpm,kentauros.modules.module,kentauros.modules.sources.abstract,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.no_source,kentauros.modules.sources.url,kentauros.modules.uploader.abstract,kentauros.modules.uploader.copr,kentauros.oldpackage,kentauros.run,kentauros.task)
       \-run (ktr)
     tinydb (kentauros.instance)
 
@@ -106,13 +169,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3073   |44.29 |3073     |=          |
+|code      |3236   |45.27 |3237     |-1.00      |
 +----------+-------+------+---------+-----------+
-|docstring |2066   |29.78 |2066     |=          |
+|docstring |2087   |29.19 |2086     |+1.00      |
 +----------+-------+------+---------+-----------+
-|comment   |235    |3.39  |235      |=          |
+|comment   |230    |3.22  |230      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1564   |22.54 |1564     |=          |
+|empty     |1596   |22.32 |1596     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -125,7 +188,7 @@ Duplication
 +=========================+======+=========+===========+
 |nb duplicated lines      |21    |21       |=          |
 +-------------------------+------+---------+-----------+
-|percent duplicated lines |0.307 |0.307    |=          |
+|percent duplicated lines |0.298 |0.298    |=          |
 +-------------------------+------+---------+-----------+
 
 
@@ -136,13 +199,13 @@ Messages by category
 +-----------+-------+---------+-----------+
 |type       |number |previous |difference |
 +===========+=======+=========+===========+
-|convention |0      |0        |=          |
+|convention |27     |28       |-1.00      |
 +-----------+-------+---------+-----------+
-|refactor   |3      |3        |=          |
+|refactor   |5      |5        |=          |
 +-----------+-------+---------+-----------+
-|warning    |4      |4        |=          |
+|warning    |6      |6        |=          |
 +-----------+-------+---------+-----------+
-|error      |0      |0        |=          |
+|error      |20     |20       |=          |
 +-----------+-------+---------+-----------+
 
 
@@ -150,42 +213,72 @@ Messages by category
 % errors / warnings by module
 -----------------------------
 
-+------------------------------+------+--------+---------+-----------+
-|module                        |error |warning |refactor |convention |
-+==============================+======+========+=========+===========+
-|kentauros.modules.sources.git |0.00  |75.00   |0.00     |0.00       |
-+------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.bzr |0.00  |25.00   |0.00     |0.00       |
-+------------------------------+------+--------+---------+-----------+
-|kentauros.package             |0.00  |0.00    |66.67    |0.00       |
-+------------------------------+------+--------+---------+-----------+
-|ktr                           |0.00  |0.00    |33.33    |0.00       |
-+------------------------------+------+--------+---------+-----------+
++------------------------------------+------+--------+---------+-----------+
+|module                              |error |warning |refactor |convention |
++====================================+======+========+=========+===========+
+|kentauros.modules.sources.no_source |35.00 |0.00    |0.00     |0.00       |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.uploader.copr     |20.00 |0.00    |0.00     |0.00       |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.local     |20.00 |0.00    |0.00     |0.00       |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.srpm  |15.00 |0.00    |0.00     |0.00       |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.url       |10.00 |0.00    |0.00     |0.00       |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.git       |0.00  |50.00   |0.00     |14.81      |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.task                      |0.00  |16.67   |0.00     |11.11      |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.context                   |0.00  |16.67   |0.00     |11.11      |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.abstract  |0.00  |16.67   |0.00     |0.00       |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.oldpackage                |0.00  |0.00    |40.00    |11.11      |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.bzr       |0.00  |0.00    |20.00    |22.22      |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.package                   |0.00  |0.00    |20.00    |7.41       |
++------------------------------------+------+--------+---------+-----------+
+|ktr                                 |0.00  |0.00    |20.00    |0.00       |
++------------------------------------+------+--------+---------+-----------+
+|kentauros.cli.__init__              |0.00  |0.00    |0.00     |22.22      |
++------------------------------------+------+--------+---------+-----------+
 
 
 
 Messages
 --------
 
-+--------------------+------------+
-|message id          |occurrences |
-+====================+============+
-|fixme               |4           |
-+--------------------+------------+
-|too-many-statements |1           |
-+--------------------+------------+
-|too-many-branches   |1           |
-+--------------------+------------+
-|suppressed-message  |1           |
-+--------------------+------------+
-|locally-disabled    |1           |
-+--------------------+------------+
-|duplicate-code      |1           |
-+--------------------+------------+
++---------------------------+------------+
+|message id                 |occurrences |
++===========================+============+
+|missing-docstring          |27          |
++---------------------------+------------+
+|no-member                  |20          |
++---------------------------+------------+
+|fixme                      |5           |
++---------------------------+------------+
+|unused-import              |1           |
++---------------------------+------------+
+|too-many-statements        |1           |
++---------------------------+------------+
+|too-many-return-statements |1           |
++---------------------------+------------+
+|too-many-branches          |1           |
++---------------------------+------------+
+|too-few-public-methods     |1           |
++---------------------------+------------+
+|suppressed-message         |1           |
++---------------------------+------------+
+|locally-disabled           |1           |
++---------------------------+------------+
+|duplicate-code             |1           |
++---------------------------+------------+
 
 
 
 
 ------------------------------------------------------------------
-Your code has been rated at 9.97/10 (previous run: 9.97/10, +0.00)
+Your code has been rated at 9.51/10 (previous run: 9.51/10, +0.00)
 

@@ -42,10 +42,23 @@ class StatusAction(Action):
         modules = self.kpkg.get_modules()
 
         logger = LogCollector(self.name())
-        logger.log(self.kpkg.status_string())
+        ret = KtrResult(messages=logger)
+
+        success = True
+
+        res: KtrResult = self.kpkg.status_string()
+        ret.collect(res)
+        success = success and res.success
+
+        logger.log(res.value)
 
         for module in modules:
             assert isinstance(module, PkgModule)
-            logger.log(module.status_string())
+            res = module.status_string()
+            ret.collect(res)
 
-        return KtrResult(True, logger)
+            logger.log(res.value)
+
+            success = success and res.success
+
+        return ret.submit(success)

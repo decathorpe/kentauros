@@ -5,9 +5,11 @@ action implementations.
 
 
 import abc
+import warnings
 
 from ..instance import Kentauros
-from ..package import Package
+from ..modules.module import PkgModule
+from ..oldpackage import OldPackage
 from ..result import KtrResult
 
 
@@ -32,13 +34,13 @@ class Action(metaclass=abc.ABCMeta):
         self.kpkg = ktr.get_package(pkg_name)
 
         assert self.kpkg is not None
-        assert isinstance(self.kpkg, Package)
+        assert isinstance(self.kpkg, OldPackage)
 
         self.atype = None
 
     @abc.abstractmethod
     def name(self) -> str:
-        pass
+        """This method returns a concise name of the module."""
 
     @abc.abstractmethod
     def execute(self) -> KtrResult:
@@ -55,6 +57,9 @@ class Action(metaclass=abc.ABCMeta):
         is executed after actions.
         """
 
+        warnings.warn("This method is deprecated. Don't use it. It won't work correctly.",
+                      DeprecationWarning)
+
         ktr = Kentauros()
 
         conf_name = self.kpkg.get_conf_name()
@@ -65,17 +70,24 @@ class Action(metaclass=abc.ABCMeta):
         for module in modules:
             ktr.state_write(conf_name, module.status())
 
-    def import_status(self):
+    def import_status(self) -> KtrResult:
         """
         This method imports a package's and all its sub-module's status to the package database.
         """
 
-        ktr = Kentauros()
-
-        conf_name = self.kpkg.get_conf_name()
         modules = self.kpkg.get_modules()
 
-        ktr.state_write(conf_name, self.kpkg.status())
+        ret = KtrResult()
+        ret.collect(self.kpkg.status())
+
+        success = True
 
         for module in modules:
-            ktr.state_write(conf_name, module.imports())
+            assert isinstance(module, PkgModule)
+
+            res = module.imports()
+
+            ret.collect(res)
+            success = success and ret.success
+
+        return ret.submit(success)
