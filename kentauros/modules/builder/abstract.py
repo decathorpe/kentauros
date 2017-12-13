@@ -32,7 +32,7 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
         self.pdir = os.path.join(ktr.get_packdir(), self.bpkg.get_conf_name())
 
     @abc.abstractmethod
-    def status(self) -> dict:
+    def status(self) -> KtrResult:
         """
         This method is expected to return a dictionary of statistics about the respective builder.
         """

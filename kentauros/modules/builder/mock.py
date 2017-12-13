@@ -185,6 +185,7 @@ class MockBuild:
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
@@ -210,11 +211,11 @@ class MockBuild:
         logger.cmd(cmd)
 
         try:
-            ret = subprocess.call(cmd)
-            return KtrResult(ret == 0, logger)
+            res: subprocess.CompletedProcess = subprocess.run(cmd)
+            return ret.submit(res.returncode == 0)
         except PermissionError:
             logger.log("Mock build has been cancelled.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
 
 class MockBuilder(Builder):
@@ -256,6 +257,7 @@ class MockBuilder(Builder):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         success = True
 
@@ -289,7 +291,7 @@ class MockBuilder(Builder):
             logger.err("Don't attempt to run mock as root.")
             success = False
 
-        return KtrResult(success, logger)
+        return ret.submit(success)
 
     def get_active(self) -> bool:
         """
@@ -328,14 +330,14 @@ class MockBuilder(Builder):
 
         return self.bpkg.conf.getboolean("mock", "keep")
 
-    def status(self) -> dict:
-        return dict()
+    def status(self) -> KtrResult:
+        return KtrResult(True)
 
-    def status_string(self) -> str:
-        return str()
+    def status_string(self) -> KtrResult:
+        return KtrResult(True, value="", klass=str)
 
-    def imports(self) -> dict:
-        return dict()
+    def imports(self) -> KtrResult:
+        return KtrResult(True)
 
     def build(self) -> KtrResult:
         """
@@ -355,9 +357,10 @@ class MockBuilder(Builder):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         if not self.get_active():
-            return KtrResult(True, logger)
+            return ret.submit(True)
 
         ktr = Kentauros()
 
@@ -368,7 +371,7 @@ class MockBuilder(Builder):
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
         # figure out which srpm to build
         srpms.sort(reverse=True)
@@ -389,8 +392,8 @@ class MockBuilder(Builder):
         builds_failure = list()
 
         for build in build_queue:
-            ret = build.build()
-            if ret:
+            res = build.build()
+            if res.success:
                 builds_failure.append((build.path, build.dist))
             else:
                 builds_success.append((build.path, build.dist))
@@ -407,7 +410,7 @@ class MockBuilder(Builder):
             for build in builds_failure:
                 logger.log("Build failed: " + str(build))
 
-        return KtrResult(not builds_failure, logger)
+        return ret.submit(not builds_failure)
 
     def export(self) -> KtrResult:
         """
@@ -419,22 +422,23 @@ class MockBuilder(Builder):
         """
 
         if not self.get_active():
-            return KtrResult.true()
+            return KtrResult(True)
 
         if not self.get_export():
-            return KtrResult.true()
+            return KtrResult(True)
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         os.makedirs(self.edir, exist_ok=True)
 
         if not os.path.exists(self.edir):
             logger.err("Package exports directory could not be created.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
         if not os.access(self.edir, os.W_OK):
             logger.err("Package exports directory can not be written to.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
         mock_result_dirs = list()
 
@@ -457,41 +461,43 @@ class MockBuilder(Builder):
         for file in file_results:
             shutil.copy2(file, self.edir)
 
-        return KtrResult(True, logger)
+        return ret.submit(True)
 
     def execute(self) -> KtrResult:
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         res = self.build()
-        logger.merge(res.messages)
+        ret.collect(res)
 
         if not res.success:
             logger.log("Binary package building unsuccessful, aborting action.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
         res = self.export()
-        logger.merge(res.messages)
+        ret.collect(res)
 
         if not res.success:
             logger.log("Binary package exporting unsuccessful, aborting action.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
         else:
-            return KtrResult(True, logger)
+            return ret.submit(True)
 
     def clean(self) -> KtrResult:
         if not os.path.exists(self.edir):
-            return KtrResult.true()
+            return KtrResult(True)
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         try:
             assert Kentauros().get_expodir() in self.edir
             assert os.path.isabs(self.edir)
             shutil.rmtree(self.edir)
-            return KtrResult(True, logger)
+            return ret.submit(True)
         except AssertionError:
             logger.err("The Package exports directory looks weird. Doing nothing.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
         except OSError:
             logger.err("The Package exports directory couldn't be removed.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
