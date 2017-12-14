@@ -53,7 +53,7 @@ class PkgModule(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def status(self) -> dict:
+    def status(self) -> KtrResult:
         """
         This method is expected to return a dictionary of statistics about this module.
 
@@ -62,7 +62,7 @@ class PkgModule(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def status_string(self) -> str:
+    def status_string(self) -> KtrResult:
         """
         This method is expected to return a string describing the status of this module.
 
@@ -71,7 +71,7 @@ class PkgModule(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def imports(self) -> dict:
+    def imports(self) -> KtrResult:
         """
         This method is expected to return a dictionary of statistics about a module that has not
         yet been imported into the package database.
