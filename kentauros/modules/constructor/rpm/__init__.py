@@ -241,6 +241,7 @@ def do_release_bump(path: str, comment: str = None) -> KtrResult:
 
     ktr = Kentauros()
     logger = LogCollector("RPM .spec Handler")
+    ret = KtrResult(messages=logger)
 
     if not os.path.exists(path):
         raise FileNotFoundError()
@@ -259,7 +260,7 @@ def do_release_bump(path: str, comment: str = None) -> KtrResult:
     cmd.append('--comment=' + comment)
 
     logger.cmd(cmd)
-    ret = subprocess.call(cmd)
-    success = (ret == 0)
+    res = subprocess.run(cmd)
+    success = (res.returncode == 0)
 
-    return KtrResult(success, logger)
+    return ret.submit(success)

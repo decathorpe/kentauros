@@ -5,6 +5,7 @@ file, which depend on the type of source that is used.
 
 
 from ....definitions import SourceType
+from ....result import KtrResult
 
 from ...sources.bzr import BzrSource
 from ...sources.git import GitSource
@@ -13,7 +14,7 @@ from ...sources.local import LocalSource
 from ...sources.no_source import NoSource
 
 
-def spec_preamble_bzr(source: BzrSource) -> str:
+def spec_preamble_bzr(source: BzrSource) -> KtrResult:
     """
     This function returns the "%global" necessary for packages built from *bzr* repositories.
     This includes a definition of "rev" just now.
@@ -27,14 +28,35 @@ def spec_preamble_bzr(source: BzrSource) -> str:
 
     assert isinstance(source, BzrSource)
 
-    rev_define = "%global revision " + source.rev() + "\n"
-    date_define = "%global date " + source.date() + "\n"
-    time_define = "%global time " + source.time() + "\n"
+    ret = KtrResult()
 
-    return rev_define + date_define + time_define + "\n"
+    rev = source.rev()
+    date = source.date()
+    time = source.time()
+
+    if not rev.success:
+        ret.messages.log("Bzr revision could not be determined correctly.")
+        return ret.submit(False)
+
+    if not date.success:
+        ret.messages.log("Bzr revision date could not be determined correctly.")
+        return ret.submit(False)
+
+    if not time.success:
+        ret.messages.log("Bzr revision time could not be determined correctly.")
+        return ret.submit(False)
+
+    rev_define = "%global revision " + rev.value + "\n"
+    date_define = "%global date " + date.value + "\n"
+    time_define = "%global time " + time.value + "\n"
+
+    ret.value = rev_define + date_define + time_define + "\n"
+    ret.klass = str
+
+    ret.submit(True)
 
 
-def spec_preamble_git(source: GitSource) -> str:
+def spec_preamble_git(source: GitSource) -> KtrResult:
     """
     This function returns the "%globals" necessary for packages built from *git* repositories. This
     includes a definition of "commit" and "date" just now. The value of "commit" here are the first
@@ -49,15 +71,36 @@ def spec_preamble_git(source: GitSource) -> str:
 
     assert isinstance(source, GitSource)
 
-    commit_define = "%global commit " + source.commit() + "\n"
+    ret = KtrResult()
+
+    commit = source.commit()
+    date = source.date()
+    time = source.time()
+
+    if not commit.success:
+        ret.messages.log("Bzr revision could not be determined correctly.")
+        return ret.submit(False)
+
+    if not date.success:
+        ret.messages.log("Bzr revision date could not be determined correctly.")
+        return ret.submit(False)
+
+    if not time.success:
+        ret.messages.log("Bzr revision time could not be determined correctly.")
+        return ret.submit(False)
+
+    commit_define = "%global commit " + commit.value + "\n"
     shortcommit_define = "%global shortcommit %(c=%{commit}; echo ${c:0:7})" + "\n"
-    date_define = "%global date " + source.date() + "\n"
-    time_define = "%global time " + source.time() + "\n"
+    date_define = "%global date " + date.value + "\n"
+    time_define = "%global time " + time.value + "\n"
 
-    return commit_define + shortcommit_define + date_define + time_define + "\n"
+    ret.value = commit_define + shortcommit_define + date_define + time_define + "\n"
+    ret.klass = str
+
+    return ret.submit(True)
 
 
-def spec_preamble_url(source: UrlSource) -> str:
+def spec_preamble_url(source: UrlSource) -> KtrResult:
     """
     This function returns the "%global" necessary for packages built from tarballs specified by
     *url*.
@@ -70,10 +113,10 @@ def spec_preamble_url(source: UrlSource) -> str:
     """
 
     assert isinstance(source, UrlSource)
-    return ""
+    return KtrResult(True, "", str)
 
 
-def spec_preamble_local(source: LocalSource) -> str:
+def spec_preamble_local(source: LocalSource) -> KtrResult:
     """
     This function returns the "%global" necessary for packages built from tarballs specified by a
     *local path*.
@@ -86,10 +129,10 @@ def spec_preamble_local(source: LocalSource) -> str:
     """
 
     assert isinstance(source, LocalSource)
-    return ""
+    return KtrResult(True, "", str)
 
 
-def spec_preamble_nosource(source: NoSource) -> str:
+def spec_preamble_nosource(source: NoSource) -> KtrResult:
     """
     This function returns an empty string.
 
@@ -101,7 +144,7 @@ def spec_preamble_nosource(source: NoSource) -> str:
     """
 
     assert isinstance(source, NoSource)
-    return ""
+    return KtrResult(True, "", str)
 
 
 SPEC_PREAMBLE_DICT = dict()
