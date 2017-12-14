@@ -49,6 +49,7 @@ class LocalSource(Source):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         success = True
 
@@ -62,7 +63,7 @@ class LocalSource(Source):
                            "' key.")
                 success = False
 
-        return KtrResult(success, logger)
+        return ret.submit(success)
 
     def get_keep(self) -> bool:
         return self.spkg.conf.getboolean("local", "keep")
@@ -75,14 +76,14 @@ class LocalSource(Source):
 
         return self.spkg.replace_vars(self.spkg.conf.get("local", "orig"))
 
-    def status(self) -> dict:
-        return dict()
+    def status(self) -> KtrResult:
+        return KtrResult(True)
 
-    def status_string(self) -> str:
-        return str()
+    def status_string(self) -> KtrResult:
+        return KtrResult(True, "", str)
 
-    def imports(self) -> dict:
-        return dict()
+    def imports(self) -> KtrResult:
+        return KtrResult(True)
 
     def get(self) -> KtrResult:
         """
@@ -95,6 +96,7 @@ class LocalSource(Source):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -103,15 +105,15 @@ class LocalSource(Source):
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             logger.log("Sources already present.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
         # copy file from origin to destination
         shutil.copy2(self.get_orig(), self.dest)
 
-        return KtrResult(True, logger)
+        return ret.submit(True)
 
     def export(self) -> KtrResult:
-        return KtrResult.true()
+        return KtrResult(True)
 
     def update(self) -> KtrResult:
-        return KtrResult.true()
+        return KtrResult(True)

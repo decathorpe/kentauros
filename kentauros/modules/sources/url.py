@@ -68,6 +68,7 @@ class UrlSource(Source):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         success = True
 
@@ -86,8 +87,9 @@ class UrlSource(Source):
             subprocess.check_output(["which", "wget"])
         except subprocess.CalledProcessError:
             logger.log("Install wget to use the specified source.")
+            success = False
 
-        return KtrResult(success, logger)
+        return ret.submit(success)
 
     def get_keep(self) -> bool:
         """
@@ -105,7 +107,7 @@ class UrlSource(Source):
 
         return self.spkg.replace_vars(self.spkg.conf.get("url", "orig"))
 
-    def status(self) -> dict:
+    def status(self) -> KtrResult:
         """
         This method returns a dictionary containing the package version of the tarball that was last
         downloaded (as the status is only updated after successful actions).
@@ -115,12 +117,12 @@ class UrlSource(Source):
         """
 
         if self.last_version is None:
-            return dict()
+            return KtrResult(True)
         else:
             state = dict(url_last_version=self.last_version)
-            return state
+            return KtrResult(True, state=state)
 
-    def status_string(self) -> str:
+    def status_string(self) -> KtrResult:
         ktr = Kentauros()
 
         state = ktr.state_read(self.spkg.get_conf_name())
@@ -132,13 +134,13 @@ class UrlSource(Source):
             string = ("url source module:\n" +
                       "  Last download:    None\n")
 
-        return string
+        return KtrResult(True, string, str, state=state)
 
-    def imports(self) -> dict:
+    def imports(self) -> KtrResult:
         if os.path.exists(self.dest):
-            return dict(url_last_version=self.spkg.get_version())
+            return KtrResult(True, state=dict(url_last_version=self.spkg.get_version()))
         else:
-            return dict()
+            return KtrResult(True)
 
     def get(self) -> KtrResult:
         """
@@ -150,6 +152,7 @@ class UrlSource(Source):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -158,12 +161,12 @@ class UrlSource(Source):
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
             logger.log("Sources already downloaded.")
-            return KtrResult(False, logger)
+            return ret.submit(True)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
             logger.log("No connection to remote host detected. Cancelling source download.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
         # construct wget commands
         cmd = ["wget"]
@@ -183,17 +186,22 @@ class UrlSource(Source):
 
         # wget source from origin to destination
         logger.cmd(cmd)
-        ret = subprocess.call(cmd)
+        res: subprocess.CompletedProcess = subprocess.run(cmd, stderr=subprocess.STDOUT)
 
-        success = not ret
+        if res.returncode != 0:
+            logger.lst("Sources could not be downloaded successfully. wget output:",
+                       res.stdout.decode().split("\n"))
+            return ret.submit(False)
+
+        success = (ret == 0)
 
         if success:
             self.last_version = self.spkg.get_version()
 
-        return KtrResult(success, logger)
+        return ret.submit(success)
 
     def update(self) -> KtrResult:
-        return KtrResult.false()
+        return KtrResult(False)
 
     def export(self) -> KtrResult:
-        return KtrResult.true()
+        return KtrResult(True)

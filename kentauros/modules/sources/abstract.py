@@ -78,7 +78,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def status(self) -> dict:
+    def status(self) -> KtrResult:
         """
         This method is expected to return a dictionary of statistics about the respective source.
         This might include, for example, the current git commit hash, bzr revision number, etc.
@@ -95,14 +95,20 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
 
         ktr = Kentauros()
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         if not os.path.exists(self.sdir):
             logger.log("Nothing here to be cleaned.")
-            return KtrResult(True, logger)
+            return ret.submit(True)
 
         # try to be careful with "rm -r"
-        assert os.path.isabs(self.dest)
-        assert ktr.get_datadir() in self.dest
+        try:
+            assert os.path.isabs(self.dest)
+            assert ktr.get_datadir() in self.dest
+        except AssertionError as error:
+            logger.log("Source directory looked suspicious, not recursively deleting. Error:")
+            logger.log(str(error))
+            ret.submit(False)
 
         # remove source destination first
 
@@ -119,9 +125,9 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         if not os.listdir(self.sdir):
             os.rmdir(self.sdir)
 
-        return KtrResult(True, logger)
+        return ret.submit(True)
 
-    def formatver(self) -> str:
+    def formatver(self) -> KtrResult:
         """
         This method provides a generic way of getting a package's version as string. Subclasses are
         expected to override this method with their own version string generators, which then might
@@ -131,7 +137,12 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             str:        formatted version string
         """
 
-        return self.spkg.conf.get("source", "version")
+        ret = KtrResult()
+
+        ret.value = self.spkg.conf.get("source", "version")
+        ret.klass = str
+
+        return ret.submit(True)
 
     def execute(self) -> KtrResult:
         """
@@ -149,48 +160,49 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
 
         ktr = Kentauros()
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         force = ktr.cli.get_force()
         old_status = self.status()
 
         res = self.get()
-        logger.merge(res.messages)
+        ret.collect(res)
 
         if res.success:
             new_status = self.status()
 
             if new_status == old_status:
                 logger.log("The downloaded Source is not newer than the last known source state.")
-                return KtrResult(False, logger)
+                return ret.submit(False)
             else:
                 self.updated = True
                 res = self.export()
-                logger.merge(res.messages)
-                return KtrResult(res.success, logger)
+                ret.collect(res)
+                return res.submit(res.success)
 
         res = self.update()
-        logger.merge(res.messages)
+        ret.collect(res)
 
         if res.success:
             new_status = self.status()
 
             if new_status == old_status:
                 logger.log("The \"updated\" Source is not newer than the last known source state.")
-                return KtrResult(False, logger)
+                return ret.submit(False)
             else:
                 self.updated = True
                 res = self.export()
-                logger.merge(res.messages)
-                return KtrResult(res.success, logger)
+                ret.collect(res)
+                return ret.submit(res.success)
 
         if force:
             logger.log("Force-Exporting the Sources despite no source changes.")
             res = self.export()
-            logger.merge(res.messages)
-            return KtrResult(res.success, logger)
+            ret.collect(res)
+            return ret.submit(res.success)
 
         logger.log("The Source did not change.")
-        return KtrResult(False, logger)
+        return ret.submit(False)
 
     def refresh(self) -> KtrResult:
         """
@@ -203,11 +215,21 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         res = self.clean()
-        logger.merge(res.messages)
+        ret.collect(res)
+
+        if not res.success:
+            logger.log("Source cleanup not successful. Not getting sources again.")
+            return ret.submit(False)
 
         res = self.get()
-        logger.merge(res.messages)
+        ret.collect(res)
 
-        return KtrResult(res.success, logger)
+        if not res.success:
+            logger.log("Source getting not successful.")
+            return ret.submit(False)
+
+        # everything successful:
+        return ret.submit(True)

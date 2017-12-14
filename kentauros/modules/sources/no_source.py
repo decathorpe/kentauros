@@ -39,39 +39,39 @@ class NoSource(Source):
 
     def verify(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return KtrResult.true()
+        return KtrResult(True)
 
-    def get_keep(self) -> KtrResult:
+    def get_keep(self) -> bool:
         warnings.warn(ERROR_STRING, Warning)
-        return KtrResult.true()
+        return True
 
     def get_orig(self) -> str:
         warnings.warn(ERROR_STRING, Warning)
         return ""
 
-    def status(self) -> dict:
+    def status(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return dict()
+        return KtrResult(True)
 
-    def status_string(self) -> str:
+    def status_string(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return ""
+        return KtrResult(True)
 
-    def imports(self) -> dict:
+    def imports(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return dict()
+        return KtrResult(True)
 
-    def formatver(self) -> str:
-        return self.spkg.get_version()
+    def formatver(self) -> KtrResult:
+        return KtrResult(True, self.spkg.get_version(), str)
 
     def get(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return KtrResult.true()
+        return KtrResult(True)
 
     def update(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return KtrResult.true()
+        return KtrResult(True)
 
     def export(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
-        return KtrResult.true()
+        return KtrResult(True)
