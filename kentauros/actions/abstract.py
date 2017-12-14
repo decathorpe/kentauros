@@ -5,7 +5,6 @@ action implementations.
 
 
 import abc
-import warnings
 
 from ..instance import Kentauros
 from ..modules.module import PkgModule
@@ -51,24 +50,27 @@ class Action(metaclass=abc.ABCMeta):
         finished successfully.
         """
 
-    def update_status(self):
+    def update_status(self) -> KtrResult:
         """
         This method writes a package's and all its sub-module's status to the package database. It
         is executed after actions.
         """
 
-        warnings.warn("This method is deprecated. Don't use it. It won't work correctly.",
-                      DeprecationWarning)
-
-        ktr = Kentauros()
-
-        conf_name = self.kpkg.get_conf_name()
         modules = self.kpkg.get_modules()
 
-        ktr.state_write(conf_name, self.kpkg.status())
+        ret = KtrResult()
+        ret.collect(self.kpkg.status())
+
+        success = True
 
         for module in modules:
-            ktr.state_write(conf_name, module.status())
+            assert isinstance(module, PkgModule)
+
+            res = module.status()
+            ret.collect(res)
+            success = success and res.success
+
+        return ret.submit(success)
 
     def import_status(self) -> KtrResult:
         """
@@ -88,6 +90,6 @@ class Action(metaclass=abc.ABCMeta):
             res = module.imports()
 
             ret.collect(res)
-            success = success and ret.success
+            success = success and res.success
 
         return ret.submit(success)
