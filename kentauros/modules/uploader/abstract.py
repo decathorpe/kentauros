@@ -27,7 +27,7 @@ class Uploader(PkgModule, metaclass=abc.ABCMeta):
         self.upkg = package
 
     @abc.abstractmethod
-    def status(self) -> dict:
+    def status(self) -> KtrResult:
         """
         This method is expected to return a dictionary of statistics about the respective uploader.
         """

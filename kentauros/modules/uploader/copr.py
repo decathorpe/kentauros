@@ -57,6 +57,7 @@ class CoprUploader(Uploader):
         """
 
         logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
 
         success = True
 
@@ -77,9 +78,9 @@ class CoprUploader(Uploader):
             logger.log("Install copr-cli to use the specified builder.")
             success = False
 
-        return KtrResult(success, logger)
+        return ret.submit(success)
 
-    def get_active(self):
+    def get_active(self) -> bool:
         """
         Returns:
             bool:   boolean value indicating whether this builder should be active
@@ -87,7 +88,7 @@ class CoprUploader(Uploader):
 
         return self.upkg.conf.getboolean("copr", "active")
 
-    def get_dists(self):
+    def get_dists(self) -> list:
         """
         Returns:
             list:   list of chroots that are going to be used for sequential builds
@@ -100,7 +101,7 @@ class CoprUploader(Uploader):
 
         return dists
 
-    def get_keep(self):
+    def get_keep(self) -> bool:
         """
         Returns:
             bool:   boolean value indicating whether this builder should keep source packages
@@ -108,7 +109,7 @@ class CoprUploader(Uploader):
 
         return self.upkg.conf.getboolean("copr", "keep")
 
-    def get_repo(self):
+    def get_repo(self) -> str:
         """
         Returns:
             str:    name of the repository to upload to
@@ -116,7 +117,7 @@ class CoprUploader(Uploader):
 
         return self.upkg.conf.get("copr", "repo")
 
-    def get_wait(self):
+    def get_wait(self) -> bool:
         """
         Returns:
             bool:   boolean value indicating whether this builder should wait for remote builds
@@ -124,14 +125,14 @@ class CoprUploader(Uploader):
 
         return self.upkg.conf.getboolean("copr", "wait")
 
-    def status(self) -> dict:
-        return dict()
+    def status(self) -> KtrResult:
+        return KtrResult(True)
 
-    def status_string(self) -> str:
-        return str()
+    def status_string(self) -> KtrResult:
+        return KtrResult(True, value="", klass=str)
 
-    def imports(self) -> dict:
-        return dict()
+    def imports(self) -> KtrResult:
+        return KtrResult(True)
 
     def upload(self) -> KtrResult:
         """
@@ -143,11 +144,13 @@ class CoprUploader(Uploader):
             bool:       returns *False* if anything goes wrong, *True* otherwise
         """
 
+        logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
+
         if not self.get_active():
-            return KtrResult.true()
+            return ret.submit(True)
 
         ktr = Kentauros()
-        logger = LogCollector(self.name())
 
         package_dir = os.path.join(ktr.get_packdir(), self.upkg.get_conf_name())
 
@@ -156,7 +159,7 @@ class CoprUploader(Uploader):
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
         # figure out which srpm to build
         srpms.sort(reverse=True)
@@ -180,22 +183,22 @@ class CoprUploader(Uploader):
         # check for connectivity to server
         if not is_connected(self.remote):
             logger.log("No connection to remote host detected. Cancelling upload.")
-            return KtrResult(False, logger)
+            return ret.submit(False)
 
         logger.cmd(cmd)
-        ret = subprocess.call(cmd)
-        success = not ret
+        res = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        success = (res == 0)
 
         if success:
             if not self.get_keep():
                 os.remove(srpm)
+            return ret.submit(True)
         else:
             logger.log("copr-cli command did not complete successfully.")
-
-        return KtrResult(success, logger)
+            return ret.submit(False)
 
     def execute(self) -> KtrResult:
         return self.upload()
 
     def clean(self) -> KtrResult:
-        return KtrResult.true()
+        return KtrResult(True)
