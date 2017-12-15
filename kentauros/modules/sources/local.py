@@ -80,7 +80,7 @@ class LocalSource(Source):
         return KtrResult(True)
 
     def status_string(self) -> KtrResult:
-        return KtrResult(True, "", str)
+        return KtrResult(True, "")
 
     def imports(self) -> KtrResult:
         return KtrResult(True)

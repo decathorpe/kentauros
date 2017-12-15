@@ -51,8 +51,6 @@ def spec_preamble_bzr(source: BzrSource) -> KtrResult:
     time_define = "%global time " + time.value + "\n"
 
     ret.value = rev_define + date_define + time_define + "\n"
-    ret.klass = str
-
     ret.submit(True)
 
 
@@ -95,8 +93,6 @@ def spec_preamble_git(source: GitSource) -> KtrResult:
     time_define = "%global time " + time.value + "\n"
 
     ret.value = commit_define + shortcommit_define + date_define + time_define + "\n"
-    ret.klass = str
-
     return ret.submit(True)
 
 
@@ -113,7 +109,7 @@ def spec_preamble_url(source: UrlSource) -> KtrResult:
     """
 
     assert isinstance(source, UrlSource)
-    return KtrResult(True, "", str)
+    return KtrResult(True, "")
 
 
 def spec_preamble_local(source: LocalSource) -> KtrResult:
@@ -129,7 +125,7 @@ def spec_preamble_local(source: LocalSource) -> KtrResult:
     """
 
     assert isinstance(source, LocalSource)
-    return KtrResult(True, "", str)
+    return KtrResult(True, "")
 
 
 def spec_preamble_nosource(source: NoSource) -> KtrResult:
@@ -144,7 +140,7 @@ def spec_preamble_nosource(source: NoSource) -> KtrResult:
     """
 
     assert isinstance(source, NoSource)
-    return KtrResult(True, "", str)
+    return KtrResult(True, "")
 
 
 SPEC_PREAMBLE_DICT = dict()

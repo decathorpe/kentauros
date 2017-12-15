@@ -205,7 +205,6 @@ class SrpmConstructor(Constructor):
                   "  Last Release:     {}\n".format(self._get_last_release(spec, ret.messages)))
 
         ret.value = string
-        ret.klass = str
         return ret.submit(True)
 
     def imports(self) -> KtrResult:

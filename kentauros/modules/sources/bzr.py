@@ -51,7 +51,7 @@ class BzrCommand:
             return KtrResult(False, messages=logger)
         else:
             out = ret.stdout.decode().rstrip("\n")
-            return KtrResult(True, out, str, logger)
+            return KtrResult(True, out, logger)
 
 
 class BzrSource(Source):
@@ -187,12 +187,10 @@ class BzrSource(Source):
 
             if self.saved_rev is not None:
                 ret.value = self.saved_rev
-                ret.klass = str
                 return ret.submit(True)
             elif state is not None:
                 if "bzr_last_rev" in state:
                     ret.value = state["bzr_last_rev"]
-                    ret.klass = str
                     return ret.submit(True)
             else:
                 logger.err("Sources must be present to determine the revision.")
@@ -204,7 +202,6 @@ class BzrSource(Source):
         if res.success:
             self.saved_rev = res.value
             ret.value = res.value
-            ret.klass = res.klass
             return ret.submit(True)
         else:
             logger.log("Bzr command to determine revision number unsuccessful.")
@@ -220,13 +217,12 @@ class BzrSource(Source):
                 date_string = line.replace("date: ", "")
 
                 return KtrResult(
-                    True, datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S %z"),
-                    datetime.datetime, logger)
+                    True, datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S %z"), logger)
 
         logger.err("No date information present in the output of 'bzr version-info'.")
         logger.err("Assuming 'now' as fallback date/time.")
 
-        return KtrResult(False, datetime.datetime.now(), datetime.datetime, logger)
+        return KtrResult(False, datetime.datetime.now(), logger)
 
     def datetime_str(self) -> KtrResult:
         res = self.datetime()
@@ -235,8 +231,7 @@ class BzrSource(Source):
         return KtrResult(
             res.success,
             "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}".format(
-                dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second),
-            str)
+                dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second))
 
     def date(self) -> KtrResult:
         res = self.datetime()
@@ -244,8 +239,7 @@ class BzrSource(Source):
 
         return KtrResult(
             res.success,
-            "{:04d}{:02d}{:02d}".format(dt.year, dt.month, dt.day),
-            str)
+            "{:04d}{:02d}{:02d}".format(dt.year, dt.month, dt.day))
 
     def time(self) -> KtrResult:
         res = self.datetime()
@@ -253,8 +247,7 @@ class BzrSource(Source):
 
         return KtrResult(
             res.success,
-            "{:02d}{:02d}{:02d}".format(dt.hour, dt.minute, dt.second),
-            str)
+            "{:02d}{:02d}{:02d}".format(dt.hour, dt.minute, dt.second))
 
     def status(self) -> KtrResult:
         """
@@ -291,7 +284,7 @@ class BzrSource(Source):
             rev = res.value
             string = template.format(rev=rev, branch=self.get_branch())
 
-        return KtrResult(res.success, string, str)
+        return KtrResult(res.success, string)
 
     def imports(self) -> KtrResult:
         if os.path.exists(self.dest):
@@ -356,7 +349,6 @@ class BzrSource(Source):
             success = False
 
         ret.value = template
-        ret.klass = str
         return ret.submit(success)
 
     def get(self) -> KtrResult:

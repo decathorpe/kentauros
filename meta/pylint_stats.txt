@@ -1,22 +1,43 @@
 ************* Module kentauros.package
 R: 10, 0: Too few public methods (0/1) (too-few-public-methods)
-************* Module kentauros.result
-R: 22, 4: Too many arguments (7/6) (too-many-arguments)
+************* Module kentauros.task
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  8, 0: Missing class docstring (missing-docstring)
+C: 17, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.context
 W: 10, 0: TODO: Initialise with fallback values (fixme)
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  7, 0: Missing class docstring (missing-docstring)
 W:  8, 4: Useless super delegation in method '__init__' (useless-super-delegation)
 ************* Module kentauros.oldpackage
 R:233, 4: Too many branches (16/15) (too-many-branches)
 R:233, 4: Too many statements (45/40) (too-many-statements)
-************* Module kentauros.modules.sources.bzr
-R:442, 4: Too many return statements (7/6) (too-many-return-statements)
 ************* Module kentauros.modules.sources.git
 W: 24, 0: TODO: simplify commit, branch, etc. handling to "ref" handling (fixme)
 W: 25, 0: TODO: "ref" can be a branch name, commit hash, or tag! (fixme)
 W: 26, 0: TODO: Introduce GitCommand class (c.f. BzrCommand) (fixme)
-R:423, 4: Too many statements (47/40) (too-many-statements)
-R:523, 4: Too many return statements (8/6) (too-many-return-statements)
-R:624, 4: Too many return statements (7/6) (too-many-return-statements)
+C:162, 4: Missing method docstring (missing-docstring)
+C:198, 4: Missing method docstring (missing-docstring)
+C:212, 4: Missing method docstring (missing-docstring)
+C:225, 4: Missing method docstring (missing-docstring)
+R:412, 4: Too many statements (47/40) (too-many-statements)
+R:512, 4: Too many return statements (8/6) (too-many-return-statements)
+R:613, 4: Too many return statements (7/6) (too-many-return-statements)
+************* Module kentauros.modules.sources.bzr
+C: 21, 0: Missing class docstring (missing-docstring)
+C: 33, 4: Missing method docstring (missing-docstring)
+C:210, 4: Missing method docstring (missing-docstring)
+C:227, 4: Missing method docstring (missing-docstring)
+C:236, 4: Missing method docstring (missing-docstring)
+C:244, 4: Missing method docstring (missing-docstring)
+R:434, 4: Too many return statements (7/6) (too-many-return-statements)
+************* Module kentauros.cli
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  7, 0: Missing function docstring (missing-docstring)
+C: 62, 0: Missing function docstring (missing-docstring)
+C:101, 0: Missing function docstring (missing-docstring)
+C:139, 0: Missing function docstring (missing-docstring)
+C:161, 0: Missing function docstring (missing-docstring)
 ************* Module ktr
 R:  1, 0: Similar lines in 2 files
 ==kentauros.cli.__init__:179
@@ -46,7 +67,7 @@ R:  1, 0: Similar lines in 2 files
 
 Report
 ======
-3056 statements analysed.
+3035 statements analysed.
 
 Statistics by type
 ------------------
@@ -115,13 +136,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3485   |46.21 |3485     |=          |
+|code      |3458   |46.06 |3458     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |2126   |28.19 |2126     |=          |
+|docstring |2125   |28.30 |2125     |=          |
 +----------+-------+------+---------+-----------+
-|comment   |242    |3.21  |242      |=          |
+|comment   |242    |3.22  |242      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1688   |22.38 |1688     |=          |
+|empty     |1683   |22.42 |1683     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -134,7 +155,7 @@ Duplication
 +=========================+======+=========+===========+
 |nb duplicated lines      |21    |21       |=          |
 +-------------------------+------+---------+-----------+
-|percent duplicated lines |0.282 |0.282    |=          |
+|percent duplicated lines |0.284 |0.284    |=          |
 +-------------------------+------+---------+-----------+
 
 
@@ -145,9 +166,9 @@ Messages by category
 +-----------+-------+---------+-----------+
 |type       |number |previous |difference |
 +===========+=======+=========+===========+
-|convention |0      |0        |=          |
+|convention |21     |21       |=          |
 +-----------+-------+---------+-----------+
-|refactor   |9      |9        |=          |
+|refactor   |8      |8        |=          |
 +-----------+-------+---------+-----------+
 |warning    |5      |5        |=          |
 +-----------+-------+---------+-----------+
@@ -162,19 +183,21 @@ Messages by category
 +------------------------------+------+--------+---------+-----------+
 |module                        |error |warning |refactor |convention |
 +==============================+======+========+=========+===========+
-|kentauros.modules.sources.git |0.00  |60.00   |33.33    |0.00       |
+|kentauros.modules.sources.git |0.00  |60.00   |37.50    |19.05      |
 +------------------------------+------+--------+---------+-----------+
-|kentauros.context             |0.00  |40.00   |0.00     |0.00       |
+|kentauros.context             |0.00  |40.00   |0.00     |9.52       |
 +------------------------------+------+--------+---------+-----------+
-|kentauros.oldpackage          |0.00  |0.00    |22.22    |0.00       |
+|kentauros.oldpackage          |0.00  |0.00    |25.00    |0.00       |
 +------------------------------+------+--------+---------+-----------+
-|ktr                           |0.00  |0.00    |11.11    |0.00       |
+|kentauros.modules.sources.bzr |0.00  |0.00    |12.50    |28.57      |
 +------------------------------+------+--------+---------+-----------+
-|kentauros.result              |0.00  |0.00    |11.11    |0.00       |
+|ktr                           |0.00  |0.00    |12.50    |0.00       |
 +------------------------------+------+--------+---------+-----------+
-|kentauros.package             |0.00  |0.00    |11.11    |0.00       |
+|kentauros.package             |0.00  |0.00    |12.50    |0.00       |
 +------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.bzr |0.00  |0.00    |11.11    |0.00       |
+|kentauros.cli.__init__        |0.00  |0.00    |0.00     |28.57      |
++------------------------------+------+--------+---------+-----------+
+|kentauros.task                |0.00  |0.00    |0.00     |14.29      |
 +------------------------------+------+--------+---------+-----------+
 
 
@@ -185,6 +208,8 @@ Messages
 +---------------------------+------------+
 |message id                 |occurrences |
 +===========================+============+
+|missing-docstring          |21          |
++---------------------------+------------+
 |fixme                      |4           |
 +---------------------------+------------+
 |too-many-return-statements |3           |
@@ -195,8 +220,6 @@ Messages
 +---------------------------+------------+
 |too-many-branches          |1           |
 +---------------------------+------------+
-|too-many-arguments         |1           |
-+---------------------------+------------+
 |too-few-public-methods     |1           |
 +---------------------------+------------+
 |duplicate-code             |1           |
@@ -206,5 +229,5 @@ Messages
 
 
 ------------------------------------------------------------------
-Your code has been rated at 9.95/10 (previous run: 9.95/10, +0.00)
+Your code has been rated at 9.89/10 (previous run: 9.89/10, +0.00)
 

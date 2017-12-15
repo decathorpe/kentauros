@@ -228,7 +228,7 @@ class OldPackage:
                   "  Package name:     {}\n".format(self.get_name()) +
                   "  Package version:  {}\n".format(self.get_version()))
 
-        return KtrResult(True, string, str)
+        return KtrResult(True, string)
 
     def verify(self) -> KtrResult:
         """

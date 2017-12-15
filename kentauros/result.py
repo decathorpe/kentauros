@@ -14,7 +14,6 @@ class KtrResult:
     Arguments:
         bool success:           flag indicating successful execution
         value:                  optional return value
-        klass:                  type of the optional return value
         LogCollector messages:  collected log messages
         dict state:             collected global state changes
     """
@@ -22,7 +21,6 @@ class KtrResult:
     def __init__(self,
                  success: bool = False,
                  value=None,
-                 klass=None,
                  messages: LogCollector = None,
                  state: dict = None,
                  name: str = None):
@@ -32,10 +30,6 @@ class KtrResult:
 
         if value is None:
             self.value = value
-        else:
-            assert isinstance(value, klass)
-            self.value = value
-            self.klass = klass
 
         if messages is None:
             if name is not None:

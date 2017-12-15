@@ -138,10 +138,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
         ret = KtrResult()
-
         ret.value = self.spkg.conf.get("source", "version")
-        ret.klass = str
-
         return ret.submit(True)
 
     def execute(self) -> KtrResult:

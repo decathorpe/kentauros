@@ -133,7 +133,7 @@ class UrlSource(Source):
             string = ("url source module:\n" +
                       "  Last download:    None\n")
 
-        return KtrResult(True, string, str, state=state)
+        return KtrResult(True, string, state=state)
 
     def imports(self) -> KtrResult:
         if os.path.exists(self.dest):

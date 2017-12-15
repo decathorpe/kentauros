@@ -173,7 +173,6 @@ class GitSource(Source):
 
             if self.saved_date is not None:
                 ret.value = self.saved_date
-                ret.klass = datetime.datetime
                 return ret.submit(True)
             elif state is not None:
                 if "git_last_date" in state:
@@ -194,7 +193,6 @@ class GitSource(Source):
         self.saved_date = dt
 
         ret.value = dt
-        ret.klass = datetime.datetime
         return ret.submit(True)
 
     def datetime_str(self) -> KtrResult:
@@ -207,7 +205,6 @@ class GitSource(Source):
             dt = res.value
             ret.value = "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}".format(
                 dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
-            ret.klass = str
             return ret.submit(True)
         else:
             return ret.submit(False)
@@ -221,7 +218,6 @@ class GitSource(Source):
         if res.success:
             dt = res.value
             ret.value = "{:04d}{:02d}{:02d}".format(dt.year, dt.month, dt.day)
-            ret.klass = str
             return ret.submit(True)
         else:
             return ret.submit(False)
@@ -235,7 +231,6 @@ class GitSource(Source):
         if res.success:
             dt = res.value
             ret.value = "{:02d}{:02d}{:02d}".format(dt.hour, dt.minute, dt.second)
-            ret.klass = str
             return ret.submit(True)
         else:
             return ret.submit(False)
@@ -260,12 +255,10 @@ class GitSource(Source):
 
             if self.saved_commit is not None:
                 ret.value = self.saved_commit
-                ret.klass = str
                 return ret.submit(True)
             elif state is not None:
                 if "git_last_commit" in state:
                     ret.value = state["git_last_commit"]
-                    ret.klass = str
                     return ret.submit(True)
             else:
                 logger.err("Sources must be present to determine the revision.")
@@ -277,7 +270,6 @@ class GitSource(Source):
         self.saved_commit = commit
 
         ret.value = commit
-        ret.klass = str
         return ret.submit(True)
 
     def status(self) -> KtrResult:
@@ -339,7 +331,6 @@ class GitSource(Source):
             template = template.format(commit_date="Unavailable")
 
         ret.value = template
-        ret.klass = str
         return ret.submit(True)
 
     def imports(self) -> KtrResult:
@@ -416,8 +407,6 @@ class GitSource(Source):
             logger.log("Unrecognized variables present in git version template.")
 
         ret.value = template
-        ret.klass = str
-
         return ret.submit(success)
 
     def get(self) -> KtrResult:

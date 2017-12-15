@@ -336,7 +336,7 @@ class MockBuilder(Builder):
         return KtrResult(True)
 
     def status_string(self) -> KtrResult:
-        return KtrResult(True, value="", klass=str)
+        return KtrResult(True, "")
 
     def imports(self) -> KtrResult:
         return KtrResult(True)

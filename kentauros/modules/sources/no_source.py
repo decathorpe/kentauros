@@ -62,7 +62,7 @@ class NoSource(Source):
         return KtrResult(True)
 
     def formatver(self) -> KtrResult:
-        return KtrResult(True, self.spkg.get_version(), str)
+        return KtrResult(True, self.spkg.get_version())
 
     def get(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)
