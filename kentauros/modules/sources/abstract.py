@@ -8,8 +8,9 @@ import abc
 import os
 import shutil
 
-from ...instance import Kentauros
+from ...context import KtrContext
 from ...logcollector import LogCollector
+from ...package import Package
 from ...result import KtrResult
 
 from ..module import PkgModule
@@ -29,13 +30,11 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         SourceType stype:   type of source
     """
 
-    def __init__(self, package):
-        ktr = Kentauros()
-
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
         self.updated = False
 
-        self.spkg = package
-        self.sdir = os.path.join(ktr.get_datadir(), self.spkg.get_conf_name())
+        self.sdir = os.path.join(self.context.get_datadir(), self.package.get_conf_name())
 
         self.dest = None
         self.stype = None
@@ -93,7 +92,6 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             bool:   *True* if successful
         """
 
-        ktr = Kentauros()
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
@@ -104,7 +102,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         # try to be careful with "rm -r"
         try:
             assert os.path.isabs(self.dest)
-            assert ktr.get_datadir() in self.dest
+            assert self.context.get_datadir() in self.dest
         except AssertionError as error:
             logger.log("Source directory looked suspicious, not recursively deleting. Error:")
             logger.log(str(error))
@@ -138,7 +136,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         """
 
         ret = KtrResult()
-        ret.value = self.spkg.conf.get("source", "version")
+        ret.value = self.package.conf.get("source", "version")
         return ret.submit(True)
 
     def execute(self) -> KtrResult:
@@ -155,11 +153,10 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             bool:       success status of source getting or updating
         """
 
-        ktr = Kentauros()
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
-        force = ktr.cli.get_force()
+        force = self.context.arguments()["force"]
         old_status = self.status()
 
         res = self.get()

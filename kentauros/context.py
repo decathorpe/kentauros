@@ -38,6 +38,10 @@ class KtrContext(metaclass=abc.ABCMeta):
         self.state = KtrState(os.path.join(self.basedir, "state.json"))
 
     @abc.abstractmethod
+    def get_argument(self, key: str):
+        """Returns an additional argument, for example the "force" flag."""
+
+    @abc.abstractmethod
     def debug(self) -> bool:
         """Returns a boolean flag indicating enabled or disabled debugging messages."""
 

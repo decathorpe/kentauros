@@ -10,9 +10,10 @@ import shutil
 import subprocess
 import tempfile
 
-from ...instance import Kentauros
+from ...context import KtrContext
 from ...result import KtrResult
 from ...logcollector import LogCollector
+from ...package import Package
 
 from ..sources.no_source import NoSource
 
@@ -37,22 +38,20 @@ class SrpmConstructor(Constructor):
 
     NAME = "SRPM Constructor"
 
-    def __init__(self, package):
-        super().__init__(package)
-
-        ktr = Kentauros()
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
 
         self.dirs = dict()
 
-        self.path = os.path.join(ktr.get_specdir(),
-                                 self.cpkg.get_conf_name(),
-                                 self.cpkg.get_name() + ".spec")
+        self.path = os.path.join(self.context.get_specdir(),
+                                 self.package.get_conf_name(),
+                                 self.package.get_name() + ".spec")
 
-        self.source = self.cpkg.get_module("source")
+        self.source = self.package.get_module("source")
         self.no_source = (self.source is None)
 
         if self.no_source:
-            self.source = NoSource(package)
+            self.source = NoSource(package, context)
 
         self.last_release = None
         self.last_version = None
@@ -60,7 +59,7 @@ class SrpmConstructor(Constructor):
         self.success = True
 
     def __str__(self) -> str:
-        return "SRPM Constructor for Package '" + self.cpkg.get_conf_name() + "'"
+        return "SRPM Constructor for Package '" + self.package.get_conf_name() + "'"
 
     def name(self):
         return self.NAME
@@ -90,7 +89,7 @@ class SrpmConstructor(Constructor):
         expected_binaries = ["rpmbuild", "rpmdev-bumpspec"]
 
         for key in expected_keys:
-            if key not in self.cpkg.conf["srpm"]:
+            if key not in self.package.conf["srpm"]:
                 logger.err("The [srpm] section in the package's .conf file doesn't set the '" +
                            key +
                            "' key.")
@@ -126,24 +125,22 @@ class SrpmConstructor(Constructor):
 
         assert isinstance(spec, RPMSpec)
 
-        ktr = Kentauros()
-
-        saved_state = ktr.state_read(self.cpkg.get_conf_name())
+        saved_state = self.context.state.read(self.package.get_conf_name())
 
         if saved_state is None:
-            logger.dbg("Package " + self.cpkg.get_conf_name() + " not yet in state database.")
+            logger.dbg("Package " + self.package.get_conf_name() + " not yet in state database.")
             logger.dbg("Falling back to legacy version detection.")
             return spec.get_version()
 
         if "rpm_last_version" in saved_state:
             return saved_state["rpm_last_version"]
 
-        logger.dbg("Package " + self.cpkg.get_conf_name() + " has never been built before.")
+        logger.dbg("Package " + self.package.get_conf_name() + " has never been built before.")
 
         if "package_version" in saved_state:
             return saved_state["package_version"]
 
-        logger.dbg("Package " + self.cpkg.get_conf_name() + " has no version set in state DB.")
+        logger.dbg("Package " + self.package.get_conf_name() + " has no version set in state DB.")
         logger.dbg("Falling back to legacy version detection.")
 
         return spec.get_version()
@@ -162,21 +159,19 @@ class SrpmConstructor(Constructor):
 
         assert isinstance(spec, RPMSpec)
 
-        ktr = Kentauros()
-
-        saved_state = ktr.state_read(self.cpkg.get_conf_name())
+        saved_state = self.context.state.read(self.package.get_conf_name())
 
         if saved_state is None:
-            logger.dbg("Package " + self.cpkg.get_conf_name() + " not yet in state database.")
+            logger.dbg("Package " + self.package.get_conf_name() + " not yet in state database.")
             logger.dbg("Falling back to legacy release detection.")
             return spec.get_release()
 
         if "rpm_last_release" in saved_state:
             return saved_state["rpm_last_release"]
 
-        logger.dbg("Package " + self.cpkg.get_conf_name() + " has never been built before.")
+        logger.dbg("Package " + self.package.get_conf_name() + " has never been built before.")
 
-        logger.dbg("Package " + self.cpkg.get_conf_name() + " has no release set in state DB.")
+        logger.dbg("Package " + self.package.get_conf_name() + " has no release set in state DB.")
         logger.dbg("Falling back to legacy release detection.")
 
         return spec.get_release()
@@ -231,9 +226,12 @@ class SrpmConstructor(Constructor):
         logger.dbg("Temporary directory " + self.dirs["tempdir"] + " created.")
 
         self.dirs["rpmbuild_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild")
+        self.dirs["build_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "BUILD")
+        self.dirs["buildroot_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "BUILDROOT")
+        self.dirs["rpm_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "RPMS")
+        self.dirs["source_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SOURCES")
         self.dirs["spec_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SPECS")
         self.dirs["srpm_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SRPMS")
-        self.dirs["source_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SOURCES")
 
         # create $TEMPDIR/rpmbuild
         if not os.path.exists(self.dirs["rpmbuild_dir"]):
@@ -314,7 +312,7 @@ class SrpmConstructor(Constructor):
             # otherwise it is in kentauros' standard .tar.gz format:
             else:
                 tarballs = glob.glob(os.path.join(self.source.sdir,
-                                                  self.cpkg.get_name()) + "*.tar.gz")
+                                                  self.package.get_name()) + "*.tar.gz")
 
                 # remove only the newest one to be safe
                 tarballs.sort(reverse=True)
@@ -330,8 +328,8 @@ class SrpmConstructor(Constructor):
         case it is included in the package build.
         """
 
-        shutil.copy2(self.cpkg.file, self.dirs["source_dir"])
-        logger.log("Package configuration copied to SOURCES: " + self.cpkg.file)
+        shutil.copy2(self.package.file, self.dirs["source_dir"])
+        logger.log("Package configuration copied to SOURCES: " + self.package.file)
 
     def _get_old_status(self, logger: LogCollector) -> (str, str):
         """
@@ -352,7 +350,7 @@ class SrpmConstructor(Constructor):
 
     def _get_spec_destination(self) -> str:
         """This method calculates the destination of the .spec file in the `rpmbuild/SPECS` dir."""
-        return os.path.join(self.dirs["spec_dir"], self.cpkg.get_name() + ".spec")
+        return os.path.join(self.dirs["spec_dir"], self.package.get_name() + ".spec")
 
     def _prepare_spec(self, logger: LogCollector) -> str:
         """
@@ -414,9 +412,10 @@ class SrpmConstructor(Constructor):
         assert isinstance(old_release, str)
         assert isinstance(new_spec_path, str)
 
-        ktr = Kentauros()
-
-        message = ktr.cli.get_message()
+        if "message" in self.context.arguments():
+            message = self.context.arguments()["message"]
+        else:
+            message = None
 
         if int(parse_release(old_release)[0]) != 0:
             new_rpm_spec = RPMSpec(new_spec_path, self.source)
@@ -424,12 +423,11 @@ class SrpmConstructor(Constructor):
             new_rpm_spec.write_contents_to_file(new_spec_path)
 
         if message is None:
-            return do_release_bump(new_spec_path, "Initial package.")
+            return do_release_bump(new_spec_path, self.context, "Initial package.")
         else:
-            return do_release_bump(new_spec_path, message)
+            return do_release_bump(new_spec_path, self.context, message)
 
-    @staticmethod
-    def _do_packaging_only_build_prep(new_spec_path: str) -> KtrResult:
+    def _do_packaging_only_build_prep(self, new_spec_path: str) -> KtrResult:
         """
         This method prepares the .spec file for a packaging-only change.
 
@@ -439,14 +437,15 @@ class SrpmConstructor(Constructor):
 
         assert isinstance(new_spec_path, str)
 
-        ktr = Kentauros()
-
-        message = ktr.cli.get_message()
+        if "message" in self.context.arguments():
+            message = self.context.arguments()["message"]
+        else:
+            message = None
 
         if message is None:
-            return do_release_bump(new_spec_path, "Update for packaging changes.")
+            return do_release_bump(new_spec_path, self.context, "Update for packaging changes.")
         else:
-            return do_release_bump(new_spec_path, message)
+            return do_release_bump(new_spec_path, self.context, message)
 
     def _do_snapshot_update_build_prep(self, new_spec_path: str) -> KtrResult:
         """
@@ -462,7 +461,7 @@ class SrpmConstructor(Constructor):
         new_rpm_spec.do_release_reset()
         new_rpm_spec.write_contents_to_file(new_spec_path)
 
-        return do_release_bump(new_spec_path, "Update to latest snapshot.")
+        return do_release_bump(new_spec_path, self.context, "Update to latest snapshot.")
 
     def _do_version_update_build_prep(self, new_spec_path: str) -> KtrResult:
         """
@@ -474,7 +473,8 @@ class SrpmConstructor(Constructor):
 
         assert isinstance(new_spec_path, str)
 
-        return do_release_bump(new_spec_path, "Update to version " + self.cpkg.get_version() + ".")
+        return do_release_bump(new_spec_path,
+                               "Update to version " + self.package.get_version() + ".")
 
     def _restore_spec_template(self, new_spec_path: str, preamble: str):
         """
@@ -531,14 +531,15 @@ class SrpmConstructor(Constructor):
           information.
         """
 
-        ktr = Kentauros()
-
         spec = RPMSpec(self.path, self.source)
 
         new_version = spec.build_version_string()
         old_version, old_release = self._get_old_status(logger)
 
-        force = ktr.cli.get_force()
+        if "force" in self.context.arguments():
+            force = self.context.arguments()["force"]
+        else:
+            force = False
 
         # print debug info
         self._print_debug_info(new_version, old_version, old_release, logger)
@@ -643,24 +644,28 @@ class SrpmConstructor(Constructor):
         `rpmbuild/SPECS`. After that, `$HOME` is reset to the old value.
         """
 
-        ktr = Kentauros()
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
-
-        old_home = os.environ['HOME']
-        os.environ['HOME'] = self.dirs["tempdir"]
 
         # construct rpmbuild command
         cmd = ["rpmbuild"]
 
         # add --verbose or --quiet depending on settings
-        if (ktr.verby == 2) and not ktr.debug:
-            cmd.append("--quiet")
-        if (ktr.verby == 0) or ktr.debug:
+        if self.context.debug():
             cmd.append("--verbose")
+        else:
+            cmd.append("--quiet")
+
+        cmd.extend(["--define", "_topdir {}".format(self.dirs["rpmbuild_dir"])])
+        cmd.extend(["--define", "_builddir {}".format(self.dirs["build_dir"])])
+        cmd.extend(["--define", "_buildrootdir {}".format(self.dirs["buildroot_dir"])])
+        cmd.extend(["--define", "_rpmdir {}".format(self.dirs["rpm_dir"])])
+        cmd.extend(["--define", "_sourcedir {}".format(self.dirs["source_dir"])])
+        cmd.extend(["--define", "_specdir {}".format(self.dirs["spec_dir"])])
+        cmd.extend(["--define", "_srcrpmdir {}".format(self.dirs["srpm_dir"])])
 
         cmd.append("-bs")
-        cmd.append(os.path.join(self.dirs["spec_dir"], self.cpkg.get_name() + ".spec"))
+        cmd.append(os.path.join(self.dirs["spec_dir"], self.package.get_name() + ".spec"))
 
         logger.cmd(cmd)
 
@@ -671,8 +676,6 @@ class SrpmConstructor(Constructor):
             success = True
         except subprocess.CalledProcessError:
             success = False
-        finally:
-            os.environ['HOME'] = old_home
 
         if not success:
             logger.lst("rpmbuild execution encountered an error:", res.stdout.decode().split("\n"))
@@ -744,7 +747,7 @@ class SrpmConstructor(Constructor):
             return ret.submit(True)
 
         try:
-            assert Kentauros().get_packdir() in self.pdir
+            assert self.context.get_packdir() in self.pdir
             assert os.path.isabs(self.pdir)
             shutil.rmtree(self.pdir)
             return ret.submit(True)

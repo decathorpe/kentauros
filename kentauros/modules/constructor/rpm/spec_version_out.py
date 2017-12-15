@@ -5,7 +5,6 @@ file.
 
 
 from ....definitions import SourceType
-from ....instance import Kentauros
 
 from ...sources.bzr import BzrSource
 from ...sources.git import GitSource
@@ -27,9 +26,7 @@ def spec_version_bzr(source: BzrSource) -> str:
 
     assert isinstance(source, BzrSource)
 
-    ktr = Kentauros()
-
-    template: str = ktr.conf.get("main", "version_template_bzr")
+    template: str = source.context.conf.get("main", "version_template_bzr")
 
     if "%{version}" in template:
         template = template.replace("%{version}", source.spkg.get_version())
@@ -52,9 +49,7 @@ def spec_version_git(source: GitSource) -> str:
 
     assert isinstance(source, GitSource)
 
-    ktr = Kentauros()
-
-    template: str = ktr.conf.get("main", "version_template_git")
+    template: str = source.context.conf.get("main", "version_template_git")
 
     if "%{version}" in template:
         template = template.replace("%{version}", source.spkg.get_version())

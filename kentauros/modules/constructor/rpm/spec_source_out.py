@@ -68,7 +68,7 @@ def spec_source_local(source: LocalSource) -> str:
 
     assert isinstance(source, LocalSource)
 
-    src_str = format_tag_line("Source0", os.path.basename(source.spkg.conf.get("local", "orig")))
+    src_str = format_tag_line("Source0", os.path.basename(source.package.conf.get("local", "orig")))
     return src_str
 
 
@@ -85,7 +85,7 @@ def spec_source_url(source: UrlSource) -> str:
 
     assert isinstance(source, UrlSource)
 
-    src_str = format_tag_line("Source0", source.spkg.conf.get("url", "orig"))
+    src_str = format_tag_line("Source0", source.package.conf.get("url", "orig"))
     return src_str
 
 

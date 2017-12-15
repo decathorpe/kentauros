@@ -9,8 +9,9 @@ import os
 import subprocess
 
 from ...conntest import is_connected
-from ...instance import Kentauros
+from ...context import KtrContext
 from ...logcollector import LogCollector
+from ...package import Package
 from ...result import KtrResult
 
 from .abstract import Uploader
@@ -33,13 +34,13 @@ class CoprUploader(Uploader):
 
     NAME = "COPR Uploader"
 
-    def __init__(self, package):
-        super().__init__(package)
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
 
         self.remote = DEFAULT_COPR_URL
 
     def __str__(self) -> str:
-        return "COPR Uploader for Package '" + self.upkg.get_conf_name() + "'"
+        return "COPR Uploader for Package '" + self.package.get_conf_name() + "'"
 
     def name(self):
         return self.NAME
@@ -65,7 +66,7 @@ class CoprUploader(Uploader):
         expected_keys = ["active", "dists", "keep", "repo", "wait"]
 
         for key in expected_keys:
-            if key not in self.upkg.conf["copr"]:
+            if key not in self.package.conf["copr"]:
                 logger.err("The [copr] section in the package's .conf file doesn't set the '" +
                            key +
                            "' key.")
@@ -86,7 +87,7 @@ class CoprUploader(Uploader):
             bool:   boolean value indicating whether this builder should be active
         """
 
-        return self.upkg.conf.getboolean("copr", "active")
+        return self.package.conf.getboolean("copr", "active")
 
     def get_dists(self) -> list:
         """
@@ -94,7 +95,7 @@ class CoprUploader(Uploader):
             list:   list of chroots that are going to be used for sequential builds
         """
 
-        dists = self.upkg.conf.get("copr", "dists").split(",")
+        dists = self.package.conf.get("copr", "dists").split(",")
 
         if dists == [""]:
             dists = []
@@ -107,7 +108,7 @@ class CoprUploader(Uploader):
             bool:   boolean value indicating whether this builder should keep source packages
         """
 
-        return self.upkg.conf.getboolean("copr", "keep")
+        return self.package.conf.getboolean("copr", "keep")
 
     def get_repo(self) -> str:
         """
@@ -115,7 +116,7 @@ class CoprUploader(Uploader):
             str:    name of the repository to upload to
         """
 
-        return self.upkg.conf.get("copr", "repo")
+        return self.package.conf.get("copr", "repo")
 
     def get_wait(self) -> bool:
         """
@@ -123,7 +124,7 @@ class CoprUploader(Uploader):
             bool:   boolean value indicating whether this builder should wait for remote builds
         """
 
-        return self.upkg.conf.getboolean("copr", "wait")
+        return self.package.conf.getboolean("copr", "wait")
 
     def status(self) -> KtrResult:
         return KtrResult(True)
@@ -150,12 +151,10 @@ class CoprUploader(Uploader):
         if not self.get_active():
             return ret.submit(True)
 
-        ktr = Kentauros()
-
-        package_dir = os.path.join(ktr.get_packdir(), self.upkg.get_conf_name())
+        package_dir = os.path.join(self.context.get_packdir(), self.package.get_conf_name())
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(package_dir, self.upkg.get_name() + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(package_dir, self.package.get_name() + "*.src.rpm"))
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.")

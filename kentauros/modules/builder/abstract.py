@@ -7,8 +7,9 @@ builders.
 import abc
 import os
 
-from ...instance import Kentauros
+from ...context import KtrContext
 from ...modules.module import PkgModule
+from ...package import Package
 from ...result import KtrResult
 
 
@@ -24,12 +25,9 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
         Package bpkg:       stores the package argument given at initialisation
     """
 
-    def __init__(self, package):
-        super().__init__()
-        ktr = Kentauros()
-
-        self.bpkg = package
-        self.pdir = os.path.join(ktr.get_packdir(), self.bpkg.get_conf_name())
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
+        self.pdir = os.path.join(self.context.get_packdir(), self.package.get_conf_name())
 
     @abc.abstractmethod
     def status(self) -> KtrResult:

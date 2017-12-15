@@ -6,7 +6,7 @@ This subpackage serves the purpose of handling RPM spec files.
 import os
 import subprocess
 
-from ....instance import Kentauros
+from ....context import KtrContext
 from ....logcollector import LogCollector
 from ....result import KtrResult
 
@@ -235,7 +235,7 @@ class RPMSpec:
         self.contents = contents_new
 
 
-def do_release_bump(path: str, comment: str = None) -> KtrResult:
+def do_release_bump(path: str, context: KtrContext, comment: str = None) -> KtrResult:
     """
     This function calls `rpmdev-bumpspec` with the specified arguments to bump the release number
     and create a changelog entry with a given comment.
@@ -244,7 +244,6 @@ def do_release_bump(path: str, comment: str = None) -> KtrResult:
         str comment:    comment to be added to the changelog entry
     """
 
-    ktr = Kentauros()
     logger = LogCollector("RPM .spec Handler")
     ret = KtrResult(messages=logger)
 
@@ -258,7 +257,7 @@ def do_release_bump(path: str, comment: str = None) -> KtrResult:
     cmd = ["rpmdev-bumpspec"]
 
     # add --verbose or --quiet depending on settings
-    if (ktr.verby == 0) or ktr.debug:
+    if context.debug:
         cmd.append("--verbose")
 
     cmd.append(path)

@@ -6,13 +6,26 @@ modules must provide.
 
 import abc
 
+from ..context import KtrContext
+from ..package import Package
 from ..result import KtrResult
 
 
 class PkgModule(metaclass=abc.ABCMeta):
     """
     This abstract class defines the properties that all package modules must have.
+
+    Arguments:
+        OldPackage package:     package this module will execute on
+        KtrContext context:     execution context for this module
     """
+
+    def __init__(self, package: Package, context: KtrContext):
+        assert isinstance(package, Package)
+        assert isinstance(context, KtrContext)
+
+        self.package = package
+        self.context = context
 
     @abc.abstractmethod
     def name(self) -> str:
@@ -31,6 +44,18 @@ class PkgModule(metaclass=abc.ABCMeta):
         Returns:
              str:   string containing a description of the sub-module
         """
+
+    # @abc.abstractmethod
+    # def act(self, action: str) -> KtrResult:
+    #     """
+    #     This method executes the module action specified by the `action` string.
+    #
+    #     Arguments:
+    #         str action:     string specifying the module action to be executed
+    #
+    #     Returns:
+    #         KtrResult:      result of the specified action
+    #     """
 
     @abc.abstractmethod
     def execute(self) -> KtrResult:

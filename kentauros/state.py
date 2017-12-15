@@ -1,5 +1,3 @@
-import os
-
 from tinydb import TinyDB, Query
 
 
@@ -23,8 +21,6 @@ def _dict_is_subset(sup: dict, sub: dict) -> bool:
 class KtrState:
     def __init__(self, path: str):
         assert isinstance(path, str)
-        assert os.path.exists(path)
-        assert os.access(path, os.R_OK)
 
         self.path = path
 

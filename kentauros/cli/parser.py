@@ -1,7 +1,46 @@
+import configparser
+import glob
+import os
+
 from argparse import ArgumentParser, _SubParsersAction
 
-from ..init.cli import package_name_completer
 from ..definitions import PkgModuleType
+
+
+# pylint: disable=unused-argument
+# noinspection PyUnusedLocal
+def package_name_completer(prefix, **kwargs):
+    """
+    This function returns a list of package names (found in the package configs directory by glob)
+    that start with the 'prefix' argument.
+
+    Arguments:
+        str prefix: string prefix
+
+    Returns:
+        list:       list of matching package names
+    """
+
+    if os.path.exists("kentaurosrc"):
+        config = configparser.ConfigParser()
+        config.read("kentaurosrc")
+
+        try:
+            basedir = os.path.abspath(config.get("main", "basedir"))
+        except configparser.NoSectionError:
+            basedir = os.path.abspath(os.getcwd())
+        except configparser.NoOptionError:
+            basedir = os.path.abspath(os.getcwd())
+    else:
+        basedir = os.path.abspath(os.getcwd())
+
+    paths = os.path.join(basedir, "configs", "*.conf")
+
+    files = glob.glob(paths)
+
+    return (os.path.basename(v).replace(".conf", "")
+            for v in files
+            if os.path.basename(v).replace(".conf", "").startswith(prefix))
 
 
 def add_source_parser(parsers: _SubParsersAction,
@@ -77,6 +116,13 @@ def add_constructor_parser(parsers: _SubParsersAction,
         description="build source packages",
         help="build source packages",
         parents=[package_parser])
+    build_parser.add_argument(
+        "-m",
+        "--message",
+        action="store",
+        dest="basedir",
+        nargs="?",
+        help="set changelog message")
     build_parser.set_defaults(module_action="build")
 
     clean_parser: ArgumentParser = constructor_parsers.add_parser(

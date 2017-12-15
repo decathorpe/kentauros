@@ -4,17 +4,10 @@ expects to exist. This happens after CLI arguments and environment variables hav
 determine which directories those should be.
 """
 
-
 import os
 
-from .instance import Kentauros
+from .context import KtrContext
 from .logcollector import LogCollector
-
-
-LOG_PREFIX = "ktr/bootstrap"
-"""This string specifies the prefix for log and error messages printed to stdout or stderr from
-inside this subpackage.
-"""
 
 
 def ktr_mkdirp(path: str, logger: LogCollector) -> bool:
@@ -45,7 +38,7 @@ def ktr_mkdirp(path: str, logger: LogCollector) -> bool:
         return True
 
 
-def ktr_bootstrap(logger: LogCollector) -> bool:
+def ktr_bootstrap(context: KtrContext, logger: LogCollector) -> bool:
     """
     This function has to be called before any other actions are attempted on packages. It ensures
     that the required directory structure is present. If it fails, kentauros execution will be
@@ -55,10 +48,8 @@ def ktr_bootstrap(logger: LogCollector) -> bool:
         bool:       success (or not)
     """
 
-    ktr = Kentauros()
-
-    for path in [ktr.get_basedir(), ktr.get_confdir(), ktr.get_datadir(),
-                 ktr.get_expodir(), ktr.get_packdir(), ktr.get_specdir()]:
+    for path in [context.get_basedir(), context.get_confdir(), context.get_datadir(),
+                 context.get_expodir(), context.get_packdir(), context.get_specdir()]:
         if not ktr_mkdirp(path, logger):
             return False
 

@@ -12,9 +12,10 @@ import subprocess
 from git import Repo
 
 from ...conntest import is_connected
+from ...context import KtrContext
 from ...definitions import SourceType
-from ...instance import Kentauros
 from ...logcollector import LogCollector
+from ...package import Package
 from ...result import KtrResult
 
 from .abstract import Source
@@ -44,16 +45,16 @@ class GitSource(Source):
 
     NAME = "git Source"
 
-    def __init__(self, package):
-        super().__init__(package)
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
 
-        self.dest = os.path.join(self.sdir, self.spkg.get_name())
+        self.dest = os.path.join(self.sdir, self.package.get_name())
         self.stype = SourceType.GIT
         self.saved_date: datetime.datetime = None
         self.saved_commit: str = None
 
     def __str__(self) -> str:
-        return "git Source for Package '" + self.spkg.get_conf_name() + "'"
+        return "git Source for Package '" + self.package.get_conf_name() + "'"
 
     def name(self):
         return self.NAME
@@ -81,7 +82,7 @@ class GitSource(Source):
         expected_keys = ["branch", "commit", "keep", "keep_repo", "orig", "shallow"]
 
         for key in expected_keys:
-            if key not in self.spkg.conf["git"]:
+            if key not in self.package.conf["git"]:
                 logger.err("The [git] section in the package's .conf file doesn't set the '" +
                            key +
                            "' key.")
@@ -107,7 +108,7 @@ class GitSource(Source):
             bool:   boolean value indicating whether the exported tarball should be kept
         """
 
-        return self.spkg.conf.getboolean("git", "keep")
+        return self.package.conf.getboolean("git", "keep")
 
     def get_keep_repo(self) -> bool:
         """
@@ -115,7 +116,7 @@ class GitSource(Source):
             bool:   boolean value indicating whether the git repository should be kept
         """
 
-        return self.spkg.conf.getboolean("git", "keep_repo")
+        return self.package.conf.getboolean("git", "keep_repo")
 
     def get_orig(self) -> str:
         """
@@ -123,7 +124,7 @@ class GitSource(Source):
             str:    string containing the upstream git repository URL
         """
 
-        return self.spkg.replace_vars(self.spkg.conf.get("git", "orig"))
+        return self.package.replace_vars(self.package.conf.get("git", "orig"))
 
     def get_branch(self) -> str:
         """
@@ -131,7 +132,7 @@ class GitSource(Source):
             str:    string containing the branch that is set in the package configuration
         """
 
-        branch = self.spkg.conf.get("git", "branch")
+        branch = self.package.conf.get("git", "branch")
 
         if not branch:
             return "master"
@@ -144,7 +145,7 @@ class GitSource(Source):
             str:    string containing the commit hash that is set in the package configuration
         """
 
-        commit = self.spkg.conf.get("git", "commit")
+        commit = self.package.conf.get("git", "commit")
 
         if not commit:
             return "HEAD"
@@ -157,11 +158,9 @@ class GitSource(Source):
             bool:   boolean value indicating whether the git checkout depth should be 1 or not
         """
 
-        return self.spkg.conf.getboolean("git", "shallow")
+        return self.package.conf.getboolean("git", "shallow")
 
     def datetime(self) -> KtrResult:
-        ktr = Kentauros()
-
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
@@ -169,7 +168,7 @@ class GitSource(Source):
         dt = datetime.datetime.now()
 
         if not os.access(self.dest, os.R_OK):
-            state = ktr.state_read(self.spkg.get_conf_name())
+            state = self.context.state.read(self.package.get_conf_name())
 
             if self.saved_date is not None:
                 ret.value = self.saved_date
@@ -245,21 +244,22 @@ class GitSource(Source):
             str:        commit hash
         """
 
-        ktr = Kentauros()
-
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
         if not os.access(self.dest, os.R_OK):
-            state = ktr.state_read(self.spkg.get_conf_name())
+            state = self.context.state.read(self.package.get_conf_name())
 
             if self.saved_commit is not None:
                 ret.value = self.saved_commit
                 return ret.submit(True)
-            elif state is not None:
-                if "git_last_commit" in state:
-                    ret.value = state["git_last_commit"]
-                    return ret.submit(True)
+
+            elif (state is not None) and \
+                    ("git_last_commit" in state) and \
+                    (state["git_last_commit"] != ""):
+                ret.value = state["git_last_commit"]
+                return ret.submit(True)
+
             else:
                 logger.err("Sources must be present to determine the revision.")
                 return ret.submit(False)
@@ -284,22 +284,25 @@ class GitSource(Source):
 
         ret = KtrResult(name=self.name())
 
+        ret.state["git_branch"] = self.get_branch()
+        ret.state["git_commit"] = self.get_commit()
+
         res = self.commit()
         ret.collect(res)
         if not res.success:
             return ret.submit(False)
-        commit = res.value
+        else:
+            commit = res.value
+            ret.state["git_last_commit"] = commit
 
         res = self.datetime_str()
         ret.collect(res)
         if not res.success:
             return ret.submit(False)
-        dt_string = res.value
+        else:
+            dt_string = res.value
+            ret.state["git_last_date"] = dt_string
 
-        ret.collect(KtrResult(state=dict(git_branch=self.get_branch(),
-                                         git_commit=self.get_commit(),
-                                         git_last_commit=commit,
-                                         git_last_date=dt_string)))
         return ret.submit(True)
 
     def status_string(self) -> KtrResult:
@@ -340,9 +343,7 @@ class GitSource(Source):
         else:
             # Sources aren't there, last commit and date can't be determined
             return KtrResult(True, state=dict(git_branch=self.get_branch(),
-                                              git_commit=self.get_commit(),
-                                              git_last_commit="",
-                                              git_last_date=""))
+                                              git_commit=self.get_commit()))
 
     def formatver(self) -> KtrResult:
         """
@@ -354,19 +355,17 @@ class GitSource(Source):
             str:        nicely formatted version string
         """
 
-        ktr = Kentauros()
-
         success = True
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
-        template: str = ktr.conf.get("main", "version_template_git")
+        template: str = self.context.conf.get("main", "version_template_git")
 
         if "%{version}" in template:
-            template = template.replace("%{version}", self.spkg.get_version())
+            template = template.replace("%{version}", self.package.get_version())
 
         if "%{version_sep}" in template:
-            template = template.replace("%{version_sep}", self.spkg.get_version_separator())
+            template = template.replace("%{version_sep}", self.package.get_version_separator())
 
         if "%{date}" in template:
             res = self.date()
@@ -443,13 +442,11 @@ class GitSource(Source):
         # construct clone command
         cmd_clone = ["git", "clone"]
 
-        ktr = Kentauros()
-
         # add --verbose or --quiet depending on settings
-        if (ktr.verby == 2) and not ktr.debug:
-            cmd_clone.append("--quiet")
-        if (ktr.verby == 0) or ktr.debug:
+        if self.context.debug():
             cmd_clone.append("--verbose")
+        else:
+            cmd_clone.append("--quiet")
 
         # set --depth==1 if shallow is specified
         if self.get_shallow():
@@ -507,6 +504,7 @@ class GitSource(Source):
                 return ret.submit(False)
 
         # return True if successful
+        ret.collect(self.status())
         return ret.submit(True)
 
     def update(self) -> KtrResult:
@@ -534,13 +532,11 @@ class GitSource(Source):
         # construct git command
         cmd = ["git", "pull", "--rebase"]
 
-        ktr = Kentauros()
-
         # add --verbose or --quiet depending on settings
-        if (ktr.verby == 2) and not ktr.debug:
-            cmd.append("--quiet")
-        if (ktr.verby == 0) or ktr.debug:
+        if self.context.debug():
             cmd.append("--verbose")
+        else:
+            cmd.append("--quiet")
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
@@ -593,6 +589,8 @@ class GitSource(Source):
 
         # return True if update found, False if not
         updated = rev_new != rev_old
+
+        ret.collect(self.status())
         return ret.submit(updated)
 
     def _remove_not_keep(self, logger: LogCollector):
@@ -601,12 +599,10 @@ class GitSource(Source):
         not keeping the repository around was specified in the configuration file.
         """
 
-        ktr = Kentauros()
-
         if not self.get_keep_repo():
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
-            assert ktr.get_datadir() in self.dest
+            assert self.context.get_datadir() in self.dest
             shutil.rmtree(self.dest)
             logger.log("git repository has been deleted after exporting to tarball.")
 
@@ -639,7 +635,7 @@ class GitSource(Source):
             return ret.submit(False)
         version = res.value
 
-        name_version = self.spkg.get_name() + "-" + version
+        name_version = self.package.get_name() + "-" + version
 
         # add prefix
         cmd.append("--prefix=" + name_version + "/")
@@ -693,4 +689,5 @@ class GitSource(Source):
         # remove git repo if keep is False
         self._remove_not_keep(logger)
 
+        ret.collect(self.status())
         return ret.submit(True)

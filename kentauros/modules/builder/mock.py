@@ -12,8 +12,9 @@ import shutil
 import subprocess
 import time
 
-from ...instance import Kentauros
+from ...context import KtrContext
 from ...logcollector import LogCollector
+from ...package import Package
 from ...result import KtrResult
 
 from .abstract import Builder
@@ -128,9 +129,10 @@ class MockBuild:
 
     NAME = "Mock Build"
 
-    def __init__(self, mock: str, path: str, dist: str = None):
+    def __init__(self, mock: str, path: str, context: KtrContext, dist: str = None):
         self.mock = mock
         self.path = path
+        self.context = context
 
         if dist is None:
             # determine which dist is pointed to by the "default.cfg" link
@@ -157,12 +159,10 @@ class MockBuild:
             list:   argument list for consumption by subprocess methods
         """
 
-        ktr = Kentauros()
-
         cmd = [self.mock]
 
         # add --verbose or --quiet depending on settings
-        if (ktr.verby == 2) and not ktr.debug:
+        if not self.context.debug:
             cmd.append("--quiet")
 
         # specify chroot if it has been set
@@ -233,16 +233,15 @@ class MockBuilder(Builder):
         bool active:        determines if this instance is active
     """
 
-    def __init__(self, package):
-        super().__init__(package)
-
-        self.edir = os.path.join(Kentauros().get_expodir(), self.bpkg.get_conf_name())
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
+        self.edir = os.path.join(context.get_expodir(), self.package.get_conf_name())
 
     def name(self) -> str:
         return "Mock Builder"
 
     def __str__(self) -> str:
-        return "Mock Builder for Package '" + self.bpkg.get_conf_name() + "'"
+        return "Mock Builder for Package '" + self.package.get_conf_name() + "'"
 
     def verify(self) -> KtrResult:
         """
@@ -267,7 +266,7 @@ class MockBuilder(Builder):
         expected_keys = ["active", "dists", "export", "keep"]
 
         for key in expected_keys:
-            if key not in self.bpkg.conf["mock"]:
+            if key not in self.package.conf["mock"]:
                 logger.err("The [mock] section in the package's .conf file doesn't set the '" +
                            key +
                            "' key.")
@@ -301,7 +300,7 @@ class MockBuilder(Builder):
             bool:   boolean value indicating whether this builder should be active
         """
 
-        return self.bpkg.conf.getboolean("mock", "active")
+        return self.package.conf.getboolean("mock", "active")
 
     def get_dists(self) -> list:
         """
@@ -309,7 +308,7 @@ class MockBuilder(Builder):
             list:   list of chroots that are going to be used for sequential builds
         """
 
-        dists = self.bpkg.conf.get("mock", "dists").split(",")
+        dists = self.package.conf.get("mock", "dists").split(",")
 
         if dists == [""]:
             dists = [get_default_mock_dist()]
@@ -322,7 +321,7 @@ class MockBuilder(Builder):
             bool:   boolean value indicating whether this builder should export built packages
         """
 
-        return self.bpkg.conf.getboolean("mock", "export")
+        return self.package.conf.getboolean("mock", "export")
 
     def get_keep(self) -> bool:
         """
@@ -330,7 +329,7 @@ class MockBuilder(Builder):
             bool:   boolean value indicating whether this builder should keep source packages
         """
 
-        return self.bpkg.conf.getboolean("mock", "keep")
+        return self.package.conf.getboolean("mock", "keep")
 
     def status(self) -> KtrResult:
         return KtrResult(True)
@@ -364,12 +363,10 @@ class MockBuilder(Builder):
         if not self.get_active():
             return ret.submit(True)
 
-        ktr = Kentauros()
-
-        package_dir = os.path.join(ktr.get_packdir(), self.bpkg.get_conf_name())
+        package_dir = os.path.join(self.context.get_packdir(), self.package.get_conf_name())
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(package_dir, self.bpkg.get_name() + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(package_dir, self.package.get_name() + "*.src.rpm"))
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.")
@@ -493,7 +490,7 @@ class MockBuilder(Builder):
         ret = KtrResult(messages=logger)
 
         try:
-            assert Kentauros().get_expodir() in self.edir
+            assert self.context.get_expodir() in self.edir
             assert os.path.isabs(self.edir)
             shutil.rmtree(self.edir)
             return ret.submit(True)

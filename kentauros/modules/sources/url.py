@@ -8,9 +8,10 @@ import os
 import subprocess
 
 from ...conntest import is_connected
+from ...context import KtrContext
 from ...definitions import SourceType
-from ...instance import Kentauros
 from ...logcollector import LogCollector
+from ...package import Package
 from ...result import KtrResult
 
 from .abstract import Source
@@ -31,15 +32,13 @@ class UrlSource(Source):
 
     NAME = "URL Source"
 
-    def __init__(self, package):
-        super().__init__(package)
-
-        ktr = Kentauros()
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
 
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.URL
 
-        state = ktr.state_read(self.spkg.get_conf_name())
+        state = self.context.state.read(self.package.get_conf_name())
 
         if state is None:
             self.last_version = None
@@ -49,7 +48,7 @@ class UrlSource(Source):
             self.last_version = None
 
     def __str__(self) -> str:
-        return "URL Source for Package '" + self.spkg.get_conf_name() + "'"
+        return "URL Source for Package '" + self.package.get_conf_name() + "'"
 
     def name(self):
         return self.NAME
@@ -75,7 +74,7 @@ class UrlSource(Source):
         expected_keys = ["keep", "orig"]
 
         for key in expected_keys:
-            if key not in self.spkg.conf["url"]:
+            if key not in self.package.conf["url"]:
                 logger.err("The [url] section in the package's .conf file doesn't set the '" +
                            key +
                            "' key.")
@@ -96,7 +95,7 @@ class UrlSource(Source):
             bool:   boolean value indicating whether the downloaded file should be kept
         """
 
-        return self.spkg.conf.getboolean("url", "keep")
+        return self.package.conf.getboolean("url", "keep")
 
     def get_orig(self) -> str:
         """
@@ -104,7 +103,7 @@ class UrlSource(Source):
             str:    string containing the upstream file URL
         """
 
-        return self.spkg.replace_vars(self.spkg.conf.get("url", "orig"))
+        return self.package.replace_vars(self.package.conf.get("url", "orig"))
 
     def status(self) -> KtrResult:
         """
@@ -122,9 +121,7 @@ class UrlSource(Source):
             return KtrResult(True, state=state)
 
     def status_string(self) -> KtrResult:
-        ktr = Kentauros()
-
-        state = ktr.state_read(self.spkg.get_conf_name())
+        state = self.context.state.read(self.package.get_conf_name())
 
         if "url_last_version" in state:
             string = ("url source module:\n" +
@@ -137,7 +134,7 @@ class UrlSource(Source):
 
     def imports(self) -> KtrResult:
         if os.path.exists(self.dest):
-            return KtrResult(True, state=dict(url_last_version=self.spkg.get_version()))
+            return KtrResult(True, state=dict(url_last_version=self.package.get_version()))
         else:
             return KtrResult(True)
 
@@ -170,13 +167,11 @@ class UrlSource(Source):
         # construct wget commands
         cmd = ["wget"]
 
-        ktr = Kentauros()
-
         # add --verbose or --quiet depending on settings
-        if (ktr.verby == 2) and not ktr.debug:
-            cmd.append("--quiet")
-        if (ktr.verby == 0) or ktr.debug:
+        if self.context.debug():
             cmd.append("--verbose")
+        else:
+            cmd.append("--quiet")
 
         # set origin and destination
         cmd.append(self.get_orig())
@@ -197,7 +192,7 @@ class UrlSource(Source):
         success = (ret == 0)
 
         if success:
-            self.last_version = self.spkg.get_version()
+            self.last_version = self.package.get_version()
 
         return ret.submit(success)
 

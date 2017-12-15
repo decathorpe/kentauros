@@ -6,7 +6,9 @@ source module is defined in the package configuration file.
 
 import warnings
 
+from ...context import KtrContext
 from ...definitions import SourceType
+from ...package import Package
 from ...result import KtrResult
 
 from .abstract import Source
@@ -26,13 +28,13 @@ class NoSource(Source):
 
     NAME = "Dummy Source"
 
-    def __init__(self, package):
-        super().__init__(package)
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
 
         self.stype = SourceType.NONE
 
     def __str__(self) -> str:
-        return "placeholder Source for Package '" + self.spkg.get_conf_name() + "'"
+        return "placeholder Source for Package '" + self.package.get_conf_name() + "'"
 
     def name(self):
         return self.NAME
@@ -62,7 +64,7 @@ class NoSource(Source):
         return KtrResult(True)
 
     def formatver(self) -> KtrResult:
-        return KtrResult(True, self.spkg.get_version())
+        return KtrResult(True, self.package.get_version())
 
     def get(self) -> KtrResult:
         warnings.warn(ERROR_STRING, Warning)

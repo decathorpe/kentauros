@@ -8,8 +8,10 @@ of a local file in the package's configuration file.
 import os
 import shutil
 
+from ...context import KtrContext
 from ...definitions import SourceType
 from ...logcollector import LogCollector
+from ...package import Package
 from ...result import KtrResult
 
 from .abstract import Source
@@ -25,14 +27,14 @@ class LocalSource(Source):
 
     NAME = "Local Source"
 
-    def __init__(self, package):
-        super().__init__(package)
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
 
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.LOCAL
 
     def __str__(self) -> str:
-        return "Local Source for Package '" + self.spkg.get_conf_name() + "'"
+        return "Local Source for Package '" + self.package.get_conf_name() + "'"
 
     def name(self):
         return self.NAME
@@ -57,7 +59,7 @@ class LocalSource(Source):
         expected_keys = ["keep", "orig"]
 
         for key in expected_keys:
-            if key not in self.spkg.conf["local"]:
+            if key not in self.package.conf["local"]:
                 logger.err("The [local] section in the package's .conf file doesn't set the '" +
                            key +
                            "' key.")
@@ -66,7 +68,7 @@ class LocalSource(Source):
         return ret.submit(success)
 
     def get_keep(self) -> bool:
-        return self.spkg.conf.getboolean("local", "keep")
+        return self.package.conf.getboolean("local", "keep")
 
     def get_orig(self) -> str:
         """
@@ -74,7 +76,7 @@ class LocalSource(Source):
             str:    string containing the source file path
         """
 
-        return self.spkg.replace_vars(self.spkg.conf.get("local", "orig"))
+        return self.package.replace_vars(self.package.conf.get("local", "orig"))
 
     def status(self) -> KtrResult:
         return KtrResult(True)

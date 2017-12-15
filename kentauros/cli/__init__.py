@@ -39,6 +39,12 @@ class KtrCLIContext(KtrContext):
         self.debug_flag = self.args.debug
         self.warning_flag = self.args.warnings
 
+    def get_argument(self, key: str):
+        if key in self.args:
+            return self.args[key]
+        else:
+            return None
+
     def debug(self) -> bool:
         return self.debug_flag or os.getenv("KTR_DEBUG", False)
 

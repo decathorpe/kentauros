@@ -10,9 +10,10 @@ import shutil
 import subprocess as sp
 
 from ...conntest import is_connected
+from ...context import KtrContext
 from ...definitions import SourceType
-from ...instance import Kentauros
 from ...logcollector import LogCollector
+from ...package import Package
 from ...result import KtrResult
 
 from .abstract import Source
@@ -70,10 +71,10 @@ class BzrSource(Source):
 
     NAME = "bzr Source"
 
-    def __init__(self, package):
-        super().__init__(package)
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
 
-        self.dest = os.path.join(self.sdir, self.spkg.get_name())
+        self.dest = os.path.join(self.sdir, self.package.get_name())
         self.stype = SourceType.BZR
         self.saved_date = None
         self.saved_rev = None
@@ -86,7 +87,7 @@ class BzrSource(Source):
             self.remote = orig
 
     def __str__(self) -> str:
-        return "bzr Source for Package '" + self.spkg.get_conf_name() + "'"
+        return "bzr Source for Package '" + self.package.get_conf_name() + "'"
 
     def name(self):
         return self.NAME
@@ -111,7 +112,7 @@ class BzrSource(Source):
         expected_keys = ["branch", "keep", "keep_repo", "orig", "revno"]
 
         for key in expected_keys:
-            if key not in self.spkg.conf["bzr"]:
+            if key not in self.package.conf["bzr"]:
                 logger.err("The [bzr] section in the package's .conf file doesn't set the '" +
                            key +
                            "' key.")
@@ -131,7 +132,7 @@ class BzrSource(Source):
             bool:   boolean value indicating whether the exported tarball should be kept
         """
 
-        return self.spkg.conf.getboolean("bzr", "keep")
+        return self.package.conf.getboolean("bzr", "keep")
 
     def get_keep_repo(self) -> bool:
         """
@@ -139,7 +140,7 @@ class BzrSource(Source):
             bool:   boolean value indicating whether the bzr repository should be kept
         """
 
-        return self.spkg.conf.getboolean("bzr", "keep_repo")
+        return self.package.conf.getboolean("bzr", "keep_repo")
 
     def get_orig(self) -> str:
         """
@@ -147,7 +148,7 @@ class BzrSource(Source):
             str:    string containing the upstream bzr repository URL (or `lp:` link)
         """
 
-        return self.spkg.replace_vars(self.spkg.conf.get("bzr", "orig"))
+        return self.package.replace_vars(self.package.conf.get("bzr", "orig"))
 
     def get_branch(self) -> str:
         """
@@ -155,7 +156,7 @@ class BzrSource(Source):
             str:    string containing the branch that is set in the package configuration
         """
 
-        return self.spkg.conf.get("bzr", "branch")
+        return self.package.conf.get("bzr", "branch")
 
     def get_revno(self) -> str:
         """
@@ -163,7 +164,7 @@ class BzrSource(Source):
             str:    string containing the revision number that is set in the package configuration
         """
 
-        return self.spkg.conf.get("bzr", "revno")
+        return self.package.conf.get("bzr", "revno")
 
     def rev(self) -> KtrResult:
         """
@@ -177,13 +178,11 @@ class BzrSource(Source):
             str: either revision string from repo, last stored rev string or `""` when unsuccessful
         """
 
-        ktr = Kentauros()
-
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
         if not os.access(self.dest, os.R_OK):
-            state = ktr.state_read(self.spkg.get_conf_name())
+            state = self.context.state.read(self.package.get_conf_name())
 
             if self.saved_rev is not None:
                 ret.value = self.saved_rev
@@ -303,19 +302,17 @@ class BzrSource(Source):
             str: nice version string (base version + "+bzr" + revision)
         """
 
-        ktr = Kentauros()
-
         success = True
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
-        template: str = ktr.conf.get("main", "version_template_bzr")
+        template: str = self.context.conf.get("main", "version_template_bzr")
 
         if "%{version}" in template:
-            template = template.replace("%{version}", self.spkg.get_version())
+            template = template.replace("%{version}", self.package.get_version())
 
         if "%{version_sep}" in template:
-            template = template.replace("%{version_sep}", self.spkg.get_version_separator())
+            template = template.replace("%{version_sep}", self.package.get_version_separator())
 
         if "%{date}" in template:
             res = self.date()
@@ -384,13 +381,11 @@ class BzrSource(Source):
         # construct bzr command
         cmd = ["branch"]
 
-        ktr = Kentauros()
-
         # add --verbose or --quiet depending on settings
-        if (ktr.verby == 2) and not ktr.debug:
-            cmd.append("--quiet")
-        if (ktr.verby == 0) or ktr.debug:
+        if self.context.debug():
             cmd.append("--verbose")
+        else:
+            cmd.append("--quiet")
 
         # set origin
         if not self.get_branch():
@@ -429,6 +424,7 @@ class BzrSource(Source):
                 return ret.submit(False)
 
         # return True if successful
+        ret.collect(self.status())
         return ret.submit(True)
 
     def update(self) -> KtrResult:
@@ -456,13 +452,11 @@ class BzrSource(Source):
         # construct bzr command
         cmd = ["pull"]
 
-        ktr = Kentauros()
-
         # add --verbose or --quiet depending on settings
-        if (ktr.verby == 2) and not ktr.debug:
-            cmd.append("--quiet")
-        if (ktr.verby == 0) or ktr.debug:
+        if self.context.debug():
             cmd.append("--verbose")
+        else:
+            cmd.append("--quiet")
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
@@ -497,6 +491,8 @@ class BzrSource(Source):
 
         # return True if update found, False if not
         updated = rev_new != rev_old
+
+        ret.collect(self.status())
         return ret.submit(updated)
 
     def _remove_or_keep(self, logger: LogCollector):
@@ -505,12 +501,10 @@ class BzrSource(Source):
         not keeping the repository around was specified in the configuration file.
         """
 
-        ktr = Kentauros()
-
         if not self.get_keep_repo():
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
-            assert ktr.get_datadir() in self.dest
+            assert self.context.get_datadir() in self.dest
 
             shutil.rmtree(self.dest)
             logger.log("bzr repository deleted after export to tarball")
@@ -531,13 +525,11 @@ class BzrSource(Source):
         # construct bzr command
         cmd = ["export"]
 
-        ktr = Kentauros()
-
         # add --verbose or --quiet depending on settings
-        if (ktr.verby == 2) and not ktr.debug:
-            cmd.append("--quiet")
-        if (ktr.verby == 0) or ktr.debug:
+        if self.context.debug():
             cmd.append("--verbose")
+        else:
+            cmd.append("--quiet")
 
         # export HEAD or specified commit
         if self.get_revno():
@@ -557,7 +549,7 @@ class BzrSource(Source):
             return ret.submit(False)
         version = res.value
 
-        name_version = self.spkg.get_name() + "-" + version
+        name_version = self.package.get_name() + "-" + version
         file_name = os.path.join(self.sdir, name_version + ".tar.gz")
 
         cmd.append(file_name)
@@ -587,4 +579,5 @@ class BzrSource(Source):
         # remove bzr repo if keep is False
         self._remove_or_keep(logger)
 
+        ret.collect(self.status())
         return ret.submit(True)

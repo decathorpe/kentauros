@@ -7,8 +7,9 @@ constructors.
 import abc
 import os
 
-from ...instance import Kentauros
+from ...context import KtrContext
 from ...modules.module import PkgModule
+from ...package import Package
 from ...result import KtrResult
 
 
@@ -24,11 +25,9 @@ class Constructor(PkgModule, metaclass=abc.ABCMeta):
         Package cpkg:       stores parent package instance reference
     """
 
-    def __init__(self, package):
-        ktr = Kentauros()
-
-        self.cpkg = package
-        self.pdir = os.path.join(ktr.get_packdir(), self.cpkg.get_conf_name())
+    def __init__(self, package: Package, context: KtrContext):
+        super().__init__(package, context)
+        self.pdir = os.path.join(self.context.get_packdir(), self.package.get_conf_name())
 
     @abc.abstractmethod
     def status(self) -> KtrResult:
