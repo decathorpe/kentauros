@@ -12,12 +12,9 @@ import warnings
 
 from collections import OrderedDict
 
-from tinydb import TinyDB, Query
-
-from .definitions import ActionType
-
 from .init.cli import CLIArgs
 from .init.env import get_env_debug, get_env_verby
+from .state import KtrState
 
 
 def __smaller_int__(int1: int, int2: int):
@@ -25,23 +22,6 @@ def __smaller_int__(int1: int, int2: int):
         return int1
     else:
         return int2
-
-
-def __dict_is_subset__(sup: dict, sub: dict) -> bool:
-    if sup is None:
-        return False
-
-    for key in sub.keys():
-        # if the key is not yet present: update
-        if key not in sup.keys():
-            return False
-
-        # if the values for the same key are different: update
-        if sub[key] != sup[key]:
-            return False
-
-    # if all keys and values for existing keys are identical: don't update
-    return True
 
 
 class Kentauros:
@@ -182,28 +162,10 @@ class Kentauros:
             dict:           result of the query
         """
 
-        warnings.warn("This method is deprecated and will be removed soon.", DeprecationWarning)
+        state = KtrState(os.path.join(self.get_basedir(), "state.json"))
+        return state.read(conf_name)
 
-        assert isinstance(conf_name, str)
-
-        with TinyDB(os.path.join(self.get_basedir(), "state.json"),
-                    indent=4, sort_keys=True) as db:
-            package = Query()
-            results = db.search(package.name == conf_name)
-
-        if len(results) == 1:
-            return results[0]
-        elif len(results) == 0:
-            if self.cli.get_action() != ActionType.IMPORT:
-                warnings.warn("Got no result from the state db. Package state not yet stored.",
-                              Warning)
-            return None
-        else:
-            warnings.warn("Got more than one result from the state db. Something went wrong here.",
-                          Warning)
-            return results[0]
-
-    def state_write(self, conf_name: str, entries: dict) -> int:
+    def state_write(self, conf_name: str, entries: dict):
         """
         This method inserts or updates a package's entry in the state database with the dictionary
         entries given.
@@ -216,35 +178,10 @@ class Kentauros:
             int:            ID of the package in the database
         """
 
-        warnings.warn("This method is deprecated and will be removed soon.", DeprecationWarning)
+        state = KtrState(os.path.join(self.get_basedir(), "state.json"))
+        state.write(conf_name, entries)
 
-        # do not disturb the database with empty changes
-        if entries == dict():
-            if self.debug:
-                # print("Not disturbing DB with empty changes.")
-                pass
-            return -1
-
-        # read old state for comparison with to "upsert" values
-        old_state = self.state_read(conf_name)
-
-        # compare entries with current status
-        if __dict_is_subset__(old_state, entries):
-            if self.debug:
-                # print("Not disturbing DB with redundant changes.")
-                pass
-            return -1
-
-        with TinyDB(os.path.join(self.get_basedir(), "state.json"),
-                    indent=4, sort_keys=True) as db:
-            package = Query()
-            if not db.search(package.name == conf_name):
-                entries["name"] = conf_name
-                return db.insert(entries)
-            else:
-                return db.update(entries, package.name == conf_name)[0]
-
-    def state_delete(self, conf_name: str) -> int:
+    def state_delete(self, conf_name: str):
         """
         This method deletes the entries for the given package from the database and returns its ID.
 
@@ -255,22 +192,5 @@ class Kentauros:
             int:            ID of the removed entry
         """
 
-        warnings.warn("This method is deprecated and will be removed soon.", DeprecationWarning)
-
-        assert isinstance(conf_name, str)
-
-        with TinyDB(os.path.join(self.get_basedir(), "state.json"),
-                    indent=4, sort_keys=True) as db:
-            package = Query()
-            results = db.remove(package.name == conf_name)
-
-        if len(results) == 1:
-            return results[0]
-        elif len(results) == 0:
-            warnings.warn("Got no result from the state db for this package configuration name.",
-                          Warning)
-            return None
-        else:
-            warnings.warn("Got more than one result from the state db. Something went wrong here.",
-                          Warning)
-            return results[0]
+        state = KtrState(os.path.join(self.get_basedir(), "state.json"))
+        state.remove(conf_name)

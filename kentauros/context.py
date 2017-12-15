@@ -2,12 +2,7 @@ import abc
 import configparser as cp
 import os
 
-
-# pylint: disable=too-many-ancestors
-class FallbackConfiguration(cp.ConfigParser):
-    def __init__(self):
-        super().__init__()
-        # TODO: Initialise with fallback values
+from .state import KtrState
 
 
 class KtrContext(metaclass=abc.ABCMeta):
@@ -23,47 +18,53 @@ class KtrContext(metaclass=abc.ABCMeta):
         str basedir:                    base directory of the kentauros project
         str conf_path:                  path of the "kentaurosrc" configuration file
         cp.ConfigParser conf:           ConfigParser object holding the runtime configuration
-        cp.ConfigParser conf_fallback:  ConfigParser object holding fallback configuration values
-        bool debug:                     flag whether debugging is enabled or not
-        bool warnings:                  flag whether warnings are enabled or not
     """
 
     def __init__(self, basedir: str):
+        assert isinstance(basedir, str)
+
         if not os.path.exists(basedir):
             raise FileNotFoundError(
                 "The specified base directory ({}) could not be found.".format(basedir))
 
         self.basedir = basedir
-        self.debug = bool()
-        self.warnings = bool()
 
         conf_path = os.path.join(self.basedir, "kentaurosrc")
+        self.conf = cp.ConfigParser()
+
         if os.path.exists(conf_path):
-            self.conf = cp.ConfigParser()
             self.conf.read(conf_path)
 
-        self.conf_fallback = FallbackConfiguration()
+        self.state = KtrState(os.path.join(self.basedir, "state.json"))
 
+    @abc.abstractmethod
+    def debug(self) -> bool:
+        """Returns a boolean flag indicating enabled or disabled debugging messages."""
+
+    @abc.abstractmethod
+    def warnings(self) -> bool:
+        """Returns a boolean flag indicating enabled or disabled warning messages."""
+
+    @abc.abstractmethod
     def get_basedir(self) -> str:
         """Returns the the base directory."""
-        return self.basedir
 
+    @abc.abstractmethod
     def get_confdir(self) -> str:
-        """Returns the string "configs" appended to the base directory."""
-        return os.path.join(self.get_basedir(), "configs")
+        """Returns the directory containing package configuration files."""
 
+    @abc.abstractmethod
     def get_datadir(self) -> str:
-        """Returns the string "sources" appended to the base directory."""
-        return os.path.join(self.get_basedir(), "sources")
+        """Returns the directory containing package sources."""
 
+    @abc.abstractmethod
     def get_expodir(self) -> str:
-        """Returns the string "exports" appended to the base directory."""
-        return os.path.join(self.get_basedir(), "exports")
+        """Returns the directory containing built binary packages."""
 
+    @abc.abstractmethod
     def get_packdir(self) -> str:
-        """Returns the string "packages" appended to the base directory."""
-        return os.path.join(self.get_basedir(), "packages")
+        """Returns the directory containing built source packages."""
 
+    @abc.abstractmethod
     def get_specdir(self) -> str:
-        """Returns the string "specs" appended to the base directory."""
-        return os.path.join(self.get_basedir(), "specs")
+        """Returns the directory containing package specifications."""
