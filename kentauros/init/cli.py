@@ -17,6 +17,7 @@ from ..definitions import ActionType
 
 
 # pylint: disable=unused-argument
+# noinspection PyUnusedLocal
 def package_name_completer(prefix, **kwargs):
     """
     This function returns a list of package names (found in the package configs directory by glob)
