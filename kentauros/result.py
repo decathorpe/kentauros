@@ -19,8 +19,13 @@ class KtrResult:
         dict state:             collected global state changes
     """
 
-    def __init__(self, success: bool = False, value=None, klass=None,
-                 messages: LogCollector = None, state: dict = None):
+    def __init__(self,
+                 success: bool = False,
+                 value=None,
+                 klass=None,
+                 messages: LogCollector = None,
+                 state: dict = None,
+                 name: str = None):
 
         assert isinstance(success, bool)
         self.success = success
@@ -33,7 +38,11 @@ class KtrResult:
             self.klass = klass
 
         if messages is None:
-            self.messages = LogCollector()
+            if name is not None:
+                assert isinstance(name, str)
+                self.messages = LogCollector(name)
+            else:
+                self.messages = LogCollector()
         else:
             assert isinstance(messages, LogCollector)
             self.messages = messages
