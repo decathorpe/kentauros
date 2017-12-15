@@ -12,7 +12,7 @@ from .bootstrap import ktr_bootstrap
 from .definitions import ActionType
 from .instance import Kentauros
 from .logcollector import LogCollector
-from .package import Package, PackageError
+from .oldpackage import OldPackage, PackageError
 from .result import KtrResult
 
 
@@ -141,7 +141,7 @@ def init_package_objects(packages: list, logger: LogCollector):
         assert isinstance(name, str)
 
         try:
-            pkg = Package(name)
+            pkg = OldPackage(name)
         except PackageError as error:
             logger.log("Invalid package configuration file:")
             logger.log(error.value)
