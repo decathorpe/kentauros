@@ -61,6 +61,8 @@ class Kentauros:
     packages = None
 
     def __init__(self):
+        warnings.warn("This class is deprecated. Use KtrContext instead.", DeprecationWarning)
+
         if not Kentauros.initialised:
             Kentauros.cli = CLIArgs()
             Kentauros.debug = get_env_debug() or self.cli.get_debug()
@@ -180,6 +182,8 @@ class Kentauros:
             dict:           result of the query
         """
 
+        warnings.warn("This method is deprecated and will be removed soon.", DeprecationWarning)
+
         assert isinstance(conf_name, str)
 
         with TinyDB(os.path.join(self.get_basedir(), "state.json"),
@@ -211,6 +215,8 @@ class Kentauros:
         Returns:
             int:            ID of the package in the database
         """
+
+        warnings.warn("This method is deprecated and will be removed soon.", DeprecationWarning)
 
         # do not disturb the database with empty changes
         if entries == dict():
@@ -248,6 +254,8 @@ class Kentauros:
         Returns:
             int:            ID of the removed entry
         """
+
+        warnings.warn("This method is deprecated and will be removed soon.", DeprecationWarning)
 
         assert isinstance(conf_name, str)
 
