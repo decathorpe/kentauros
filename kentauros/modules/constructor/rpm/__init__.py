@@ -154,7 +154,7 @@ class RPMSpec:
 
         self.contents = contents_new
 
-    def build_preamble_string(self) -> str:
+    def build_preamble_string(self) -> KtrResult:
         """
         This method returns the appropriate spec preamble string, depending on the type of Source
         that has been set.
@@ -190,8 +190,13 @@ class RPMSpec:
         if path == self.path:
             os.remove(path)
 
+        res = self.build_preamble_string()
+        if not res.success:
+            raise NotImplementedError("The RPM .spec handler can't work successfully.")
+        preamble = res.value
+
         with open(path, "w") as file:
-            file.write(self.build_preamble_string())
+            file.write(preamble)
             file.write(self.contents)
 
     def write_contents_to_file(self, path: str):
@@ -260,7 +265,7 @@ def do_release_bump(path: str, comment: str = None) -> KtrResult:
     cmd.append('--comment=' + comment)
 
     logger.cmd(cmd)
-    res = subprocess.run(cmd)
+    res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     success = (res.returncode == 0)
 
     return ret.submit(success)

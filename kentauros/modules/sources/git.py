@@ -477,7 +477,7 @@ class GitSource(Source):
 
         # clone git repo from origin to destination
         logger.cmd(cmd_clone)
-        subprocess.call(cmd_clone)
+        subprocess.run(cmd_clone, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         # if commit is specified: checkout commit
         if self.get_commit():
@@ -490,7 +490,7 @@ class GitSource(Source):
 
             # checkout commit
             logger.cmd(cmd_checkout)
-            subprocess.call(cmd_checkout)
+            subprocess.run(cmd_checkout, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
             # go to previous dir
             os.chdir(prev_dir)
@@ -573,7 +573,9 @@ class GitSource(Source):
 
         # get updates
         logger.cmd(cmd)
-        res: subprocess.CompletedProcess = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        res: subprocess.CompletedProcess = subprocess.run(cmd,
+                                                          stdout=subprocess.PIPE,
+                                                          stderr=subprocess.STDOUT)
 
         # go back to previous dir
         os.chdir(prev_dir)
@@ -673,7 +675,9 @@ class GitSource(Source):
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
         logger.cmd(cmd)
-        res: subprocess.CompletedProcess = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        res: subprocess.CompletedProcess = subprocess.run(cmd,
+                                                          stdout=subprocess.PIPE,
+                                                          stderr=subprocess.STDOUT)
         os.chdir(prev_dir)
 
         if res.returncode != 0:

@@ -211,7 +211,9 @@ class MockBuild:
         logger.cmd(cmd)
 
         try:
-            res: subprocess.CompletedProcess = subprocess.run(cmd)
+            res: subprocess.CompletedProcess = subprocess.run(cmd,
+                                                              stdout=subprocess.PIPE,
+                                                              stderr=subprocess.STDOUT)
             return ret.submit(res.returncode == 0)
         except PermissionError:
             logger.log("Mock build has been cancelled.")

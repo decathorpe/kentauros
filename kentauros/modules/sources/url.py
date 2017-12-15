@@ -4,7 +4,6 @@ handling sources that have `source.type=url` specified and `source.orig` set to 
 in the package's configuration file.
 """
 
-
 import os
 import subprocess
 
@@ -186,7 +185,9 @@ class UrlSource(Source):
 
         # wget source from origin to destination
         logger.cmd(cmd)
-        res: subprocess.CompletedProcess = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        res: subprocess.CompletedProcess = subprocess.run(cmd,
+                                                          stdout=subprocess.PIPE,
+                                                          stderr=subprocess.STDOUT)
 
         if res.returncode != 0:
             logger.lst("Sources could not be downloaded successfully. wget output:",

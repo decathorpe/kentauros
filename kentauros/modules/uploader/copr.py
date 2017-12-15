@@ -186,7 +186,7 @@ class CoprUploader(Uploader):
             return ret.submit(False)
 
         logger.cmd(cmd)
-        res = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         success = (res == 0)
 
         if success:

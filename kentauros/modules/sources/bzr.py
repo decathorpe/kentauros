@@ -41,7 +41,7 @@ class BzrCommand:
 
         try:
             logger.cmd(cmd)
-            ret: sp.CompletedProcess = sp.run(cmd, stderr=sp.STDOUT)
+            ret: sp.CompletedProcess = sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
         finally:
             os.chdir(cwd)
 
@@ -118,7 +118,7 @@ class BzrSource(Source):
                 success = False
 
         # check if bzr is installed
-        ret = sp.run(["which", "bzr"])
+        ret = sp.run(["which", "bzr"], stdout=sp.PIPE, stderr=sp.STDOUT)
         if ret.returncode != 0:
             logger.log("Install bzr to use the specified source.")
             success = False

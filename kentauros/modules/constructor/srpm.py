@@ -379,7 +379,10 @@ class SrpmConstructor(Constructor):
             spec.do_release_reset()
 
         # write preamble to new spec file
-        preamble = spec.build_preamble_string()
+        res = spec.build_preamble_string()
+        if not res.success:
+            raise NotImplementedError("The SRPM Constructor can't proceed due to an unknown error.")
+        preamble = res.value
 
         # write the content of the spec file to destination
         spec.write_contents_to_file(self._get_spec_destination())
@@ -662,7 +665,7 @@ class SrpmConstructor(Constructor):
 
         logger.cmd(cmd)
 
-        res = subprocess.run(cmd, stderr=subprocess.STDOUT)
+        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         try:
             res.check_returncode()
