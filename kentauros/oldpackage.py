@@ -316,4 +316,4 @@ class OldPackage:
                            "'.")
                 success = False
 
-        return KtrResult(success, logger)
+        return KtrResult(success, messages=logger)

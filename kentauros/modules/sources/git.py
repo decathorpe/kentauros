@@ -195,7 +195,7 @@ class GitSource(Source):
 
         ret.value = dt
         ret.klass = datetime.datetime
-        ret.submit(True)
+        return ret.submit(True)
 
     def datetime_str(self) -> KtrResult:
         ret = KtrResult()
@@ -290,12 +290,25 @@ class GitSource(Source):
             dict:   key-value pairs (property: value)
         """
 
-        state = dict(git_branch=self.get_branch(),
-                     git_commit=self.get_commit(),
-                     git_last_commit=self.commit(),
-                     git_last_date=self.datetime_str())
+        ret = KtrResult(name=self.name())
 
-        return KtrResult(True, state=state)
+        res = self.commit()
+        ret.collect(res)
+        if not res.success:
+            return ret.submit(False)
+        commit = res.value
+
+        res = self.datetime_str()
+        ret.collect(res)
+        if not res.success:
+            return ret.submit(False)
+        dt_string = res.value
+
+        ret.collect(KtrResult(state=dict(git_branch=self.get_branch(),
+                                         git_commit=self.get_commit(),
+                                         git_last_commit=commit,
+                                         git_last_date=dt_string)))
+        return ret.submit(True)
 
     def status_string(self) -> KtrResult:
         ret = KtrResult()
@@ -382,23 +395,29 @@ class GitSource(Source):
             else:
                 success = False
 
-        if "%{commit}" in template:
-            res = self.commit()
-            ret.collect(res)
+        # determine commit hash and shortcommit
+        res = self.commit()
+        ret.collect(res)
 
-            if res.success:
-                template = template.replace("%{revision}", res.value)
-            else:
-                success = False
+        if res.success:
+            commit = res.value
+        else:
+            logger.log("Commit hash string could not be determined successfully.")
+            return ret.submit(False)
+
+        if "%{commit}" in template:
+            template = template.replace("%{revision}", commit)
 
         if "%{shortcommit}" in template:
-            template = template.replace("%{shortcommit}", self.commit()[0:7])
+            template = template.replace("%{shortcommit}", commit[0:7])
 
+        # look for variables that are still present
         if "%{" in template:
             logger.log("Unrecognized variables present in git version template.")
 
         ret.value = template
         ret.klass = str
+
         return ret.submit(success)
 
     def get(self) -> KtrResult:
