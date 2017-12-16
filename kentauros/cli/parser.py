@@ -303,6 +303,13 @@ def get_cli_parser() -> ArgumentParser:
         default=False,
         help="enable warning messages")
     cli_parser.add_argument(
+        "-l",
+        "--logfile",
+        action="store",
+        nargs="?",
+        default="",
+        help="set kentauros log output file")
+    cli_parser.add_argument(
         "-b",
         "--basedir",
         action="store",

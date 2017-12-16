@@ -57,7 +57,7 @@ class KtrPackage:
 
         self.conf_name = conf_name
         self.conf_path = os.path.join(self.context.get_confdir(), self.conf_name + ".conf")
-        self.conf = KtrConfig(context, self.conf_path)
+        self.conf = KtrConfig(self.conf_path)
         self.name = self.conf.get("package", "name")
 
     def get_version(self) -> str:

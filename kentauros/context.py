@@ -20,19 +20,23 @@ class KtrContext(metaclass=abc.ABCMeta):
         cp.ConfigParser conf:           ConfigParser object holding the runtime configuration
     """
 
-    def __init__(self, basedir: str):
+    def __init__(self, basedir: str, conf_path: str):
         assert isinstance(basedir, str)
+        assert isinstance(conf_path, str)
 
         if not os.path.exists(basedir):
             raise FileNotFoundError(
                 "The specified base directory ({}) could not be found.".format(basedir))
 
+        if not os.path.exists(conf_path):
+            raise FileNotFoundError(
+                "The specified kentaurosrc file ({}) could not be found.".format(conf_path))
+
         self.basedir = basedir
+        self.conf_path = conf_path
 
         self.state = KtrState(os.path.join(self.basedir, "state.json"))
-
-        conf_path = os.path.join(self.basedir, "kentaurosrc")
-        self.conf = KtrConfig(self, conf_path)
+        self.conf = KtrConfig(conf_path)
 
     @abc.abstractmethod
     def get_argument(self, key: str):

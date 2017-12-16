@@ -20,6 +20,14 @@ kentauros\.bootstrap module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.config module
+------------------------
+
+.. automodule:: kentauros.config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros\.conntest module
 --------------------------
 

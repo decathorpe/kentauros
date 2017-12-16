@@ -7,7 +7,9 @@ This script launches kentauros by executing the appropriate function as entry po
 """
 
 
-# FIXME
-# import sys
-# from kentauros.run import run
-# sys.exit(run())
+import sys
+
+from kentauros.cli import KtrCLIRunner
+
+
+sys.exit(KtrCLIRunner().run())

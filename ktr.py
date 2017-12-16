@@ -11,11 +11,11 @@ directory, not a system-installed one).
 """
 
 
-# FIXME
-# import os
-# import sys
+import os
+import sys
 
-# sys.path.insert(0, os.getcwd())
+sys.path.insert(0, os.getcwd())
 
-# from kentauros.run import run
-# sys.exit(run())
+from kentauros.cli import KtrCLIRunner
+
+sys.exit(KtrCLIRunner().run())

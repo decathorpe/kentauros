@@ -148,7 +148,7 @@ class LogCollector:
         assert isinstance(logs, LogCollector)
         self.messages.extend(logs.messages)
 
-    def print(self, dest=None, warnings=False, debug=False):
+    def print(self, warnings: bool = False, debug: bool = False, dest=None):
         """
         This method prints the collected log messages to the appropriate destinations.
 
@@ -167,11 +167,6 @@ class LogCollector:
         for message in self.messages:
             assert isinstance(message, LogMessage)
 
-            if dest is None:
-                print_dest = default_dest[message.log_type]
-            else:
-                print_dest = dest
-
             if message.log_type == LogMessageType.WARNING:
                 if (not warnings) or (not debug):
                     continue
@@ -179,5 +174,10 @@ class LogCollector:
             if message.log_type == LogMessageType.DEBUG:
                 if not debug:
                     continue
+
+            if dest is None:
+                print_dest = default_dest[message.log_type]
+            else:
+                print_dest = dest
 
             print(message.format(), file=print_dest)

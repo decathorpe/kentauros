@@ -1,18 +1,43 @@
 from .context import KtrContext
-# from .logcollector import LogCollector
 from .modules.module import PkgModule
 from .package import KtrPackage
 from .result import KtrResult
 
 
 class KtrTask:
-    def __init__(self, package: KtrPackage, module: PkgModule,
-                 actions: list, context: KtrContext):
+    def __init__(self, package: KtrPackage, module: PkgModule, action: str, context: KtrContext):
 
-        self.package = package
-        self.module = module
-        self.actions = actions
         self.context = context
+        self.package = package
+
+        self.module = module
+        self.action = action
 
     def execute(self) -> KtrResult:
-        pass
+        ret = self.module.act(self.action)
+
+        if ret.success:
+            self.context.state.write(self.package.conf_name, ret.state)
+
+        return ret
+
+
+class KtrTaskList:
+    def __init__(self):
+        self.tasks = list()
+
+    def add(self, task: KtrTask):
+        self.tasks.append(task)
+
+    def execute(self) -> KtrResult:
+        ret = KtrResult()
+        success = True
+
+        for task in self.tasks:
+            assert isinstance(task, KtrTask)
+
+            res = task.execute()
+            ret.collect(res)
+            success = success and res.success
+
+        return ret.submit(success)
