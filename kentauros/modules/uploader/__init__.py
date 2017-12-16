@@ -6,13 +6,15 @@ enums to their respective class constructors.
 """
 
 
+from ...context import KtrContext
 from ...definitions import UploaderType
+from ...package import KtrPackage
 
 from .abstract import Uploader
 from .copr import CoprUploader
 
 
-def get_uploader(utype: UploaderType, package) -> Uploader:
+def get_uploader(utype: UploaderType, package: KtrPackage, context: KtrContext) -> Uploader:
     """
     This function constructs an `Uploader` from an `UploaderType` enum member and a package.
     """
@@ -20,4 +22,4 @@ def get_uploader(utype: UploaderType, package) -> Uploader:
 
     uploader_dict[UploaderType.COPR] = CoprUploader
 
-    return uploader_dict[utype](package)
+    return uploader_dict[utype](package, context)

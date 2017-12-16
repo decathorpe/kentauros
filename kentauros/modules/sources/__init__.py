@@ -6,8 +6,9 @@ this file contains a dictionary which maps :py:class:`SourceType` enums to their
 constructors.
 """
 
-
+from ...context import KtrContext
 from ...definitions import SourceType
+from ...package import KtrPackage
 
 from .abstract import Source
 from .bzr import BzrSource
@@ -16,7 +17,7 @@ from .url import UrlSource
 from .local import LocalSource
 
 
-def get_source(stype: SourceType, package) -> Source:
+def get_source(stype: SourceType, package: KtrPackage, context: KtrContext) -> Source:
     """
     This function constructs a `Source` from a `SourceType` enum member and a package.
     """
@@ -28,4 +29,4 @@ def get_source(stype: SourceType, package) -> Source:
     source_dict[SourceType.LOCAL] = LocalSource
     source_dict[SourceType.URL] = UrlSource
 
-    return source_dict[stype](package)
+    return source_dict[stype](package, context)

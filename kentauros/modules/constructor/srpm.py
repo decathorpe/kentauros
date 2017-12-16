@@ -47,6 +47,7 @@ class SrpmConstructor(Constructor):
                                  self.package.conf_name,
                                  self.package.name + ".spec")
 
+        # FIXME FIXME FIXME THIS DOESNT WORK ANYMORE
         self.source = self.package.get_module("source")
         self.no_source = (self.source is None)
 
@@ -757,3 +758,8 @@ class SrpmConstructor(Constructor):
         except OSError:
             logger.err("The Package exports directory couldn't be removed.")
             return ret.submit(False)
+
+    def act(self, action: str) -> KtrResult:
+        actions = {"build": self.execute,
+                   "clean": self.clean}
+        return actions[action]()

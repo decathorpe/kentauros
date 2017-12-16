@@ -3,7 +3,9 @@ This subpackage contains all plug-able kentauros modules.
 """
 
 
+from ..context import KtrContext
 from ..definitions import PkgModuleType, SourceType, ConstructorType, BuilderType, UploaderType
+from ..package import KtrPackage
 
 from .module import PkgModule
 from .sources import get_source
@@ -12,7 +14,8 @@ from .builder import get_builder
 from .uploader import get_uploader
 
 
-def _get_pkg_module(mtype: PkgModuleType, stype, package) -> PkgModule:
+def _get_pkg_module(mtype: PkgModuleType, stype, package: KtrPackage,
+                    context: KtrContext) -> PkgModule:
     """
     This function constructs a `PkgModule` from a `PkgModuleType` enum member, a `PkgModuleType`
     subtype, and a package.
@@ -25,7 +28,7 @@ def _get_pkg_module(mtype: PkgModuleType, stype, package) -> PkgModule:
     pkg_module_dict[PkgModuleType.BUILDER] = get_builder
     pkg_module_dict[PkgModuleType.UPLOADER] = get_uploader
 
-    return pkg_module_dict[mtype](stype, package)
+    return pkg_module_dict[mtype](stype, package, context)
 
 
 def _get_pkg_module_type(mtype: PkgModuleType):
@@ -43,13 +46,14 @@ def _get_pkg_module_type(mtype: PkgModuleType):
     return pkg_module_type_dict[mtype]
 
 
-def get_module(mtype: PkgModuleType, mimpl: str, package) -> PkgModule:
+def get_module(mtype: PkgModuleType, mimpl: str, package: KtrPackage,
+               context: KtrContext) -> PkgModule:
     """
     This function constructs a `PkgModule` from a `PkgModuleType` enum member, an implementer
     string, and a package.
     """
 
     pkg_module_type = _get_pkg_module_type(mtype)[mimpl]
-    pkg_module = _get_pkg_module(mtype, pkg_module_type, package)
+    pkg_module = _get_pkg_module(mtype, pkg_module_type, package, context)
 
     return pkg_module
