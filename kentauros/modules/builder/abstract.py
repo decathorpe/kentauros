@@ -28,6 +28,7 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
     def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
         self.pdir = os.path.join(self.context.get_packdir(), self.package.conf_name)
+        self.actions["build"] = self.execute()
 
     @abc.abstractmethod
     def status(self) -> KtrResult:

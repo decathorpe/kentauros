@@ -27,6 +27,13 @@ class PkgModule(metaclass=abc.ABCMeta):
         self.package = package
         self.context = context
 
+        self.actions = {"clean": self.clean,
+                        "status": self.status,
+                        "verify": self.verify}
+
+    def act(self, action: str) -> KtrResult:
+        return self.actions[action]()
+
     @abc.abstractmethod
     def name(self) -> str:
         """
@@ -44,18 +51,6 @@ class PkgModule(metaclass=abc.ABCMeta):
         Returns:
              str:   string containing a description of the sub-module
         """
-
-    # @abc.abstractmethod
-    # def act(self, action: str) -> KtrResult:
-    #     """
-    #     This method executes the module action specified by the `action` string.
-    #
-    #     Arguments:
-    #         str action:     string specifying the module action to be executed
-    #
-    #     Returns:
-    #         KtrResult:      result of the specified action
-    #     """
 
     @abc.abstractmethod
     def execute(self) -> KtrResult:

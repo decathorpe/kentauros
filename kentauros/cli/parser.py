@@ -55,21 +55,13 @@ def add_source_parser(parsers: _SubParsersAction,
 
     source_parsers: _SubParsersAction = source_parser.add_subparsers()
 
-    get_parser: ArgumentParser = source_parsers.add_parser(
-        "get",
-        aliases=["g", "ge"],
-        description="get sources",
-        help="get sources",
+    clean_parser: ArgumentParser = source_parsers.add_parser(
+        "clean",
+        aliases=["c", "cl", "cle", "clea"],
+        description="clean up sources",
+        help="clean up sources",
         parents=[package_parser])
-    get_parser.set_defaults(module_action="get")
-
-    update_parser: ArgumentParser = source_parsers.add_parser(
-        "update",
-        aliases=["u", "up", "upd", "upda", "updat"],
-        description="update sources",
-        help="update sources",
-        parents=[package_parser])
-    update_parser.set_defaults(module_action="update")
+    clean_parser.set_defaults(module_action="clean")
 
     export_parser: ArgumentParser = source_parsers.add_parser(
         "export",
@@ -79,21 +71,53 @@ def add_source_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     export_parser.set_defaults(module_action="export")
 
+    get_parser: ArgumentParser = source_parsers.add_parser(
+        "get",
+        aliases=["g", "ge"],
+        description="get sources",
+        help="get sources",
+        parents=[package_parser])
+    get_parser.set_defaults(module_action="get")
+
     prepare_parser: ArgumentParser = source_parsers.add_parser(
         "prepare",
         aliases=["p", "pr", "pre", "prep", "prepa", "prepar"],
         description="prepare sources",
-        help="prepare_sources",
+        help="prepare sources",
         parents=[package_parser])
     prepare_parser.set_defaults(module_action="prepare")
 
-    clean_parser: ArgumentParser = source_parsers.add_parser(
-        "clean",
-        aliases=["c", "cl", "cle", "clea"],
-        description="clean up sources",
-        help="clean up sources",
+    refresh_parser: ArgumentParser = source_parsers.add_parser(
+        "refresh",
+        aliases=["r", "re", "ref", "refr", "refre", "refres"],
+        description="refresh sources",
+        help="refresh sources",
         parents=[package_parser])
-    clean_parser.set_defaults(module_action="clean")
+    refresh_parser.set_defaults(module_action="refresh")
+
+    status_parser: ArgumentParser = source_parsers.add_parser(
+        "status",
+        aliases=["s", "st", "sta", "stat", "statu"],
+        description="print source status",
+        help="print source status",
+        parents=[package_parser])
+    status_parser.set_defaults(module_action="status")
+
+    update_parser: ArgumentParser = source_parsers.add_parser(
+        "update",
+        aliases=["u", "up", "upd", "upda", "updat"],
+        description="update sources",
+        help="update sources",
+        parents=[package_parser])
+    update_parser.set_defaults(module_action="update")
+
+    verify_parser: ArgumentParser = source_parsers.add_parser(
+        "verify",
+        aliases=["v", "ve", "ver", "veri", "verif"],
+        description="verify sources functionality",
+        help="verify sources functionality",
+        parents=[package_parser])
+    verify_parser.set_defaults(module_action="verify")
 
     return source_parser
 
@@ -141,6 +165,22 @@ def add_constructor_parser(parsers: _SubParsersAction,
     #     parents=[package_parser])
     # lint_parser.set_defaults(module_action="lint")
 
+    status_parser: ArgumentParser = constructor_parsers.add_parser(
+        "status",
+        aliases=["s", "st", "sta", "stat", "statu"],
+        description="print source package status",
+        help="print source package status",
+        parents=[package_parser])
+    status_parser.set_defaults(module_action="status")
+
+    verify_parser: ArgumentParser = constructor_parsers.add_parser(
+        "verify",
+        aliases=["v", "ve", "ver", "veri", "verif"],
+        description="verify source packages functionality",
+        help="verify source packages functionality",
+        parents=[package_parser])
+    verify_parser.set_defaults(module_action="verify")
+
     return constructor_parser
 
 
@@ -180,6 +220,22 @@ def add_builder_parser(parsers: _SubParsersAction,
     #     parents=[package_parser])
     # lint_parser.set_defaults(module_action="lint")
 
+    status_parser: ArgumentParser = builder_parsers.add_parser(
+        "status",
+        aliases=["s", "st", "sta", "stat", "statu"],
+        description="print binary package status",
+        help="print binary package status",
+        parents=[package_parser])
+    status_parser.set_defaults(module_action="status")
+
+    verify_parser: ArgumentParser = builder_parsers.add_parser(
+        "verify",
+        aliases=["v", "ve", "ver", "veri", "verif"],
+        description="verify binary packages functionality",
+        help="verify binary packages functionality",
+        parents=[package_parser])
+    verify_parser.set_defaults(module_action="verify")
+
     return builder_parser
 
 
@@ -195,6 +251,22 @@ def add_uploader_parser(parsers: _SubParsersAction,
 
     uploader_parsers: _SubParsersAction = uploader_parser.add_subparsers()
 
+    clean_parser: ArgumentParser = uploader_parsers.add_parser(
+        "clean",
+        aliases=["c", "cl", "cle", "clea"],
+        description="clean up uploader",
+        help="clean up uploader",
+        parents=[package_parser])
+    clean_parser.set_defaults(module_action="clean")
+
+    status_parser: ArgumentParser = uploader_parsers.add_parser(
+        "status",
+        aliases=["s", "st", "sta", "stat", "statu"],
+        description="print uploader status",
+        help="print uploader status",
+        parents=[package_parser])
+    status_parser.set_defaults(module_action="status")
+
     upload_parser: ArgumentParser = uploader_parsers.add_parser(
         "upload",
         aliases=["u", "up", "upl", "uplo", "uploa"],
@@ -202,6 +274,14 @@ def add_uploader_parser(parsers: _SubParsersAction,
         help="upload packages",
         parents=[package_parser])
     upload_parser.set_defaults(module_action="upload")
+
+    verify_parser: ArgumentParser = uploader_parsers.add_parser(
+        "verify",
+        aliases=["v", "ve", "ver", "veri", "verif"],
+        description="verify upload functionality",
+        help="verify upload functionality",
+        parents=[package_parser])
+    verify_parser.set_defaults(module_action="verify")
 
     return uploader_parser
 

@@ -39,6 +39,12 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         self.dest = None
         self.stype = None
 
+        self.actions["export"] = self.export
+        self.actions["get"] = self.get
+        self.actions["prepare"] = self.execute
+        self.actions["refresh"] = self.refresh
+        self.actions["update"] = self.update
+
     @abc.abstractmethod
     def get_orig(self) -> str:
         """
