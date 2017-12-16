@@ -8,7 +8,7 @@ import warnings
 
 from ...context import KtrContext
 from ...definitions import SourceType
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 from .abstract import Source
@@ -28,13 +28,13 @@ class NoSource(Source):
 
     NAME = "Dummy Source"
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
         self.stype = SourceType.NONE
 
     def __str__(self) -> str:
-        return "placeholder Source for Package '" + self.package.get_conf_name() + "'"
+        return "placeholder Source for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME

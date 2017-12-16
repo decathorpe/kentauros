@@ -9,7 +9,7 @@ import os
 
 from ...context import KtrContext
 from ...modules.module import PkgModule
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 
@@ -25,9 +25,9 @@ class Builder(PkgModule, metaclass=abc.ABCMeta):
         Package bpkg:       stores the package argument given at initialisation
     """
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
-        self.pdir = os.path.join(self.context.get_packdir(), self.package.get_conf_name())
+        self.pdir = os.path.join(self.context.get_packdir(), self.package.conf_name)
 
     @abc.abstractmethod
     def status(self) -> KtrResult:

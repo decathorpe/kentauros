@@ -10,7 +10,7 @@ import shutil
 
 from ...context import KtrContext
 from ...logcollector import LogCollector
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 from ..module import PkgModule
@@ -30,11 +30,11 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         SourceType stype:   type of source
     """
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
         self.updated = False
 
-        self.sdir = os.path.join(self.context.get_datadir(), self.package.get_conf_name())
+        self.sdir = os.path.join(self.context.get_datadir(), self.package.conf_name)
 
         self.dest = None
         self.stype = None

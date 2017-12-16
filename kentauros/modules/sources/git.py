@@ -15,7 +15,7 @@ from ...conntest import is_connected
 from ...context import KtrContext
 from ...definitions import SourceType
 from ...logcollector import LogCollector
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 from .abstract import Source
@@ -45,16 +45,16 @@ class GitSource(Source):
 
     NAME = "git Source"
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
-        self.dest = os.path.join(self.sdir, self.package.get_name())
+        self.dest = os.path.join(self.sdir, self.package.name)
         self.stype = SourceType.GIT
         self.saved_date: datetime.datetime = None
         self.saved_commit: str = None
 
     def __str__(self) -> str:
-        return "git Source for Package '" + self.package.get_conf_name() + "'"
+        return "git Source for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME
@@ -168,7 +168,7 @@ class GitSource(Source):
         dt = datetime.datetime.now()
 
         if not os.access(self.dest, os.R_OK):
-            state = self.context.state.read(self.package.get_conf_name())
+            state = self.context.state.read(self.package.conf_name)
 
             if self.saved_date is not None:
                 ret.value = self.saved_date
@@ -248,7 +248,7 @@ class GitSource(Source):
         ret = KtrResult(messages=logger)
 
         if not os.access(self.dest, os.R_OK):
-            state = self.context.state.read(self.package.get_conf_name())
+            state = self.context.state.read(self.package.conf_name)
 
             if self.saved_commit is not None:
                 ret.value = self.saved_commit
@@ -635,7 +635,7 @@ class GitSource(Source):
             return ret.submit(False)
         version = res.value
 
-        name_version = self.package.get_name() + "-" + version
+        name_version = self.package.name + "-" + version
 
         # add prefix
         cmd.append("--prefix=" + name_version + "/")

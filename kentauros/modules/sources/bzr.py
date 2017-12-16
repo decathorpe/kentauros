@@ -13,7 +13,7 @@ from ...conntest import is_connected
 from ...context import KtrContext
 from ...definitions import SourceType
 from ...logcollector import LogCollector
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 from .abstract import Source
@@ -71,10 +71,10 @@ class BzrSource(Source):
 
     NAME = "bzr Source"
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
-        self.dest = os.path.join(self.sdir, self.package.get_name())
+        self.dest = os.path.join(self.sdir, self.package.name)
         self.stype = SourceType.BZR
         self.saved_date = None
         self.saved_rev = None
@@ -87,7 +87,7 @@ class BzrSource(Source):
             self.remote = orig
 
     def __str__(self) -> str:
-        return "bzr Source for Package '" + self.package.get_conf_name() + "'"
+        return "bzr Source for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME
@@ -182,7 +182,7 @@ class BzrSource(Source):
         ret = KtrResult(messages=logger)
 
         if not os.access(self.dest, os.R_OK):
-            state = self.context.state.read(self.package.get_conf_name())
+            state = self.context.state.read(self.package.conf_name)
 
             if self.saved_rev is not None:
                 ret.value = self.saved_rev
@@ -549,7 +549,7 @@ class BzrSource(Source):
             return ret.submit(False)
         version = res.value
 
-        name_version = self.package.get_name() + "-" + version
+        name_version = self.package.name + "-" + version
         file_name = os.path.join(self.sdir, name_version + ".tar.gz")
 
         cmd.append(file_name)

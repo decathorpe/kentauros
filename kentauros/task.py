@@ -1,12 +1,12 @@
 from .context import KtrContext
 # from .logcollector import LogCollector
 from .modules.module import PkgModule
-from .package import Package
+from .package import KtrPackage
 from .result import KtrResult
 
 
 class KtrTask:
-    def __init__(self, package: Package, module: PkgModule,
+    def __init__(self, package: KtrPackage, module: PkgModule,
                  actions: list, context: KtrContext):
 
         self.package = package

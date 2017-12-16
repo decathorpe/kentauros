@@ -7,7 +7,7 @@ upload classes.
 import abc
 
 from ...context import KtrContext
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 from ..module import PkgModule
@@ -25,7 +25,7 @@ class Uploader(PkgModule, metaclass=abc.ABCMeta):
         Package upkg:       stores parent package instance reference
     """
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
     @abc.abstractmethod

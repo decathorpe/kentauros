@@ -13,7 +13,7 @@ import tempfile
 from ...context import KtrContext
 from ...result import KtrResult
 from ...logcollector import LogCollector
-from ...package import Package
+from ...package import KtrPackage
 
 from ..sources.no_source import NoSource
 
@@ -38,14 +38,14 @@ class SrpmConstructor(Constructor):
 
     NAME = "SRPM Constructor"
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
         self.dirs = dict()
 
         self.path = os.path.join(self.context.get_specdir(),
-                                 self.package.get_conf_name(),
-                                 self.package.get_name() + ".spec")
+                                 self.package.conf_name,
+                                 self.package.name + ".spec")
 
         self.source = self.package.get_module("source")
         self.no_source = (self.source is None)
@@ -59,7 +59,7 @@ class SrpmConstructor(Constructor):
         self.success = True
 
     def __str__(self) -> str:
-        return "SRPM Constructor for Package '" + self.package.get_conf_name() + "'"
+        return "SRPM Constructor for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME
@@ -125,22 +125,22 @@ class SrpmConstructor(Constructor):
 
         assert isinstance(spec, RPMSpec)
 
-        saved_state = self.context.state.read(self.package.get_conf_name())
+        saved_state = self.context.state.read(self.package.conf_name)
 
         if saved_state is None:
-            logger.dbg("Package " + self.package.get_conf_name() + " not yet in state database.")
+            logger.dbg("Package " + self.package.conf_name + " not yet in state database.")
             logger.dbg("Falling back to legacy version detection.")
             return spec.get_version()
 
         if "rpm_last_version" in saved_state:
             return saved_state["rpm_last_version"]
 
-        logger.dbg("Package " + self.package.get_conf_name() + " has never been built before.")
+        logger.dbg("Package " + self.package.conf_name + " has never been built before.")
 
         if "package_version" in saved_state:
             return saved_state["package_version"]
 
-        logger.dbg("Package " + self.package.get_conf_name() + " has no version set in state DB.")
+        logger.dbg("Package " + self.package.conf_name + " has no version set in state DB.")
         logger.dbg("Falling back to legacy version detection.")
 
         return spec.get_version()
@@ -159,19 +159,19 @@ class SrpmConstructor(Constructor):
 
         assert isinstance(spec, RPMSpec)
 
-        saved_state = self.context.state.read(self.package.get_conf_name())
+        saved_state = self.context.state.read(self.package.conf_name)
 
         if saved_state is None:
-            logger.dbg("Package " + self.package.get_conf_name() + " not yet in state database.")
+            logger.dbg("Package " + self.package.conf_name + " not yet in state database.")
             logger.dbg("Falling back to legacy release detection.")
             return spec.get_release()
 
         if "rpm_last_release" in saved_state:
             return saved_state["rpm_last_release"]
 
-        logger.dbg("Package " + self.package.get_conf_name() + " has never been built before.")
+        logger.dbg("Package " + self.package.conf_name + " has never been built before.")
 
-        logger.dbg("Package " + self.package.get_conf_name() + " has no release set in state DB.")
+        logger.dbg("Package " + self.package.conf_name + " has no release set in state DB.")
         logger.dbg("Falling back to legacy release detection.")
 
         return spec.get_release()
@@ -312,7 +312,7 @@ class SrpmConstructor(Constructor):
             # otherwise it is in kentauros' standard .tar.gz format:
             else:
                 tarballs = glob.glob(os.path.join(self.source.sdir,
-                                                  self.package.get_name()) + "*.tar.gz")
+                                                  self.package.name) + "*.tar.gz")
 
                 # remove only the newest one to be safe
                 tarballs.sort(reverse=True)
@@ -350,7 +350,7 @@ class SrpmConstructor(Constructor):
 
     def _get_spec_destination(self) -> str:
         """This method calculates the destination of the .spec file in the `rpmbuild/SPECS` dir."""
-        return os.path.join(self.dirs["spec_dir"], self.package.get_name() + ".spec")
+        return os.path.join(self.dirs["spec_dir"], self.package.name + ".spec")
 
     def _prepare_spec(self, logger: LogCollector) -> str:
         """
@@ -665,7 +665,7 @@ class SrpmConstructor(Constructor):
         cmd.extend(["--define", "_srcrpmdir {}".format(self.dirs["srpm_dir"])])
 
         cmd.append("-bs")
-        cmd.append(os.path.join(self.dirs["spec_dir"], self.package.get_name() + ".spec"))
+        cmd.append(os.path.join(self.dirs["spec_dir"], self.package.name + ".spec"))
 
         logger.cmd(cmd)
 

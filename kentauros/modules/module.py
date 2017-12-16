@@ -7,7 +7,7 @@ modules must provide.
 import abc
 
 from ..context import KtrContext
-from ..package import Package
+from ..package import KtrPackage
 from ..result import KtrResult
 
 
@@ -20,8 +20,8 @@ class PkgModule(metaclass=abc.ABCMeta):
         KtrContext context:     execution context for this module
     """
 
-    def __init__(self, package: Package, context: KtrContext):
-        assert isinstance(package, Package)
+    def __init__(self, package: KtrPackage, context: KtrContext):
+        assert isinstance(package, KtrPackage)
         assert isinstance(context, KtrContext)
 
         self.package = package

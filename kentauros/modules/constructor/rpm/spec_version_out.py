@@ -29,9 +29,9 @@ def spec_version_bzr(source: BzrSource) -> str:
     template: str = source.context.conf.get("main", "version_template_bzr")
 
     if "%{version}" in template:
-        template = template.replace("%{version}", source.spkg.get_version())
+        template = template.replace("%{version}", source.package.get_version())
     if "%{version_sep}" in template:
-        template = template.replace("%{version_sep}", source.spkg.get_version_separator())
+        template = template.replace("%{version_sep}", source.package.get_version_separator())
 
     return template
 
@@ -52,9 +52,9 @@ def spec_version_git(source: GitSource) -> str:
     template: str = source.context.conf.get("main", "version_template_git")
 
     if "%{version}" in template:
-        template = template.replace("%{version}", source.spkg.get_version())
+        template = template.replace("%{version}", source.package.get_version())
     if "%{version_sep}" in template:
-        template = template.replace("%{version_sep}", source.spkg.get_version_separator())
+        template = template.replace("%{version_sep}", source.package.get_version_separator())
 
     return template
 
@@ -72,7 +72,7 @@ def spec_version_local(source: LocalSource) -> str:
     """
 
     assert isinstance(source, LocalSource)
-    ver_str = source.spkg.get_version()
+    ver_str = source.package.get_version()
     return ver_str
 
 
@@ -88,7 +88,7 @@ def spec_version_url(source: UrlSource) -> str:
     """
 
     assert isinstance(source, UrlSource)
-    ver_str = source.spkg.get_version()
+    ver_str = source.package.get_version()
     return ver_str
 
 
@@ -104,7 +104,7 @@ def spec_version_nosource(source: NoSource) -> str:
     """
 
     assert isinstance(source, NoSource)
-    ver_str = source.spkg.get_version()
+    ver_str = source.package.get_version()
     return ver_str
 
 

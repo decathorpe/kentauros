@@ -14,7 +14,7 @@ import time
 
 from ...context import KtrContext
 from ...logcollector import LogCollector
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 from .abstract import Builder
@@ -233,15 +233,15 @@ class MockBuilder(Builder):
         bool active:        determines if this instance is active
     """
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
-        self.edir = os.path.join(context.get_expodir(), self.package.get_conf_name())
+        self.edir = os.path.join(context.get_expodir(), self.package.conf_name)
 
     def name(self) -> str:
         return "Mock Builder"
 
     def __str__(self) -> str:
-        return "Mock Builder for Package '" + self.package.get_conf_name() + "'"
+        return "Mock Builder for Package '" + self.package.conf_name + "'"
 
     def verify(self) -> KtrResult:
         """
@@ -363,10 +363,10 @@ class MockBuilder(Builder):
         if not self.get_active():
             return ret.submit(True)
 
-        package_dir = os.path.join(self.context.get_packdir(), self.package.get_conf_name())
+        package_dir = os.path.join(self.context.get_packdir(), self.package.conf_name)
 
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(package_dir, self.package.get_name() + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(package_dir, self.package.name + "*.src.rpm"))
 
         if not srpms:
             logger.log("No source packages were found. Construct them first.")

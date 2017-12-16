@@ -1,7 +1,7 @@
 import abc
-import configparser as cp
 import os
 
+from .config import KtrConfig
 from .state import KtrState
 
 
@@ -29,13 +29,10 @@ class KtrContext(metaclass=abc.ABCMeta):
 
         self.basedir = basedir
 
-        conf_path = os.path.join(self.basedir, "kentaurosrc")
-        self.conf = cp.ConfigParser()
-
-        if os.path.exists(conf_path):
-            self.conf.read(conf_path)
-
         self.state = KtrState(os.path.join(self.basedir, "state.json"))
+
+        conf_path = os.path.join(self.basedir, "kentaurosrc")
+        self.conf = KtrConfig(self, conf_path)
 
     @abc.abstractmethod
     def get_argument(self, key: str):

@@ -11,7 +11,7 @@ import shutil
 from ...context import KtrContext
 from ...definitions import SourceType
 from ...logcollector import LogCollector
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 from .abstract import Source
@@ -27,14 +27,14 @@ class LocalSource(Source):
 
     NAME = "Local Source"
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.LOCAL
 
     def __str__(self) -> str:
-        return "Local Source for Package '" + self.package.get_conf_name() + "'"
+        return "Local Source for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME

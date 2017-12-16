@@ -11,7 +11,7 @@ from ...conntest import is_connected
 from ...context import KtrContext
 from ...definitions import SourceType
 from ...logcollector import LogCollector
-from ...package import Package
+from ...package import KtrPackage
 from ...result import KtrResult
 
 from .abstract import Source
@@ -32,13 +32,13 @@ class UrlSource(Source):
 
     NAME = "URL Source"
 
-    def __init__(self, package: Package, context: KtrContext):
+    def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = SourceType.URL
 
-        state = self.context.state.read(self.package.get_conf_name())
+        state = self.context.state.read(self.package.conf_name)
 
         if state is None:
             self.last_version = None
@@ -48,7 +48,7 @@ class UrlSource(Source):
             self.last_version = None
 
     def __str__(self) -> str:
-        return "URL Source for Package '" + self.package.get_conf_name() + "'"
+        return "URL Source for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME
@@ -121,7 +121,7 @@ class UrlSource(Source):
             return KtrResult(True, state=state)
 
     def status_string(self) -> KtrResult:
-        state = self.context.state.read(self.package.get_conf_name())
+        state = self.context.state.read(self.package.conf_name)
 
         if "url_last_version" in state:
             string = ("url source module:\n" +
