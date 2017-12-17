@@ -5,20 +5,14 @@ file.
 
 
 import os
-import warnings
 
 from ....definitions import SourceType
-
-from ...sources.bzr import BzrSource
-from ...sources.git import GitSource
-from ...sources.url import UrlSource
-from ...sources.local import LocalSource
-from ...sources.no_source import NoSource
+from ....package import KtrPackage
 
 from .spec_common import format_tag_line
 
 
-def spec_source_bzr(source: BzrSource) -> str:
+def spec_source_bzr(package: KtrPackage) -> str:
     """
     This function returns the Source tag for packages built from *bzr* repositories.
 
@@ -29,14 +23,14 @@ def spec_source_bzr(source: BzrSource) -> str:
         str:                Source tag with comments
     """
 
-    assert isinstance(source, BzrSource)
+    assert isinstance(package, KtrPackage)
 
-    src_str = (format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
+    src_str = format_tag_line("Source0", "%{name}-%{version}.tar.gz")
 
     return src_str
 
 
-def spec_source_git(source: GitSource) -> str:
+def spec_source_git(package: KtrPackage) -> str:
     """
     This function returns the Source string for packages built from *git* repositories.
 
@@ -47,14 +41,14 @@ def spec_source_git(source: GitSource) -> str:
         str:                Source tag with comments
     """
 
-    assert isinstance(source, GitSource)
+    assert isinstance(package, KtrPackage)
 
-    src_str = (format_tag_line("Source0", "%{name}-%{version}.tar.gz"))
+    src_str = format_tag_line("Source0", "%{name}-%{version}.tar.gz")
 
     return src_str
 
 
-def spec_source_local(source: LocalSource) -> str:
+def spec_source_local(package: KtrPackage) -> str:
     """
     This function returns the Source string for packages built from tarballs specified by a *local
     path*.
@@ -66,13 +60,13 @@ def spec_source_local(source: LocalSource) -> str:
         str:                    Source tag in the format `Source0: $VERSION`
     """
 
-    assert isinstance(source, LocalSource)
+    assert isinstance(package, KtrPackage)
 
-    src_str = format_tag_line("Source0", os.path.basename(source.package.conf.get("local", "orig")))
+    src_str = format_tag_line("Source0", os.path.basename(package.conf.get("local", "orig")))
     return src_str
 
 
-def spec_source_url(source: UrlSource) -> str:
+def spec_source_url(package: KtrPackage) -> str:
     """
     This function returns the Source string for packages built from tarballs specified by *url*.
 
@@ -83,26 +77,10 @@ def spec_source_url(source: UrlSource) -> str:
         str:                Source tag in the format `Source0: $URL`
     """
 
-    assert isinstance(source, UrlSource)
+    assert isinstance(package, KtrPackage)
 
-    src_str = format_tag_line("Source0", source.package.conf.get("url", "orig"))
+    src_str = format_tag_line("Source0", package.conf.get("url", "orig"))
     return src_str
-
-
-def spec_source_nosource(source: NoSource) -> str:
-    """
-    This function returns an empty string, as it should never be called.
-
-    Arguments:
-        NoSource source:    source a Source tag will be generated for
-
-    Returns:
-        str:                empty string
-    """
-
-    warnings.warn("This function should never be called.", Warning)
-    assert isinstance(source, NoSource)
-    return ""
 
 
 SPEC_SOURCE_DICT = dict()
@@ -113,5 +91,4 @@ generator functions.
 SPEC_SOURCE_DICT[SourceType.BZR] = spec_source_bzr
 SPEC_SOURCE_DICT[SourceType.GIT] = spec_source_git
 SPEC_SOURCE_DICT[SourceType.LOCAL] = spec_source_local
-SPEC_SOURCE_DICT[SourceType.NONE] = spec_source_nosource
 SPEC_SOURCE_DICT[SourceType.URL] = spec_source_url

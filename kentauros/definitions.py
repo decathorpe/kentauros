@@ -96,7 +96,6 @@ class SourceType(Enum):
     It also includes a default *NONE* type.
     """
 
-    NONE = 0
     URL = 10
     GIT = 20
     BZR = 21

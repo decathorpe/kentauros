@@ -3,17 +3,12 @@ This sub-module contains the functions that generate the necessary "Version:" ta
 file.
 """
 
-
+from ....context import KtrContext
 from ....definitions import SourceType
-
-from ...sources.bzr import BzrSource
-from ...sources.git import GitSource
-from ...sources.url import UrlSource
-from ...sources.local import LocalSource
-from ...sources.no_source import NoSource
+from ....package import KtrPackage
 
 
-def spec_version_bzr(source: BzrSource) -> str:
+def spec_version_bzr(package: KtrPackage, context: KtrContext) -> str:
     """
     This function returns the version string for packages built from *bzr* repositories.
 
@@ -24,19 +19,20 @@ def spec_version_bzr(source: BzrSource) -> str:
         str:                version string in the format `$VERSION+rev%{rev}`
     """
 
-    assert isinstance(source, BzrSource)
+    assert isinstance(package, KtrPackage)
+    assert isinstance(context, KtrContext)
 
-    template: str = source.context.conf.get("main", "version_template_bzr")
+    template: str = context.conf.get("main", "version_template_bzr")
 
     if "%{version}" in template:
-        template = template.replace("%{version}", source.package.get_version())
+        template = template.replace("%{version}", package.get_version())
     if "%{version_sep}" in template:
-        template = template.replace("%{version_sep}", source.package.get_version_separator())
+        template = template.replace("%{version_sep}", package.get_version_separator())
 
     return template
 
 
-def spec_version_git(source: GitSource) -> str:
+def spec_version_git(package: KtrPackage, context: KtrContext) -> str:
     """
     This function returns the version string for packages built from *git* repositories.
 
@@ -47,19 +43,20 @@ def spec_version_git(source: GitSource) -> str:
         str:                version string in the format `$VERSION+git%{date}.%{commit}`
     """
 
-    assert isinstance(source, GitSource)
+    assert isinstance(package, KtrPackage)
+    assert isinstance(context, KtrContext)
 
-    template: str = source.context.conf.get("main", "version_template_git")
+    template: str = context.conf.get("main", "version_template_git")
 
     if "%{version}" in template:
-        template = template.replace("%{version}", source.package.get_version())
+        template = template.replace("%{version}", package.get_version())
     if "%{version_sep}" in template:
-        template = template.replace("%{version_sep}", source.package.get_version_separator())
+        template = template.replace("%{version_sep}", package.get_version_separator())
 
     return template
 
 
-def spec_version_local(source: LocalSource) -> str:
+def spec_version_local(package: KtrPackage, context: KtrContext) -> str:
     """
     This function returns the version string for packages built from tarballs specified by a *local
     path*.
@@ -71,12 +68,14 @@ def spec_version_local(source: LocalSource) -> str:
         str:                    version string in the format `$VERSION`
     """
 
-    assert isinstance(source, LocalSource)
-    ver_str = source.package.get_version()
+    assert isinstance(package, KtrPackage)
+    assert isinstance(context, KtrContext)
+
+    ver_str = package.get_version()
     return ver_str
 
 
-def spec_version_url(source: UrlSource) -> str:
+def spec_version_url(package: KtrPackage, context: KtrContext) -> str:
     """
     This function returns the version string for packages built from tarballs specified by *url*.
 
@@ -87,24 +86,10 @@ def spec_version_url(source: UrlSource) -> str:
         str:                version string in the format `$VERSION`
     """
 
-    assert isinstance(source, UrlSource)
-    ver_str = source.package.get_version()
-    return ver_str
+    assert isinstance(package, KtrPackage)
+    assert isinstance(context, KtrContext)
 
-
-def spec_version_nosource(source: NoSource) -> str:
-    """
-    This function returns the version string for packages built without sources.
-
-    Arguments:
-        NoSource source:    source a version string will be generated for
-
-    Returns:
-        str:                version string in the format `$VERSION`
-    """
-
-    assert isinstance(source, NoSource)
-    ver_str = source.package.get_version()
+    ver_str = package.get_version()
     return ver_str
 
 
@@ -116,5 +101,4 @@ generator functions.
 SPEC_VERSION_DICT[SourceType.BZR] = spec_version_bzr
 SPEC_VERSION_DICT[SourceType.GIT] = spec_version_git
 SPEC_VERSION_DICT[SourceType.LOCAL] = spec_version_local
-SPEC_VERSION_DICT[SourceType.NONE] = spec_version_nosource
 SPEC_VERSION_DICT[SourceType.URL] = spec_version_url

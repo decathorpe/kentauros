@@ -4,6 +4,7 @@ packages.
 """
 
 
+import configparser as cp
 import glob
 import os
 import shutil
@@ -11,11 +12,10 @@ import subprocess
 import tempfile
 
 from ...context import KtrContext
+from ...definitions import SourceType
 from ...result import KtrResult
 from ...logcollector import LogCollector
 from ...package import KtrPackage
-
-from ..sources.no_source import NoSource
 
 from .abstract import Constructor
 from .rpm import RPMSpec, do_release_bump, parse_release
@@ -47,12 +47,16 @@ class SrpmConstructor(Constructor):
                                  self.package.conf_name,
                                  self.package.name + ".spec")
 
-        # FIXME FIXME FIXME THIS DOESNT WORK ANYMORE
-        self.source = self.package.get_module("source")
-        self.no_source = (self.source is None)
+        try:
+            self.stype = SourceType[self.package.conf.get("modules", "source").upper()]
+        except cp.NoSectionError:
+            self.stype = None
+        except cp.NoOptionError:
+            self.stype = None
+        except KeyError:
+            self.stype = None
 
-        if self.no_source:
-            self.source = NoSource(package, context)
+        self.sdir = os.path.join(self.context.get_datadir(), self.package.conf_name)
 
         self.last_release = None
         self.last_version = None
@@ -178,7 +182,7 @@ class SrpmConstructor(Constructor):
         return spec.get_release()
 
     def status(self) -> KtrResult:
-        spec = RPMSpec(self.path, self.source)
+        spec = RPMSpec(self.path, self.package, self.context)
 
         ret = KtrResult()
 
@@ -192,7 +196,7 @@ class SrpmConstructor(Constructor):
             return ret.submit(True)
 
     def status_string(self) -> KtrResult:
-        spec = RPMSpec(self.path, self.source)
+        spec = RPMSpec(self.path, self.package, self.context)
 
         ret = KtrResult()
 
@@ -204,7 +208,7 @@ class SrpmConstructor(Constructor):
         return ret.submit(True)
 
     def imports(self) -> KtrResult:
-        spec = RPMSpec(self.path, self.source)
+        spec = RPMSpec(self.path, self.package, self.context)
 
         state = dict(rpm_last_release=spec.get_release(),
                      rpm_last_version=spec.get_version())
@@ -255,16 +259,16 @@ class SrpmConstructor(Constructor):
         """
 
         # source is a NoSource
-        if self.source.dest is None:
+        if self.stype is None:
             return True
 
         # source directory is non-existent
-        if not os.path.exists(self.source.sdir):
+        if not os.path.exists(self.sdir):
             logger.log("Package source directory does not exist. Aborting.")
             return False
 
         # get source directory contents
-        contents = os.listdir(self.source.sdir)
+        contents = os.listdir(self.sdir)
 
         # directory empty: abort
         if not contents:
@@ -275,7 +279,7 @@ class SrpmConstructor(Constructor):
         file_found = False
 
         for entry in contents:
-            if os.path.isfile(os.path.join(self.source.sdir, entry)):
+            if os.path.isfile(os.path.join(self.sdir, entry)):
                 file_found = True
 
         # no files were found: abort construction
@@ -293,8 +297,8 @@ class SrpmConstructor(Constructor):
         `rpmbuild/SOURCES` directory.
         """
 
-        for entry in os.listdir(self.source.sdir):
-            entry_path = os.path.join(self.source.sdir, entry)
+        for entry in os.listdir(self.sdir):
+            entry_path = os.path.join(self.sdir, entry)
             if os.path.isfile(entry_path):
                 shutil.copy2(entry_path, self.dirs["source_dir"])
                 logger.log("File copied to SOURCES: " + entry_path)
@@ -304,6 +308,8 @@ class SrpmConstructor(Constructor):
         This method cleans up the Source's output directory according to settings.
         """
 
+        # FIXME
+
         if not self.source.get_keep():
 
             # if source is a tarball (or similar) from the beginning:
@@ -312,14 +318,14 @@ class SrpmConstructor(Constructor):
 
             # otherwise it is in kentauros' standard .tar.gz format:
             else:
-                tarballs = glob.glob(os.path.join(self.source.sdir,
+                tarballs = glob.glob(os.path.join(self.sdir,
                                                   self.package.name) + "*.tar.gz")
 
                 # remove only the newest one to be safe
                 tarballs.sort(reverse=True)
 
                 if os.path.isfile(tarballs[0]):
-                    assert self.source.sdir in tarballs[0]
+                    assert self.sdir in tarballs[0]
                     os.remove(tarballs[0])
                     logger.log("Tarball removed: " + tarballs[0])
 
@@ -342,7 +348,7 @@ class SrpmConstructor(Constructor):
             tuple:      (version, release)
         """
 
-        spec = RPMSpec(self.path, self.source)
+        spec = RPMSpec(self.path, self.package, self.context)
 
         old_version = self._get_last_version(spec, logger)
         old_release = self._get_last_release(spec, logger)
@@ -364,7 +370,7 @@ class SrpmConstructor(Constructor):
             str:        the contents of the .spec preamble
         """
 
-        spec = RPMSpec(self.path, self.source)
+        spec = RPMSpec(self.path, self.package, self.context)
 
         spec.set_version()
         spec.set_source()
@@ -419,7 +425,7 @@ class SrpmConstructor(Constructor):
             message = None
 
         if int(parse_release(old_release)[0]) != 0:
-            new_rpm_spec = RPMSpec(new_spec_path, self.source)
+            new_rpm_spec = RPMSpec(new_spec_path, self.package, self.context)
             new_rpm_spec.do_release_reset()
             new_rpm_spec.write_contents_to_file(new_spec_path)
 
@@ -458,7 +464,7 @@ class SrpmConstructor(Constructor):
 
         assert isinstance(new_spec_path, str)
 
-        new_rpm_spec = RPMSpec(new_spec_path, self.source)
+        new_rpm_spec = RPMSpec(new_spec_path, self.package, self.context)
         new_rpm_spec.do_release_reset()
         new_rpm_spec.write_contents_to_file(new_spec_path)
 
@@ -490,7 +496,7 @@ class SrpmConstructor(Constructor):
         assert isinstance(new_spec_path, str)
         assert isinstance(preamble, str)
 
-        new_rpm_spec = RPMSpec(new_spec_path, self.source)
+        new_rpm_spec = RPMSpec(new_spec_path, self.package, self.context)
 
         self.last_release = new_rpm_spec.get_release()
         self.last_version = new_rpm_spec.get_version()
@@ -532,7 +538,7 @@ class SrpmConstructor(Constructor):
           information.
         """
 
-        spec = RPMSpec(self.path, self.source)
+        spec = RPMSpec(self.path, self.package, self.context)
 
         new_version = spec.build_version_string()
         old_version, old_release = self._get_old_status(logger)
@@ -554,8 +560,10 @@ class SrpmConstructor(Constructor):
         version_changed = old_version != new_version
 
         # export spec *with* preamble definitions to destination
-        new_spec = RPMSpec(new_spec_path, self.source)
+        new_spec = RPMSpec(new_spec_path, self.package, self.context)
         new_spec.export_to_file(new_spec_path)
+
+        # FIXME
 
         # Case 0: Initial package build
         # Old Version is empty or old Release is 0
@@ -613,7 +621,7 @@ class SrpmConstructor(Constructor):
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
-        if self.no_source:
+        if self.stype is None:
             logger.dbg("This package does not define a source module.")
 
         else:
@@ -622,11 +630,11 @@ class SrpmConstructor(Constructor):
                 return KtrResult(False, logger)
 
         # copy sources to rpmbuild/SOURCES
-        if not self.no_source:
+        if self.stype is not None:
             self._copy_sources(logger)
 
         # remove tarballs if they should not be kept
-        if not self.no_source:
+        if self.stype is not None:
             self._cleanup_sources(logger)
 
         # copy package.conf to rpmbuild/SOURCES

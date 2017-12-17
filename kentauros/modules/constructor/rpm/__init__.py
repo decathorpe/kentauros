@@ -2,15 +2,15 @@
 This subpackage serves the purpose of handling RPM spec files.
 """
 
-
+import configparser as cp
 import os
 import subprocess
 
 from ....context import KtrContext
+from ....definitions import SourceType
 from ....logcollector import LogCollector
+from ....package import KtrPackage
 from ....result import KtrResult
-
-from ...sources.abstract import Source
 
 from .spec_common import RPMSpecError, format_tag_line
 from .spec_preamble_out import SPEC_PREAMBLE_DICT
@@ -67,15 +67,26 @@ class RPMSpec:
         Source source:  package sources that are needed to generate some information
     """
 
-    def __init__(self, path: str, source: Source):
+    def __init__(self, path: str, package: KtrPackage, context: KtrContext):
         assert isinstance(path, str)
-        assert isinstance(source, Source)
+        assert isinstance(package, KtrPackage)
+        assert isinstance(context, KtrContext)
 
         if not os.path.exists(path):
             raise FileNotFoundError()
 
         self.path = path
-        self.source = source
+        self.package = package
+        self.context = context
+
+        try:
+            self.stype = SourceType[self.package.conf.get("modules", "source").upper()]
+        except cp.NoSectionError:
+            self.stype = None
+        except cp.NoOptionError:
+            self.stype = None
+        except KeyError:
+            self.stype = None
 
         with open(path, "r") as file:
             self.contents = file.read()
@@ -149,8 +160,8 @@ class RPMSpec:
             if (line[0:8] != "Source0:") and (line[0:7] != "Source:"):
                 contents_new += (line + "\n")
             else:
-                if self.source is not None:
-                    contents_new += SPEC_SOURCE_DICT[self.source.stype](self.source)
+                if self.stype is not None:
+                    contents_new += SPEC_SOURCE_DICT[self.stype](self.package)
 
         self.contents = contents_new
 
@@ -163,7 +174,7 @@ class RPMSpec:
             str:    preamble string containing necessary definitions
         """
 
-        return SPEC_PREAMBLE_DICT[self.source.stype](self.source)
+        return SPEC_PREAMBLE_DICT[self.stype](self.package, self.context)
 
     def build_version_string(self) -> str:
         """
@@ -174,7 +185,7 @@ class RPMSpec:
             str:    preamble string containing necessary definitions
         """
 
-        return SPEC_VERSION_DICT[self.source.stype](self.source)
+        return SPEC_VERSION_DICT[self.stype](self.package, self.context)
 
     def export_to_file(self, path: str):
         """
