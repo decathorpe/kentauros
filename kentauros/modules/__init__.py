@@ -2,6 +2,8 @@
 This subpackage contains all plug-able kentauros modules.
 """
 
+import configparser as cp
+
 from ..context import KtrContext
 from ..definitions import PkgModuleType, SourceType, ConstructorType, BuilderType, UploaderType
 from ..package import KtrPackage
@@ -75,8 +77,16 @@ class PackageModule(KtrModule):
 
         self.modules = list()
 
-        module_types = (PkgModuleType[i.upper()] for i
-                        in self.package.conf.get("main", "modules").split(","))
+        try:
+            modules = self.package.conf.get("package", "modules")
+        except cp.ParsingError:
+            modules = ""
+        except cp.NoSectionError:
+            modules = ""
+        except cp.NoOptionError:
+            modules = ""
+
+        module_types = (PkgModuleType[i.upper()] for i in modules.split(","))
 
         if module_types == "":
             module_types = []

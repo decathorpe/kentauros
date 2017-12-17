@@ -126,7 +126,12 @@ class KtrCLIRunner:
             package = KtrPackage(self.context, conf_name)
 
             module_type = self.context.get_module()
-            module_impl = package.conf.get("modules", str(module_type.name).lower())
+
+            if module_type == PkgModuleType.PACKAGE:
+                module_impl = str()
+            else:
+                module_impl = package.conf.get("modules", str(module_type.name).lower())
+
             module = get_module(module_type, module_impl.upper(), package, self.context)
 
             action = self.context.args.module_action
