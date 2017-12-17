@@ -23,10 +23,6 @@ from .abstract import Source
 from .source_error import SourceError
 
 
-# TODO: simplify commit, branch, etc. handling to "ref" handling
-# TODO: "ref" can be a branch name, commit hash, or tag!
-
-
 class GitCommand(ShellCommand):
     NAME = "Bzr Command"
 
@@ -91,7 +87,7 @@ class GitSource(Source):
         success = True
 
         # check if the configuration file is valid
-        expected_keys = ["branch", "commit", "keep", "keep_repo", "orig", "shallow"]
+        expected_keys = ["keep", "keep_repo", "orig", "ref", "shallow"]
 
         for key in expected_keys:
             if key not in self.package.conf["git"]:
@@ -101,7 +97,7 @@ class GitSource(Source):
                 success = False
 
         # shallow clones and checking out a specific commit is not supported
-        if (self.get_commit() != "HEAD") and self.get_shallow():
+        if (self.get_ref() != "master") and self.get_shallow():
             logger.err("Shallow clones are not compatible with specifying a specific commit.")
             success = False
 
@@ -139,31 +135,27 @@ class GitSource(Source):
 
         return self.package.replace_vars(self.package.conf.get("git", "orig"))
 
-    def get_branch(self) -> str:
+    def get_ref(self) -> str:
         """
+        Optionally, a specific ref (branch, tag, or commit hash) can be specified in the package
+        configuration file for git sources. This method returns that string (or "master" as a
+        fallback value).
+
         Returns:
-            str:    string containing the branch that is set in the package configuration
+            str:    string containing the ref that is set in the package configuration
         """
 
-        branch = self.package.conf.get("git", "branch")
+        ref = self.package.conf.get("git", "ref")
 
-        if not branch:
+        if not ref:
             return "master"
         else:
-            return branch
+            return ref
 
-    def get_commit(self) -> str:
-        """
-        Returns:
-            str:    string containing the commit hash that is set in the package configuration
-        """
-
-        commit = self.package.conf.get("git", "commit")
-
-        if not commit:
-            return "HEAD"
-        else:
-            return commit
+    def _get_commit(self) -> str:
+        repo = Repo(self.dest)
+        ref = repo.rev_parse(self.get_ref())
+        return ref.hexsha
 
     def get_shallow(self) -> bool:
         """
@@ -199,7 +191,7 @@ class GitSource(Source):
                 raise SourceError("Sources need to be 'get' before the commit date can be read.")
         else:
             repo = Repo(self.dest)
-            commit = repo.commit(self.get_commit())
+            commit = repo.commit(self._get_commit())
             dt: datetime.datetime = commit.committed_datetime.astimezone(datetime.timezone.utc)
 
         self.saved_date = dt
@@ -277,8 +269,7 @@ class GitSource(Source):
                 logger.err("Sources must be present to determine the revision.")
                 return ret.submit(False)
 
-        repo = Repo(self.dest)
-        commit: str = repo.commit(self.get_commit()).hexsha
+        commit: str = self._get_commit()
 
         self.saved_commit = commit
 
@@ -297,8 +288,7 @@ class GitSource(Source):
 
         ret = KtrResult(name=self.name())
 
-        ret.state["git_branch"] = self.get_branch()
-        ret.state["git_commit"] = self.get_commit()
+        ret.state["git_ref"] = self.get_ref()
 
         res = self.commit()
         ret.collect(res)
@@ -329,12 +319,12 @@ class GitSource(Source):
 
         template = """
         git source module:
-          Current branch:   {branch}
+          Current ref:      {ref}
           Last Commit:      {commit}
           Last Commit Date: {commit_date}
         """
 
-        template = template.format(branch=self.get_branch())
+        template = template.format(ref=self.get_ref())
 
         if commit.success:
             template = template.format(commit=commit.value)
@@ -355,8 +345,7 @@ class GitSource(Source):
             return self.status()
         else:
             # Sources aren't there, last commit and date can't be determined
-            return KtrResult(True, state=dict(git_branch=self.get_branch(),
-                                              git_commit=self.get_commit()))
+            return KtrResult(True, state=dict(git_ref=self.get_ref()))
 
     def formatver(self) -> KtrResult:
         """
@@ -421,6 +410,27 @@ class GitSource(Source):
         ret.value = template
         return ret.submit(success)
 
+    def _checkout(self, ref: str = None) -> KtrResult():
+        logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
+
+        if ref is None:
+            ref = self.get_ref()
+
+        # check out the specified ref (if it's master, nothing happens)
+        # construct checkout command
+        cmd_checkout = ["checkout", ref]
+
+        # checkout commit
+        logger.cmd(cmd_checkout)
+        res = GitCommand(self.dest, *cmd_checkout).execute()
+
+        if not res.success:
+            logger.log("Checking out the specified ref ({}) wasn't successful.".format(ref))
+            return ret.submit(False)
+        else:
+            return ret.submit(True)
+
     def get(self) -> KtrResult:
         """
         This method executes the git repository download to the package source directory. This
@@ -465,11 +475,6 @@ class GitSource(Source):
         if self.get_shallow():
             cmd_clone.append("--depth=1")
 
-        # set branch if specified
-        if self.get_branch():
-            cmd_clone.append("--branch")
-            cmd_clone.append(self.get_branch())
-
         # set origin and destination
         cmd_clone.append(self.get_orig())
         cmd_clone.append(self.dest)
@@ -482,40 +487,29 @@ class GitSource(Source):
             logger.log("Cloning the git source repository wasn't successful.")
             ret.submit(False)
 
-        # if commit is specified: checkout commit
-        if self.get_commit():
-            # construct checkout command
-            cmd_checkout = ["checkout", self.get_commit()]
+        # check out the specified ref (if it's master, nothing happens)
+        res = self._checkout()
+        ret.collect(res)
 
-            # checkout commit
-            logger.cmd(cmd_checkout)
-            res = GitCommand(self.dest, *cmd_checkout).execute()
-
-            if not res.success:
-                logger.log("Checking out the specified ref ({}) wasn't successful.".format(
-                    self.get_commit()))
+        if not res.success:
+            logger.log("The specified ref could not be checked out successfully.")
+            ret.submit(False)
 
         # get commit ID
         res = self.commit()
         ret.collect(res)
 
         if not res.success:
-            logger.err("Commit could not be determined successfully.")
+            logger.err("Commit hash could not be determined successfully.")
             return ret.submit(False)
-        commit = res.value
 
+        # get commit date/time
         res = self.date()
         ret.collect(res)
 
         if not res.success:
             logger.err("Commit date/time not be determined successfully.")
             return ret.submit(False)
-
-        # check if checkout worked
-        if self.get_commit() != "HEAD":
-            if self.get_commit() != commit:
-                logger.err("Something went wrong, requested commit not checked out.")
-                return ret.submit(False)
 
         # return True if successful
         ret.collect(self.status())
@@ -533,10 +527,6 @@ class GitSource(Source):
 
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
-
-        # if specific commit is requested, do not pull updates (obviously)
-        if self.get_commit() != "HEAD":
-            return ret.submit(False)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
@@ -566,6 +556,14 @@ class GitSource(Source):
             return ret.submit(False)
         rev_old = res.value
 
+        # check out master before doing updates, just to be sure
+        res = self._checkout("master")
+        ret.collect(res)
+
+        if not res.success:
+            logger.log("The master branch could not be checked out successfully.")
+            ret.submit(False)
+
         # get updates
         logger.cmd(cmd)
         res = GitCommand(self.dest, *cmd).execute()
@@ -573,6 +571,14 @@ class GitSource(Source):
         if not res.success:
             logger.err("Pulling from remote git repository wasn't successful.")
             return ret.submit(False)
+
+        # check out specified ref again
+        res = self._checkout()
+        ret.collect(res)
+
+        if not res.success:
+            logger.log("The specified ref could not be checked out successfully.")
+            ret.submit(False)
 
         # get new commit ID
         res = self.commit()
@@ -623,8 +629,8 @@ class GitSource(Source):
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
-        # construct git command to export HEAD or specified commit
-        cmd = ["archive", self.get_commit()]
+        # construct git command to export the specified ref
+        cmd = ["archive", self.get_ref()]
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
