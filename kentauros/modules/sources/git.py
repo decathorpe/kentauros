@@ -7,7 +7,7 @@ in the package's configuration file.
 import datetime
 import os
 import shutil
-import subprocess
+import subprocess as sp
 
 from git import Repo
 
@@ -17,6 +17,7 @@ from ...definitions import SourceType
 from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
+from ...shellcmd import ShellCommand
 
 from .abstract import Source
 from .source_error import SourceError
@@ -24,7 +25,18 @@ from .source_error import SourceError
 
 # TODO: simplify commit, branch, etc. handling to "ref" handling
 # TODO: "ref" can be a branch name, commit hash, or tag!
-# TODO: Introduce GitCommand class (c.f. BzrCommand)
+
+
+class GitCommand(ShellCommand):
+    NAME = "Bzr Command"
+
+    def __init__(self, path: str, *args, git=None):
+        if git is None:
+            self.exec = "git"
+        else:
+            self.exec = git
+
+        super().__init__(path, self.exec, args)
 
 
 class GitSource(Source):
@@ -94,9 +106,10 @@ class GitSource(Source):
             success = False
 
         # check if git is installed
+        res = sp.run(["which", "git"])
         try:
-            subprocess.check_output(["which", "git"]).decode().rstrip("\n")
-        except subprocess.CalledProcessError:
+            res.check_returncode()
+        except sp.CalledProcessError:
             logger.log("Install git to use the specified source.")
             success = False
 
@@ -440,7 +453,7 @@ class GitSource(Source):
             return ret.submit(False)
 
         # construct clone command
-        cmd_clone = ["git", "clone"]
+        cmd_clone = ["clone"]
 
         # add --verbose or --quiet depending on settings
         if self.context.debug():
@@ -463,23 +476,24 @@ class GitSource(Source):
 
         # clone git repo from origin to destination
         logger.cmd(cmd_clone)
-        subprocess.run(cmd_clone, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        res = GitCommand(self.dest, *cmd_clone).execute()
+
+        if not res.success:
+            logger.log("Cloning the git source repository wasn't successful.")
+            ret.submit(False)
 
         # if commit is specified: checkout commit
         if self.get_commit():
             # construct checkout command
-            cmd_checkout = ["git", "checkout", self.get_commit()]
-
-            # go to git repo and remember old cwd
-            prev_dir = os.getcwd()
-            os.chdir(self.dest)
+            cmd_checkout = ["checkout", self.get_commit()]
 
             # checkout commit
             logger.cmd(cmd_checkout)
-            subprocess.run(cmd_checkout, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            res = GitCommand(self.dest, *cmd_checkout).execute()
 
-            # go to previous dir
-            os.chdir(prev_dir)
+            if not res.success:
+                logger.log("Checking out the specified ref ({}) wasn't successful.".format(
+                    self.get_commit()))
 
         # get commit ID
         res = self.commit()
@@ -530,7 +544,7 @@ class GitSource(Source):
             return ret.submit(False)
 
         # construct git command
-        cmd = ["git", "pull", "--rebase"]
+        cmd = ["pull", "--rebase", "--all"]
 
         # add --verbose or --quiet depending on settings
         if self.context.debug():
@@ -552,22 +566,12 @@ class GitSource(Source):
             return ret.submit(False)
         rev_old = res.value
 
-        # change to git repository directory
-        prev_dir = os.getcwd()
-        os.chdir(self.dest)
-
         # get updates
         logger.cmd(cmd)
-        res: subprocess.CompletedProcess = subprocess.run(cmd,
-                                                          stdout=subprocess.PIPE,
-                                                          stderr=subprocess.STDOUT)
+        res = GitCommand(self.dest, *cmd).execute()
 
-        # go back to previous dir
-        os.chdir(prev_dir)
-
-        if res.returncode != 0:
-            logger.lst("Sources could not be updated successfully. git output:",
-                       res.stdout.decode().split("\n"))
+        if not res.success:
+            logger.err("Pulling from remote git repository wasn't successful.")
             return ret.submit(False)
 
         # get new commit ID
@@ -620,7 +624,7 @@ class GitSource(Source):
         ret = KtrResult(messages=logger)
 
         # construct git command to export HEAD or specified commit
-        cmd = ["git", "archive", self.get_commit()]
+        cmd = ["archive", self.get_commit()]
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
@@ -652,22 +656,12 @@ class GitSource(Source):
             self._remove_not_keep(logger)
             return ret.submit(True)
 
-        # remember previous directory
-        prev_dir = os.getcwd()
-
-        # change to git repository directory
-        os.chdir(self.dest)
-
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
         logger.cmd(cmd)
-        res: subprocess.CompletedProcess = subprocess.run(cmd,
-                                                          stdout=subprocess.PIPE,
-                                                          stderr=subprocess.STDOUT)
-        os.chdir(prev_dir)
+        res = GitCommand(self.dest, *cmd).execute()
 
-        if res.returncode != 0:
-            logger.lst("Sources could not be exported successfully. git output:",
-                       res.stdout.decode().split("\n"))
+        if not res.success:
+            logger.err("Source tarball could not be created from repository successfully.")
             return ret.submit(False)
 
         # update saved commit ID

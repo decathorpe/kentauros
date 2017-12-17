@@ -76,6 +76,14 @@ kentauros\.result module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.shellcmd module
+--------------------------
+
+.. automodule:: kentauros.shellcmd
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros\.state module
 -----------------------
 
