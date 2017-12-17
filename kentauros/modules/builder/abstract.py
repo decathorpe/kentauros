@@ -8,12 +8,12 @@ import abc
 import os
 
 from ...context import KtrContext
-from ...modules.module import PkgModule
+from ...modules.module import KtrModule
 from ...package import KtrPackage
 from ...result import KtrResult
 
 
-class Builder(PkgModule, metaclass=abc.ABCMeta):
+class Builder(KtrModule, metaclass=abc.ABCMeta):
     """
     This class is the base class for all builders. It's only real function is to provide a unified
     API for builder classes and store the package to which the builder belongs.

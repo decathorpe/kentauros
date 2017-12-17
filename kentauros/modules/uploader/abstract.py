@@ -10,10 +10,10 @@ from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
 
-from ..module import PkgModule
+from ..module import KtrModule
 
 
-class Uploader(PkgModule, metaclass=abc.ABCMeta):
+class Uploader(KtrModule, metaclass=abc.ABCMeta):
     """
     This class serves as a quasi-abstract base class for source package uploader classes. They are
     expected to override this class's methods as necessary.

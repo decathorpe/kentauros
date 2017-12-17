@@ -7,7 +7,8 @@ from ..context import KtrContext
 from ..definitions import PkgModuleType, SourceType, ConstructorType, BuilderType, UploaderType
 from ..package import KtrPackage
 
-from .module import PkgModule
+from .module import KtrModule
+from .package import PackageModule
 from .sources import get_source
 from .constructor import get_constructor
 from .builder import get_builder
@@ -15,9 +16,9 @@ from .uploader import get_uploader
 
 
 def _get_pkg_module(mtype: PkgModuleType, stype, package: KtrPackage,
-                    context: KtrContext) -> PkgModule:
+                    context: KtrContext) -> KtrModule:
     """
-    This function constructs a `PkgModule` from a `PkgModuleType` enum member, a `PkgModuleType`
+    This function constructs a `KtrModule` from a `PkgModuleType` enum member, a `PkgModuleType`
     subtype, and a package.
     """
 
@@ -47,11 +48,14 @@ def _get_pkg_module_type(mtype: PkgModuleType):
 
 
 def get_module(mtype: PkgModuleType, mimpl: str, package: KtrPackage,
-               context: KtrContext) -> PkgModule:
+               context: KtrContext) -> KtrModule:
     """
-    This function constructs a `PkgModule` from a `PkgModuleType` enum member, an implementer
+    This function constructs a `KtrModule` from a `PkgModuleType` enum member, an implementer
     string, and a package.
     """
+
+    if mtype == PkgModuleType.PACKAGE:
+        return PackageModule(package, context)
 
     pkg_module_type = _get_pkg_module_type(mtype)[mimpl]
     pkg_module = _get_pkg_module(mtype, pkg_module_type, package, context)

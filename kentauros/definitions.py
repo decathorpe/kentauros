@@ -39,6 +39,7 @@ class PkgModuleType(Enum):
     This Enum defines the types of package submodules there can be.
     """
 
+    PACKAGE = 0
     SOURCE = 1
     CONSTRUCTOR = 2
     BUILDER = 3

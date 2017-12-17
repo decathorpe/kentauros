@@ -286,6 +286,52 @@ def add_uploader_parser(parsers: _SubParsersAction,
     return uploader_parser
 
 
+def add_pkg_parser(parsers: _SubParsersAction,
+                   package_parser: ArgumentParser) -> ArgumentParser:
+
+    pkg_parser: ArgumentParser = parsers.add_parser(
+        "package",
+        aliases=["p", "pa", "pac", "pack", "packa", "packag"],
+        description="interact with packages",
+        help="interact with packages")
+    pkg_parser.set_defaults(module=PkgModuleType.PACKAGE)
+
+    pkg_parsers: _SubParsersAction = pkg_parser.add_subparsers()
+
+    clean_parser: ArgumentParser = pkg_parsers.add_parser(
+        "clean",
+        aliases=["c", "cl", "cle", "clea"],
+        description="clean up packages",
+        help="clean up packages",
+        parents=[package_parser])
+    clean_parser.set_defaults(module_action="clean")
+
+    import_parser: ArgumentParser = pkg_parsers.add_parser(
+        "import",
+        aliases=["i", "im", "imp", "impo", "impor"],
+        description="import packages",
+        help="import packages")
+    import_parser.set_defaults(module_action="import")
+
+    status_parser: ArgumentParser = pkg_parsers.add_parser(
+        "status",
+        aliases=["s", "st", "sta", "stat", "statu"],
+        description="print package status",
+        help="print package status",
+        parents=[package_parser])
+    status_parser.set_defaults(module_action="status")
+
+    verify_parser: ArgumentParser = pkg_parsers.add_parser(
+        "verify",
+        aliases=["v", "ve", "ver", "veri", "verif"],
+        description="verify packages",
+        help="verify packages",
+        parents=[package_parser])
+    verify_parser.set_defaults(module_action="verify")
+
+    return pkg_parser
+
+
 def get_cli_parser() -> ArgumentParser:
     cli_parser = ArgumentParser()
     cli_parser.add_argument(
@@ -342,6 +388,7 @@ def get_cli_parser() -> ArgumentParser:
         default=False,
         help="force actions, even if no updates were available")
 
+    add_pkg_parser(parsers, package_parser)
     add_source_parser(parsers, package_parser)
     add_constructor_parser(parsers, package_parser)
     add_builder_parser(parsers, package_parser)

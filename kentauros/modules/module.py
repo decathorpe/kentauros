@@ -11,7 +11,7 @@ from ..package import KtrPackage
 from ..result import KtrResult
 
 
-class PkgModule(metaclass=abc.ABCMeta):
+class KtrModule(metaclass=abc.ABCMeta):
     """
     This abstract class defines the properties that all package modules must have.
 
@@ -28,7 +28,7 @@ class PkgModule(metaclass=abc.ABCMeta):
         self.context = context
 
         self.actions = {"clean": self.clean,
-                        "status": self.status,
+                        "status": self.status_string,
                         "verify": self.verify}
 
     def act(self, action: str) -> KtrResult:

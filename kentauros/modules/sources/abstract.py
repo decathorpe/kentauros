@@ -13,10 +13,10 @@ from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
 
-from ..module import PkgModule
+from ..module import KtrModule
 
 
-class Source(PkgModule, metaclass=abc.ABCMeta):
+class Source(KtrModule, metaclass=abc.ABCMeta):
     """
     This class serves as an abstract base class for source handlers. They are expected to override
     this class's unimplemented methods. It also provides common infrastructure for all code sources
