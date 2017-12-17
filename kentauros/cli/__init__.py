@@ -66,8 +66,8 @@ class KtrCLIContext(KtrContext):
         self.warning_flag = self.args.warnings
 
     def get_argument(self, key: str):
-        if key in self.args:
-            return self.args[key]
+        if key in vars(self.args).keys():
+            return vars(self.args)[key]
         else:
             return None
 

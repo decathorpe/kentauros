@@ -4,6 +4,7 @@ sources that have `source.type=bzr` specified and `source.orig` set to a bzr rep
 `lp:` abbreviation) in the package's configuration file.
 """
 
+import configparser as cp
 import datetime
 import os
 import shutil
@@ -29,7 +30,7 @@ class BzrCommand(ShellCommand):
         else:
             self.exec = bzr
 
-        super().__init__(path, self.exec, args)
+        super().__init__(path, self.exec, *args)
 
 
 class BzrSource(Source):
@@ -178,6 +179,7 @@ class BzrSource(Source):
         if res.success:
             self.saved_rev = res.value
             ret.value = res.value
+            ret.state["bzr_last_rev"] = res.value
             return ret.submit(True)
         else:
             logger.log("Bzr command to determine revision number unsuccessful.")
@@ -201,13 +203,23 @@ class BzrSource(Source):
         return KtrResult(False, datetime.datetime.now(), logger)
 
     def datetime_str(self) -> KtrResult:
+        ret = KtrResult(name=self.name())
+
         res = self.datetime()
+
+        if not res.success:
+            return ret.submit(False)
         dt = res.value
 
-        return KtrResult(
-            res.success,
-            "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}".format(
-                dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second))
+        ret.collect(res)
+
+        template = "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}"
+        string = template.format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+
+        ret.value = string
+        ret.state["bzr_last_date"] = string
+
+        return ret.submit(res.success)
 
     def date(self) -> KtrResult:
         res = self.datetime()
@@ -235,15 +247,23 @@ class BzrSource(Source):
             dict:   key-value pairs (property: value)
         """
 
+        logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
+
         dt = self.datetime_str()
+        ret.collect(dt)
+
         rev = self.rev()
+        ret.collect(rev)
 
-        state = dict(bzr_branch=self.get_branch(),
-                     bzr_rev=self.get_revno(),
-                     bzr_last_date=dt.value,
-                     bzr_last_rev=rev.value)
+        version_format = self.formatver()
+        ret.collect(version_format)
 
-        return KtrResult(dt.success and rev.success, state=state)
+        ret.state["bzr_branch"] = self.get_branch()
+        ret.state["bzr_rev"] = self.get_revno()
+
+        success = dt.success and rev.success and version_format.success
+        return ret.submit(success)
 
     def status_string(self) -> KtrResult:
         template = """
@@ -283,7 +303,16 @@ class BzrSource(Source):
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
-        template: str = self.context.conf.get("main", "version_template_bzr")
+        fallback_template = "%{version}%{version_sep}%{date}.%{time}.bzr%{revision}"
+
+        try:
+            template: str = self.context.conf.get("main", "version_template_bzr")
+        except cp.ParsingError:
+            template = fallback_template
+        except cp.NoSectionError:
+            template = fallback_template
+        except cp.NoOptionError:
+            template = fallback_template
 
         if "%{version}" in template:
             template = template.replace("%{version}", self.package.get_version())
@@ -323,6 +352,7 @@ class BzrSource(Source):
             success = False
 
         ret.value = template
+        ret.state["version_format"] = template
         return ret.submit(success)
 
     def get(self) -> KtrResult:

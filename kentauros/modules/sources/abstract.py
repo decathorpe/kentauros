@@ -141,8 +141,12 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
             str:        formatted version string
         """
 
-        ret = KtrResult()
-        ret.value = self.package.conf.get("source", "version")
+        ret = KtrResult(name=self.name())
+
+        version_format = self.package.conf.get("source", "version")
+
+        ret.value = version_format
+        ret.state["version_format"] = version_format
         return ret.submit(True)
 
     def execute(self) -> KtrResult:
@@ -162,7 +166,7 @@ class Source(PkgModule, metaclass=abc.ABCMeta):
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
-        force = self.context.arguments()["force"]
+        force = self.context.get_argument("force")
         old_status = self.status()
 
         res = self.get()

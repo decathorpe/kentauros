@@ -4,6 +4,7 @@ handling sources that have `source.type=git` specified and `source.orig` set to 
 in the package's configuration file.
 """
 
+import configparser as cp
 import datetime
 import os
 import shutil
@@ -32,7 +33,7 @@ class GitCommand(ShellCommand):
         else:
             self.exec = git
 
-        super().__init__(path, self.exec, args)
+        super().__init__(path, self.exec, *args)
 
 
 class GitSource(Source):
@@ -200,18 +201,23 @@ class GitSource(Source):
         return ret.submit(True)
 
     def datetime_str(self) -> KtrResult:
-        ret = KtrResult()
+        ret = KtrResult(name=self.name())
 
         res = self.datetime()
+
+        if not res.success:
+            return ret.submit(False)
+        dt = res.value
+
         ret.collect(res)
 
-        if res.success:
-            dt = res.value
-            ret.value = "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}".format(
-                dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
-            return ret.submit(True)
-        else:
-            return ret.submit(False)
+        template = "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}"
+        string = template.format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+
+        ret.value = string
+        ret.state["git_last_date"] = string
+
+        return ret.submit(res.success)
 
     def date(self) -> KtrResult:
         ret = KtrResult()
@@ -269,11 +275,11 @@ class GitSource(Source):
                 logger.err("Sources must be present to determine the revision.")
                 return ret.submit(False)
 
-        commit: str = self._get_commit()
-
+        commit = self._get_commit()
         self.saved_commit = commit
 
         ret.value = commit
+        ret.state["git_last_commit"] = commit
         return ret.submit(True)
 
     def status(self) -> KtrResult:
@@ -286,27 +292,22 @@ class GitSource(Source):
             dict:   key-value pairs (property: value)
         """
 
-        ret = KtrResult(name=self.name())
+        logger = LogCollector(self.name())
+        ret = KtrResult(messages=logger)
+
+        dt = self.datetime_str()
+        ret.collect(dt)
+
+        commit = self.commit()
+        ret.collect(commit)
+
+        version_format = self.formatver()
+        ret.collect(version_format)
 
         ret.state["git_ref"] = self.get_ref()
 
-        res = self.commit()
-        ret.collect(res)
-        if not res.success:
-            return ret.submit(False)
-        else:
-            commit = res.value
-            ret.state["git_last_commit"] = commit
-
-        res = self.datetime_str()
-        ret.collect(res)
-        if not res.success:
-            return ret.submit(False)
-        else:
-            dt_string = res.value
-            ret.state["git_last_date"] = dt_string
-
-        return ret.submit(True)
+        success = dt.success and commit.success and version_format.success
+        return ret.submit(success)
 
     def status_string(self) -> KtrResult:
         ret = KtrResult()
@@ -361,7 +362,16 @@ class GitSource(Source):
         logger = LogCollector(self.name())
         ret = KtrResult(messages=logger)
 
-        template: str = self.context.conf.get("main", "version_template_git")
+        fallback_template = "%{version}%{version_sep}%{date}.%{time}.git%{shortcommit}"
+
+        try:
+            template: str = self.context.conf.get("main", "version_template_git")
+        except cp.ParsingError:
+            template = fallback_template
+        except cp.NoSectionError:
+            template = fallback_template
+        except cp.NoOptionError:
+            template = fallback_template
 
         if "%{version}" in template:
             template = template.replace("%{version}", self.package.get_version())
@@ -408,6 +418,7 @@ class GitSource(Source):
             logger.log("Unrecognized variables present in git version template.")
 
         ret.value = template
+        ret.state["version_format"] = template
         return ret.submit(success)
 
     def _checkout(self, ref: str = None) -> KtrResult():
@@ -481,7 +492,7 @@ class GitSource(Source):
 
         # clone git repo from origin to destination
         logger.cmd(cmd_clone)
-        res = GitCommand(self.dest, *cmd_clone).execute()
+        res = GitCommand(".", *cmd_clone).execute()
 
         if not res.success:
             logger.log("Cloning the git source repository wasn't successful.")
