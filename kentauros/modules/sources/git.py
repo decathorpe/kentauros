@@ -8,7 +8,6 @@ import configparser as cp
 import datetime
 import os
 import shutil
-import subprocess as sp
 
 from git import Repo
 
@@ -19,6 +18,7 @@ from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
 from ...shellcmd import ShellCommand
+from ...validator import KtrValidator
 
 from .abstract import Source
 
@@ -81,33 +81,24 @@ class GitSource(Source):
             bool:   verification success
         """
 
-        ret = KtrResult(name=self.name())
-
-        success = True
-
         # check if the configuration file is valid
         expected_keys = ["keep", "keep_repo", "orig", "ref", "shallow"]
+        expected_binaries = ["git"]
 
-        for key in expected_keys:
-            if key not in self.package.conf["git"]:
-                template = "The [git] section in the package's .conf file doesn't set the {} key."
-                ret.messages.err(template.format(key))
-                success = False
+        validator = KtrValidator(self.package.conf.conf, "git", expected_keys, expected_binaries)
+
+        ret = validator.validate()
 
         # shallow clones and checking out a specific commit is not supported
         if (self.get_ref() != "master") and self.get_shallow():
-            ret.messages.err("Shallow clones are not compatible with specifying a specific ref.")
-            success = False
+            ret.messages.err(
+                "Shallow clones are not compatible with specifying a specific ref.")
 
-        # check if git is installed
-        res = sp.run(["which", "git"])
-        try:
-            res.check_returncode()
-        except sp.CalledProcessError:
-            ret.messages.log("Install git to use the specified source.")
             success = False
+        else:
+            success = True
 
-        return ret.submit(success)
+        return ret.submit(ret.success and success)
 
     def get_keep(self) -> bool:
         """

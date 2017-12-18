@@ -9,6 +9,7 @@ import os
 from .config import KtrConfig
 from .context import KtrContext
 from .result import KtrResult
+from .validator import KtrValidator
 
 
 class PackageError(Exception):
@@ -151,25 +152,43 @@ class KtrPackage:
         return KtrResult(True, string)
 
     def verify(self) -> KtrResult:
-        ret = KtrResult(name="Package {}".format(self.conf_name))
+        name = "Package {}".format(self.conf_name)
+        ret = KtrResult(name=name)
+        success = True
 
-        try:
-            # [package] section
-            assert self.conf.conf.has_section("package")
+        conf = self.conf.conf
 
-            # [package] / "name" key
-            assert self.conf.conf.has_option("package", "name")
-            assert self.conf.get("package", "name") != ""
+        # check [package] section
+        package_expected_keys = ["name", "version", "release", "modules"]
 
-            # [package] / "version" key
-            assert self.conf.conf.has_option("package", "version")
-            assert self.conf.get("package", "version") != ""
-            assert "-" not in self.conf.get("package", "version")
+        package_validator = KtrValidator(conf, "package", package_expected_keys, name=name)
+        res = package_validator.validate()
+        ret.collect(res)
+        success = success and res.success
 
-            # [package] / "release" key
-            assert self.conf.conf.has_option("package", "release")
-            assert self.conf.get("package", "release") in ["stable", "post", "pre"]
-        except AssertionError:
-            return ret.submit(False)
+        # check validity of [package][release] option ("stable", "post", or "pre")
+        if conf.has_section("package") and conf.has_option("package", "release"):
+            success = success and (conf.get("package", "release") in ["stable", "post", "pre"])
 
-        return ret.submit(True)
+        # check [modules] section, if present
+        if conf.has_section("package") and conf.has_option("package", "modules"):
+            modules: str = conf.get("package", "modules")
+
+            if modules == "":
+                modules_expected_keys = []
+            else:
+                modules_expected_keys = modules.split(",")
+
+            modules_validator = KtrValidator(conf, "modules", modules_expected_keys, name=name)
+            res = modules_validator.validate()
+            ret.collect(res)
+            success = success and res.success
+
+            # check if sections for all modules exist
+            modules = modules_expected_keys
+
+            for module in modules:
+                if not conf.has_section(module):
+                    success = False
+
+        return ret.submit(success)

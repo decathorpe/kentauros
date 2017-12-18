@@ -8,7 +8,6 @@ import configparser as cp
 import datetime
 import os
 import shutil
-import subprocess as sp
 
 from ...conntest import is_connected
 from ...context import KtrContext
@@ -17,6 +16,7 @@ from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
 from ...shellcmd import ShellCommand
+from ...validator import KtrValidator
 
 from .abstract import Source
 
@@ -82,29 +82,13 @@ class BzrSource(Source):
             bool:   verification success
         """
 
-        ret = KtrResult(name=self.name())
-
-        success = True
-
         # check if the configuration file is valid
         expected_keys = ["branch", "keep", "keep_repo", "orig", "revno"]
+        expected_binaries = ["bzr"]
 
-        for key in expected_keys:
-            if key not in self.package.conf["bzr"]:
-                template = "The [bzr] section in the package's .conf file doesn't set the {} key."
-                ret.messages.err(template.format(key))
-                success = False
+        validator = KtrValidator(self.package.conf.conf, "bzr", expected_keys, expected_binaries)
 
-        # check if bzr is installed
-        res = sp.run(["which", "bzr"], stdout=sp.PIPE, stderr=sp.STDOUT)
-
-        try:
-            res.check_returncode()
-        except sp.CalledProcessError:
-            ret.messages.log("Install bzr to use the specified source.")
-            success = False
-
-        return ret.submit(success)
+        return validator.validate()
 
     def get_keep(self) -> bool:
         """

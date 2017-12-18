@@ -16,6 +16,7 @@ from ...definitions import SourceType
 from ...result import KtrResult
 from ...logcollector import LogCollector
 from ...package import KtrPackage
+from ...validator import KtrValidator
 
 from .abstract import Constructor
 from .rpm import RPMSpec, do_release_bump, parse_release
@@ -84,35 +85,15 @@ class SrpmConstructor(Constructor):
             bool:   verification success
         """
 
-        ret = KtrResult(name=self.name())
-
-        success = True
-
         # check if the configuration file is valid
         expected_keys = []
         expected_binaries = ["rpmbuild", "rpmdev-bumpspec"]
+        expected_files = [self.path]
 
-        for key in expected_keys:
-            if key not in self.package.conf["srpm"]:
-                template = "The [srpm] section in the package's .conf file doesn't set the {} key."
-                ret.messages.err(template.format(key))
-                success = False
+        validator = KtrValidator(self.package.conf.conf, "srpm",
+                                 expected_keys, expected_binaries, expected_files, )
 
-        # check for .spec file presence
-        if not os.path.exists(self.path):
-            ret.messages.err("Spec file has not been found at the expected location:")
-            ret.messages.err(self.path)
-            success = False
-
-        # check if rpmbuild and rpmdev-bumpspec are installed
-        for binary in expected_binaries:
-            try:
-                subprocess.check_output(["which", binary]).decode().rstrip("\n")
-            except subprocess.CalledProcessError:
-                ret.messages.log("Install " + binary + " to use the srpm constructor.")
-                success = False
-
-        return ret.submit(success)
+        return validator.validate()
 
     def _get_last_version(self, spec: RPMSpec, logger: LogCollector) -> str:
         """

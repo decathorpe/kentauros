@@ -12,6 +12,7 @@ from ...conntest import is_connected
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
+from ...validator import KtrValidator
 
 from .abstract import Uploader
 
@@ -56,28 +57,13 @@ class CoprUploader(Uploader):
             bool:   verification success
         """
 
-        ret = KtrResult(name=self.name())
-        success = True
-
         # check if the configuration file is valid
         expected_keys = ["active", "dists", "keep", "repo", "wait"]
+        expected_binaries = ["copr-cli"]
 
-        for key in expected_keys:
-            if key not in self.package.conf["copr"]:
-                template = "The [copr] section in the package's .conf file doesn't set the {} key."
-                ret.messages.err(template.format(key))
-                success = False
+        validator = KtrValidator(self.package.conf.conf, "copr", expected_keys, expected_binaries)
 
-        # check if copr is installed
-        res = sp.run(["which", "copr-cli"], stdout=sp.PIPE, stderr=sp.STDOUT)
-
-        try:
-            res.check_returncode()
-        except sp.CalledProcessError:
-            ret.messages.log("Install copr-cli to use the specified builder.")
-            success = False
-
-        return ret.submit(success)
+        return validator.validate()
 
     def get_active(self) -> bool:
         """

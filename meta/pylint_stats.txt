@@ -5,8 +5,6 @@ C: 21, 0: Missing class docstring (missing-docstring)
 C: 27, 4: Missing method docstring (missing-docstring)
 C: 39, 4: Missing method docstring (missing-docstring)
 C: 59, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.package
-C:153, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.context
 C:  1, 0: Missing module docstring (missing-docstring)
 ************* Module kentauros.config
@@ -35,45 +33,42 @@ C:131, 4: Missing method docstring (missing-docstring)
 C:134, 4: Missing method docstring (missing-docstring)
 C:157, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.validator
-W: 14, 0: TODO (fixme)
 C:  1, 0: Missing module docstring (missing-docstring)
-C:  4, 0: Missing class docstring (missing-docstring)
-C: 10, 4: Missing method docstring (missing-docstring)
+C:  8, 0: Missing class docstring (missing-docstring)
+R:  9, 4: Too many arguments (7/6) (too-many-arguments)
+C: 48, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.package
+C:154, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.module
 C: 35, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.package
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.modules.constructor.srpm
-C:303, 4: Missing method docstring (missing-docstring)
-C:311, 4: Missing method docstring (missing-docstring)
-C:319, 4: Missing method docstring (missing-docstring)
+C:284, 4: Missing method docstring (missing-docstring)
+C:292, 4: Missing method docstring (missing-docstring)
+C:300, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.sources.bzr
 C: 24, 0: Missing class docstring (missing-docstring)
-C:189, 4: Missing method docstring (missing-docstring)
-C:213, 4: Missing method docstring (missing-docstring)
-C:232, 4: Missing method docstring (missing-docstring)
-C:238, 4: Missing method docstring (missing-docstring)
-R:297, 4: Too many statements (44/40) (too-many-statements)
-R:438, 4: Too many return statements (7/6) (too-many-return-statements)
+C:173, 4: Missing method docstring (missing-docstring)
+C:197, 4: Missing method docstring (missing-docstring)
+C:216, 4: Missing method docstring (missing-docstring)
+C:222, 4: Missing method docstring (missing-docstring)
+R:281, 4: Too many statements (44/40) (too-many-statements)
+R:422, 4: Too many return statements (7/6) (too-many-return-statements)
 ************* Module kentauros.modules.sources.git
 C: 26, 0: Missing class docstring (missing-docstring)
-C:153, 4: Missing method docstring (missing-docstring)
-C:166, 4: Missing method docstring (missing-docstring)
-C:201, 4: Missing method docstring (missing-docstring)
-C:220, 4: Missing method docstring (missing-docstring)
-C:233, 4: Missing method docstring (missing-docstring)
-R:347, 4: Too many branches (16/15) (too-many-branches)
-R:347, 4: Too many statements (46/40) (too-many-statements)
-C:419, 4: Missing method docstring (missing-docstring)
-R:522, 4: Too many return statements (7/6) (too-many-return-statements)
-R:522, 4: Too many statements (41/40) (too-many-statements)
-R:622, 4: Too many return statements (7/6) (too-many-return-statements)
-************* Module kentauros.cli.context
-C:  1, 0: Missing module docstring (missing-docstring)
-C: 77, 4: Missing method docstring (missing-docstring)
-C: 80, 4: Missing method docstring (missing-docstring)
-C: 83, 4: Missing method docstring (missing-docstring)
+C:144, 4: Missing method docstring (missing-docstring)
+C:157, 4: Missing method docstring (missing-docstring)
+C:192, 4: Missing method docstring (missing-docstring)
+C:211, 4: Missing method docstring (missing-docstring)
+C:224, 4: Missing method docstring (missing-docstring)
+R:338, 4: Too many branches (16/15) (too-many-branches)
+R:338, 4: Too many statements (46/40) (too-many-statements)
+C:410, 4: Missing method docstring (missing-docstring)
+R:513, 4: Too many return statements (7/6) (too-many-return-statements)
+R:513, 4: Too many statements (41/40) (too-many-statements)
+R:613, 4: Too many return statements (7/6) (too-many-return-statements)
 ************* Module kentauros.cli.runner
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  9, 0: Missing class docstring (missing-docstring)
@@ -88,11 +83,16 @@ C:187, 0: Missing function docstring (missing-docstring)
 C:242, 0: Missing function docstring (missing-docstring)
 C:289, 0: Missing function docstring (missing-docstring)
 C:336, 0: Missing function docstring (missing-docstring)
+************* Module kentauros.cli.context
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 77, 4: Missing method docstring (missing-docstring)
+C: 80, 4: Missing method docstring (missing-docstring)
+C: 83, 4: Missing method docstring (missing-docstring)
 
 
 Report
 ======
-2687 statements analysed.
+2682 statements analysed.
 
 Statistics by type
 ------------------
@@ -144,6 +144,7 @@ External dependencies
       \-shellcmd (kentauros.modules.sources.bzr,kentauros.modules.sources.git)
       \-state (kentauros.context)
       \-task (kentauros.cli.runner)
+      \-validator (kentauros.modules.builder.mock,kentauros.modules.constructor.srpm,kentauros.modules.sources.bzr,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.url,kentauros.modules.uploader.copr,kentauros.package)
     tinydb (kentauros.state)
 
 
@@ -154,13 +155,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3077   |49.33 |3077     |=          |
+|code      |3078   |49.41 |3078     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |1554   |24.91 |1554     |=          |
+|docstring |1555   |24.96 |1555     |=          |
 +----------+-------+------+---------+-----------+
-|comment   |211    |3.38  |211      |=          |
+|comment   |204    |3.27  |204      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1396   |22.38 |1396     |=          |
+|empty     |1393   |22.36 |1393     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -186,9 +187,9 @@ Messages by category
 +===========+=======+=========+===========+
 |convention |66     |66       |=          |
 +-----------+-------+---------+-----------+
-|refactor   |7      |7        |=          |
+|refactor   |8      |8        |=          |
 +-----------+-------+---------+-----------+
-|warning    |1      |1        |=          |
+|warning    |0      |0        |=          |
 +-----------+-------+---------+-----------+
 |error      |0      |0        |=          |
 +-----------+-------+---------+-----------+
@@ -201,11 +202,11 @@ Messages by category
 +-----------------------------------+------+--------+---------+-----------+
 |module                             |error |warning |refactor |convention |
 +===================================+======+========+=========+===========+
-|kentauros.validator                |0.00  |100.00  |0.00     |4.55       |
+|kentauros.modules.sources.git      |0.00  |0.00    |62.50    |10.61      |
 +-----------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.git      |0.00  |0.00    |71.43    |10.61      |
+|kentauros.modules.sources.bzr      |0.00  |0.00    |25.00    |7.58       |
 +-----------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.bzr      |0.00  |0.00    |28.57    |7.58       |
+|kentauros.validator                |0.00  |0.00    |12.50    |4.55       |
 +-----------------------------------+------+--------+---------+-----------+
 |kentauros.task                     |0.00  |0.00    |0.00     |21.21      |
 +-----------------------------------+------+--------+---------+-----------+
@@ -250,7 +251,7 @@ Messages
 +---------------------------+------------+
 |too-many-branches          |1           |
 +---------------------------+------------+
-|fixme                      |1           |
+|too-many-arguments         |1           |
 +---------------------------+------------+
 
 

@@ -14,6 +14,7 @@ import time
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
+from ...validator import KtrValidator
 
 from .abstract import Builder
 
@@ -253,29 +254,17 @@ class MockBuilder(Builder):
             bool:   verification success
         """
 
-        ret = KtrResult(name=self.name())
-
-        success = True
-
-        # check if the configuration file is valid
         expected_keys = ["active", "dists", "export", "keep"]
+        expected_binaries = ["mock"]
 
-        for key in expected_keys:
-            if key not in self.package.conf["mock"]:
-                template = "The [mock] section in the package's .conf file doesn't set the {} key."
-                ret.messages.err(template.format(key))
-                success = False
-
-        # check if mock is installed
-        try:
-            subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
-        except subprocess.CalledProcessError:
-            ret.messages.log("Install mock to use the specified builder.")
-            success = False
+        validator = KtrValidator(self.package.conf.conf, "mock", expected_keys, expected_binaries)
+        ret = validator.validate()
 
         # check if the user is in the "mock" group or is root
         mock_group = grp.getgrnam("mock")
         mock_user = os.getenv("USER")
+
+        success = True
 
         if mock_user not in mock_group.gr_mem:
             ret.messages.err("The current user is not allowed to use mock.")

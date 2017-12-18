@@ -12,6 +12,7 @@ from ...context import KtrContext
 from ...definitions import SourceType
 from ...package import KtrPackage
 from ...result import KtrResult
+from ...validator import KtrValidator
 
 from .abstract import Source
 
@@ -49,19 +50,11 @@ class LocalSource(Source):
             bool:   verification success
         """
 
-        ret = KtrResult(name=self.name())
-        success = True
-
         # check if the configuration file is valid
         expected_keys = ["keep", "orig"]
+        validator = KtrValidator(self.package.conf.conf, "local", expected_keys)
 
-        for key in expected_keys:
-            if key not in self.package.conf["local"]:
-                template = "The [local] section in the package's .conf file doesn't set the {} key."
-                ret.messages.err(template.format(key))
-                success = False
-
-        return ret.submit(success)
+        return validator.validate()
 
     def get_keep(self) -> bool:
         return self.package.conf.getboolean("local", "keep")
