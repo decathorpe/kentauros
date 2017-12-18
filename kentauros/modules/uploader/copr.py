@@ -6,11 +6,10 @@ packages to `copr <http://copr.fedorainfracloud.org>`_.
 
 import glob
 import os
-import subprocess
+import subprocess as sp
 
 from ...conntest import is_connected
 from ...context import KtrContext
-from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
 
@@ -57,9 +56,7 @@ class CoprUploader(Uploader):
             bool:   verification success
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
-
+        ret = KtrResult(name=self.name())
         success = True
 
         # check if the configuration file is valid
@@ -67,16 +64,17 @@ class CoprUploader(Uploader):
 
         for key in expected_keys:
             if key not in self.package.conf["copr"]:
-                logger.err("The [copr] section in the package's .conf file doesn't set the '" +
-                           key +
-                           "' key.")
+                template = "The [copr] section in the package's .conf file doesn't set the {} key."
+                ret.messages.err(template.format(key))
                 success = False
 
         # check if copr is installed
+        res = sp.run(["which", "copr-cli"], stdout=sp.PIPE, stderr=sp.STDOUT)
+
         try:
-            subprocess.check_output(["which", "copr-cli"])
-        except subprocess.CalledProcessError:
-            logger.log("Install copr-cli to use the specified builder.")
+            res.check_returncode()
+        except sp.CalledProcessError:
+            ret.messages.log("Install copr-cli to use the specified builder.")
             success = False
 
         return ret.submit(success)
@@ -145,8 +143,7 @@ class CoprUploader(Uploader):
             bool:       returns *False* if anything goes wrong, *True* otherwise
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         if not self.get_active():
             return ret.submit(True)
@@ -157,7 +154,7 @@ class CoprUploader(Uploader):
         srpms = glob.glob(os.path.join(package_dir, self.package.name + "*.src.rpm"))
 
         if not srpms:
-            logger.log("No source packages were found. Construct them first.")
+            ret.messages.log("No source packages were found. Construct them first.")
             return ret.submit(False)
 
         # figure out which srpm to build
@@ -181,19 +178,19 @@ class CoprUploader(Uploader):
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            logger.log("No connection to remote host detected. Cancelling upload.")
+            ret.messages.log("No connection to remote host detected. Cancelling upload.")
             return ret.submit(False)
 
-        logger.cmd(cmd)
-        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        success = (res == 0)
+        ret.messages.cmd(cmd)
+        res = sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
+        success = (res.returncode == 0)
 
         if success:
             if not self.get_keep():
                 os.remove(srpm)
             return ret.submit(True)
         else:
-            logger.log("copr-cli command did not complete successfully.")
+            ret.messages.log("copr-cli command did not complete successfully.")
             return ret.submit(False)
 
     def execute(self) -> KtrResult:

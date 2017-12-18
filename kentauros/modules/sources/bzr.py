@@ -82,7 +82,7 @@ class BzrSource(Source):
             bool:   verification success
         """
 
-        logger = LogCollector(self.name())
+        ret = KtrResult(name=self.name())
 
         success = True
 
@@ -91,18 +91,20 @@ class BzrSource(Source):
 
         for key in expected_keys:
             if key not in self.package.conf["bzr"]:
-                logger.err("The [bzr] section in the package's .conf file doesn't set the '" +
-                           key +
-                           "' key.")
+                template = "The [bzr] section in the package's .conf file doesn't set the {} key."
+                ret.messages.err(template.format(key))
                 success = False
 
         # check if bzr is installed
-        ret = sp.run(["which", "bzr"], stdout=sp.PIPE, stderr=sp.STDOUT)
-        if ret.returncode != 0:
-            logger.log("Install bzr to use the specified source.")
+        res = sp.run(["which", "bzr"], stdout=sp.PIPE, stderr=sp.STDOUT)
+
+        try:
+            res.check_returncode()
+        except sp.CalledProcessError:
+            ret.messages.log("Install bzr to use the specified source.")
             success = False
 
-        return KtrResult(success, messages=logger)
+        return ret.submit(success)
 
     def get_keep(self) -> bool:
         """
@@ -156,8 +158,7 @@ class BzrSource(Source):
             str: either revision string from repo, last stored rev string or `""` when unsuccessful
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         if not os.access(self.dest, os.R_OK):
             state = self.context.state.read(self.package.conf_name)
@@ -170,7 +171,7 @@ class BzrSource(Source):
                     ret.value = state["bzr_last_rev"]
                     return ret.submit(True)
             else:
-                logger.err("Sources must be present to determine the revision.")
+                ret.messages.err("Sources must be present to determine the revision.")
                 return ret.submit(False)
 
         res = BzrCommand(self.dest, "revno").execute()
@@ -182,25 +183,32 @@ class BzrSource(Source):
             ret.state["bzr_last_rev"] = res.value
             return ret.submit(True)
         else:
-            logger.log("Bzr command to determine revision number unsuccessful.")
+            ret.messages.log("Bzr command to determine revision number unsuccessful.")
             return ret.submit(False)
 
     def datetime(self) -> KtrResult:
-        logger = LogCollector(self.name())
+        ret = KtrResult(name=self.name())
 
         res = BzrCommand(self.dest, "version-info").execute()
+
+        if not res.success:
+            ret.messages.log("Bzr command did not execute successfully. No revision date obtained.")
+            ret.messages.err("Assuming 'now' as fallback date/time.")
+            ret.value = datetime.datetime.now().astimezone(datetime.timezone.utc)
+            ret.submit(False)
 
         for line in res.value:
             if line[0:6] == "date: ":
                 date_string = line.replace("date: ", "")
 
-                return KtrResult(
-                    True, datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S %z"), logger)
+                ret.value = datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S %z")
+                return ret.submit(True)
 
-        logger.err("No date information present in the output of 'bzr version-info'.")
-        logger.err("Assuming 'now' as fallback date/time.")
+        ret.messages.err("No date information present in the output of 'bzr version-info'.")
+        ret.messages.err("Assuming 'now' as fallback date/time.")
 
-        return KtrResult(False, datetime.datetime.now(), logger)
+        ret.value = datetime.datetime.now()
+        return ret.submit(False)
 
     def datetime_str(self) -> KtrResult:
         ret = KtrResult(name=self.name())
@@ -225,17 +233,13 @@ class BzrSource(Source):
         res = self.datetime()
         dt = res.value
 
-        return KtrResult(
-            res.success,
-            "{:04d}{:02d}{:02d}".format(dt.year, dt.month, dt.day))
+        return KtrResult(res.success, "{:04d}{:02d}{:02d}".format(dt.year, dt.month, dt.day))
 
     def time(self) -> KtrResult:
         res = self.datetime()
         dt = res.value
 
-        return KtrResult(
-            res.success,
-            "{:02d}{:02d}{:02d}".format(dt.hour, dt.minute, dt.second))
+        return KtrResult(res.success, "{:02d}{:02d}{:02d}".format(dt.hour, dt.minute, dt.second))
 
     def status(self) -> KtrResult:
         """
@@ -247,8 +251,7 @@ class BzrSource(Source):
             dict:   key-value pairs (property: value)
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         dt = self.datetime_str()
         ret.collect(dt)
@@ -299,9 +302,8 @@ class BzrSource(Source):
             str: nice version string (base version + "+bzr" + revision)
         """
 
+        ret = KtrResult(name=self.name())
         success = True
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
 
         fallback_template = "%{version}%{version_sep}%{date}.%{time}.bzr%{revision}"
 
@@ -348,7 +350,7 @@ class BzrSource(Source):
                 success = False
 
         if "%{" in template:
-            logger.log("Unrecognized variables present in bzr version template.")
+            ret.messages.log("Unrecognized variables present in bzr version template.")
             success = False
 
         ret.value = template
@@ -368,8 +370,7 @@ class BzrSource(Source):
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
@@ -377,12 +378,12 @@ class BzrSource(Source):
             ret.collect(res)
 
             if res.success:
-                logger.log("Sources already downloaded. Latest revision: " + res.value)
+                ret.messages.log("Sources already downloaded. Latest revision: " + res.value)
                 return ret.submit(False)
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            logger.log("No connection to remote host detected. Cancelling source checkout.")
+            ret.messages.log("No connection to remote host detected. Cancelling source checkout.")
             return ret.submit(False)
 
         # construct bzr command
@@ -413,7 +414,7 @@ class BzrSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Sources could not be branched successfully.")
+            ret.messages.err("Sources could not be branched successfully.")
             return ret.submit(False)
 
         # get commit ID
@@ -421,13 +422,13 @@ class BzrSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Revision could not be determined successfully.")
+            ret.messages.err("Revision could not be determined successfully.")
             return ret.submit(False)
 
         # check if checkout worked
         if self.get_revno():
             if self.get_revno() != res.value:
-                logger.err("Something went wrong, requested commit not available.")
+                ret.messages.err("Something went wrong, requested commit not available.")
                 return ret.submit(False)
 
         # return True if successful
@@ -444,8 +445,7 @@ class BzrSource(Source):
             bool: `True` if update available and successful, `False` otherwise
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # if specific revision is requested, do not pull updates (obviously)
         if self.get_revno():
@@ -453,7 +453,7 @@ class BzrSource(Source):
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            logger.log("No connection to remote host detected. Cancelling source checkout.")
+            ret.messages.log("No connection to remote host detected. Cancelling source checkout.")
             return ret.submit(False)
 
         # construct bzr command
@@ -467,7 +467,7 @@ class BzrSource(Source):
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            logger.err("Sources need to be .get() before .update() can be run.")
+            ret.messages.err("Sources need to be .get() before .update() can be run.")
             return ret.submit(False)
 
         # get old revision number
@@ -475,7 +475,7 @@ class BzrSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Revision could not be determined successfully.")
+            ret.messages.err("Revision could not be determined successfully.")
             return ret.submit(False)
         rev_old = res.value
 
@@ -484,7 +484,7 @@ class BzrSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Sources could not be updated successfully.")
+            ret.messages.err("Sources could not be updated successfully.")
             return ret.submit(False)
 
         # get new commit ID
@@ -492,7 +492,7 @@ class BzrSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Revision could not be determined successfully.")
+            ret.messages.err("Revision could not be determined successfully.")
             return ret.submit(False)
         rev_new = res.value
 
@@ -526,8 +526,7 @@ class BzrSource(Source):
             bool:       `True` if successful, `False` if not or already exported
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # construct bzr command
         cmd = ["export"]
@@ -545,14 +544,14 @@ class BzrSource(Source):
 
         # check if bzr repo exists
         if not os.access(self.dest, os.R_OK):
-            logger.err("Sources need to be get before they can be exported.")
+            ret.messages.err("Sources need to be get before they can be exported.")
             return ret.submit(False)
 
         res = self.formatver()
         ret.collect(res)
 
         if not res.success:
-            logger.err("Version could not be formatted successfully.")
+            ret.messages.err("Version could not be formatted successfully.")
             return ret.submit(False)
         version = res.value
 
@@ -564,16 +563,16 @@ class BzrSource(Source):
 
         # check if file has already been exported
         if os.path.exists(file_path):
-            logger.log("Tarball has already been exported.")
+            ret.messages.log("Tarball has already been exported.")
             # remove bzr repo if keep is False
-            self._remove_or_keep(logger)
+            self._remove_or_keep(ret.messages)
             return ret.submit(True)
 
         res = BzrCommand(self.dest, *cmd).execute()
         ret.collect(res)
 
         if not res.success:
-            logger.err("bzr command could not be executed successfully.")
+            ret.messages.err("bzr command could not be executed successfully.")
             return ret.submit(False)
 
         # update saved rev
@@ -581,11 +580,11 @@ class BzrSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Revision could not be determined successfully.")
+            ret.messages.err("Revision could not be determined successfully.")
             return ret.submit(False)
 
         # remove bzr repo if keep is False
-        self._remove_or_keep(logger)
+        self._remove_or_keep(ret.messages)
 
         ret.collect(self.status())
         ret.state["source_files"] = [file_name]

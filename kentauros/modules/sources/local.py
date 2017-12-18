@@ -10,7 +10,6 @@ import shutil
 
 from ...context import KtrContext
 from ...definitions import SourceType
-from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
 
@@ -50,9 +49,7 @@ class LocalSource(Source):
             bool:   verification success
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
-
+        ret = KtrResult(name=self.name())
         success = True
 
         # check if the configuration file is valid
@@ -60,9 +57,8 @@ class LocalSource(Source):
 
         for key in expected_keys:
             if key not in self.package.conf["local"]:
-                logger.err("The [local] section in the package's .conf file doesn't set the '" +
-                           key +
-                           "' key.")
+                template = "The [local] section in the package's .conf file doesn't set the {} key."
+                ret.messages.err(template.format(key))
                 success = False
 
         return ret.submit(success)
@@ -97,8 +93,7 @@ class LocalSource(Source):
             bool:   *True* if source was copied successfully, *False* if not
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -106,7 +101,7 @@ class LocalSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            logger.log("Sources already present.")
+            ret.messages.log("Sources already present.")
             return ret.submit(False)
 
         # copy file from origin to destination

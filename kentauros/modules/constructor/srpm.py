@@ -84,8 +84,7 @@ class SrpmConstructor(Constructor):
             bool:   verification success
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         success = True
 
@@ -95,15 +94,14 @@ class SrpmConstructor(Constructor):
 
         for key in expected_keys:
             if key not in self.package.conf["srpm"]:
-                logger.err("The [srpm] section in the package's .conf file doesn't set the '" +
-                           key +
-                           "' key.")
+                template = "The [srpm] section in the package's .conf file doesn't set the {} key."
+                ret.messages.err(template.format(key))
                 success = False
 
         # check for .spec file presence
         if not os.path.exists(self.path):
-            logger.err("Spec file has not been found at the expected location:")
-            logger.err(self.path)
+            ret.messages.err("Spec file has not been found at the expected location:")
+            ret.messages.err(self.path)
             success = False
 
         # check if rpmbuild and rpmdev-bumpspec are installed
@@ -111,7 +109,7 @@ class SrpmConstructor(Constructor):
             try:
                 subprocess.check_output(["which", binary]).decode().rstrip("\n")
             except subprocess.CalledProcessError:
-                logger.log("Install " + binary + " to use the srpm constructor.")
+                ret.messages.log("Install " + binary + " to use the srpm constructor.")
                 success = False
 
         return ret.submit(success)
@@ -222,13 +220,12 @@ class SrpmConstructor(Constructor):
         `SOURCES`, `SRPMS`, `SPECS`).
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # make sure to finally call self.clean()!
         self.dirs["tempdir"] = tempfile.mkdtemp()
 
-        logger.dbg("Temporary directory " + self.dirs["tempdir"] + " created.")
+        ret.messages.dbg("Temporary directory " + self.dirs["tempdir"] + " created.")
 
         self.dirs["rpmbuild_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild")
         self.dirs["build_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "BUILD")
@@ -242,14 +239,14 @@ class SrpmConstructor(Constructor):
         if not os.path.exists(self.dirs["rpmbuild_dir"]):
             os.mkdir(self.dirs["rpmbuild_dir"])
 
-        logger.dbg("Temporary rpmbuild directory created: " + self.dirs["tempdir"])
+        ret.messages.dbg("Temporary rpmbuild directory created: " + self.dirs["tempdir"])
 
         # create $TEMPDIR/rpmbuild/{SPECS,SRPMS,SOURCES}
         for directory in [self.dirs["spec_dir"], self.dirs["srpm_dir"], self.dirs["source_dir"]]:
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
-        logger.dbg("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.")
+        ret.messages.dbg("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.")
 
         return ret.submit(True)
 
@@ -335,8 +332,7 @@ class SrpmConstructor(Constructor):
         This method cleans up the Source's output directory according to settings.
         """
 
-        logger = LogCollector()
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         sources = self._get_source_list()
 
@@ -354,7 +350,7 @@ class SrpmConstructor(Constructor):
                     shutil.rmtree(path)
 
                 else:
-                    logger.log("The source is neither a directory or a file, skipping.")
+                    ret.messages.log("The source is neither a directory or a file, skipping.")
                     continue
 
                 ret.state["source_files"] = sources.remove(file)
@@ -655,20 +651,19 @@ class SrpmConstructor(Constructor):
             bool:           returns `True` if the preparation was successful.
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         if self.stype is None:
-            logger.dbg("This package does not define a source module.")
+            ret.messages.dbg("This package does not define a source module.")
 
         else:
             # if source module is defined check if sources are present
-            if not self._check_source_presence(logger):
-                return KtrResult(False, logger)
+            if not self._check_source_presence(ret.messages):
+                return KtrResult(False, ret.messages)
 
         # copy sources to rpmbuild/SOURCES
         if self.stype is not None:
-            self._copy_sources(logger)
+            self._copy_sources(ret.messages)
 
         # remove tarballs if they should not be kept
         if self.stype is not None:
@@ -677,11 +672,11 @@ class SrpmConstructor(Constructor):
             ret.success = res.success
 
         # copy package.conf to rpmbuild/SOURCES
-        self._copy_configuration(logger)
+        self._copy_configuration(ret.messages)
 
         # copy modified .spec file to rpmbuild/SPECS
         # copy back file with changelog additions and possible Release bump
-        success = self._copy_specs_around(logger)
+        success = self._copy_specs_around(ret.messages)
 
         return ret.submit(ret.success and success)
 
@@ -692,8 +687,7 @@ class SrpmConstructor(Constructor):
         `rpmbuild/SPECS`. After that, `$HOME` is reset to the old value.
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # construct rpmbuild command
         cmd = ["rpmbuild"]
@@ -715,7 +709,7 @@ class SrpmConstructor(Constructor):
         cmd.append("-bs")
         cmd.append(os.path.join(self.dirs["spec_dir"], self.package.name + ".spec"))
 
-        logger.cmd(cmd)
+        ret.messages.cmd(cmd)
 
         res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
@@ -726,7 +720,8 @@ class SrpmConstructor(Constructor):
             success = False
 
         if not success:
-            logger.lst("rpmbuild execution encountered an error:", res.stdout.decode().split("\n"))
+            ret.messages.lst("rpmbuild execution encountered an error:",
+                             res.stdout.decode().split("\n"))
 
         return ret.submit(success)
 
@@ -737,8 +732,7 @@ class SrpmConstructor(Constructor):
         found, they all are copied.
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         srpms = glob.glob(os.path.join(self.dirs["srpm_dir"], "*.src.rpm"))
 
@@ -746,7 +740,7 @@ class SrpmConstructor(Constructor):
 
         for srpm in srpms:
             shutil.copy2(srpm, self.pdir)
-            logger.log("File copied: " + srpm)
+            ret.messages.log("File copied: " + srpm)
 
         return ret.submit(True)
 
@@ -755,8 +749,7 @@ class SrpmConstructor(Constructor):
         return KtrResult(True)
 
     def execute(self) -> KtrResult:
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # initialize srpm construction
         res = self.init()
@@ -770,7 +763,7 @@ class SrpmConstructor(Constructor):
             # clean up temporary directory
             res = self.cleanup()
             ret.collect(res)
-            logger.log("Source package assembly unsuccessful.")
+            ret.messages.log("Source package assembly unsuccessful.")
             return ret.submit(False)
 
         # build srpm
@@ -789,8 +782,7 @@ class SrpmConstructor(Constructor):
         return ret.submit(True)
 
     def clean(self) -> KtrResult:
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         if not os.path.exists(self.pdir):
             return ret.submit(True)
@@ -801,8 +793,8 @@ class SrpmConstructor(Constructor):
             shutil.rmtree(self.pdir)
             return ret.submit(True)
         except AssertionError:
-            logger.err("The Package exports directory looks weird. Doing nothing.")
+            ret.messages.err("The Package exports directory looks weird. Doing nothing.")
             return ret.submit(False)
         except OSError:
-            logger.err("The Package exports directory couldn't be removed.")
+            ret.messages.err("The Package exports directory couldn't be removed.")
             return ret.submit(False)

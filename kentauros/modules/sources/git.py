@@ -21,7 +21,6 @@ from ...result import KtrResult
 from ...shellcmd import ShellCommand
 
 from .abstract import Source
-from .source_error import SourceError
 
 
 class GitCommand(ShellCommand):
@@ -82,8 +81,7 @@ class GitSource(Source):
             bool:   verification success
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         success = True
 
@@ -92,14 +90,13 @@ class GitSource(Source):
 
         for key in expected_keys:
             if key not in self.package.conf["git"]:
-                logger.err("The [git] section in the package's .conf file doesn't set the '" +
-                           key +
-                           "' key.")
+                template = "The [git] section in the package's .conf file doesn't set the {} key."
+                ret.messages.err(template.format(key))
                 success = False
 
         # shallow clones and checking out a specific commit is not supported
         if (self.get_ref() != "master") and self.get_shallow():
-            logger.err("Shallow clones are not compatible with specifying a specific commit.")
+            ret.messages.err("Shallow clones are not compatible with specifying a specific ref.")
             success = False
 
         # check if git is installed
@@ -107,7 +104,7 @@ class GitSource(Source):
         try:
             res.check_returncode()
         except sp.CalledProcessError:
-            logger.log("Install git to use the specified source.")
+            ret.messages.log("Install git to use the specified source.")
             success = False
 
         return ret.submit(success)
@@ -167,8 +164,7 @@ class GitSource(Source):
         return self.package.conf.getboolean("git", "shallow")
 
     def datetime(self) -> KtrResult:
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # initialize datetime with fallback value 'now'
         dt = datetime.datetime.now()
@@ -184,12 +180,14 @@ class GitSource(Source):
                     saved_dt = state["git_last_date"]
 
                     if saved_dt == "":
-                        logger.dbg("Saved git commit date not available. Returning 'now'.")
+                        ret.messages.dbg("Saved git commit date not available. Returning 'now'.")
                         dt = datetime.datetime.now()
                     else:
                         dt = datetime.datetime.strptime(saved_dt, "%Y%m%d %H%M%S")
             else:
-                raise SourceError("Sources need to be 'get' before the commit date can be read.")
+                ret.messages.err("Sources need to be 'get' before the commit date can be read.")
+                ret.messages.err("Falling back to 'now'.")
+                dt = datetime.datetime.now().astimezone(datetime.timezone.utc)
         else:
             repo = Repo(self.dest)
             commit = repo.commit(self._get_commit())
@@ -220,7 +218,7 @@ class GitSource(Source):
         return ret.submit(res.success)
 
     def date(self) -> KtrResult:
-        ret = KtrResult()
+        ret = KtrResult(name=self.name())
 
         res = self.datetime()
         ret.collect(res)
@@ -233,7 +231,7 @@ class GitSource(Source):
             return ret.submit(False)
 
     def time(self) -> KtrResult:
-        ret = KtrResult()
+        ret = KtrResult(name=self.name())
 
         res = self.datetime()
         ret.collect(res)
@@ -255,8 +253,7 @@ class GitSource(Source):
             str:        commit hash
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         if not os.access(self.dest, os.R_OK):
             state = self.context.state.read(self.package.conf_name)
@@ -272,7 +269,7 @@ class GitSource(Source):
                 return ret.submit(True)
 
             else:
-                logger.err("Sources must be present to determine the revision.")
+                ret.messages.err("Sources must be present to determine the revision.")
                 return ret.submit(False)
 
         commit = self._get_commit()
@@ -292,8 +289,7 @@ class GitSource(Source):
             dict:   key-value pairs (property: value)
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         dt = self.datetime_str()
         ret.collect(dt)
@@ -310,7 +306,7 @@ class GitSource(Source):
         return ret.submit(success)
 
     def status_string(self) -> KtrResult:
-        ret = KtrResult()
+        ret = KtrResult(name=self.name())
 
         commit = self.commit()
         ret.collect(commit)
@@ -358,9 +354,8 @@ class GitSource(Source):
             str:        nicely formatted version string
         """
 
+        ret = KtrResult(name=self.name())
         success = True
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
 
         fallback_template = "%{version}%{version_sep}%{date}.%{time}.git%{shortcommit}"
 
@@ -404,7 +399,7 @@ class GitSource(Source):
         if res.success:
             commit = res.value
         else:
-            logger.log("Commit hash string could not be determined successfully.")
+            ret.messages.log("Commit hash string could not be determined successfully.")
             return ret.submit(False)
 
         if "%{commit}" in template:
@@ -415,15 +410,14 @@ class GitSource(Source):
 
         # look for variables that are still present
         if "%{" in template:
-            logger.log("Unrecognized variables present in git version template.")
+            ret.messages.log("Unrecognized variables present in git version template.")
 
         ret.value = template
         ret.state["version_format"] = template
         return ret.submit(success)
 
     def _checkout(self, ref: str = None) -> KtrResult():
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         if ref is None:
             ref = self.get_ref()
@@ -433,11 +427,11 @@ class GitSource(Source):
         cmd_checkout = ["checkout", ref]
 
         # checkout commit
-        logger.cmd(cmd_checkout)
+        ret.messages.cmd(cmd_checkout)
         res = GitCommand(self.dest, *cmd_checkout).execute()
 
         if not res.success:
-            logger.log("Checking out the specified ref ({}) wasn't successful.".format(ref))
+            ret.messages.log("Checking out the specified ref ({}) wasn't successful.".format(ref))
             return ret.submit(False)
         else:
             return ret.submit(True)
@@ -455,8 +449,7 @@ class GitSource(Source):
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
@@ -464,13 +457,13 @@ class GitSource(Source):
             ret.collect(res)
 
             if res.success:
-                logger.log("Sources already downloaded. Latest commit id:")
-                logger.log(res.value)
+                ret.messages.log("Sources already downloaded. Latest commit id:")
+                ret.messages.log(res.value)
                 return ret.submit(False)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            logger.log("No connection to remote host detected. Cancelling source checkout.")
+            ret.messages.log("No connection to remote host detected. Cancelling source checkout.")
             return ret.submit(False)
 
         # construct clone command
@@ -491,11 +484,11 @@ class GitSource(Source):
         cmd_clone.append(self.dest)
 
         # clone git repo from origin to destination
-        logger.cmd(cmd_clone)
+        ret.messages.cmd(cmd_clone)
         res = GitCommand(".", *cmd_clone).execute()
 
         if not res.success:
-            logger.log("Cloning the git source repository wasn't successful.")
+            ret.messages.log("Cloning the git source repository wasn't successful.")
             ret.submit(False)
 
         # check out the specified ref (if it's master, nothing happens)
@@ -503,7 +496,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.log("The specified ref could not be checked out successfully.")
+            ret.messages.log("The specified ref could not be checked out successfully.")
             ret.submit(False)
 
         # get commit ID
@@ -511,7 +504,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Commit hash could not be determined successfully.")
+            ret.messages.err("Commit hash could not be determined successfully.")
             return ret.submit(False)
 
         # get commit date/time
@@ -519,7 +512,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Commit date/time not be determined successfully.")
+            ret.messages.err("Commit date/time not be determined successfully.")
             return ret.submit(False)
 
         # return True if successful
@@ -536,12 +529,11 @@ class GitSource(Source):
             bool: *True* if update available and successful, *False* if not
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            logger.log("No connection to remote host detected. Cancelling source update.")
+            ret.messages.log("No connection to remote host detected. Cancelling source update.")
             return ret.submit(False)
 
         # construct git command
@@ -555,7 +547,7 @@ class GitSource(Source):
 
         # check if source directory exists before going there
         if not os.access(self.dest, os.W_OK):
-            logger.err("Sources need to be get before an update can be run.")
+            ret.messages.err("Sources need to be get before an update can be run.")
             return ret.submit(False)
 
         # get old commit ID
@@ -563,7 +555,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Commit hash could not be determined successfully.")
+            ret.messages.err("Commit hash could not be determined successfully.")
             return ret.submit(False)
         rev_old = res.value
 
@@ -572,15 +564,15 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.log("The master branch could not be checked out successfully.")
+            ret.messages.log("The master branch could not be checked out successfully.")
             ret.submit(False)
 
         # get updates
-        logger.cmd(cmd)
+        ret.messages.cmd(cmd)
         res = GitCommand(self.dest, *cmd).execute()
 
         if not res.success:
-            logger.err("Pulling from remote git repository wasn't successful.")
+            ret.messages.err("Pulling from remote git repository wasn't successful.")
             return ret.submit(False)
 
         # check out specified ref again
@@ -588,7 +580,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.log("The specified ref could not be checked out successfully.")
+            ret.messages.log("The specified ref could not be checked out successfully.")
             ret.submit(False)
 
         # get new commit ID
@@ -596,7 +588,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Commit hash could not be determined successfully.")
+            ret.messages.err("Commit hash could not be determined successfully.")
             return ret.submit(False)
         rev_new = res.value
 
@@ -605,7 +597,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Commit date/time not be determined successfully.")
+            ret.messages.err("Commit date/time not be determined successfully.")
             return ret.submit(False)
 
         # return True if update found, False if not
@@ -637,22 +629,21 @@ class GitSource(Source):
             bool:   *True* if successful or already done, *False* at failure
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # construct git command to export the specified ref
         cmd = ["archive", self.get_ref()]
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
-            logger.err("Sources need to be get before they can be exported.")
+            ret.messages.err("Sources need to be get before they can be exported.")
             return ret.submit(False)
 
         res = self.formatver()
         ret.collect(res)
 
         if not res.success:
-            logger.err("Version could not be formatted successfully.")
+            ret.messages.err("Version could not be formatted successfully.")
             return ret.submit(False)
         version = res.value
 
@@ -669,17 +660,17 @@ class GitSource(Source):
 
         # check if file has already been exported
         if os.path.exists(file_path):
-            logger.log("Tarball has already been exported.")
+            ret.messages.log("Tarball has already been exported.")
             # remove git repo if keep is False
-            self._remove_not_keep(logger)
+            self._remove_not_keep(ret.messages)
             return ret.submit(True)
 
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        logger.cmd(cmd)
+        ret.messages.cmd(cmd)
         res = GitCommand(self.dest, *cmd).execute()
 
         if not res.success:
-            logger.err("Source tarball could not be created from repository successfully.")
+            ret.messages.err("Source tarball could not be created from repository successfully.")
             return ret.submit(False)
 
         # update saved commit ID
@@ -687,7 +678,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Commit hash could not be determined successfully.")
+            ret.messages.err("Commit hash could not be determined successfully.")
             return ret.submit(False)
 
         # update saved commit date/time
@@ -695,11 +686,11 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            logger.err("Commit date/time not be determined successfully.")
+            ret.messages.err("Commit date/time not be determined successfully.")
             return ret.submit(False)
 
         # remove git repo if keep is False
-        self._remove_not_keep(logger)
+        self._remove_not_keep(ret.messages)
 
         ret.collect(self.status())
         ret.state["source_files"] = [file_name]

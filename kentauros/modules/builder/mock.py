@@ -3,7 +3,6 @@ This module contains the :py:class:`MockBuilder` class, which can be used to bui
 from src.rpm packages.
 """
 
-
 import fcntl
 import glob
 import grp
@@ -13,12 +12,10 @@ import subprocess
 import time
 
 from ...context import KtrContext
-from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
 
 from .abstract import Builder
-
 
 DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
 DEFAULT_VAR_PATH = "/var/lib/mock"
@@ -184,8 +181,7 @@ class MockBuild:
             int:    return code of the subprocess call
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
@@ -200,7 +196,7 @@ class MockBuild:
                 try:
                     fcntl.lockf(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 except IOError:
-                    logger.log("The specified build chroot is busy, waiting.")
+                    ret.messages.log("The specified build chroot is busy, waiting.")
                     time.sleep(120)
                 else:
                     build_wait = False
@@ -208,7 +204,7 @@ class MockBuild:
                     lock_file.close()
 
         cmd = self.get_command()
-        logger.cmd(cmd)
+        ret.messages.cmd(cmd)
 
         try:
             res: subprocess.CompletedProcess = subprocess.run(cmd,
@@ -216,7 +212,7 @@ class MockBuild:
                                                               stderr=subprocess.STDOUT)
             return ret.submit(res.returncode == 0)
         except PermissionError:
-            logger.log("Mock build has been cancelled.")
+            ret.messages.log("Mock build has been cancelled.")
             return ret.submit(False)
 
 
@@ -257,8 +253,7 @@ class MockBuilder(Builder):
             bool:   verification success
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         success = True
 
@@ -267,16 +262,15 @@ class MockBuilder(Builder):
 
         for key in expected_keys:
             if key not in self.package.conf["mock"]:
-                logger.err("The [mock] section in the package's .conf file doesn't set the '" +
-                           key +
-                           "' key.")
+                template = "The [mock] section in the package's .conf file doesn't set the {} key."
+                ret.messages.err(template.format(key))
                 success = False
 
         # check if mock is installed
         try:
             subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
         except subprocess.CalledProcessError:
-            logger.log("Install mock to use the specified builder.")
+            ret.messages.log("Install mock to use the specified builder.")
             success = False
 
         # check if the user is in the "mock" group or is root
@@ -284,12 +278,12 @@ class MockBuilder(Builder):
         mock_user = os.getenv("USER")
 
         if mock_user not in mock_group.gr_mem:
-            logger.err("The current user is not allowed to use mock.")
-            logger.err("Add yourself to the 'mock' group, log out and back in.")
+            ret.messages.err("The current user is not allowed to use mock.")
+            ret.messages.err("Add yourself to the 'mock' group, log out and back in.")
             success = False
 
         if mock_user == "root":
-            logger.err("Don't attempt to run mock as root.")
+            ret.messages.err("Don't attempt to run mock as root.")
             success = False
 
         return ret.submit(success)
@@ -357,8 +351,7 @@ class MockBuilder(Builder):
             bool:   ``True`` if all builds succeeded, ``False`` if not
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         if not self.get_active():
             return ret.submit(True)
@@ -369,14 +362,14 @@ class MockBuilder(Builder):
         srpms = glob.glob(os.path.join(package_dir, self.package.name + "*.src.rpm"))
 
         if not srpms:
-            logger.log("No source packages were found. Construct them first.")
+            ret.messages.log("No source packages were found. Construct them first.")
             return ret.submit(False)
 
         # figure out which srpm to build
         srpms.sort(reverse=True)
         srpm = srpms[0]
 
-        logger.log("Specified chroots: " + str(" ").join(self.get_dists()))
+        ret.messages.log("Specified chroots: " + str(" ").join(self.get_dists()))
 
         # generate build queue
         build_queue = list()
@@ -403,11 +396,11 @@ class MockBuilder(Builder):
 
         if builds_success:
             for build in builds_success:
-                logger.log("Build succesful: " + str(build))
+                ret.messages.log("Build succesful: " + str(build))
 
         if builds_failure:
             for build in builds_failure:
-                logger.log("Build failed: " + str(build))
+                ret.messages.log("Build failed: " + str(build))
 
         return ret.submit(not builds_failure)
 
@@ -426,17 +419,16 @@ class MockBuilder(Builder):
         if not self.get_export():
             return KtrResult(True)
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         os.makedirs(self.edir, exist_ok=True)
 
         if not os.path.exists(self.edir):
-            logger.err("Package exports directory could not be created.")
+            ret.messages.err("Package exports directory could not be created.")
             return ret.submit(False)
 
         if not os.access(self.edir, os.W_OK):
-            logger.err("Package exports directory can not be written to.")
+            ret.messages.err("Package exports directory can not be written to.")
             return ret.submit(False)
 
         mock_result_dirs = list()
@@ -463,21 +455,20 @@ class MockBuilder(Builder):
         return ret.submit(True)
 
     def execute(self) -> KtrResult:
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         res = self.build()
         ret.collect(res)
 
         if not res.success:
-            logger.log("Binary package building unsuccessful, aborting action.")
+            ret.messages.log("Binary package building unsuccessful, aborting action.")
             return ret.submit(False)
 
         res = self.export()
         ret.collect(res)
 
         if not res.success:
-            logger.log("Binary package exporting unsuccessful, aborting action.")
+            ret.messages.log("Binary package exporting unsuccessful, aborting action.")
             return ret.submit(False)
         else:
             return ret.submit(True)
@@ -486,8 +477,7 @@ class MockBuilder(Builder):
         if not os.path.exists(self.edir):
             return KtrResult(True)
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         try:
             assert self.context.get_expodir() in self.edir
@@ -495,8 +485,8 @@ class MockBuilder(Builder):
             shutil.rmtree(self.edir)
             return ret.submit(True)
         except AssertionError:
-            logger.err("The Package exports directory looks weird. Doing nothing.")
+            ret.messages.err("The Package exports directory looks weird. Doing nothing.")
             return ret.submit(False)
         except OSError:
-            logger.err("The Package exports directory couldn't be removed.")
+            ret.messages.err("The Package exports directory couldn't be removed.")
             return ret.submit(False)

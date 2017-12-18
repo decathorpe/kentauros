@@ -5,12 +5,11 @@ in the package's configuration file.
 """
 
 import os
-import subprocess
+import subprocess as sp
 
 from ...conntest import is_connected
 from ...context import KtrContext
 from ...definitions import SourceType
-from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
 
@@ -65,9 +64,7 @@ class UrlSource(Source):
             bool:   verification success
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
-
+        ret = KtrResult(name=self.name())
         success = True
 
         # check if the configuration file is valid
@@ -75,16 +72,18 @@ class UrlSource(Source):
 
         for key in expected_keys:
             if key not in self.package.conf["url"]:
-                logger.err("The [url] section in the package's .conf file doesn't set the '" +
-                           key +
-                           "' key.")
+                template = "The [url] section in the package's .conf file doesn't set the {} key."
+                ret.messages.err(template.format(key))
                 success = False
 
         # check if wget is installed
+
+        res = sp.run(["which", "wget"], stdout=sp.PIPE, stderr=sp.STDOUT)
+
         try:
-            subprocess.check_output(["which", "wget"])
-        except subprocess.CalledProcessError:
-            logger.log("Install wget to use the specified source.")
+            res.check_returncode()
+        except sp.CalledProcessError:
+            ret.messages.log("Install wget to use the specified source.")
             success = False
 
         return ret.submit(success)
@@ -147,8 +146,7 @@ class UrlSource(Source):
             bool:  *True* if successful, *False* if not or source already exists
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -156,12 +154,12 @@ class UrlSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            logger.log("Sources already downloaded.")
+            ret.messages.log("Sources already downloaded.")
             return ret.submit(True)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            logger.log("No connection to remote host detected. Cancelling source download.")
+            ret.messages.log("No connection to remote host detected. Cancelling source download.")
             return ret.submit(False)
 
         # construct wget commands
@@ -179,14 +177,14 @@ class UrlSource(Source):
         cmd.append(self.dest)
 
         # wget source from origin to destination
-        logger.cmd(cmd)
-        res: subprocess.CompletedProcess = subprocess.run(cmd,
-                                                          stdout=subprocess.PIPE,
-                                                          stderr=subprocess.STDOUT)
+        ret.messages.cmd(cmd)
+        res: sp.CompletedProcess = sp.run(cmd,
+                                          stdout=sp.PIPE,
+                                          stderr=sp.STDOUT)
 
         if res.returncode != 0:
-            logger.lst("Sources could not be downloaded successfully. wget output:",
-                       res.stdout.decode().split("\n"))
+            ret.messages.lst("Sources could not be downloaded successfully. wget output:",
+                             res.stdout.decode().split("\n"))
             return ret.submit(False)
 
         success = (ret == 0)

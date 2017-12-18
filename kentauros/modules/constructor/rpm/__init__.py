@@ -8,7 +8,6 @@ import subprocess
 
 from ....context import KtrContext
 from ....definitions import SourceType
-from ....logcollector import LogCollector
 from ....package import KtrPackage
 from ....result import KtrResult
 
@@ -255,8 +254,7 @@ def do_release_bump(path: str, context: KtrContext, comment: str = None) -> KtrR
         str comment:    comment to be added to the changelog entry
     """
 
-    logger = LogCollector("RPM .spec Handler")
-    ret = KtrResult(messages=logger)
+    ret = KtrResult(name="RPM .spec Handler")
 
     if not os.path.exists(path):
         raise FileNotFoundError()
@@ -274,7 +272,7 @@ def do_release_bump(path: str, context: KtrContext, comment: str = None) -> KtrR
     cmd.append(path)
     cmd.append('--comment=' + comment)
 
-    logger.cmd(cmd)
+    ret.messages.cmd(cmd)
     res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     success = (res.returncode == 0)
 

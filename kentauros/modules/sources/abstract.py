@@ -9,7 +9,6 @@ import os
 import shutil
 
 from ...context import KtrContext
-from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
 
@@ -98,11 +97,10 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             bool:   *True* if successful
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         if not os.path.exists(self.sdir):
-            logger.log("Nothing here to be cleaned.")
+            ret.messages.log("Nothing here to be cleaned.")
             return ret.submit(True)
 
         # try to be careful with "rm -r"
@@ -110,8 +108,8 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             assert os.path.isabs(self.dest)
             assert self.context.get_datadir() in self.dest
         except AssertionError as error:
-            logger.log("Source directory looked suspicious, not recursively deleting. Error:")
-            logger.log(str(error))
+            ret.messages.log("Source directory looked suspicious, not recursively deleting. Error:")
+            ret.messages.log(str(error))
             ret.submit(False)
 
         # remove source destination first
@@ -163,8 +161,7 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             bool:       success status of source getting or updating
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         force = self.context.get_argument("force")
         old_status = self.status()
@@ -176,7 +173,8 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             new_status = self.status()
 
             if new_status == old_status:
-                logger.log("The downloaded Source is not newer than the last known source state.")
+                ret.messages.log(
+                    "The downloaded Source is not newer than the last known source state.")
                 return ret.submit(False)
             else:
                 self.updated = True
@@ -191,7 +189,8 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             new_status = self.status()
 
             if new_status == old_status:
-                logger.log("The \"updated\" Source is not newer than the last known source state.")
+                ret.messages.log(
+                    "The \"updated\" Source is not newer than the last known source state.")
                 return ret.submit(False)
             else:
                 self.updated = True
@@ -200,12 +199,12 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
                 return ret.submit(res.success)
 
         if force:
-            logger.log("Force-Exporting the Sources despite no source changes.")
+            ret.messages.log("Force-Exporting the Sources despite no source changes.")
             res = self.export()
             ret.collect(res)
             return ret.submit(res.success)
 
-        logger.log("The Source did not change.")
+        ret.messages.log("The Source did not change.")
         return ret.submit(False)
 
     def refresh(self) -> KtrResult:
@@ -218,21 +217,20 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             bool:       success status of source getting
         """
 
-        logger = LogCollector(self.name())
-        ret = KtrResult(messages=logger)
+        ret = KtrResult(name=self.name())
 
         res = self.clean()
         ret.collect(res)
 
         if not res.success:
-            logger.log("Source cleanup not successful. Not getting sources again.")
+            ret.messages.log("Source cleanup not successful. Not getting sources again.")
             return ret.submit(False)
 
         res = self.get()
         ret.collect(res)
 
         if not res.success:
-            logger.log("Source getting not successful.")
+            ret.messages.log("Source getting not successful.")
             return ret.submit(False)
 
         # everything successful:
