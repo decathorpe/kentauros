@@ -22,6 +22,14 @@ kentauros\.modules\.module module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.modules\.package module
+----------------------------------
+
+.. automodule:: kentauros.modules.package
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

@@ -36,14 +36,6 @@ kentauros\.modules\.sources\.local module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.modules\.sources\.no\_source module
-----------------------------------------------
-
-.. automodule:: kentauros.modules.sources.no_source
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros\.modules\.sources\.source\_error module
 -------------------------------------------------
 

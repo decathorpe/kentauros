@@ -303,31 +303,63 @@ class SrpmConstructor(Constructor):
                 shutil.copy2(entry_path, self.dirs["source_dir"])
                 logger.log("File copied to SOURCES: " + entry_path)
 
-    def _cleanup_sources(self, logger: LogCollector):
+    def _get_source_list(self) -> list:
+        state = self.context.state.read(self.package.conf_name)
+
+        if "source_files" not in state.keys():
+            return []
+        else:
+            return state["source_files"]
+
+    def _get_source_last(self) -> list:
+        state = self.context.state.read(self.package.conf_name)
+
+        if "rpm_last_sources" not in state.keys():
+            return []
+        else:
+            return state["rpm_last_sources"]
+
+    def _get_source_keep(self) -> bool:
+        conf = self.package.conf
+
+        if "source" not in conf.get("package", "modules").split(","):
+            return False
+
+        source_type: str = conf.get("modules", "source")
+        keep: bool = conf.getboolean(source_type, "keep")
+
+        return keep
+
+    def _cleanup_sources(self) -> KtrResult:
         """
         This method cleans up the Source's output directory according to settings.
         """
 
-        # FIXME
+        logger = LogCollector()
+        ret = KtrResult(messages=logger)
 
-        if not self.source.get_keep():
+        sources = self._get_source_list()
 
-            # if source is a tarball (or similar) from the beginning:
-            if os.path.isfile(self.source.dest):
-                os.remove(self.source.dest)
+        if not self._get_source_keep():
+            files = self._get_source_list()
 
-            # otherwise it is in kentauros' standard .tar.gz format:
-            else:
-                tarballs = glob.glob(os.path.join(self.sdir,
-                                                  self.package.name) + "*.tar.gz")
+            for file in files:
+                path = os.path.join(self.sdir, file)
 
-                # remove only the newest one to be safe
-                tarballs.sort(reverse=True)
+                # if source is a tarball (or similar) from the beginning:
+                if os.path.isfile(path):
+                    os.remove(path)
 
-                if os.path.isfile(tarballs[0]):
-                    assert self.sdir in tarballs[0]
-                    os.remove(tarballs[0])
-                    logger.log("Tarball removed: " + tarballs[0])
+                elif os.path.isdir(path):
+                    shutil.rmtree(path)
+
+                else:
+                    logger.log("The source is neither a directory or a file, skipping.")
+                    continue
+
+                ret.state["source_files"] = sources.remove(file)
+
+        return ret.submit(True)
 
     def _copy_configuration(self, logger: LogCollector):
         """
@@ -563,7 +595,12 @@ class SrpmConstructor(Constructor):
         new_spec = RPMSpec(new_spec_path, self.package, self.context)
         new_spec.export_to_file(new_spec_path)
 
-        # FIXME
+        # get last and next sources list
+        rpm_last_sources = self._get_source_last()
+        rpm_next_sources = self._get_source_list()
+
+        # ... and check if they're different (indicating that there's been an update)
+        updated = (rpm_next_sources != rpm_last_sources)
 
         # Case 0: Initial package build
         # Old Version is empty or old Release is 0
@@ -585,12 +622,12 @@ class SrpmConstructor(Constructor):
 
             # Case 1.2: Snapshot update
             # Package Version did NOT change BUT VCS sources were updated
-            if self.source.updated:
+            if updated:
                 self.success = self._do_snapshot_update_build_prep(new_spec_path)
 
             # Case 1.3: Package ReConstruction only
             # Version did NOT change, construction was NOT forced and sources were NOT updated
-            if (not force) and (not self.source.updated):
+            if (not force) and (not updated):
                 self.success = True
 
         # Case 2: Version update
@@ -635,7 +672,9 @@ class SrpmConstructor(Constructor):
 
         # remove tarballs if they should not be kept
         if self.stype is not None:
-            self._cleanup_sources(logger)
+            res = self._cleanup_sources()
+            ret.collect(res)
+            ret.success = res.success
 
         # copy package.conf to rpmbuild/SOURCES
         self._copy_configuration(logger)
@@ -644,7 +683,7 @@ class SrpmConstructor(Constructor):
         # copy back file with changelog additions and possible Release bump
         success = self._copy_specs_around(logger)
 
-        return ret.submit(success)
+        return ret.submit(ret.success and success)
 
     def build(self) -> KtrResult:
         """
@@ -746,6 +785,7 @@ class SrpmConstructor(Constructor):
         res = self.cleanup()
         ret.collect(res)
 
+        ret.state["rpm_last_sources"] = self._get_source_list()
         return ret.submit(True)
 
     def clean(self) -> KtrResult:
