@@ -92,11 +92,13 @@ class KtrPackageTask(KtrMetaTask):
                    "verify": self._verify}
 
         try:
-            return actions[self.action]()
+            action = actions[self.action]
         except KeyError:
             ret = KtrResult()
             ret.messages.err("This action ({}) is not supported for packages.".format(self.action))
             return ret.submit(False)
+
+        return action()
 
     def _collect_action(self) -> KtrResult:
         # "simple" collecting action

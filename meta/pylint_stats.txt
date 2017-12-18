@@ -27,18 +27,18 @@ C: 19, 0: Missing class docstring (missing-docstring)
 C: 37, 0: Missing class docstring (missing-docstring)
 C: 41, 4: Missing method docstring (missing-docstring)
 C: 58, 0: Missing class docstring (missing-docstring)
-C:101, 4: Missing method docstring (missing-docstring)
-C:120, 4: Missing method docstring (missing-docstring)
-C:123, 4: Missing method docstring (missing-docstring)
-C:126, 4: Missing method docstring (missing-docstring)
-C:129, 4: Missing method docstring (missing-docstring)
-C:132, 4: Missing method docstring (missing-docstring)
-C:155, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.modules.module
-C: 34, 4: Missing method docstring (missing-docstring)
+C:103, 4: Missing method docstring (missing-docstring)
+C:122, 4: Missing method docstring (missing-docstring)
+C:125, 4: Missing method docstring (missing-docstring)
+C:128, 4: Missing method docstring (missing-docstring)
+C:131, 4: Missing method docstring (missing-docstring)
+C:134, 4: Missing method docstring (missing-docstring)
+C:157, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.package
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
+************* Module kentauros.modules.module
+C: 35, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.constructor.srpm
 W:311, 0: FIXME (fixme)
 W:566, 0: FIXME (fixme)
@@ -69,14 +69,6 @@ R:445, 4: Too many statements (41/40) (too-many-statements)
 R:529, 4: Too many return statements (7/6) (too-many-return-statements)
 R:529, 4: Too many statements (42/40) (too-many-statements)
 R:630, 4: Too many return statements (7/6) (too-many-return-statements)
-************* Module kentauros.cli.parser
-C:  1, 0: Missing module docstring (missing-docstring)
-C: 46, 0: Missing function docstring (missing-docstring)
-C:125, 0: Missing function docstring (missing-docstring)
-C:187, 0: Missing function docstring (missing-docstring)
-C:242, 0: Missing function docstring (missing-docstring)
-C:289, 0: Missing function docstring (missing-docstring)
-C:335, 0: Missing function docstring (missing-docstring)
 ************* Module kentauros.cli.context
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 77, 4: Missing method docstring (missing-docstring)
@@ -88,6 +80,14 @@ C:  9, 0: Missing class docstring (missing-docstring)
 C: 31, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.cli
 C:  1, 0: Missing module docstring (missing-docstring)
+************* Module kentauros.cli.parser
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 46, 0: Missing function docstring (missing-docstring)
+C:125, 0: Missing function docstring (missing-docstring)
+C:187, 0: Missing function docstring (missing-docstring)
+C:242, 0: Missing function docstring (missing-docstring)
+C:289, 0: Missing function docstring (missing-docstring)
+C:336, 0: Missing function docstring (missing-docstring)
 ************* Module ktr
 R:  1, 0: Similar lines in 2 files
 ==kentauros.modules.builder.mock:359
@@ -115,7 +115,7 @@ R:  1, 0: Similar lines in 2 files
 
 Report
 ======
-2683 statements analysed.
+2680 statements analysed.
 
 Statistics by type
 ------------------
@@ -127,7 +127,7 @@ Statistics by type
 +---------+-------+-----------+-----------+------------+---------+
 |class    |44     |44         |=          |72.73       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
-|method   |273    |273        |=          |88.64       |0.00     |
+|method   |272    |272        |=          |88.60       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
 |function |38     |38         |=          |81.58       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
@@ -178,13 +178,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3080   |49.31 |3080     |=          |
+|code      |3078   |49.30 |3078     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |1572   |25.17 |1572     |=          |
+|docstring |1572   |25.18 |1572     |=          |
 +----------+-------+------+---------+-----------+
 |comment   |211    |3.38  |211      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1383   |22.14 |1383     |=          |
+|empty     |1383   |22.15 |1383     |=          |
 +----------+-------+------+---------+-----------+
 
 

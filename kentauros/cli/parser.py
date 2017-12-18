@@ -310,7 +310,8 @@ def add_pkg_parser(parsers: _SubParsersAction,
         "import",
         aliases=["i", "im", "imp", "impo", "impor"],
         description="import packages",
-        help="import packages")
+        help="import packages",
+        parents=[package_parser])
     import_parser.set_defaults(module_action="import")
 
     status_parser: ArgumentParser = pkg_parsers.add_parser(

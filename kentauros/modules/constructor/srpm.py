@@ -766,8 +766,3 @@ class SrpmConstructor(Constructor):
         except OSError:
             logger.err("The Package exports directory couldn't be removed.")
             return ret.submit(False)
-
-    def act(self, action: str) -> KtrResult:
-        actions = {"build": self.execute,
-                   "clean": self.clean}
-        return actions[action]()

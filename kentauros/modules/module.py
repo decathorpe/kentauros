@@ -28,6 +28,7 @@ class KtrModule(metaclass=abc.ABCMeta):
         self.context = context
 
         self.actions = {"clean": self.clean,
+                        "import": self.imports,
                         "status": self.status_string,
                         "verify": self.verify}
 

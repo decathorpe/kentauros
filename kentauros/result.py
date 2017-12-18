@@ -28,8 +28,7 @@ class KtrResult:
         assert isinstance(success, bool)
         self.success = success
 
-        if value is None:
-            self.value = value
+        self.value = value
 
         if messages is None:
             if name is not None:
