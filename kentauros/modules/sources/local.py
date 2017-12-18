@@ -112,6 +112,7 @@ class LocalSource(Source):
         # copy file from origin to destination
         shutil.copy2(self.get_orig(), self.dest)
 
+        ret.state["source_files"] = [os.path.basename(self.get_orig())]
         return ret.submit(True)
 
     def export(self) -> KtrResult:

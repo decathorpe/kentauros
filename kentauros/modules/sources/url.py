@@ -194,6 +194,7 @@ class UrlSource(Source):
         if success:
             self.last_version = self.package.get_version()
 
+        ret.state["source_files"] = [os.path.basename(self.get_orig())]
         return ret.submit(success)
 
     def update(self) -> KtrResult:

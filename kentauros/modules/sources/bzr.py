@@ -557,12 +557,13 @@ class BzrSource(Source):
         version = res.value
 
         name_version = self.package.name + "-" + version
-        file_name = os.path.join(self.sdir, name_version + ".tar.gz")
+        file_name = name_version + ".tar.gz"
+        file_path = os.path.join(self.sdir, file_name)
 
-        cmd.append(file_name)
+        cmd.append(file_path)
 
         # check if file has already been exported
-        if os.path.exists(file_name):
+        if os.path.exists(file_path):
             logger.log("Tarball has already been exported.")
             # remove bzr repo if keep is False
             self._remove_or_keep(logger)
@@ -587,4 +588,5 @@ class BzrSource(Source):
         self._remove_or_keep(logger)
 
         ret.collect(self.status())
+        ret.state["source_files"] = [file_name]
         return ret.submit(True)
