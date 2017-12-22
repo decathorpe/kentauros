@@ -1,19 +1,13 @@
 import configparser as cp
 import os
-import subprocess as sp
+import shutil
 
 from .result import KtrResult
 
 
 class KtrValidator:
     def __init__(self, config: cp.ConfigParser, section: str, keys: list = None,
-                 binaries: list = None, files: list = None, name: str = None):
-
-        if name is None:
-            self.name = section
-        else:
-            assert isinstance(name, str)
-            self.name = name
+                 binaries: list = None, files: list = None):
 
         assert isinstance(config, cp.ConfigParser)
         assert isinstance(section, str)
@@ -46,7 +40,7 @@ class KtrValidator:
         self.files = files
 
     def validate(self) -> KtrResult:
-        ret = KtrResult(name=self.name)
+        ret = KtrResult()
         success = True
 
         # check for expected sections and keys in the config file
@@ -63,10 +57,7 @@ class KtrValidator:
 
         # check for the presence of expected binaries
         for binary in self.binaries:
-            res = sp.run(["which", binary], stdout=sp.PIPE, stderr=sp.STDOUT)
-            try:
-                res.check_returncode()
-            except sp.CalledProcessError:
+            if shutil.which(binary) is None:
                 template = "The required binary '{}' has not been found in $PATH."
                 ret.messages.err(template.format(binary))
                 success = False
