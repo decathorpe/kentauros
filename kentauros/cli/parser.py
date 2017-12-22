@@ -298,6 +298,14 @@ def add_pkg_parser(parsers: _SubParsersAction,
 
     pkg_parsers: _SubParsersAction = pkg_parser.add_subparsers()
 
+    add_parser: ArgumentParser = pkg_parsers.add_parser(
+        "add",
+        aliases=["a", "ad"],
+        description="add package from template",
+        help="add package from template",
+        parents=[package_parser])
+    add_parser.set_defaults(module_action="add")
+
     clean_parser: ArgumentParser = pkg_parsers.add_parser(
         "clean",
         aliases=["c", "cl", "cle", "clea"],
@@ -331,6 +339,18 @@ def add_pkg_parser(parsers: _SubParsersAction,
     verify_parser.set_defaults(module_action="verify")
 
     return pkg_parser
+
+
+def add_init_parser(parsers: _SubParsersAction) -> ArgumentParser:
+
+    init_parser: ArgumentParser = parsers.add_parser(
+        "init",
+        aliases=["i", "in", "ini"],
+        description="initialize empty kentauros project from template files",
+        help="initialize empty kentauros project")
+    init_parser.set_defaults(module=PkgModuleType.INIT)
+
+    return init_parser
 
 
 def get_cli_parser() -> ArgumentParser:
@@ -389,6 +409,7 @@ def get_cli_parser() -> ArgumentParser:
         default=False,
         help="force actions, even if no updates were available")
 
+    add_init_parser(parsers)
     add_pkg_parser(parsers, package_parser)
     add_source_parser(parsers, package_parser)
     add_constructor_parser(parsers, package_parser)

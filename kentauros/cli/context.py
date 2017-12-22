@@ -28,7 +28,9 @@ class KtrCLIContext(KtrContext):
         cli_parser = get_cli_parser()
 
         ac.autocomplete(cli_parser)
-        self.args = cli_parser.parse_args()
+
+        self.parsed_args = cli_parser.parse_args()
+        self.args = vars(self.parsed_args)
 
         # initialise fallback values
         basedir = os.getcwd()
@@ -41,30 +43,23 @@ class KtrCLIContext(KtrContext):
                 conf = cp.ConfigParser()
                 conf.read(conf_path)
                 path = conf.get("main", "basedir")
-
-                if os.path.isabs(path):
-                    basedir = path
-                else:
-                    basedir = os.path.join(os.getcwd(), path)
+                basedir = os.path.abspath(path)
             except cp.Error:
                 basedir = os.getcwd()
 
         # CLI argument --basedir was specified
-        if self.args.basedir != "":
-            if os.path.isabs(self.args.basedir):
-                basedir = self.args.basedir
-            else:
-                basedir = os.path.join(os.getcwd(), self.args.basedir)
+        if "basedir" in self.args and self.args.get("basedir") != "":
+            basedir = os.path.abspath(self.args.get("basedir"))
             conf_path = os.path.join(basedir, "kentauros")
 
         super().__init__(basedir, conf_path)
 
-        self.debug_flag = self.args.debug
-        self.warning_flag = self.args.warnings
+        self.debug_flag = self.args.get("debug")
+        self.warning_flag = self.args.get("warnings")
 
     def get_argument(self, key: str):
-        if key in vars(self.args).keys():
-            return vars(self.args)[key]
+        if key in self.args:
+            return self.args.get(key)
         else:
             return None
 
@@ -75,13 +70,13 @@ class KtrCLIContext(KtrContext):
         return self.warning_flag or os.getenv("KTR_WARNINGS", False)
 
     def get_module(self) -> PkgModuleType:
-        return self.args.module
+        return self.args.get("module")
 
     def get_module_action(self) -> str:
-        return self.args.module_action
+        return self.args.get("module_action")
 
     def get_packages(self) -> list:
-        if self.args.packages_all:
+        if self.args.get("packages_all"):
             pkg_conf_paths = glob.glob(os.path.join(self.get_confdir(), "*.conf"))
 
             packages = list()
@@ -90,7 +85,7 @@ class KtrCLIContext(KtrContext):
             packages.sort()
             return packages
         else:
-            return self.args.package
+            return self.args.get("package")
 
     def get_basedir(self) -> str:
         return self.basedir

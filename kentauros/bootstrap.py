@@ -7,10 +7,10 @@ determine which directories those should be.
 import os
 
 from .context import KtrContext
-from .logcollector import LogCollector
+from .result import KtrResult
 
 
-def ktr_mkdirp(path: str, logger: LogCollector) -> bool:
+def ktr_mkdirp(path: str) -> KtrResult:
     """
     This function checks for directory existence and the ability to write to it. If the directory
     does not exist, it will be created.
@@ -22,23 +22,25 @@ def ktr_mkdirp(path: str, logger: LogCollector) -> bool:
         bool:       success (or not)
     """
 
+    ret = KtrResult(name="bootstrap")
+
     if os.path.exists(path):
         if os.access(path, os.W_OK):
-            return True
+            return ret.submit(True)
         else:
-            logger.err(path + " can't be written to.")
-            return False
+            ret.messages.err(path + " can't be written to.")
+            return ret.submit(False)
     else:
-        logger.log(path + " directory doesn't exist and will be created.")
+        ret.messages.log(path + " directory doesn't exist and will be created.")
         try:
             os.makedirs(path)
         except OSError:
-            logger.err(path + " directory could not be created.")
-            return False
-        return True
+            ret.messages.err(path + " directory could not be created.")
+            return ret.submit(False)
+        return ret.submit(True)
 
 
-def ktr_bootstrap(context: KtrContext, logger: LogCollector) -> bool:
+def ktr_bootstrap(context: KtrContext) -> KtrResult:
     """
     This function has to be called before any other actions are attempted on packages. It ensures
     that the required directory structure is present. If it fails, kentauros execution will be
@@ -48,9 +50,15 @@ def ktr_bootstrap(context: KtrContext, logger: LogCollector) -> bool:
         bool:       success (or not)
     """
 
+    ret = KtrResult(name="bootstrap")
+
     for path in [context.get_basedir(), context.get_confdir(), context.get_datadir(),
                  context.get_expodir(), context.get_packdir(), context.get_specdir()]:
-        if not ktr_mkdirp(path, logger):
-            return False
 
-    return True
+        res = ktr_mkdirp(path)
+        ret.collect(res)
+
+        if not res.success:
+            return ret.submit(False)
+
+    return ret.submit(True)
