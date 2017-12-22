@@ -27,3 +27,6 @@ def get_constructor(ctype: ConstructorType, package: KtrPackage,
     constructor_dict[ConstructorType.SRPM] = SrpmConstructor
 
     return constructor_dict[ctype](package, context)
+
+
+__all__ = ["get_constructor"]

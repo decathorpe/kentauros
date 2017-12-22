@@ -334,7 +334,8 @@ class SrpmConstructor(Constructor):
                     ret.messages.log("The source is neither a directory or a file, skipping.")
                     continue
 
-                ret.state["source_files"] = sources.remove(file)
+                sources.remove(file)
+                ret.state["source_files"] = sources
 
         return ret.submit(True)
 
@@ -640,7 +641,7 @@ class SrpmConstructor(Constructor):
         else:
             # if source module is defined check if sources are present
             if not self._check_source_presence(ret.messages):
-                return KtrResult(False, ret.messages)
+                return ret.submit(False)
 
         # copy sources to rpmbuild/SOURCES
         if self.stype is not None:

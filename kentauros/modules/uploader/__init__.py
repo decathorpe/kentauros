@@ -23,3 +23,6 @@ def get_uploader(utype: UploaderType, package: KtrPackage, context: KtrContext) 
     uploader_dict[UploaderType.COPR] = CoprUploader
 
     return uploader_dict[utype](package, context)
+
+
+__all__ = ["get_uploader"]

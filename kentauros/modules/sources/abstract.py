@@ -110,7 +110,7 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
         except AssertionError as error:
             ret.messages.log("Source directory looked suspicious, not recursively deleting. Error:")
             ret.messages.log(str(error))
-            ret.submit(False)
+            return ret.submit(False)
 
         # remove source destination first
 

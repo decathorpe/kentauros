@@ -30,3 +30,6 @@ def get_source(stype: SourceType, package: KtrPackage, context: KtrContext) -> S
     source_dict[SourceType.URL] = UrlSource
 
     return source_dict[stype](package, context)
+
+
+__all__ = ["get_source"]

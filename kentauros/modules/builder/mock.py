@@ -101,7 +101,7 @@ def get_mock_cmd() -> str:
         str:    path to the mock binary
     """
 
-    mock_cmd = subprocess.check_output(["which", "mock"]).decode().rstrip("\n")
+    mock_cmd = shutil.which("mock")
 
     # check if the right binary is used or if something is messing up $PATH
     if mock_cmd == "/usr/sbin/mock":

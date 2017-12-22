@@ -277,3 +277,6 @@ def do_release_bump(path: str, context: KtrContext, comment: str = None) -> KtrR
     success = (res.returncode == 0)
 
     return ret.submit(success)
+
+
+__all__ = ["parse_release", "RPMSpec", "do_release_bump"]

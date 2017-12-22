@@ -61,3 +61,6 @@ def get_module(mtype: PkgModuleType, mimpl: str, pkg: KtrPackage,
     pkg_module = _get_pkg_module(mtype, pkg_module_type, pkg, context)
 
     return pkg_module
+
+
+__all__ = ["get_module"]

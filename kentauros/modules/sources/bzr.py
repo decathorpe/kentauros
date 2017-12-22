@@ -179,7 +179,7 @@ class BzrSource(Source):
             ret.messages.log("Bzr command did not execute successfully. No revision date obtained.")
             ret.messages.err("Assuming 'now' as fallback date/time.")
             ret.value = datetime.datetime.now().astimezone(datetime.timezone.utc)
-            ret.submit(False)
+            return ret.submit(False)
 
         for line in res.value:
             if line[0:6] == "date: ":

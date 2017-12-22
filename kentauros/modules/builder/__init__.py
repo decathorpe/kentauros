@@ -26,3 +26,6 @@ def get_builder(btype: BuilderType, package: KtrPackage, context: KtrContext) ->
     builder_dict[BuilderType.MOCK] = MockBuilder
 
     return builder_dict[btype](package, context)
+
+
+__all__ = ["get_builder"]

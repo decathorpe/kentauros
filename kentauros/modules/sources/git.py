@@ -94,11 +94,9 @@ class GitSource(Source):
             ret.messages.err(
                 "Shallow clones are not compatible with specifying a specific ref.")
 
-            success = False
-        else:
-            success = True
+            return ret.submit(False)
 
-        return ret.submit(ret.success and success)
+        return ret
 
     def get_keep(self) -> bool:
         """
@@ -193,12 +191,11 @@ class GitSource(Source):
         ret = KtrResult(name=self.name())
 
         res = self.datetime()
+        ret.collect(res)
 
         if not res.success:
-            return ret.submit(False)
+            return ret
         dt = res.value
-
-        ret.collect(res)
 
         template = "{:04d}{:02d}{:02d} {:02d}{:02d}{:02d}"
         string = template.format(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
@@ -206,7 +203,7 @@ class GitSource(Source):
         ret.value = string
         ret.state["git_last_date"] = string
 
-        return ret.submit(res.success)
+        return ret
 
     def date(self) -> KtrResult:
         ret = KtrResult(name=self.name())
@@ -217,9 +214,8 @@ class GitSource(Source):
         if res.success:
             dt = res.value
             ret.value = "{:04d}{:02d}{:02d}".format(dt.year, dt.month, dt.day)
-            return ret.submit(True)
-        else:
-            return ret.submit(False)
+
+        return ret
 
     def time(self) -> KtrResult:
         ret = KtrResult(name=self.name())
@@ -230,9 +226,8 @@ class GitSource(Source):
         if res.success:
             dt = res.value
             ret.value = "{:02d}{:02d}{:02d}".format(dt.hour, dt.minute, dt.second)
-            return ret.submit(True)
-        else:
-            return ret.submit(False)
+
+        return ret
 
     def commit(self) -> KtrResult:
         """
@@ -251,13 +246,13 @@ class GitSource(Source):
 
             if self.saved_commit is not None:
                 ret.value = self.saved_commit
-                return ret.submit(True)
+                return ret
 
             elif (state is not None) and \
                     ("git_last_commit" in state) and \
                     (state["git_last_commit"] != ""):
                 ret.value = state["git_last_commit"]
-                return ret.submit(True)
+                return ret
 
             else:
                 ret.messages.err("Sources must be present to determine the revision.")
@@ -268,7 +263,7 @@ class GitSource(Source):
 
         ret.value = commit
         ret.state["git_last_commit"] = commit
-        return ret.submit(True)
+        return ret
 
     def status(self) -> KtrResult:
         """
@@ -293,8 +288,7 @@ class GitSource(Source):
 
         ret.state["git_ref"] = self.get_ref()
 
-        success = dt.success and commit.success and version_format.success
-        return ret.submit(success)
+        return ret
 
     def status_string(self) -> KtrResult:
         ret = KtrResult(name=self.name())
@@ -325,7 +319,7 @@ class GitSource(Source):
             template = template.format(commit_date="Unavailable")
 
         ret.value = template
-        return ret.submit(True)
+        return ret
 
     def imports(self) -> KtrResult:
         if os.path.exists(self.dest):
@@ -346,7 +340,6 @@ class GitSource(Source):
         """
 
         ret = KtrResult(name=self.name())
-        success = True
 
         fallback_template = "%{version}%{version_sep}%{date}.%{time}.git%{shortcommit}"
 
@@ -371,8 +364,6 @@ class GitSource(Source):
 
             if res.success:
                 template = template.replace("%{date}", res.value)
-            else:
-                success = False
 
         if "%{time}" in template:
             res = self.time()
@@ -380,8 +371,6 @@ class GitSource(Source):
 
             if res.success:
                 template = template.replace("%{time}", res.value)
-            else:
-                success = False
 
         # determine commit hash and shortcommit
         res = self.commit()
@@ -391,7 +380,7 @@ class GitSource(Source):
             commit = res.value
         else:
             ret.messages.log("Commit hash string could not be determined successfully.")
-            return ret.submit(False)
+            return ret
 
         if "%{commit}" in template:
             template = template.replace("%{revision}", commit)
@@ -405,7 +394,7 @@ class GitSource(Source):
 
         ret.value = template
         ret.state["version_format"] = template
-        return ret.submit(success)
+        return ret
 
     def _checkout(self, ref: str = None) -> KtrResult():
         ret = KtrResult(name=self.name())
@@ -420,12 +409,12 @@ class GitSource(Source):
         # checkout commit
         ret.messages.cmd(cmd_checkout)
         res = GitCommand(self.dest, *cmd_checkout).execute()
+        ret.collect(res)
 
         if not res.success:
             ret.messages.log("Checking out the specified ref ({}) wasn't successful.".format(ref))
-            return ret.submit(False)
-        else:
-            return ret.submit(True)
+
+        return ret
 
     def get(self) -> KtrResult:
         """
@@ -450,7 +439,7 @@ class GitSource(Source):
             if res.success:
                 ret.messages.log("Sources already downloaded. Latest commit id:")
                 ret.messages.log(res.value)
-                return ret.submit(False)
+                return ret
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
@@ -477,10 +466,11 @@ class GitSource(Source):
         # clone git repo from origin to destination
         ret.messages.cmd(cmd_clone)
         res = GitCommand(".", *cmd_clone).execute()
+        ret.collect(res)
 
         if not res.success:
             ret.messages.log("Cloning the git source repository wasn't successful.")
-            ret.submit(False)
+            return ret
 
         # check out the specified ref (if it's master, nothing happens)
         res = self._checkout()
@@ -488,7 +478,7 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.log("The specified ref could not be checked out successfully.")
-            ret.submit(False)
+            return ret
 
         # get commit ID
         res = self.commit()
@@ -496,7 +486,7 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.err("Commit hash could not be determined successfully.")
-            return ret.submit(False)
+            return ret
 
         # get commit date/time
         res = self.date()
@@ -504,11 +494,11 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.err("Commit date/time not be determined successfully.")
-            return ret.submit(False)
+            return ret
 
-        # return True if successful
+        # everything eas successful
         ret.collect(self.status())
-        return ret.submit(True)
+        return ret
 
     def update(self) -> KtrResult:
         """
@@ -547,7 +537,7 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.err("Commit hash could not be determined successfully.")
-            return ret.submit(False)
+            return ret
         rev_old = res.value
 
         # check out master before doing updates, just to be sure
@@ -556,15 +546,16 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.log("The master branch could not be checked out successfully.")
-            ret.submit(False)
+            return ret
 
         # get updates
         ret.messages.cmd(cmd)
         res = GitCommand(self.dest, *cmd).execute()
+        ret.collect(res)
 
         if not res.success:
             ret.messages.err("Pulling from remote git repository wasn't successful.")
-            return ret.submit(False)
+            return ret
 
         # check out specified ref again
         res = self._checkout()
@@ -572,7 +563,7 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.log("The specified ref could not be checked out successfully.")
-            ret.submit(False)
+            return ret
 
         # get new commit ID
         res = self.commit()
@@ -580,7 +571,7 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.err("Commit hash could not be determined successfully.")
-            return ret.submit(False)
+            return ret
         rev_new = res.value
 
         # get new commit date/time
@@ -589,7 +580,7 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.err("Commit date/time not be determined successfully.")
-            return ret.submit(False)
+            return ret
 
         # return True if update found, False if not
         updated = rev_new != rev_old
@@ -635,7 +626,7 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.err("Version could not be formatted successfully.")
-            return ret.submit(False)
+            return ret
         version = res.value
 
         name_version = self.package.name + "-" + version
@@ -659,10 +650,11 @@ class GitSource(Source):
         # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
         ret.messages.cmd(cmd)
         res = GitCommand(self.dest, *cmd).execute()
+        ret.collect(res)
 
         if not res.success:
             ret.messages.err("Source tarball could not be created from repository successfully.")
-            return ret.submit(False)
+            return ret
 
         # update saved commit ID
         res = self.commit()
@@ -670,7 +662,7 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.err("Commit hash could not be determined successfully.")
-            return ret.submit(False)
+            return ret
 
         # update saved commit date/time
         res = self.date()
@@ -678,11 +670,11 @@ class GitSource(Source):
 
         if not res.success:
             ret.messages.err("Commit date/time not be determined successfully.")
-            return ret.submit(False)
+            return ret
 
         # remove git repo if keep is False
         self._remove_not_keep(ret.messages)
 
         ret.collect(self.status())
         ret.state["source_files"] = [file_name]
-        return ret.submit(True)
+        return ret
