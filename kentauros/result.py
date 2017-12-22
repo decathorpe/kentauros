@@ -19,7 +19,7 @@ class KtrResult:
     """
 
     def __init__(self,
-                 success: bool = False,
+                 success: bool = True,
                  value=None,
                  messages: LogCollector = None,
                  state: dict = None,
@@ -49,11 +49,13 @@ class KtrResult:
     def collect(self, result: 'KtrResult'):
         """
         This method collects log messages and accumulated global state changes from another result.
-        It does *not* set the `success` flag or return value, however.
+        It does *not* set the return value, however.
 
         Arguments:
             KtrResult result:   result to merge into this instance
         """
+
+        self.success = self.success and result.success
 
         self.messages.merge(result.messages)
 
