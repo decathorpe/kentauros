@@ -14,7 +14,6 @@ from ...context import KtrContext
 from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
-from ...shellcmd import ShellCommand
 from ...validator import KtrValidator
 
 from .abstract import Source
@@ -22,18 +21,6 @@ from .gitrepo import GitRepo
 
 
 FALLBACK_TEMPLATE = "%{version}%{version_sep}%{date}.%{time}.git%{shortcommit}"
-
-
-class GitCommand(ShellCommand):
-    NAME = "Bzr Command"
-
-    def __init__(self, path: str, *args, git=None):
-        if git is None:
-            self.exec = "git"
-        else:
-            self.exec = git
-
-        super().__init__(path, self.exec, *args)
 
 
 class GitSource(Source):
