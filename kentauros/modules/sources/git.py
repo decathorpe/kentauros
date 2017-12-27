@@ -21,6 +21,9 @@ from .abstract import Source
 from .gitrepo import GitRepo
 
 
+FALLBACK_TEMPLATE = "%{version}%{version_sep}%{date}.%{time}.git%{shortcommit}"
+
+
 class GitCommand(ShellCommand):
     NAME = "Bzr Command"
 
@@ -138,7 +141,7 @@ class GitSource(Source):
         else:
             return ref
 
-    def _get_commit(self) -> str:
+    def _get_commit(self) -> KtrResult:
         repo = GitRepo(self.dest)
         return repo.get_commit(self.get_ref())
 
@@ -255,7 +258,13 @@ class GitSource(Source):
                 ret.messages.err("Sources must be present to determine the revision.")
                 return ret.submit(False)
 
-        commit = self._get_commit()
+        res = self._get_commit()
+        ret.collect(res)
+
+        if not res.success:
+            return ret.submit(False)
+        commit = res.value
+
         self.saved_commit = commit
 
         ret.value = commit
@@ -338,16 +347,14 @@ class GitSource(Source):
 
         ret = KtrResult(name=self.name())
 
-        fallback_template = "%{version}%{version_sep}%{date}.%{time}.git%{shortcommit}"
-
         try:
             template: str = self.context.conf.get("main", "version_template_git")
         except cp.ParsingError:
-            template = fallback_template
+            template = FALLBACK_TEMPLATE
         except cp.NoSectionError:
-            template = fallback_template
+            template = FALLBACK_TEMPLATE
         except cp.NoOptionError:
-            template = fallback_template
+            template = FALLBACK_TEMPLATE
 
         if "%{version}" in template:
             template = template.replace("%{version}", self.package.get_version())
@@ -394,24 +401,11 @@ class GitSource(Source):
         return ret
 
     def _checkout(self, ref: str = None) -> KtrResult():
-        ret = KtrResult(name=self.name())
-
         if ref is None:
             ref = self.get_ref()
 
-        # check out the specified ref (if it's master, nothing happens)
-        # construct checkout command
-        cmd_checkout = ["checkout", ref]
-
-        # checkout commit
-        ret.messages.cmd(cmd_checkout)
-        res = GitCommand(self.dest, *cmd_checkout).execute()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.log("Checking out the specified ref ({}) wasn't successful.".format(ref))
-
-        return ret
+        repo = GitRepo(self.dest)
+        return repo.checkout(ref)
 
     def get(self) -> KtrResult:
         """
@@ -443,34 +437,11 @@ class GitSource(Source):
             ret.messages.log("No connection to remote host detected. Cancelling source checkout.")
             return ret.submit(False)
 
-        # FIXME: This would be better, but there's no error handling
-        # repo = GitRepo.clone(self.get_orig(), self.dest, self.get_shallow())
-
-        # construct clone command
-        cmd_clone = ["clone"]
-
-        # add --verbose or --quiet depending on settings
-        if self.context.debug():
-            cmd_clone.append("--verbose")
-        else:
-            cmd_clone.append("--quiet")
-
-        # set --depth==1 if shallow is specified
-        if self.get_shallow():
-            cmd_clone.append("--depth=1")
-
-        # set origin and destination
-        cmd_clone.append(self.get_orig())
-        cmd_clone.append(self.dest)
-
-        # clone git repo from origin to destination
-        ret.messages.cmd(cmd_clone)
-        res = GitCommand(".", *cmd_clone).execute()
+        res = GitRepo.clone(self.dest, self.get_orig(), self.get_ref(), self.get_shallow())
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Cloning the git source repository wasn't successful.")
-            return ret
+            return ret.submit(False)
 
         # check out the specified ref (if it's master, nothing happens)
         res = self._checkout()
@@ -517,24 +488,6 @@ class GitSource(Source):
             ret.messages.log("No connection to remote host detected. Cancelling source update.")
             return ret.submit(False)
 
-        # FIXME: this would be better, but there's no error handling yet
-        # repo = GitRepo(self.dest)
-        # repo.pull(self.get_ref())
-
-        # construct git command
-        cmd = ["pull", "--rebase", "--all"]
-
-        # add --verbose or --quiet depending on settings
-        if self.context.debug():
-            cmd.append("--verbose")
-        else:
-            cmd.append("--quiet")
-
-        # check if source directory exists before going there
-        if not os.access(self.dest, os.W_OK):
-            ret.messages.err("Sources need to be get before an update can be run.")
-            return ret.submit(False)
-
         # get old commit ID
         res = self.commit()
         ret.collect(res)
@@ -544,30 +497,13 @@ class GitSource(Source):
             return ret
         rev_old = res.value
 
-        # check out master before doing updates, just to be sure
-        res = self._checkout("master")
+        # pull updates
+        repo = GitRepo(self.dest)
+        res = repo.pull(True, True, self.get_ref())
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("The master branch could not be checked out successfully.")
-            return ret
-
-        # get updates
-        ret.messages.cmd(cmd)
-        res = GitCommand(self.dest, *cmd).execute()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.err("Pulling from remote git repository wasn't successful.")
-            return ret
-
-        # check out specified ref again
-        res = self._checkout()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.log("The specified ref could not be checked out successfully.")
-            return ret
+            return ret.submit(False)
 
         # get new commit ID
         res = self.commit()
@@ -615,14 +551,7 @@ class GitSource(Source):
             bool:   *True* if successful or already done, *False* at failure
         """
 
-        # FIXME: this would be better, but there's no error handling yet
-        # repo = GitRepo(self.dest)
-        # repo.export(self.get_ref())
-
         ret = KtrResult(name=self.name())
-
-        # construct git command to export the specified ref
-        cmd = ["archive", self.get_ref()]
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
@@ -638,15 +567,9 @@ class GitSource(Source):
         version = res.value
 
         name_version = self.package.name + "-" + version
-
-        # add prefix
-        cmd.append("--prefix=" + name_version + "/")
-
+        prefix = name_version + "/"
         file_name = name_version + ".tar.gz"
         file_path = os.path.join(self.sdir, file_name)
-
-        cmd.append("--output")
-        cmd.append(file_path)
 
         # check if file has already been exported
         if os.path.exists(file_path):
@@ -655,14 +578,12 @@ class GitSource(Source):
             self._remove_not_keep(ret.messages)
             return ret.submit(True)
 
-        # export tar.gz to $KTR_DATA_DIR/$PACKAGE/*.tar.gz
-        ret.messages.cmd(cmd)
-        res = GitCommand(self.dest, *cmd).execute()
+        repo = GitRepo(self.dest)
+        res = repo.export(prefix, file_path, self.get_ref())
         ret.collect(res)
 
         if not res.success:
-            ret.messages.err("Source tarball could not be created from repository successfully.")
-            return ret
+            return ret.submit(False)
 
         # update saved commit ID
         res = self.commit()

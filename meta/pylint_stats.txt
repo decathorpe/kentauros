@@ -32,21 +32,6 @@ C:  8, 0: Missing class docstring (missing-docstring)
 C:283, 4: Missing method docstring (missing-docstring)
 C:291, 4: Missing method docstring (missing-docstring)
 C:299, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.modules.sources.git
-W:446, 0: FIXME: This would be better, but there's no error handling (fixme)
-W:520, 0: FIXME: this would be better, but there's no error handling yet (fixme)
-W:618, 0: FIXME: this would be better, but there's no error handling yet (fixme)
-C: 24, 0: Missing class docstring (missing-docstring)
-C:141, 4: Missing method docstring (missing-docstring)
-C:153, 4: Missing method docstring (missing-docstring)
-C:187, 4: Missing method docstring (missing-docstring)
-C:205, 4: Missing method docstring (missing-docstring)
-C:217, 4: Missing method docstring (missing-docstring)
-R:329, 4: Too many statements (41/40) (too-many-statements)
-C:396, 4: Missing method docstring (missing-docstring)
-R:416, 4: Too many return statements (7/6) (too-many-return-statements)
-R:503, 4: Too many return statements (9/6) (too-many-return-statements)
-R:608, 4: Too many return statements (7/6) (too-many-return-statements)
 ************* Module kentauros.modules.sources.bzr
 C: 23, 0: Missing class docstring (missing-docstring)
 C:172, 4: Missing method docstring (missing-docstring)
@@ -60,14 +45,24 @@ C:  1, 0: Missing module docstring (missing-docstring)
 C: 10, 0: Missing class docstring (missing-docstring)
 C: 22, 0: Missing class docstring (missing-docstring)
 C: 34, 4: Missing method docstring (missing-docstring)
-C: 49, 4: Missing method docstring (missing-docstring)
-C: 71, 4: Missing method docstring (missing-docstring)
-C: 79, 4: Missing method docstring (missing-docstring)
-C: 87, 4: Missing method docstring (missing-docstring)
-C: 95, 4: Missing method docstring (missing-docstring)
-C:101, 4: Missing method docstring (missing-docstring)
+C: 50, 4: Missing method docstring (missing-docstring)
+C: 73, 4: Missing method docstring (missing-docstring)
+C: 91, 4: Missing method docstring (missing-docstring)
 C:109, 4: Missing method docstring (missing-docstring)
-C:119, 4: Missing method docstring (missing-docstring)
+C:127, 4: Missing method docstring (missing-docstring)
+C:135, 4: Missing method docstring (missing-docstring)
+C:164, 4: Missing method docstring (missing-docstring)
+C:174, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.modules.sources.git
+C: 27, 0: Missing class docstring (missing-docstring)
+C:144, 4: Missing method docstring (missing-docstring)
+C:156, 4: Missing method docstring (missing-docstring)
+C:190, 4: Missing method docstring (missing-docstring)
+C:208, 4: Missing method docstring (missing-docstring)
+C:220, 4: Missing method docstring (missing-docstring)
+C:403, 4: Missing method docstring (missing-docstring)
+R:410, 4: Too many return statements (7/6) (too-many-return-statements)
+R:544, 4: Too many return statements (7/6) (too-many-return-statements)
 ************* Module kentauros.cli
 C:  1, 0: Missing module docstring (missing-docstring)
 ************* Module kentauros.cli.context
@@ -118,7 +113,7 @@ C:110, 4: Missing method docstring (missing-docstring)
 
 Report
 ======
-2736 statements analysed.
+2745 statements analysed.
 
 Statistics by type
 ------------------
@@ -185,13 +180,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3136   |49.67 |3136     |=          |
+|code      |3137   |49.83 |3137     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |1524   |24.14 |1524     |=          |
+|docstring |1523   |24.19 |1523     |=          |
 +----------+-------+------+---------+-----------+
-|comment   |212    |3.36  |212      |=          |
+|comment   |188    |2.99  |188      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1442   |22.84 |1442     |=          |
+|empty     |1448   |23.00 |1448     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -217,9 +212,9 @@ Messages by category
 +===========+=======+=========+===========+
 |convention |85     |85       |=          |
 +-----------+-------+---------+-----------+
-|refactor   |6      |6        |=          |
+|refactor   |4      |4        |=          |
 +-----------+-------+---------+-----------+
-|warning    |3      |3        |=          |
+|warning    |0      |0        |=          |
 +-----------+-------+---------+-----------+
 |error      |0      |0        |=          |
 +-----------+-------+---------+-----------+
@@ -232,9 +227,9 @@ Messages by category
 +-----------------------------------+------+--------+---------+-----------+
 |module                             |error |warning |refactor |convention |
 +===================================+======+========+=========+===========+
-|kentauros.modules.sources.git      |0.00  |100.00  |66.67    |8.24       |
+|kentauros.modules.sources.git      |0.00  |0.00    |50.00    |8.24       |
 +-----------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.bzr      |0.00  |0.00    |33.33    |5.88       |
+|kentauros.modules.sources.bzr      |0.00  |0.00    |50.00    |5.88       |
 +-----------------------------------+------+--------+---------+-----------+
 |kentauros.modules.sources.gitrepo  |0.00  |0.00    |0.00     |14.12      |
 +-----------------------------------+------+--------+---------+-----------+
@@ -287,16 +282,14 @@ Messages
 +===========================+============+
 |missing-docstring          |85          |
 +---------------------------+------------+
-|too-many-return-statements |4           |
+|too-many-return-statements |3           |
 +---------------------------+------------+
-|fixme                      |3           |
-+---------------------------+------------+
-|too-many-statements        |2           |
+|too-many-statements        |1           |
 +---------------------------+------------+
 
 
 
 
 ------------------------------------------------------------------
-Your code has been rated at 9.66/10 (previous run: 9.66/10, +0.00)
+Your code has been rated at 9.68/10 (previous run: 9.68/10, +0.00)
 
