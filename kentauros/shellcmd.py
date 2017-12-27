@@ -19,9 +19,9 @@ class ShellCommand:
         cmd.extend(self.args)
 
         cwd = os.getcwd()
-        os.chdir(self.path)
 
         try:
+            os.chdir(self.path)
             logger.cmd(cmd)
             ret: sp.CompletedProcess = sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
         finally:
@@ -30,7 +30,8 @@ class ShellCommand:
         if ret.returncode != 0:
             logger.err("The command did not quit with return code 0 ({}), indicating an error."
                        .format(ret.returncode))
-            return KtrResult(False, messages=logger)
+            out = ret.stdout.decode().rstrip("\n")
+            return KtrResult(False, value=out, messages=logger)
         else:
             out = ret.stdout.decode().rstrip("\n")
-            return KtrResult(True, out, logger)
+            return KtrResult(True, value=out, messages=logger)
