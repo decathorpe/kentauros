@@ -4,7 +4,6 @@ file.
 """
 
 from ....context import KtrContext
-from ....definitions import SourceType
 from ....package import KtrPackage
 
 
@@ -98,7 +97,7 @@ SPEC_VERSION_DICT = dict()
 generator functions.
 """
 
-SPEC_VERSION_DICT[SourceType.BZR] = spec_version_bzr
-SPEC_VERSION_DICT[SourceType.GIT] = spec_version_git
-SPEC_VERSION_DICT[SourceType.LOCAL] = spec_version_local
-SPEC_VERSION_DICT[SourceType.URL] = spec_version_url
+SPEC_VERSION_DICT["bzr"] = spec_version_bzr
+SPEC_VERSION_DICT["git"] = spec_version_git
+SPEC_VERSION_DICT["local"] = spec_version_local
+SPEC_VERSION_DICT["url"] = spec_version_url

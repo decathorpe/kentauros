@@ -5,7 +5,6 @@ import os
 import argcomplete as ac
 
 from ..context import KtrContext
-from ..definitions import PkgModuleType
 
 from .parser import get_cli_parser
 
@@ -69,7 +68,7 @@ class KtrCLIContext(KtrContext):
     def warnings(self) -> bool:
         return self.warning_flag or os.getenv("KTR_WARNINGS", False)
 
-    def get_module(self) -> PkgModuleType:
+    def get_module(self) -> str:
         return self.args.get("module")
 
     def get_module_action(self) -> str:

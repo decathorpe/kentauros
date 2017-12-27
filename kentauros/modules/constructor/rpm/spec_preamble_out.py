@@ -4,7 +4,6 @@ file, which depend on the type of source that is used.
 """
 
 from ....context import KtrContext
-from ....definitions import SourceType
 from ....package import KtrPackage
 from ....result import KtrResult
 
@@ -118,7 +117,7 @@ SPEC_PREAMBLE_DICT = dict()
 functions.
 """
 
-SPEC_PREAMBLE_DICT[SourceType.BZR] = spec_preamble_bzr
-SPEC_PREAMBLE_DICT[SourceType.GIT] = spec_preamble_git
-SPEC_PREAMBLE_DICT[SourceType.LOCAL] = spec_preamble_local
-SPEC_PREAMBLE_DICT[SourceType.URL] = spec_preamble_url
+SPEC_PREAMBLE_DICT["bzr"] = spec_preamble_bzr
+SPEC_PREAMBLE_DICT["git"] = spec_preamble_git
+SPEC_PREAMBLE_DICT["local"] = spec_preamble_local
+SPEC_PREAMBLE_DICT["url"] = spec_preamble_url

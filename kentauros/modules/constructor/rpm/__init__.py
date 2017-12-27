@@ -7,7 +7,6 @@ import os
 import subprocess
 
 from ....context import KtrContext
-from ....definitions import SourceType
 from ....package import KtrPackage
 from ....result import KtrResult
 
@@ -79,7 +78,7 @@ class RPMSpec:
         self.context = context
 
         try:
-            self.stype = SourceType[self.package.conf.get("modules", "source").upper()]
+            self.stype = self.package.conf.get("modules", "source")
         except cp.NoSectionError:
             self.stype = None
         except cp.NoOptionError:

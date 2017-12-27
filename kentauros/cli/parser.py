@@ -4,8 +4,6 @@ import os
 
 from argparse import ArgumentParser, _SubParsersAction
 
-from ..definitions import PkgModuleType
-
 
 # pylint: disable=unused-argument
 # noinspection PyUnusedLocal
@@ -51,7 +49,7 @@ def add_source_parser(parsers: _SubParsersAction,
         aliases=["s", "so", "sou", "sour", "sourc", "src"],
         description="interact with the package's sources",
         help="interact with sources")
-    source_parser.set_defaults(module=PkgModuleType.SOURCE)
+    source_parser.set_defaults(module="source")
 
     source_parsers: _SubParsersAction = source_parser.add_subparsers()
 
@@ -130,7 +128,7 @@ def add_constructor_parser(parsers: _SubParsersAction,
         aliases=["c", "co", "con", "cons", "const", "constr", "constru", "construc"],
         description="interact with the package's source package",
         help="interact with source packages")
-    constructor_parser.set_defaults(module=PkgModuleType.CONSTRUCTOR)
+    constructor_parser.set_defaults(module="constructor")
 
     constructor_parsers: _SubParsersAction = constructor_parser.add_subparsers()
 
@@ -192,7 +190,7 @@ def add_builder_parser(parsers: _SubParsersAction,
         aliases=["b", "bu", "bui", "buil", "build", "builde"],
         description="interact with the package's binary packages",
         help="interact with binary packages")
-    builder_parser.set_defaults(module=PkgModuleType.BUILDER)
+    builder_parser.set_defaults(module="builder")
 
     builder_parsers: _SubParsersAction = builder_parser.add_subparsers()
 
@@ -247,7 +245,7 @@ def add_uploader_parser(parsers: _SubParsersAction,
         aliases=["u", "up", "upl", "uplo", "uploa"],
         description="interact with a package's uploads",
         help="interact with package uploads")
-    uploader_parser.set_defaults(module=PkgModuleType.UPLOADER)
+    uploader_parser.set_defaults(module="uploader")
 
     uploader_parsers: _SubParsersAction = uploader_parser.add_subparsers()
 
@@ -294,7 +292,7 @@ def add_pkg_parser(parsers: _SubParsersAction,
         aliases=["p", "pa", "pac", "pack", "packa", "packag"],
         description="interact with packages",
         help="interact with packages")
-    pkg_parser.set_defaults(module=PkgModuleType.PACKAGE)
+    pkg_parser.set_defaults(module="package")
 
     pkg_parsers: _SubParsersAction = pkg_parser.add_subparsers()
 
@@ -348,7 +346,7 @@ def add_init_parser(parsers: _SubParsersAction) -> ArgumentParser:
         aliases=["i", "in", "ini"],
         description="initialize empty kentauros project from template files",
         help="initialize empty kentauros project")
-    init_parser.set_defaults(module=PkgModuleType.INIT)
+    init_parser.set_defaults(module="init")
 
     return init_parser
 

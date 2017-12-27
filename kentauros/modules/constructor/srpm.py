@@ -12,7 +12,6 @@ import subprocess
 import tempfile
 
 from ...context import KtrContext
-from ...definitions import SourceType
 from ...result import KtrResult
 from ...logcollector import LogCollector
 from ...package import KtrPackage
@@ -49,7 +48,7 @@ class SrpmConstructor(Constructor):
                                  self.package.name + ".spec")
 
         try:
-            self.stype = SourceType[self.package.conf.get("modules", "source").upper()]
+            self.stype = self.package.conf.get("modules", "source")
         except cp.NoSectionError:
             self.stype = None
         except cp.NoOptionError:

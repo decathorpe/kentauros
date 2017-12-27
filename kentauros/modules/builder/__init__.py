@@ -9,21 +9,20 @@ constructors.
 
 
 from ...context import KtrContext
-from ...definitions import BuilderType
 from ...package import KtrPackage
 
 from .abstract import Builder
 from .mock import MockBuilder
 
 
-def get_builder(btype: BuilderType, package: KtrPackage, context: KtrContext) -> Builder:
+def get_builder(btype: str, package: KtrPackage, context: KtrContext) -> Builder:
     """
     This function constructs a `Builder` from a `BuilderType` enum member and a package.
     """
 
     builder_dict = dict()
 
-    builder_dict[BuilderType.MOCK] = MockBuilder
+    builder_dict["mock"] = MockBuilder
 
     return builder_dict[btype](package, context)
 

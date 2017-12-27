@@ -9,7 +9,6 @@ import subprocess as sp
 
 from ...conntest import is_connected
 from ...context import KtrContext
-from ...definitions import SourceType
 from ...package import KtrPackage
 from ...result import KtrResult
 from ...validator import KtrValidator
@@ -36,7 +35,7 @@ class UrlSource(Source):
         super().__init__(package, context)
 
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
-        self.stype = SourceType.URL
+        self.stype = "url"
 
         state = self.context.state.read(self.package.conf_name)
 

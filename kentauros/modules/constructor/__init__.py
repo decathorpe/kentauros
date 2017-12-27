@@ -8,15 +8,13 @@ constructors.
 
 
 from ...context import KtrContext
-from ...definitions import ConstructorType
 from ...package import KtrPackage
 
 from .abstract import Constructor
 from .srpm import SrpmConstructor
 
 
-def get_constructor(ctype: ConstructorType, package: KtrPackage,
-                    context: KtrContext) -> Constructor:
+def get_constructor(ctype: str, package: KtrPackage, context: KtrContext) -> Constructor:
 
     """
     This function constructs a `Constructor` from a `ConstructorType` enum member and a package.
@@ -24,7 +22,7 @@ def get_constructor(ctype: ConstructorType, package: KtrPackage,
 
     constructor_dict = dict()
 
-    constructor_dict[ConstructorType.SRPM] = SrpmConstructor
+    constructor_dict["srpm"] = SrpmConstructor
 
     return constructor_dict[ctype](package, context)
 

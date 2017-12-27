@@ -6,7 +6,6 @@ file.
 
 import os
 
-from ....definitions import SourceType
 from ....package import KtrPackage
 
 from .spec_common import format_tag_line
@@ -88,7 +87,7 @@ SPEC_SOURCE_DICT = dict()
 generator functions.
 """
 
-SPEC_SOURCE_DICT[SourceType.BZR] = spec_source_bzr
-SPEC_SOURCE_DICT[SourceType.GIT] = spec_source_git
-SPEC_SOURCE_DICT[SourceType.LOCAL] = spec_source_local
-SPEC_SOURCE_DICT[SourceType.URL] = spec_source_url
+SPEC_SOURCE_DICT["bzr"] = spec_source_bzr
+SPEC_SOURCE_DICT["git"] = spec_source_git
+SPEC_SOURCE_DICT["local"] = spec_source_local
+SPEC_SOURCE_DICT["url"] = spec_source_url

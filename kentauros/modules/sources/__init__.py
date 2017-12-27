@@ -7,7 +7,6 @@ constructors.
 """
 
 from ...context import KtrContext
-from ...definitions import SourceType
 from ...package import KtrPackage
 
 from .abstract import Source
@@ -17,17 +16,17 @@ from .url import UrlSource
 from .local import LocalSource
 
 
-def get_source(stype: SourceType, package: KtrPackage, context: KtrContext) -> Source:
+def get_source(stype: str, package: KtrPackage, context: KtrContext) -> Source:
     """
     This function constructs a `Source` from a `SourceType` enum member and a package.
     """
 
     source_dict = dict()
 
-    source_dict[SourceType.BZR] = BzrSource
-    source_dict[SourceType.GIT] = GitSource
-    source_dict[SourceType.LOCAL] = LocalSource
-    source_dict[SourceType.URL] = UrlSource
+    source_dict["bzr"] = BzrSource
+    source_dict["git"] = GitSource
+    source_dict["local"] = LocalSource
+    source_dict["url"] = UrlSource
 
     return source_dict[stype](package, context)
 

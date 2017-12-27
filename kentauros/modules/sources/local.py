@@ -9,7 +9,6 @@ import os
 import shutil
 
 from ...context import KtrContext
-from ...definitions import SourceType
 from ...package import KtrPackage
 from ...result import KtrResult
 from ...validator import KtrValidator
@@ -31,7 +30,7 @@ class LocalSource(Source):
         super().__init__(package, context)
 
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
-        self.stype = SourceType.LOCAL
+        self.stype = "local"
 
     def __str__(self) -> str:
         return "Local Source for Package '" + self.package.conf_name + "'"

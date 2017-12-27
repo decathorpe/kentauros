@@ -9,11 +9,8 @@ import datetime
 import os
 import shutil
 
-from git import Repo
-
 from ...conntest import is_connected
 from ...context import KtrContext
-from ...definitions import SourceType
 from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
@@ -21,6 +18,7 @@ from ...shellcmd import ShellCommand
 from ...validator import KtrValidator
 
 from .abstract import Source
+from .gitrepo import GitRepo
 
 
 class GitCommand(ShellCommand):
@@ -57,7 +55,8 @@ class GitSource(Source):
         super().__init__(package, context)
 
         self.dest = os.path.join(self.sdir, self.package.name)
-        self.stype = SourceType.GIT
+        self.stype = "git"
+
         self.saved_date: datetime.datetime = None
         self.saved_commit: str = None
 
@@ -140,9 +139,8 @@ class GitSource(Source):
             return ref
 
     def _get_commit(self) -> str:
-        repo = Repo(self.dest)
-        ref = repo.rev_parse(self.get_ref())
-        return ref.hexsha
+        repo = GitRepo(self.dest)
+        return repo.get_commit(self.get_ref())
 
     def get_shallow(self) -> bool:
         """
@@ -178,9 +176,8 @@ class GitSource(Source):
                 ret.messages.err("Falling back to 'now'.")
                 dt = datetime.datetime.now().astimezone(datetime.timezone.utc)
         else:
-            repo = Repo(self.dest)
-            commit = repo.commit(self._get_commit())
-            dt: datetime.datetime = commit.committed_datetime.astimezone(datetime.timezone.utc)
+            repo = GitRepo(self.dest)
+            dt = repo.get_datetime(self.get_ref())
 
         self.saved_date = dt
 
@@ -446,6 +443,9 @@ class GitSource(Source):
             ret.messages.log("No connection to remote host detected. Cancelling source checkout.")
             return ret.submit(False)
 
+        # FIXME: This would be better, but there's no error handling
+        # repo = GitRepo.clone(self.get_orig(), self.dest, self.get_shallow())
+
         # construct clone command
         cmd_clone = ["clone"]
 
@@ -516,6 +516,10 @@ class GitSource(Source):
         if not is_connected(self.get_orig()):
             ret.messages.log("No connection to remote host detected. Cancelling source update.")
             return ret.submit(False)
+
+        # FIXME: this would be better, but there's no error handling yet
+        # repo = GitRepo(self.dest)
+        # repo.pull(self.get_ref())
 
         # construct git command
         cmd = ["pull", "--rebase", "--all"]
@@ -610,6 +614,10 @@ class GitSource(Source):
         Returns:
             bool:   *True* if successful or already done, *False* at failure
         """
+
+        # FIXME: this would be better, but there's no error handling yet
+        # repo = GitRepo(self.dest)
+        # repo.export(self.get_ref())
 
         ret = KtrResult(name=self.name())
 

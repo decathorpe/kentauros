@@ -11,7 +11,6 @@ import shutil
 
 from ...conntest import is_connected
 from ...context import KtrContext
-from ...definitions import SourceType
 from ...logcollector import LogCollector
 from ...package import KtrPackage
 from ...result import KtrResult
@@ -53,7 +52,7 @@ class BzrSource(Source):
         super().__init__(package, context)
 
         self.dest = os.path.join(self.sdir, self.package.name)
-        self.stype = SourceType.BZR
+        self.stype = "bzr"
         self.saved_date = None
         self.saved_rev = None
 

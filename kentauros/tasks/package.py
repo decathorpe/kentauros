@@ -1,7 +1,6 @@
 import configparser as cp
 
 from ..context import KtrContext
-from ..definitions import PkgModuleType
 from ..modules import get_module
 from ..modules.module import KtrModule
 from ..modules.package import PackageModule
@@ -33,12 +32,13 @@ class KtrPackageTask(KtrMetaTask):
         if modules == "":
             modules = []
 
-        module_types = (PkgModuleType[i.upper()] for i in modules.split(","))
+        module_types = modules.split(",")
 
         self.modules.append(PackageModule(self.package, self.context))
+
         for module_type in module_types:
-            module_impl = self.package.conf.get("modules", str(module_type.name).lower())
-            mod = get_module(module_type, module_impl.upper(), self.package, self.context)
+            module_impl = self.package.conf.get("modules", module_type)
+            mod = get_module(module_type, module_impl, self.package, self.context)
             self.modules.append(mod)
 
     def execute(self) -> KtrResult:

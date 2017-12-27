@@ -1,4 +1,3 @@
-from ..definitions import PkgModuleType
 from ..modules import get_module
 from ..package import KtrPackage
 from ..tasks import KtrTask, KtrInitTask, KtrTaskList, KtrPackageTask
@@ -13,10 +12,10 @@ class KtrCLIRunner:
         conf_names = self.context.get_packages()
         module_type = self.context.get_module()
 
-        if module_type == PkgModuleType.INIT:
+        if module_type == "init":
             self.task = KtrInitTask(self.context)
 
-        elif module_type == PkgModuleType.PACKAGE:
+        elif module_type == "package":
             action = self.context.get_module_action()
 
             for conf_name in conf_names:
@@ -28,8 +27,8 @@ class KtrCLIRunner:
 
             for conf_name in conf_names:
                 package = KtrPackage(self.context, conf_name)
-                module_impl = package.conf.get("modules", str(module_type.name).lower())
-                module = get_module(module_type, module_impl.upper(), package, self.context)
+                module_impl = package.conf.get("modules", module_type)
+                module = get_module(module_type, module_impl, package, self.context)
                 task = KtrTask(package, module, action, self.context)
 
                 self.task.add(task)
