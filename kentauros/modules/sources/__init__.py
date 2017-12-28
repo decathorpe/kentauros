@@ -10,7 +10,6 @@ from ...context import KtrContext
 from ...package import KtrPackage
 
 from .abstract import Source
-from .bzr import BzrSource
 from .git import GitSource
 from .url import UrlSource
 from .local import LocalSource
@@ -23,7 +22,6 @@ def get_source(stype: str, package: KtrPackage, context: KtrContext) -> Source:
 
     source_dict = dict()
 
-    source_dict["bzr"] = BzrSource
     source_dict["git"] = GitSource
     source_dict["local"] = LocalSource
     source_dict["url"] = UrlSource

@@ -8,39 +8,6 @@ from ....package import KtrPackage
 from ....result import KtrResult
 
 
-def spec_preamble_bzr(package: KtrPackage, context: KtrContext) -> KtrResult:
-    """
-    This function returns the "%global" necessary for packages built from *bzr* repositories.
-    This includes a definition of "rev" just now.
-
-    Arguments:
-        BzrSource source:   source repository the revision will be determined from
-
-    Returns:
-        str:                string containing the `%global rev $REV` line
-    """
-
-    assert isinstance(package, KtrPackage)
-    assert isinstance(context, KtrContext)
-
-    ret = KtrResult()
-    state = context.state.read(package.conf_name)
-
-    rev: str = state["bzr_last_rev"]
-    dt_string: str = state["bzr_last_date"]
-    dt = dt_string.split(" ")
-
-    date = dt[0]
-    time = dt[1]
-
-    rev_define = "%global revision " + rev + "\n"
-    date_define = "%global date " + date + "\n"
-    time_define = "%global time " + time + "\n"
-
-    ret.value = rev_define + date_define + time_define + "\n"
-    return ret.submit(True)
-
-
 def spec_preamble_git(package: KtrPackage, context: KtrContext) -> KtrResult:
     """
     This function returns the "%globals" necessary for packages built from *git* repositories. This
@@ -117,7 +84,6 @@ SPEC_PREAMBLE_DICT = dict()
 functions.
 """
 
-SPEC_PREAMBLE_DICT["bzr"] = spec_preamble_bzr
 SPEC_PREAMBLE_DICT["git"] = spec_preamble_git
 SPEC_PREAMBLE_DICT["local"] = spec_preamble_local
 SPEC_PREAMBLE_DICT["url"] = spec_preamble_url

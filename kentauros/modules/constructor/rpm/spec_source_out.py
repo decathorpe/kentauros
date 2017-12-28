@@ -11,24 +11,6 @@ from ....package import KtrPackage
 from .spec_common import format_tag_line
 
 
-def spec_source_bzr(package: KtrPackage) -> str:
-    """
-    This function returns the Source tag for packages built from *bzr* repositories.
-
-    Arguments:
-        BzrSource source:   source repository a Source tag will be generated for
-
-    Returns:
-        str:                Source tag with comments
-    """
-
-    assert isinstance(package, KtrPackage)
-
-    src_str = format_tag_line("Source0", "%{name}-%{version}.tar.gz")
-
-    return src_str
-
-
 def spec_source_git(package: KtrPackage) -> str:
     """
     This function returns the Source string for packages built from *git* repositories.
@@ -87,7 +69,6 @@ SPEC_SOURCE_DICT = dict()
 generator functions.
 """
 
-SPEC_SOURCE_DICT["bzr"] = spec_source_bzr
 SPEC_SOURCE_DICT["git"] = spec_source_git
 SPEC_SOURCE_DICT["local"] = spec_source_local
 SPEC_SOURCE_DICT["url"] = spec_source_url

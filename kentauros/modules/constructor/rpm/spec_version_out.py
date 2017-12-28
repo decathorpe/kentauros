@@ -7,30 +7,6 @@ from ....context import KtrContext
 from ....package import KtrPackage
 
 
-def spec_version_bzr(package: KtrPackage, context: KtrContext) -> str:
-    """
-    This function returns the version string for packages built from *bzr* repositories.
-
-    Arguments:
-        BzrSource source:   source repository a version string will be generated for
-
-    Returns:
-        str:                version string in the format `$VERSION+rev%{rev}`
-    """
-
-    assert isinstance(package, KtrPackage)
-    assert isinstance(context, KtrContext)
-
-    template: str = context.conf.get("main", "version_template_bzr")
-
-    if "%{version}" in template:
-        template = template.replace("%{version}", package.get_version())
-    if "%{version_sep}" in template:
-        template = template.replace("%{version_sep}", package.get_version_separator())
-
-    return template
-
-
 def spec_version_git(package: KtrPackage, context: KtrContext) -> str:
     """
     This function returns the version string for packages built from *git* repositories.
@@ -97,7 +73,6 @@ SPEC_VERSION_DICT = dict()
 generator functions.
 """
 
-SPEC_VERSION_DICT["bzr"] = spec_version_bzr
 SPEC_VERSION_DICT["git"] = spec_version_git
 SPEC_VERSION_DICT["local"] = spec_version_local
 SPEC_VERSION_DICT["url"] = spec_version_url

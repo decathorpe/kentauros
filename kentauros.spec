@@ -20,7 +20,6 @@ Requires:       python3-tinydb
 
 Recommends:     python3-ujson
 
-Recommends:     bzr
 Recommends:     git
 Recommends:     wget
 
