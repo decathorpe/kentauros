@@ -12,14 +12,6 @@ kentauros\.modules\.sources\.abstract module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.modules\.sources\.bzr module
----------------------------------------
-
-.. automodule:: kentauros.modules.sources.bzr
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros\.modules\.sources\.git module
 ---------------------------------------
 
@@ -32,14 +24,6 @@ kentauros\.modules\.sources\.local module
 -----------------------------------------
 
 .. automodule:: kentauros.modules.sources.local
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros\.modules\.sources\.source\_error module
--------------------------------------------------
-
-.. automodule:: kentauros.modules.sources.source_error
     :members:
     :undoc-members:
     :show-inheritance:

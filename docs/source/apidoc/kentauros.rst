@@ -8,6 +8,7 @@ Subpackages
 
     kentauros.cli
     kentauros.modules
+    kentauros.tasks
 
 Submodules
 ----------
@@ -92,10 +93,10 @@ kentauros\.state module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.task module
-----------------------
+kentauros\.validator module
+---------------------------
 
-.. automodule:: kentauros.task
+.. automodule:: kentauros.validator
     :members:
     :undoc-members:
     :show-inheritance:
