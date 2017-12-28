@@ -1,26 +1,9 @@
-"""
-This sub-module contains the functions that generate the necessary version strings for the .spec
-file, which depend on the type of source that is used.
-"""
-
 from ....context import KtrContext
 from ....package import KtrPackage
 from ....result import KtrResult
 
 
-def spec_preamble_git(package: KtrPackage, context: KtrContext) -> KtrResult:
-    """
-    This function returns the "%globals" necessary for packages built from *git* repositories. This
-    includes a definition of "commit" and "date" just now. The value of "commit" here are the first
-    8 characters of the corresponding git commit hash.
-
-    Arguments:
-        GitSource source:   source repository the commit hash and date will be determined from
-
-    Returns:
-        str:                string with the `%global commit COMMIT` and `%global date $DATE` lines
-    """
-
+def _spec_preamble_git(package: KtrPackage, context: KtrContext) -> KtrResult:
     assert isinstance(package, KtrPackage)
     assert isinstance(context, KtrContext)
 
@@ -43,47 +26,25 @@ def spec_preamble_git(package: KtrPackage, context: KtrContext) -> KtrResult:
     return ret.submit(True)
 
 
-def spec_preamble_url(package: KtrPackage, context: KtrContext) -> KtrResult:
-    """
-    This function returns the "%global" necessary for packages built from tarballs specified by
-    *url*.
-
-    Arguments:
-        UrlSource source:   source the `%global` will be determined from
-
-    Returns:
-        str:                empty string
-    """
-
+def _spec_preamble_url(package: KtrPackage, context: KtrContext) -> KtrResult:
     assert isinstance(package, KtrPackage)
     assert isinstance(context, KtrContext)
 
     return KtrResult(True, "")
 
 
-def spec_preamble_local(package: KtrPackage, context: KtrContext) -> KtrResult:
-    """
-    This function returns the "%global" necessary for packages built from tarballs specified by a
-    *local path*.
-
-    Arguments:
-        LocalSource source:     source the `%global` will be determined from
-
-    Returns:
-        str:                    empty string
-    """
-
+def _spec_preamble_local(package: KtrPackage, context: KtrContext) -> KtrResult:
     assert isinstance(package, KtrPackage)
     assert isinstance(context, KtrContext)
 
     return KtrResult(True, "")
 
 
-SPEC_PREAMBLE_DICT = dict()
-"""This dictionary maps `SourceType` enum members to their respective RPM spec preamble generator
-functions.
-"""
+def get_spec_preamble(srctype: str, package: KtrPackage, context: KtrContext) -> KtrResult:
+    spec_preambles = dict()
 
-SPEC_PREAMBLE_DICT["git"] = spec_preamble_git
-SPEC_PREAMBLE_DICT["local"] = spec_preamble_local
-SPEC_PREAMBLE_DICT["url"] = spec_preamble_url
+    spec_preambles["git"] = _spec_preamble_git
+    spec_preambles["local"] = _spec_preamble_local
+    spec_preambles["url"] = _spec_preamble_url
+
+    return spec_preambles[srctype](package, context)

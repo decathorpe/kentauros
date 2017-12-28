@@ -1,7 +1,3 @@
-"""
-This subpackage serves the purpose of handling RPM spec files.
-"""
-
 import configparser as cp
 import os
 import subprocess
@@ -11,23 +7,12 @@ from ....package import KtrPackage
 from ....result import KtrResult
 
 from .spec_common import RPMSpecError, format_tag_line
-from .spec_preamble_out import SPEC_PREAMBLE_DICT
-from .spec_source_out import SPEC_SOURCE_DICT
-from .spec_version_out import SPEC_VERSION_DICT
+from .spec_preamble_out import get_spec_preamble
+from .spec_source_out import get_spec_source
+from .spec_version_out import get_spec_version
 
 
 def parse_release(release: str) -> (str, str):
-    """
-    This function splits the Release string into the leading numeric part and the trailing
-    alphanumeric part.
-
-    Arguments:
-        str release:    Release string
-
-    Returns:
-        str, str:       numeric part, trailing part
-    """
-
     if "%{dist}" in release:
         parts = release.split("%{dist}")
         part1 = parts[0]
@@ -50,21 +35,6 @@ def parse_release(release: str) -> (str, str):
 
 
 class RPMSpec:
-    """
-    This class serves as the go-to swiss army knife for handling everything concerning RPM spec
-    files from within kentauros.
-
-    The typical usage has 3 stages:
-
-    * reading from file (path that is passed at initialisation)
-    * manipulating .spec file contents
-    * writing to different file path
-
-    Attributes:
-        str path:       path pointing to the associated RPM spec file
-        Source source:  package sources that are needed to generate some information
-    """
-
     def __init__(self, path: str, package: KtrPackage, context: KtrContext):
         assert isinstance(path, str)
         assert isinstance(package, KtrPackage)
@@ -90,24 +60,9 @@ class RPMSpec:
             self.contents = file.read()
 
     def get_lines(self) -> list:
-        """
-        This method splits the contents of the .spec file into lines and returns a list of them. It
-        also removes the trailing newline at the end of files so they don't multiply like rabbits.
-
-        Returns:
-            list:   list of lines
-        """
-
         return self.contents.split("\n")[:-1]
 
     def get_version(self) -> str:
-        """
-        This method reads and parses the RPM spec file's contents for its "Version" tag.
-
-        Returns:
-            str:    version string found on the line containing the "Version:" tag
-        """
-
         for line in self.get_lines():
             assert isinstance(line, str)
             if line[0:8] == "Version:":
@@ -116,13 +71,6 @@ class RPMSpec:
         raise RPMSpecError("No Version tag was found in the file.")
 
     def get_release(self) -> str:
-        """
-        This method reads and parses the RPM spec file's contents for its "Release" tag.
-
-        Returns:
-            str:    release string found on the line containing the "Version:" tag
-        """
-
         for line in self.get_lines():
             assert isinstance(line, str)
             if line[0:8] == "Release:":
@@ -131,10 +79,6 @@ class RPMSpec:
         raise RPMSpecError("No Release tag was found in the file.")
 
     def set_version(self):
-        """
-        This method writes the updated version to the rpm spec file.
-        """
-
         contents_new = str()
 
         for line in self.get_lines():
@@ -147,10 +91,6 @@ class RPMSpec:
         self.contents = contents_new
 
     def set_source(self):
-        """
-        This method writes the updated source tag to the rpm spec file.
-        """
-
         contents_new = str()
 
         for line in self.get_lines():
@@ -159,41 +99,17 @@ class RPMSpec:
                 contents_new += (line + "\n")
             else:
                 if self.stype is not None:
-                    contents_new += SPEC_SOURCE_DICT[self.stype](self.package)
+                    contents_new += get_spec_source(self.stype, self.package)
 
         self.contents = contents_new
 
     def build_preamble_string(self) -> KtrResult:
-        """
-        This method returns the appropriate spec preamble string, depending on the type of Source
-        that has been set.
-
-        Returns:
-            str:    preamble string containing necessary definitions
-        """
-
-        return SPEC_PREAMBLE_DICT[self.stype](self.package, self.context)
+        return get_spec_preamble(self.stype, self.package, self.context)
 
     def build_version_string(self) -> str:
-        """
-        This method returns the appropriate spec line containing the "Version" tag, depending on the
-        type of Source that has been set.
-
-        Returns:
-            str:    preamble string containing necessary definitions
-        """
-
-        return SPEC_VERSION_DICT[self.stype](self.package, self.context)
+        return get_spec_version(self.stype, self.package, self.context)
 
     def export_to_file(self, path: str):
-        """
-        This method exports the .spec file's (modified in memory) contents to another file,
-        specified by the `path` argument.
-
-        Arguments:
-            str path:   path to write the modified .spec contents to
-        """
-
         assert isinstance(path, str)
 
         if path == self.path:
@@ -209,14 +125,6 @@ class RPMSpec:
             file.write(self.contents)
 
     def write_contents_to_file(self, path: str):
-        """
-        This method writes the .spec file's (modified in memory) contents to another file,
-        specified by the `path` argument (BUT without prepending the preamble).
-
-        Arguments:
-            str path:   path to write the modified .spec contents to
-        """
-
         assert isinstance(path, str)
 
         if path == self.path:
@@ -226,10 +134,6 @@ class RPMSpec:
             file.write(self.contents)
 
     def do_release_reset(self):
-        """
-        This method resets the release number to 0suffix.
-        """
-
         new_rel = str(0) + parse_release(self.get_release())[1]
 
         contents_new = str()
@@ -245,14 +149,6 @@ class RPMSpec:
 
 
 def do_release_bump(path: str, context: KtrContext, comment: str = None) -> KtrResult:
-    """
-    This function calls `rpmdev-bumpspec` with the specified arguments to bump the release number
-    and create a changelog entry with a given comment.
-
-    Arguments:
-        str comment:    comment to be added to the changelog entry
-    """
-
     ret = KtrResult(name="RPM .spec Handler")
 
     if not os.path.exists(path):

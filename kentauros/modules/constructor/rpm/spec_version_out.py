@@ -1,23 +1,8 @@
-"""
-This sub-module contains the functions that generate the necessary "Version:" tags for the .spec
-file.
-"""
-
 from ....context import KtrContext
 from ....package import KtrPackage
 
 
-def spec_version_git(package: KtrPackage, context: KtrContext) -> str:
-    """
-    This function returns the version string for packages built from *git* repositories.
-
-    Arguments:
-        GitSource source:   source repository a version string will be generated for
-
-    Returns:
-        str:                version string in the format `$VERSION+git%{date}.%{commit}`
-    """
-
+def _spec_version_git(package: KtrPackage, context: KtrContext) -> str:
     assert isinstance(package, KtrPackage)
     assert isinstance(context, KtrContext)
 
@@ -31,18 +16,7 @@ def spec_version_git(package: KtrPackage, context: KtrContext) -> str:
     return template
 
 
-def spec_version_local(package: KtrPackage, context: KtrContext) -> str:
-    """
-    This function returns the version string for packages built from tarballs specified by a *local
-    path*.
-
-    Arguments:
-        LocalSource source:     source a version string will be generated for
-
-    Returns:
-        str:                    version string in the format `$VERSION`
-    """
-
+def _spec_version_local(package: KtrPackage, context: KtrContext) -> str:
     assert isinstance(package, KtrPackage)
     assert isinstance(context, KtrContext)
 
@@ -50,17 +24,7 @@ def spec_version_local(package: KtrPackage, context: KtrContext) -> str:
     return ver_str
 
 
-def spec_version_url(package: KtrPackage, context: KtrContext) -> str:
-    """
-    This function returns the version string for packages built from tarballs specified by *url*.
-
-    Arguments:
-        UrlSource source:   source a version string will be generated for
-
-    Returns:
-        str:                version string in the format `$VERSION`
-    """
-
+def _spec_version_url(package: KtrPackage, context: KtrContext) -> str:
     assert isinstance(package, KtrPackage)
     assert isinstance(context, KtrContext)
 
@@ -68,11 +32,11 @@ def spec_version_url(package: KtrPackage, context: KtrContext) -> str:
     return ver_str
 
 
-SPEC_VERSION_DICT = dict()
-""" This dictionary maps `SourceType` enum members to their respective RPM spec version string
-generator functions.
-"""
+def get_spec_version(srctype: str, package: KtrPackage, context: KtrContext) -> str:
+    spec_versions = dict()
 
-SPEC_VERSION_DICT["git"] = spec_version_git
-SPEC_VERSION_DICT["local"] = spec_version_local
-SPEC_VERSION_DICT["url"] = spec_version_url
+    spec_versions["git"] = _spec_version_git
+    spec_versions["local"] = _spec_version_local
+    spec_versions["url"] = _spec_version_url
+
+    return spec_versions[srctype](package, context)
