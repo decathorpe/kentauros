@@ -64,7 +64,7 @@ class LogCollector:
         assert isinstance(logs, LogCollector)
         self.messages.extend(logs.messages)
 
-    def print(self, warnings: bool = False, debug: bool = False, dest=None):
+    def print_all(self, warnings: bool = False, debug: bool = False, dest=None):
         default_dest = dict()
         default_dest[LogMessageType.NORMAL] = sys.stdout
         default_dest[LogMessageType.ERROR] = sys.stderr
@@ -87,4 +87,4 @@ class LogCollector:
             else:
                 print_dest = dest
 
-            print(message.format(), file=print_dest)
+            print(message.format(), file=print_dest, flush=True)

@@ -40,12 +40,12 @@ class KtrCLIRunner:
         debug = self.context.debug()
 
         if not logfile:
-            result.messages.print(warnings, debug)
+            result.messages.print_all(warnings, debug)
         else:
             with open(logfile, "a") as file:
-                result.messages.print(dest=file, warnings=warnings, debug=debug)
+                result.messages.print_all(dest=file, warnings=warnings, debug=debug)
 
         if result.success:
             return 0
         else:
-            return -1
+            return 1
