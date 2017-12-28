@@ -123,7 +123,11 @@ class UrlSource(Source):
         return ret.submit(success)
 
     def update(self) -> KtrResult:
-        return KtrResult(False)
+        ret = KtrResult(True, name=self.name())
+        ret.messages.log("URL sources don't need to be updated.")
+        return ret
 
     def export(self) -> KtrResult:
-        return KtrResult(True)
+        ret = KtrResult(True, name=self.name())
+        ret.messages.log("URL sources don't need to be exported.")
+        return ret

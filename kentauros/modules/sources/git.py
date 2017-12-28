@@ -17,7 +17,7 @@ from ...validator import KtrValidator
 
 
 class GitCommand(ShellCommand):
-    NAME = "Bzr Command"
+    NAME = "git Command"
 
     def __init__(self, path: str, *args, binary=None):
         if binary is None:
@@ -148,7 +148,7 @@ class GitRepo:
 
         ret = KtrResult()
 
-        cmd = [self.path, "pull"]
+        cmd = ["pull"]
 
         if rebase:
             cmd.append("--rebase")
@@ -156,7 +156,9 @@ class GitRepo:
         if all_branches:
             cmd.append("--all")
 
-        res = GitCommand(self.path, *cmd).execute()
+        # execute "git pull" command
+        # ignore return codes different than 0, which indicates "Everything up-to-date" or errors
+        res = GitCommand(self.path, *cmd).execute(ignore_retcode=True)
         ret.collect(res)
 
         if not res.success:
@@ -300,7 +302,11 @@ class GitSource(Source):
                 dt = datetime.datetime.now().astimezone(datetime.timezone.utc)
         else:
             repo = GitRepo(self.dest)
-            dt = repo.get_datetime(self.get_ref())
+            res = repo.get_datetime(self.get_ref())
+
+            if not res.success:
+                return ret.submit(False)
+            dt = res.value
 
         self.saved_date = dt
 
@@ -594,6 +600,13 @@ class GitSource(Source):
         # return True if update found, False if not
         updated = rev_new != rev_old
 
+        if updated:
+            ret.messages.log("Repository updated. Old commit: {}; New commit: {}".format(
+                rev_new[0:7], rev_old[0:7]))
+        else:
+            ret.messages.log("Repository already up-to-date. Current commit: {}".format(
+                rev_new[0:7]))
+
         ret.collect(self.status())
         return ret.submit(updated)
 
@@ -633,6 +646,7 @@ class GitSource(Source):
             ret.messages.log("Tarball has already been exported.")
             # remove git repo if keep is False
             self._remove_not_keep(ret.messages)
+            ret.state["source_files"] = [file_name]
             return ret.submit(True)
 
         # export specified ref of the git repository to the file path

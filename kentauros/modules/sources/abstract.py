@@ -66,18 +66,44 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
 
         # remove source destination first
 
+        # get source files from state
+        status = self.context.state.read(self.package.conf_name)
+
+        try:
+            source_files = status["source_files"]
+        except KeyError:
+            source_files = []
+
         # if destination is a file (tarball):
         if os.path.isfile(self.dest):
             os.remove(self.dest)
+            file = os.path.basename(self.dest)
+            ret.messages.log("Removed file: '{}'".format(file))
+
+            if file in source_files:
+                source_files.remove(file)
 
         # if destination is a directory (VCS repo):
         elif os.path.isdir(self.dest):
             shutil.rmtree(self.dest)
+            ret.messages.log("Removed directory: '{}'".format(os.path.basename(self.dest)))
+
+        # check all other files:
+        for file in source_files:
+            path = os.path.join(self.sdir, file)
+
+            if os.path.exists(path):
+                os.remove(path)
+                ret.messages.log("Removed file: '{}'".format(file))
+                source_files.remove(file)
+
+        ret.state["source_files"] = source_files
 
         # if source directory is empty now (no patches, additional files, etc. left):
         # remove whole directory
         if not os.listdir(self.sdir):
             os.rmdir(self.sdir)
+            ret.messages.log("Removed sources directory.")
 
         return ret.submit(True)
 
