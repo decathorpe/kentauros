@@ -188,6 +188,7 @@ class GitRepo:
 
         ret = KtrResult()
 
+        # clone the repository
         if not shallow:
             res = GitCommand(".", "clone", orig, path).execute()
         else:
@@ -199,6 +200,14 @@ class GitRepo:
             return ret.submit(False)
 
         repo = GitRepo(path, ref)
+
+        # check out the specified ref
+        res = repo.checkout(ref)
+        ret.collect(res)
+
+        if not res.success:
+            return ret.submit(False)
+
         ret.value = repo
         return ret.submit(True)
 
@@ -514,19 +523,12 @@ class GitSource(Source):
             ret.messages.log("No connection to remote host detected. Cancelling source checkout.")
             return ret.submit(False)
 
+        # clone the repository and check out the specified ref
         res = GitRepo.clone(self.dest, self.get_orig(), self.get_ref(), self.get_shallow())
         ret.collect(res)
 
         if not res.success:
             return ret.submit(False)
-
-        # check out the specified ref (if it's master, nothing happens)
-        res = self._checkout()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.log("The specified ref could not be checked out successfully.")
-            return ret
 
         # get commit ID
         res = self.commit()
@@ -612,6 +614,7 @@ class GitSource(Source):
             ret.messages.err("Sources need to be get before they can be exported.")
             return ret.submit(False)
 
+        # get formatted version string
         res = self.formatver()
         ret.collect(res)
 
@@ -620,40 +623,26 @@ class GitSource(Source):
             return ret
         version = res.value
 
+        # construct prefix, file name, and full absolute file path
         name_version = self.package.name + "-" + version
         prefix = name_version + "/"
         file_name = name_version + ".tar.gz"
         file_path = os.path.join(self.sdir, file_name)
 
-        # check if file has already been exported
+        # check if file has already been exported to the determined file path
         if os.path.exists(file_path):
             ret.messages.log("Tarball has already been exported.")
             # remove git repo if keep is False
             self._remove_not_keep(ret.messages)
             return ret.submit(True)
 
+        # export specified ref of the git repository to the file path
         repo = GitRepo(self.dest)
         res = repo.export(prefix, file_path, self.get_ref())
         ret.collect(res)
 
         if not res.success:
             return ret.submit(False)
-
-        # update saved commit ID
-        res = self.commit()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.err("Commit hash could not be determined successfully.")
-            return ret
-
-        # update saved commit date/time
-        res = self.date()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.err("Commit date/time not be determined successfully.")
-            return ret
 
         # remove git repo if keep is False
         self._remove_not_keep(ret.messages)
