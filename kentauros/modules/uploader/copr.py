@@ -2,13 +2,12 @@ import glob
 import os
 import subprocess as sp
 
+from .abstract import Uploader
 from ...conntest import is_connected
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
 from ...validator import KtrValidator
-
-from .abstract import Uploader
 
 DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
 

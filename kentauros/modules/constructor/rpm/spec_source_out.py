@@ -1,8 +1,7 @@
 import os
 
-from ....package import KtrPackage
-
 from .spec_common import format_tag_line
+from ....package import KtrPackage
 
 
 def _spec_source_git(package: KtrPackage) -> str:

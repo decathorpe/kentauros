@@ -1,8 +1,7 @@
-from ...context import KtrContext
-from ...package import KtrPackage
-
 from .abstract import Constructor
 from .srpm import SrpmConstructor
+from ...context import KtrContext
+from ...package import KtrPackage
 
 
 def get_constructor(ctype: str, package: KtrPackage, context: KtrContext) -> Constructor:

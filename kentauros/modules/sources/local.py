@@ -1,12 +1,11 @@
 import os
 import shutil
 
+from .abstract import Source
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
 from ...validator import KtrValidator
-
-from .abstract import Source
 
 
 class LocalSource(Source):

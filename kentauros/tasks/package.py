@@ -1,14 +1,13 @@
 import configparser as cp
 
+from .meta import KtrMetaTask
+from .task import KtrTask
 from ..context import KtrContext
 from ..modules import get_module
 from ..modules.module import KtrModule
 from ..modules.package import PackageModule
 from ..package import KtrPackage
 from ..result import KtrResult
-
-from .meta import KtrMetaTask
-from .task import KtrTask
 
 
 class KtrPackageTask(KtrMetaTask):

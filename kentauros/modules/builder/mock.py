@@ -6,12 +6,11 @@ import shutil
 import subprocess
 import time
 
+from .abstract import Builder
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
 from ...validator import KtrValidator
-
-from .abstract import Builder
 
 DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
 DEFAULT_VAR_PATH = "/var/lib/mock"

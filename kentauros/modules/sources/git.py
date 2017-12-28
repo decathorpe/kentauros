@@ -6,6 +6,7 @@ import shutil
 from git import Repo
 from git.exc import BadName
 
+from .abstract import Source
 from ...conntest import is_connected
 from ...context import KtrContext
 from ...logcollector import LogCollector
@@ -13,8 +14,6 @@ from ...package import KtrPackage
 from ...result import KtrResult
 from ...shellcmd import ShellCommand
 from ...validator import KtrValidator
-
-from .abstract import Source
 
 
 class GitCommand(ShellCommand):

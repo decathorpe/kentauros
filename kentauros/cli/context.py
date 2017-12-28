@@ -4,9 +4,8 @@ import os
 
 import argcomplete as ac
 
-from ..context import KtrContext
-
 from .parser import get_cli_parser
+from ..context import KtrContext
 
 
 class KtrCLIContext(KtrContext):

@@ -2,14 +2,13 @@ import configparser as cp
 import os
 import subprocess
 
-from ....context import KtrContext
-from ....package import KtrPackage
-from ....result import KtrResult
-
 from .spec_common import RPMSpecError, format_tag_line
 from .spec_preamble_out import get_spec_preamble
 from .spec_source_out import get_spec_source
 from .spec_version_out import get_spec_version
+from ....context import KtrContext
+from ....package import KtrPackage
+from ....result import KtrResult
 
 
 def parse_release(release: str) -> (str, str):

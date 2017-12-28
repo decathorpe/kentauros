@@ -5,14 +5,13 @@ import shutil
 import subprocess
 import tempfile
 
-from ...context import KtrContext
-from ...result import KtrResult
-from ...logcollector import LogCollector
-from ...package import KtrPackage
-from ...validator import KtrValidator
-
 from .abstract import Constructor
 from .rpm import RPMSpec, do_release_bump, parse_release
+from ...context import KtrContext
+from ...logcollector import LogCollector
+from ...package import KtrPackage
+from ...result import KtrResult
+from ...validator import KtrValidator
 
 
 class SrpmConstructor(Constructor):

@@ -1,13 +1,11 @@
-from ..context import KtrContext
-from ..package import KtrPackage
-
 from .builder import get_builder
 from .constructor import get_constructor
-from .sources import get_source
-from .uploader import get_uploader
-
 from .module import KtrModule
 from .package import PackageModule
+from .sources import get_source
+from .uploader import get_uploader
+from ..context import KtrContext
+from ..package import KtrPackage
 
 
 def _get_pkg_module(mtype: str, mimpl: str, pkg: KtrPackage, context: KtrContext) -> KtrModule:

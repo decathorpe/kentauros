@@ -98,9 +98,8 @@ class KtrPackage:
 
         # check validity of [package][release] option ("stable", "post", or "pre")
         if conf.has_section("package") and conf.has_option("package", "release"):
-            ret.success = ret.success and (
-                conf.get("package", "release") in ["stable", "post", "pre"])
-
+            release_types = ["stable", "post", "pre"]
+            ret.success = ret.success and (conf.get("package", "release") in release_types)
         # check [modules] section, if present
         if conf.has_section("package") and conf.has_option("package", "modules"):
             modules: str = conf.get("package", "modules")

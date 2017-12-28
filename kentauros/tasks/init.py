@@ -1,8 +1,7 @@
+from .meta import KtrMetaTask
 from ..bootstrap import ktr_bootstrap
 from ..context import KtrContext
 from ..result import KtrResult
-
-from .meta import KtrMetaTask
 
 
 class KtrInitTask(KtrMetaTask):

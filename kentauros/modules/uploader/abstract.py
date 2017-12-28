@@ -1,10 +1,9 @@
 import abc
 
+from ..module import KtrModule
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
-
-from ..module import KtrModule
 
 
 class Uploader(KtrModule, metaclass=abc.ABCMeta):

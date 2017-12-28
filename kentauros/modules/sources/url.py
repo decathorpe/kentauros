@@ -1,13 +1,12 @@
 import os
 import subprocess as sp
 
+from .abstract import Source
 from ...conntest import is_connected
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
 from ...validator import KtrValidator
-
-from .abstract import Source
 
 
 class UrlSource(Source):

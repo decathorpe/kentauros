@@ -32,7 +32,6 @@ def package_name_completer(prefix, **kwargs):
 
 def add_source_parser(parsers: _SubParsersAction,
                       package_parser: ArgumentParser) -> ArgumentParser:
-
     source_parser: ArgumentParser = parsers.add_parser(
         "source",
         aliases=["s", "so", "sou", "sour", "sourc", "src"],
@@ -111,7 +110,6 @@ def add_source_parser(parsers: _SubParsersAction,
 
 def add_constructor_parser(parsers: _SubParsersAction,
                            package_parser: ArgumentParser) -> ArgumentParser:
-
     constructor_parser: ArgumentParser = parsers.add_parser(
         "constructor",
         aliases=["c", "co", "con", "cons", "const", "constr", "constru", "construc"],
@@ -173,7 +171,6 @@ def add_constructor_parser(parsers: _SubParsersAction,
 
 def add_builder_parser(parsers: _SubParsersAction,
                        package_parser: ArgumentParser) -> ArgumentParser:
-
     builder_parser: ArgumentParser = parsers.add_parser(
         "builder",
         aliases=["b", "bu", "bui", "buil", "build", "builde"],
@@ -228,7 +225,6 @@ def add_builder_parser(parsers: _SubParsersAction,
 
 def add_uploader_parser(parsers: _SubParsersAction,
                         package_parser: ArgumentParser) -> ArgumentParser:
-
     uploader_parser: ArgumentParser = parsers.add_parser(
         "uploader",
         aliases=["u", "up", "upl", "uplo", "uploa"],
@@ -275,7 +271,6 @@ def add_uploader_parser(parsers: _SubParsersAction,
 
 def add_pkg_parser(parsers: _SubParsersAction,
                    package_parser: ArgumentParser) -> ArgumentParser:
-
     pkg_parser: ArgumentParser = parsers.add_parser(
         "package",
         aliases=["p", "pa", "pac", "pack", "packa", "packag"],
@@ -329,7 +324,6 @@ def add_pkg_parser(parsers: _SubParsersAction,
 
 
 def add_init_parser(parsers: _SubParsersAction) -> ArgumentParser:
-
     init_parser: ArgumentParser = parsers.add_parser(
         "init",
         aliases=["i", "in", "ini"],

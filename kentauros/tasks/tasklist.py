@@ -1,6 +1,5 @@
-from ..result import KtrResult
-
 from .meta import KtrMetaTask
+from ..result import KtrResult
 
 
 class KtrTaskList(KtrMetaTask):

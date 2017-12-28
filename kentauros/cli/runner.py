@@ -1,8 +1,7 @@
+from .context import KtrCLIContext
 from ..modules import get_module
 from ..package import KtrPackage
 from ..tasks import KtrTask, KtrInitTask, KtrTaskList, KtrPackageTask
-
-from .context import KtrCLIContext
 
 
 class KtrCLIRunner:

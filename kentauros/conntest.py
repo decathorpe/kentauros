@@ -1,7 +1,6 @@
 import socket
 from urllib.parse import urlparse
 
-
 MAX_TRIES = 3
 WAIT_SECS = 5
 
