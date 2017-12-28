@@ -1,7 +1,6 @@
 import os
 import subprocess as sp
 
-from .logcollector import LogCollector
 from .result import KtrResult
 
 
@@ -12,8 +11,8 @@ class ShellCommand:
         self.path = path
         self.args = args
 
-    def execute(self) -> KtrResult:
-        logger = LogCollector(self.NAME)
+    def execute(self, ignore_retcode: bool = False) -> KtrResult:
+        ret = KtrResult()
 
         cmd = list()
         cmd.extend(self.args)
@@ -22,16 +21,18 @@ class ShellCommand:
 
         try:
             os.chdir(self.path)
-            logger.cmd(cmd)
-            ret: sp.CompletedProcess = sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
+            ret.messages.cmd(cmd)
+            res: sp.CompletedProcess = sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
         finally:
             os.chdir(cwd)
 
-        if ret.returncode != 0:
-            logger.err("The command did not quit with return code 0 ({}), indicating an error."
-                       .format(ret.returncode))
-            out = ret.stdout.decode().rstrip("\n")
-            return KtrResult(False, value=out, messages=logger)
+        out = res.stdout.decode().rstrip("\n")
+        ret.value = out
+
+        if (res.returncode == 0) or ignore_retcode:
+            return ret.submit(True)
         else:
-            out = ret.stdout.decode().rstrip("\n")
-            return KtrResult(True, value=out, messages=logger)
+            ret.messages.err(
+                "The command did not quit with return code 0 ({}), indicating an error.".format(
+                    res.returncode))
+            return ret.submit(False)
