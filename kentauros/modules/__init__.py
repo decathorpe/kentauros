@@ -1,7 +1,3 @@
-"""
-This subpackage contains all plug-able kentauros modules.
-"""
-
 from ..context import KtrContext
 from ..package import KtrPackage
 
@@ -15,11 +11,6 @@ from .package import PackageModule
 
 
 def _get_pkg_module(mtype: str, mimpl: str, pkg: KtrPackage, context: KtrContext) -> KtrModule:
-    """
-    This function constructs a `KtrModule` from a `PkgModuleType` enum member, a `PkgModuleType`
-    subtype, and a package.
-    """
-
     pkg_module_dict = dict()
 
     pkg_module_dict["source"] = get_source
@@ -31,11 +22,6 @@ def _get_pkg_module(mtype: str, mimpl: str, pkg: KtrPackage, context: KtrContext
 
 
 def get_module(mtype: str, mimpl: str, pkg: KtrPackage, context: KtrContext) -> KtrModule:
-    """
-    This function constructs a `KtrModule` from a `PkgModuleType` enum member, an implementer
-    string, and a package.
-    """
-
     if mtype == "package":
         return PackageModule(pkg, context)
 

@@ -10,19 +10,6 @@ from .parser import get_cli_parser
 
 
 class KtrCLIContext(KtrContext):
-    """
-    This class encapsulates information gathered from the CLI interface. Some values can be
-    overridden by environment variables.
-
-    Arguments:
-        str basedir:                    base directory of the kentauros project
-
-    Attributes:
-        args:                           Namespace object holding parsed CLI
-        bool debug_flag:                flag whether debugging is enabled or not
-        bool warning_flag:              flag whether warnings are enabled or not
-    """
-
     def __init__(self):
         cli_parser = get_cli_parser()
 

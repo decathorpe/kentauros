@@ -1,9 +1,3 @@
-"""
-This module contains the abstract :py:class:`Uploader` class, which is then inherited by actual
-upload classes.
-"""
-
-
 import abc
 
 from ...context import KtrContext
@@ -14,30 +8,14 @@ from ..module import KtrModule
 
 
 class Uploader(KtrModule, metaclass=abc.ABCMeta):
-    """
-    This class serves as a quasi-abstract base class for source package uploader classes. They are
-    expected to override this class's methods as necessary.
-
-    Arguments:
-        Package package:    package for which this constructor is for
-
-    Attributes:
-        Package upkg:       stores parent package instance reference
-    """
-
     def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
         self.actions["upload"] = self.execute
 
     @abc.abstractmethod
     def status(self) -> KtrResult:
-        """
-        This method is expected to return a dictionary of statistics about the respective uploader.
-        """
+        pass
 
     @abc.abstractmethod
     def upload(self) -> KtrResult:
-        """
-        This method executes the source package upload with the settings specified in the package
-        configuration.
-        """
+        pass

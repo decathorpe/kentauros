@@ -1,9 +1,3 @@
-"""
-This module contains functions that cover the bare necessity of setting up the directories kentauros
-expects to exist. This happens after CLI arguments and environment variables have been parsed to
-determine which directories those should be.
-"""
-
 import os
 
 from .context import KtrContext
@@ -11,17 +5,6 @@ from .result import KtrResult
 
 
 def ktr_mkdirp(path: str) -> KtrResult:
-    """
-    This function checks for directory existence and the ability to write to it. If the directory
-    does not exist, it will be created.
-
-    Arguments:
-        str path:   path of directory to check and create
-
-    Returns:
-        bool:       success (or not)
-    """
-
     ret = KtrResult(name="bootstrap")
 
     if os.path.exists(path):
@@ -41,15 +24,6 @@ def ktr_mkdirp(path: str) -> KtrResult:
 
 
 def ktr_bootstrap(context: KtrContext) -> KtrResult:
-    """
-    This function has to be called before any other actions are attempted on packages. It ensures
-    that the required directory structure is present. If it fails, kentauros execution will be
-    aborted.
-
-    Returns:
-        bool:       success (or not)
-    """
-
     ret = KtrResult(name="bootstrap")
 
     for path in [context.get_basedir(), context.get_confdir(), context.get_datadir(),

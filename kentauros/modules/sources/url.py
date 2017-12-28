@@ -1,9 +1,3 @@
-"""
-This sub-module contains only contains the :py:class:`UrlSource` class, which has methods for
-handling sources that have `source.type=url` specified and `source.orig` set to a URL of a tarball
-in the package's configuration file.
-"""
-
 import os
 import subprocess as sp
 
@@ -17,18 +11,6 @@ from .abstract import Source
 
 
 class UrlSource(Source):
-    """
-    This Source subclass holds information and methods for handling URL sources.
-
-    * If the `wget` command is not found on the system, `self.active` is automatically set to
-      *False*.
-    * For the purpose of checking connectivity to the remote server, the URL is stored in
-      `self.remote`.
-
-    Arguments:
-        Package package:    package instance this :py:class:`UrlSource` belongs to
-    """
-
     NAME = "URL Source"
 
     def __init__(self, package: KtrPackage, context: KtrContext):
@@ -53,18 +35,6 @@ class UrlSource(Source):
         return self.NAME
 
     def verify(self) -> KtrResult:
-        """
-        This method runs several checks to ensure wget commands can proceed. It is automatically
-        executed at package initialisation. This includes:
-
-        * checks if all expected keys are present in the configuration file
-        * checks if the `wget` binary is installed and can be found on the system
-
-        Returns:
-            bool:   verification success
-        """
-
-        # check if the configuration file is valid
         expected_keys = ["keep", "orig"]
         expected_binaries = ["wget"]
 
@@ -73,30 +43,12 @@ class UrlSource(Source):
         return validator.validate()
 
     def get_keep(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether the downloaded file should be kept
-        """
-
         return self.package.conf.getboolean("url", "keep")
 
     def get_orig(self) -> str:
-        """
-        Returns:
-            str:    string containing the upstream file URL
-        """
-
         return self.package.replace_vars(self.package.conf.get("url", "orig"))
 
     def status(self) -> KtrResult:
-        """
-        This method returns a dictionary containing the package version of the tarball that was last
-        downloaded (as the status is only updated after successful actions).
-
-        Returns:
-            dict:   key-value pairs (property: value)
-        """
-
         if self.last_version is None:
             return KtrResult(True)
         else:
@@ -122,14 +74,6 @@ class UrlSource(Source):
             return KtrResult(True)
 
     def get(self) -> KtrResult:
-        """
-        This method executes the download of the file specified by the URL to the package source
-        directory.
-
-        Returns:
-            bool:  *True* if successful, *False* if not or source already exists
-        """
-
         ret = KtrResult(name=self.name())
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not

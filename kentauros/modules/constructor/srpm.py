@@ -1,9 +1,3 @@
-"""
-This module contains the :py:class:`SrpmConstructor` class, which can be used to construct .src.rpm
-packages.
-"""
-
-
 import configparser as cp
 import glob
 import os
@@ -22,20 +16,6 @@ from .rpm import RPMSpec, do_release_bump, parse_release
 
 
 class SrpmConstructor(Constructor):
-    """
-    This :py:class:`Constructor` subclass implements methods for all stages of building and
-    exporting source packages. At class instantiation, it checks for existence of `rpmbuild` and
-    `rpmdev-bumpspec` binaries. If they are not found in ``$PATH``, this instance is rendered
-    inactive.
-
-    Arguments:
-        Package package:    package for which this src.rpm constructor is for
-
-    Attributes:
-        bool active:        determines if this instance is active
-        str dirs:           dictionary containing some directory paths
-    """
-
     NAME = "SRPM Constructor"
 
     def __init__(self, package: KtrPackage, context: KtrContext):
@@ -70,21 +50,6 @@ class SrpmConstructor(Constructor):
         return self.NAME
 
     def verify(self) -> KtrResult:
-        """
-        This method runs several checks to ensure srpm builds can proceed. It is automatically
-        executed at package initialisation. This includes:
-
-        * checks if all expected keys are present in the configuration file
-        * checks if the `mock` binary is installed and can be found on the system
-        * checks if the current user is allowed to run builds with mock
-        * checks if the current user is root (building as root is strongly discouraged)
-        * checks if the .spec file is present at the expected location
-
-        Returns:
-            bool:   verification success
-        """
-
-        # check if the configuration file is valid
         expected_keys = []
         expected_binaries = ["rpmbuild", "rpmdev-bumpspec"]
         expected_files = [self.path]
@@ -95,17 +60,6 @@ class SrpmConstructor(Constructor):
         return validator.validate()
 
     def _get_last_version(self, spec: RPMSpec, logger: LogCollector) -> str:
-        """
-        This method tries to read the latest state from the state database - if that is not
-        available, the .spec file is parsed as a fallback.
-
-        Arguments:
-            RPMSpec spec:   rpm spec object
-
-        Returns:
-            str:            last known version
-        """
-
         assert isinstance(spec, RPMSpec)
 
         saved_state = self.context.state.read(self.package.conf_name)
@@ -129,17 +83,6 @@ class SrpmConstructor(Constructor):
         return spec.get_version()
 
     def _get_last_release(self, spec: RPMSpec, logger: LogCollector):
-        """
-        This method tries to read the latest state from the state database - if that is not
-        available, the .spec file is parsed as a fallback.
-
-        Arguments:
-            RPMSpec spec:   rpm spec object
-
-        Returns:
-            str:            last known release
-        """
-
         assert isinstance(spec, RPMSpec)
 
         saved_state = self.context.state.read(self.package.conf_name)
@@ -194,12 +137,6 @@ class SrpmConstructor(Constructor):
         return KtrResult(True, state=state)
 
     def init(self) -> KtrResult:
-        """
-        This method creates a temporary directory (which is then set to `$HOME` in the
-        :py:meth:`SrpmConstructor.build()` method) and other necessary sub-directories (here:
-        `SOURCES`, `SRPMS`, `SPECS`).
-        """
-
         ret = KtrResult(name=self.name())
 
         # make sure to finally call self.clean()!
@@ -231,10 +168,6 @@ class SrpmConstructor(Constructor):
         return ret.submit(True)
 
     def _check_source_presence(self, logger: LogCollector) -> bool:
-        """
-        This method checks if the Source's output directory is present.
-        """
-
         # source is a NoSource
         if self.stype is None:
             return True
@@ -269,11 +202,6 @@ class SrpmConstructor(Constructor):
             return True
 
     def _copy_sources(self, logger: LogCollector):
-        """
-        This method copies all files (not directories) in the sources directory to the
-        `rpmbuild/SOURCES` directory.
-        """
-
         for entry in os.listdir(self.sdir):
             entry_path = os.path.join(self.sdir, entry)
             if os.path.isfile(entry_path):
@@ -308,10 +236,6 @@ class SrpmConstructor(Constructor):
         return keep
 
     def _cleanup_sources(self) -> KtrResult:
-        """
-        This method cleans up the Source's output directory according to settings.
-        """
-
         ret = KtrResult(name=self.name())
 
         sources = self._get_source_list()
@@ -339,24 +263,10 @@ class SrpmConstructor(Constructor):
         return ret.submit(True)
 
     def _copy_configuration(self, logger: LogCollector):
-        """
-        This method copies the package configuration file to the `rpmbuild/SOURCES` directory in
-        case it is included in the package build.
-        """
-
         shutil.copy2(self.package.file, self.dirs["source_dir"])
         logger.log("Package configuration copied to SOURCES: " + self.package.file)
 
     def _get_old_status(self, logger: LogCollector) -> (str, str):
-        """
-        This method tries to determine the old Version and Release strings from the best available
-        source. If the local state database has not yet been updated with those values, the .spec
-        file is parsed as a fallback.
-
-        Returns:
-            tuple:      (version, release)
-        """
-
         spec = RPMSpec(self.path, self.package, self.context)
 
         old_version = self._get_last_version(spec, logger)
@@ -365,20 +275,9 @@ class SrpmConstructor(Constructor):
         return old_version, old_release
 
     def _get_spec_destination(self) -> str:
-        """This method calculates the destination of the .spec file in the `rpmbuild/SPECS` dir."""
         return os.path.join(self.dirs["spec_dir"], self.package.name + ".spec")
 
     def _prepare_spec(self, logger: LogCollector) -> str:
-        """
-        This method sets the `Version` and `Source0` tags in the template spec file and resets the
-        `Release` tag to `0%{dist}` if the version has changed (to the best of the program's
-        knowledge). A preamble to the .spec file containing all necessary macros / definitions is
-        generated (and returned). Lastly, the spec is exported to the destination file.
-
-        Returns:
-            str:        the contents of the .spec preamble
-        """
-
         spec = RPMSpec(self.path, self.package, self.context)
 
         spec.set_version()
@@ -404,10 +303,6 @@ class SrpmConstructor(Constructor):
 
     @staticmethod
     def _print_debug_info(new_version, old_version, old_release, logger: LogCollector):
-        """
-        This method prints debug information about old and new Version and Release strings.
-        """
-
         assert isinstance(new_version, str)
         assert isinstance(old_version, str)
         assert isinstance(old_release, str)
@@ -417,14 +312,6 @@ class SrpmConstructor(Constructor):
         logger.dbg("Old Release: " + old_release)
 
     def _do_initial_build_prep(self, old_release: str, new_spec_path: str) -> KtrResult:
-        """
-        This method prepares the .spec file for an initial package build.
-
-        Arguments:
-            str old_release:        old release string
-            str new_spec_path:      path of new .spec file
-        """
-
         assert isinstance(old_release, str)
         assert isinstance(new_spec_path, str)
 
@@ -444,13 +331,6 @@ class SrpmConstructor(Constructor):
             return do_release_bump(new_spec_path, self.context, message)
 
     def _do_packaging_only_build_prep(self, new_spec_path: str) -> KtrResult:
-        """
-        This method prepares the .spec file for a packaging-only change.
-
-        Arguments:
-            str new_spec_path:      path of new .spec file
-        """
-
         assert isinstance(new_spec_path, str)
 
         if "message" in self.context.arguments():
@@ -464,13 +344,6 @@ class SrpmConstructor(Constructor):
             return do_release_bump(new_spec_path, self.context, message)
 
     def _do_snapshot_update_build_prep(self, new_spec_path: str) -> KtrResult:
-        """
-        This method prepares the .spec file for a snapshot update.
-
-        Arguments:
-            str new_spec_path:      path of new .spec file
-        """
-
         assert isinstance(new_spec_path, str)
 
         new_rpm_spec = RPMSpec(new_spec_path, self.package, self.context)
@@ -480,28 +353,12 @@ class SrpmConstructor(Constructor):
         return do_release_bump(new_spec_path, self.context, "Update to latest snapshot.")
 
     def _do_version_update_build_prep(self, new_spec_path: str) -> KtrResult:
-        """
-        This method prepares the .spec file for a version update.
-
-        Arguments:
-            str new_spec_path:      path of new .spec file
-        """
-
         assert isinstance(new_spec_path, str)
 
         return do_release_bump(new_spec_path,
                                "Update to version " + self.package.get_version() + ".")
 
     def _restore_spec_template(self, new_spec_path: str, preamble: str):
-        """
-        This method restores the original .spec file template (without added preamble, but with
-        possibly added changelog entries).
-
-        Args:
-            str new_spec_path:      path of the new spec file
-            str preamble:           determined preamble string
-        """
-
         assert isinstance(new_spec_path, str)
         assert isinstance(preamble, str)
 
@@ -524,29 +381,6 @@ class SrpmConstructor(Constructor):
         new_rpm_spec.write_contents_to_file(self.path)
 
     def _copy_specs_around(self, logger: LogCollector) -> bool:
-        """
-        This method handles the package's .spec file.
-
-        Variables containing the old and new Version and Release strings are calculated (from all
-        available sources of information, including the old spec file and the local state database).
-
-        A preamble to the spec file is generated based on which macros are expected to be set for
-        different types of sources and is prepended to the output .spec file.
-
-        Based on the information about old and new Version and Release strings, whether a VCS update
-        triggered this build or the build was forced, the new Version string is generated.
-
-        * The Release string might not change in case there are no changes to the package and a
-          simple construct action has been triggered. No changelog entry is added.
-        * If the Version string has changed between builds (or it is the first package build), the
-          Release is set to 1 and a changelog entry is added to the .spec file.
-        * If a package rebuild is forced (by the `--force` CLI argument, the Release is incremented
-          by 1 and a changelog message is added to the .spec file.
-        * If a build has been triggered because of an updated VCS snapshot, the Release is reset to
-          1 and a changelog entry is added. This only works if the state database has all necessary
-          information.
-        """
-
         spec = RPMSpec(self.path, self.package, self.context)
 
         new_version = spec.build_version_string()
@@ -625,13 +459,6 @@ class SrpmConstructor(Constructor):
         return True
 
     def prepare(self) -> KtrResult:
-        """
-        This method prepares all files necessary for source package assembly.
-
-        Returns:
-            bool:           returns `True` if the preparation was successful.
-        """
-
         ret = KtrResult(name=self.name())
 
         if self.stype is None:
@@ -662,12 +489,6 @@ class SrpmConstructor(Constructor):
         return ret.submit(ret.success and success)
 
     def build(self) -> KtrResult:
-        """
-        This method executes the actual SRPM package assembly. It sets `$HOME` to the created
-        temporary directory and executes `rpmbuild -bs` with the copy of the package spec file in
-        `rpmbuild/SPECS`. After that, `$HOME` is reset to the old value.
-        """
-
         ret = KtrResult(name=self.name())
 
         # construct rpmbuild command
@@ -707,12 +528,6 @@ class SrpmConstructor(Constructor):
         return ret.submit(success)
 
     def export(self) -> KtrResult:
-        """
-        This method copies the assembled source packages from `rpmbuild/SRPMS` to the directory for
-        built packages as specified in the kentauros configuration. If multiple SRPM packages are
-        found, they all are copied.
-        """
-
         ret = KtrResult(name=self.name())
 
         srpms = glob.glob(os.path.join(self.dirs["srpm_dir"], "*.src.rpm"))

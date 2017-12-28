@@ -1,8 +1,3 @@
-"""
-This module contains the :py:class:`MockBuilder` class, which can be used to build binary packages
-from src.rpm packages.
-"""
-
 import fcntl
 import glob
 import grp
@@ -23,14 +18,6 @@ DEFAULT_VAR_PATH = "/var/lib/mock"
 
 
 class MockError(Exception):
-    """
-    This custom exception will be raised when errors occur during parsing of
-    mock configuration files.
-
-    Arguments:
-        str value:  informational string accompanying the exception
-    """
-
     def __init__(self, value=""):
         super().__init__()
         self.value = value
@@ -40,27 +27,10 @@ class MockError(Exception):
 
 
 def get_default_mock_dist() -> str:
-    """
-    This helper function tries to figure out which dist is the default one.
-
-    Returns:
-        str:    dist string in default format
-    """
-
     return os.path.basename(os.path.realpath(DEFAULT_CFG_PATH)).replace(".cfg", "")
 
 
 def get_dist_from_mock_config(dist: str) -> str:
-    """
-    This helper function tries to read the "real" dist string from a custom dist config file.
-
-    Arguments:
-        str dist:   name of the custom dist
-
-    Returns:
-        str:        name of the underlying "standard" dist
-    """
-
     cfg_dir = os.path.dirname(DEFAULT_CFG_PATH)
     cfg_dist = os.path.join(cfg_dir, dist + ".cfg")
 
@@ -75,32 +45,10 @@ def get_dist_from_mock_config(dist: str) -> str:
 
 
 def get_dist_result_path(dist: str) -> str:
-    """
-    This helper function constructs the mock result path for a given dist string.
-
-    Arguments:
-        str dist:   name of the standard dist
-
-    Returns:
-        str:        path pointing to the mock result directory for this dist
-    """
-
     return os.path.join(DEFAULT_VAR_PATH, dist, "result")
 
 
 def get_mock_cmd() -> str:
-    """
-    This function tries to determine the correct mock binary path. If something is messing with the
-    `$PATH` environment variable, it will try to account for that. If mock is not installed (or
-    cannot be found within `$PATH`, this function will raise an Exception.
-
-    Raises:
-        subprocess.CalledProcessError
-
-    Returns:
-        str:    path to the mock binary
-    """
-
     mock_cmd = shutil.which("mock")
 
     # check if the right binary is used or if something is messing up $PATH
@@ -111,20 +59,6 @@ def get_mock_cmd() -> str:
 
 
 class MockBuild:
-    """
-    This helper class is used for the actual execution of mock.
-
-    Arguments:
-        str mock:   path of the used mock binary
-        str path:   path of the SRPM package that will be built
-        str dist:   chroot that the package will be built in
-
-    Attributes:
-        str mock:   stores the path of the used mock binary
-        str path:   stores the path of the SRPM package that will be built
-        str dist:   stores the chroot that the package will be built in
-    """
-
     NAME = "Mock Build"
 
     def __init__(self, mock: str, path: str, context: KtrContext, dist: str = None):
@@ -139,24 +73,9 @@ class MockBuild:
             self.dist = dist
 
     def name(self):
-        """
-        This method returns the module name for generating log messages.
-
-        Returns:
-            str:    module name for log messages
-        """
-
         return self.NAME
 
     def get_command(self) -> list:
-        """
-        This method returns the argument list needed by the subprocess method call, assembled from
-        dist and path.
-
-        Returns:
-            list:   argument list for consumption by subprocess methods
-        """
-
         cmd = [self.mock]
 
         # add --verbose or --quiet depending on settings
@@ -174,14 +93,6 @@ class MockBuild:
         return cmd
 
     def build(self) -> KtrResult:
-        """
-        This method starts the mock build (and waits for already running builds with the same
-        chroot to finish before that).
-
-        Returns:
-            int:    return code of the subprocess call
-        """
-
         ret = KtrResult(name=self.name())
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
@@ -218,18 +129,6 @@ class MockBuild:
 
 
 class MockBuilder(Builder):
-    """
-    This :py:class:`Builder` subclass is used to hold information and methods for executing a local
-    package build using ``mock``. At class instantiation, it checks for existence of the ``mock``
-    binary. If it is not found in ``$PATH``, this instance is set to inactive.
-
-    Arguments:
-        Package package:    package for which this mock/srpm builder is for
-
-    Attributes:
-        bool active:        determines if this instance is active
-    """
-
     def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
         self.edir = os.path.join(context.get_expodir(), self.package.conf_name)
@@ -241,19 +140,6 @@ class MockBuilder(Builder):
         return "Mock Builder for Package '" + self.package.conf_name + "'"
 
     def verify(self) -> KtrResult:
-        """
-        This method runs several checks to ensure mock builds can proceed. It is automatically
-        executed at package initialisation. This includes:
-
-        * checks if all expected keys are present in the configuration file
-        * checks if the `mock` binary is installed and can be found on the system
-        * checks if the current user is allowed to run builds with mock
-        * checks if the current user is root (building as root is strongly discouraged)
-
-        Returns:
-            bool:   verification success
-        """
-
         expected_keys = ["active", "dists", "export", "keep"]
         expected_binaries = ["mock"]
 
@@ -278,19 +164,9 @@ class MockBuilder(Builder):
         return ret.submit(success)
 
     def get_active(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether this builder should be active
-        """
-
         return self.package.conf.getboolean("mock", "active")
 
     def get_dists(self) -> list:
-        """
-        Returns:
-            list:   list of chroots that are going to be used for sequential builds
-        """
-
         dists = self.package.conf.get("mock", "dists").split(",")
 
         if dists == [""]:
@@ -299,19 +175,9 @@ class MockBuilder(Builder):
         return dists
 
     def get_export(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether this builder should export built packages
-        """
-
         return self.package.conf.getboolean("mock", "export")
 
     def get_keep(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether this builder should keep source packages
-        """
-
         return self.package.conf.getboolean("mock", "keep")
 
     def status(self) -> KtrResult:
@@ -324,22 +190,6 @@ class MockBuilder(Builder):
         return KtrResult(True)
 
     def build(self) -> KtrResult:
-        """
-        This method constructs the :py:class:`MockBuilder` instances, which contain the commands
-        for executing the builds, and executes them in turn. It also checks if the executing user is
-        allowed to execute a mock build by checking if ``$USER`` is "root" or if the user is in the
-        "mock" group.
-
-        If no source packages are found in the specified directory (``PACKDIR``), the build
-        terminates without executing mock. If SRPM packages are found, only the most recent
-        (biggest version number, determined just by sorting!) is built, for all specified chroots.
-
-        After the last mock invocation, a list of successful and unsuccessful builds is printed.
-
-        Returns:
-            bool:   ``True`` if all builds succeeded, ``False`` if not
-        """
-
         ret = KtrResult(name=self.name())
 
         if not self.get_active():
@@ -394,14 +244,6 @@ class MockBuilder(Builder):
         return ret.submit(not builds_failure)
 
     def export(self) -> KtrResult:
-        """
-        This method copies the build results (if any) from the mock result directory to the
-        directory specified for binary package exports.
-
-        Returns:
-            bool:   *True* if successful, *False* if not
-        """
-
         if not self.get_active():
             return KtrResult(True)
 

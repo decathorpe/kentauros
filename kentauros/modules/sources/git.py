@@ -1,9 +1,3 @@
-"""
-This sub-module contains only contains the :py:class:`GitSource` class, which has methods for
-handling sources that have `source.type=git` specified and `source.orig` set to a git repository URL
-in the package's configuration file.
-"""
-
 import configparser as cp
 import datetime
 import os
@@ -213,21 +207,6 @@ FALLBACK_TEMPLATE = "%{version}%{version_sep}%{date}.%{time}.git%{shortcommit}"
 
 
 class GitSource(Source):
-    """
-    This Source subclass holds information and methods for handling git sources.
-
-    - If the `git` command is not found on the system, `self.active` is automatically set to `False`
-    - For the purpose of checking connectivity to the remote server, the URL is stored in
-      `self.remote`.
-    - If neither `branch` nor `commit` hash has been set in the package configuration file,
-      then the branch defaults to `master` (this is also written to the configuration file).
-    - If a specific commit hash has been specified in the package configuration file, `shallow` is
-      automatically set to `False` (this is also written to the configuration file).
-
-    Arguments:
-        Package package:  package instance this :py:class:`GitSource` belongs to
-    """
-
     NAME = "git Source"
 
     def __init__(self, package: KtrPackage, context: KtrContext):
@@ -246,20 +225,6 @@ class GitSource(Source):
         return self.NAME
 
     def verify(self) -> KtrResult:
-        """
-        This method runs several checks to ensure git commands can proceed. It is automatically
-        executed at package initialisation. This includes:
-
-        * checks if all expected keys are present in the configuration file
-        * checks that the configuration file is consistent (i.e. shallow clone and commit checkout
-          are not compatible)
-        * checks if the `git` binary is installed and can be found on the system
-
-        Returns:
-            bool:   verification success
-        """
-
-        # check if the configuration file is valid
         expected_keys = ["keep", "keep_repo", "orig", "ref", "shallow"]
         expected_binaries = ["git"]
 
@@ -277,39 +242,15 @@ class GitSource(Source):
         return ret
 
     def get_keep(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether the exported tarball should be kept
-        """
-
         return self.package.conf.getboolean("git", "keep")
 
     def get_keep_repo(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether the git repository should be kept
-        """
-
         return self.package.conf.getboolean("git", "keep_repo")
 
     def get_orig(self) -> str:
-        """
-        Returns:
-            str:    string containing the upstream git repository URL
-        """
-
         return self.package.replace_vars(self.package.conf.get("git", "orig"))
 
     def get_ref(self) -> str:
-        """
-        Optionally, a specific ref (branch, tag, or commit hash) can be specified in the package
-        configuration file for git sources. This method returns that string (or "master" as a
-        fallback value).
-
-        Returns:
-            str:    string containing the ref that is set in the package configuration
-        """
-
         ref = self.package.conf.get("git", "ref")
 
         if not ref:
@@ -322,11 +263,6 @@ class GitSource(Source):
         return repo.get_commit(self.get_ref())
 
     def get_shallow(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether the git checkout depth should be 1 or not
-        """
-
         return self.package.conf.getboolean("git", "shallow")
 
     def datetime(self) -> KtrResult:
@@ -406,15 +342,6 @@ class GitSource(Source):
         return ret
 
     def commit(self) -> KtrResult:
-        """
-        This method provides an easy way of getting the commit hash of the requested commit. It
-        also stores the latest commit hash between method invocations, if the source goes away and
-        the hash is needed again.
-
-        Returns:
-            str:        commit hash
-        """
-
         ret = KtrResult(name=self.name())
 
         if not os.access(self.dest, os.R_OK):
@@ -448,15 +375,6 @@ class GitSource(Source):
         return ret
 
     def status(self) -> KtrResult:
-        """
-        This method returns statistics describing this BzrSource object and its associated file(s).
-        At the moment, this only includes the branch and commit hash specified in the configuration
-        file.
-
-        Returns:
-            dict:   key-value pairs (property: value)
-        """
-
         ret = KtrResult(name=self.name())
 
         dt = self.datetime_str()
@@ -512,15 +430,6 @@ class GitSource(Source):
             return KtrResult(True, state=dict(git_ref=self.get_ref()))
 
     def formatver(self) -> KtrResult:
-        """
-        This method assembles a standardised version string for git sources. This includes the
-        package source base version, the git commit date and time and the first eight characters of
-        the git commit hash, for example: ``11.3.0+160422.234950.git39e9cf6c``
-
-        Returns:
-            str:        nicely formatted version string
-        """
-
         ret = KtrResult(name=self.name())
 
         try:
@@ -584,14 +493,6 @@ class GitSource(Source):
         return repo.checkout(ref)
 
     def get(self) -> KtrResult:
-        """
-        This method executes the git repository download to the package source directory. This
-        respects the branch and commit set in the package configuration file.
-
-        Returns:
-            bool: *True* if successful, *False* if not or source pre-exists
-        """
-
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
@@ -648,15 +549,6 @@ class GitSource(Source):
         return ret
 
     def update(self) -> KtrResult:
-        """
-        This method executes a git repository update as specified in the package configuration file.
-        If a specific commit has been set in the config file, this method will not attempt to
-        execute an update.
-
-        Returns:
-            bool: *True* if update available and successful, *False* if not
-        """
-
         ret = KtrResult(name=self.name())
 
         # check for connectivity to server
@@ -705,11 +597,6 @@ class GitSource(Source):
         return ret.submit(updated)
 
     def _remove_not_keep(self, logger: LogCollector):
-        """
-        This local function removes the git repository and is called after source export, if
-        not keeping the repository around was specified in the configuration file.
-        """
-
         if not self.get_keep_repo():
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
@@ -718,15 +605,6 @@ class GitSource(Source):
             logger.log("git repository has been deleted after exporting to tarball.")
 
     def export(self) -> KtrResult:
-        """
-        This method executes the export from the package source repository to a tarball with pretty
-        file name. It also respects the `git.keep=False` setting in the package configuration file -
-        the git repository will be deleted from disk after the export if this flag is set.
-
-        Returns:
-            bool:   *True* if successful or already done, *False* at failure
-        """
-
         ret = KtrResult(name=self.name())
 
         # check if git repo exists

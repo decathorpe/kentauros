@@ -2,14 +2,8 @@
 
 # PYTHON_ARGCOMPLETE_OK
 
-"""ktr is kentauros.py
-This script launches kentauros by executing the appropriate function as entry point.
-"""
-
-
 import sys
 
 from kentauros.cli import KtrCLIRunner
-
 
 sys.exit(KtrCLIRunner().run())

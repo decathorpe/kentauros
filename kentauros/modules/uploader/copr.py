@@ -1,9 +1,3 @@
-"""
-This module contains the :py:class:`CoprUploader` class, which can be used to upload .src.rpm
-packages to `copr <http://copr.fedorainfracloud.org>`_.
-"""
-
-
 import glob
 import os
 import subprocess as sp
@@ -20,18 +14,6 @@ DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
 
 
 class CoprUploader(Uploader):
-    """
-    This :py:class:`Uploader` subclass implements methods for all stages of uploading source
-    packages. At class instantiation, it checks for existence of the `copr-cli` binary. If it is
-    not found in `$PATH`, this instance is set to inactive.
-
-    Arguments:
-        Package package:    package for which this src.rpm uploader is for
-
-    Attributes:
-        bool active:        determines if this instance is active
-    """
-
     NAME = "COPR Uploader"
 
     def __init__(self, package: KtrPackage, context: KtrContext):
@@ -46,18 +28,6 @@ class CoprUploader(Uploader):
         return self.NAME
 
     def verify(self) -> KtrResult:
-        """
-        This method runs several checks to ensure copr uploads can proceed. It is automatically
-        executed at package initialisation. This includes:
-
-        * checks if all expected keys are present in the configuration file
-        * checks if the `copr-cli` binary is installed and can be found on the system
-
-        Returns:
-            bool:   verification success
-        """
-
-        # check if the configuration file is valid
         expected_keys = ["active", "dists", "keep", "repo", "wait"]
         expected_binaries = ["copr-cli"]
 
@@ -66,19 +36,9 @@ class CoprUploader(Uploader):
         return validator.validate()
 
     def get_active(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether this builder should be active
-        """
-
         return self.package.conf.getboolean("copr", "active")
 
     def get_dists(self) -> list:
-        """
-        Returns:
-            list:   list of chroots that are going to be used for sequential builds
-        """
-
         dists = self.package.conf.get("copr", "dists").split(",")
 
         if dists == [""]:
@@ -87,27 +47,12 @@ class CoprUploader(Uploader):
         return dists
 
     def get_keep(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether this builder should keep source packages
-        """
-
         return self.package.conf.getboolean("copr", "keep")
 
     def get_repo(self) -> str:
-        """
-        Returns:
-            str:    name of the repository to upload to
-        """
-
         return self.package.conf.get("copr", "repo")
 
     def get_wait(self) -> bool:
-        """
-        Returns:
-            bool:   boolean value indicating whether this builder should wait for remote builds
-        """
-
         return self.package.conf.getboolean("copr", "wait")
 
     def status(self) -> KtrResult:
@@ -120,15 +65,6 @@ class CoprUploader(Uploader):
         return KtrResult(True)
 
     def upload(self) -> KtrResult:
-        """
-        This method executes the upload of the newest SRPM package found in the package directory.
-        The invocation of `copr-cli` also includes the chroot settings set in the package
-        configuration file.
-
-        Returns:
-            bool:       returns *False* if anything goes wrong, *True* otherwise
-        """
-
         ret = KtrResult(name=self.name())
 
         if not self.get_active():

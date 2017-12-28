@@ -8,17 +8,6 @@ from argparse import ArgumentParser, _SubParsersAction
 # pylint: disable=unused-argument
 # noinspection PyUnusedLocal
 def package_name_completer(prefix, **kwargs):
-    """
-    This function returns a list of package names (found in the package configs directory by glob)
-    that start with the 'prefix' argument.
-
-    Arguments:
-        str prefix: string prefix
-
-    Returns:
-        list:       list of matching package names
-    """
-
     if os.path.exists("kentaurosrc"):
         config = configparser.ConfigParser()
         config.read("kentaurosrc")
