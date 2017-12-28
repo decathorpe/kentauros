@@ -13,6 +13,11 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
         self.pdir = os.path.join(self.context.get_packdir(), self.package.conf_name)
         self.actions["build"] = self.execute
 
+        # TODO: test "constructor build all" action
+        # TODO: test "constructor clean all" action
+        # TODO: test "constructor status all" action
+        # TODO: test "constructor verify all" action
+
     @abc.abstractmethod
     def status(self) -> KtrResult:
         pass

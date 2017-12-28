@@ -11,8 +11,12 @@ class PackageModule(KtrModule):
         super().__init__(package, context)
 
         self.actions["chain"] = self.execute
-        self.actions["import"] = self.imports
-        self.actions["status"] = self.status_string
+
+        # TODO: test "package chain all" action
+        # TODO: test "package clean all" action
+        # TODO: test "package import all" action
+        # TODO: test "package status all" action
+        # TODO: test "package verify all" action
 
     def name(self):
         return "{} {}".format(self.NAME, self.package.name)
