@@ -1,4 +1,5 @@
 from .meta import KtrMetaTask
+from .task import KtrTask
 from ..result import KtrResult
 
 
@@ -11,12 +12,11 @@ class KtrTaskList(KtrMetaTask):
 
     def execute(self) -> KtrResult:
         ret = KtrResult()
-        success = True
 
         for task in self.tasks:
-            assert isinstance(task, KtrMetaTask)
+            assert isinstance(task, KtrTask)
 
             res = task.execute()
             ret.collect(res)
 
-        return ret.submit(success)
+        return ret

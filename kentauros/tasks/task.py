@@ -14,7 +14,13 @@ class KtrTask(KtrMetaTask):
         self.action = action
 
     def execute(self) -> KtrResult:
-        ret = self.module.act(self.action)
+        ret = KtrResult()
+        ret.messages.log("Processing package: {}".format(self.package.conf_name))
+
+        res = self.module.act(self.action)
+        ret.collect(res)
+
+        ret.messages.log("")
 
         if ret.success:
             self.context.state.write(self.package.conf_name, ret.state)

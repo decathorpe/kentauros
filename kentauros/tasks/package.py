@@ -54,7 +54,15 @@ class KtrPackageTask(KtrMetaTask):
             ret.messages.err("This action ({}) is not supported for packages.".format(self.action))
             return ret.submit(False)
 
-        return action()
+        ret = KtrResult()
+        ret.messages.log("Processing package: {}".format(self.package.conf_name))
+
+        res = action()
+        ret.collect(res)
+
+        ret.messages.log("")
+
+        return ret
 
     def _collect_action(self) -> KtrResult:
         # "simple" collecting action
