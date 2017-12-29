@@ -14,13 +14,59 @@ from ...result import KtrResult
 from ...validator import KtrValidator
 
 
+class RPMBuild:
+    def __init__(self):
+        self.basepath = tempfile.mkdtemp()
+
+        # construct directory paths
+        self.rpmbuild_dir = os.path.join(self.basepath, "rpmbuild")
+        self.build_dir = os.path.join(self.basepath, "rpmbuild", "BUILD")
+        self.buildroot_dir = os.path.join(self.basepath, "rpmbuild", "BUILDROOT")
+        self.rpm_dir = os.path.join(self.basepath, "rpmbuild", "RPMS")
+        self.source_dir = os.path.join(self.basepath, "rpmbuild", "SOURCES")
+        self.spec_dir = os.path.join(self.basepath, "rpmbuild", "SPECS")
+        self.srpm_dir = os.path.join(self.basepath, "rpmbuild", "SRPMS")
+
+    def init(self) -> KtrResult:
+        ret = KtrResult()
+
+        # create $TEMPDIR/rpmbuild
+        if not os.path.exists(self.rpmbuild_dir):
+            os.mkdir(self.rpmbuild_dir)
+
+        ret.messages.dbg("Temporary rpmbuild directory created: " + self.rpmbuild_dir)
+
+        # create $TEMPDIR/rpmbuild/{SPECS,SRPMS,SOURCES}
+        for directory in [self.spec_dir, self.srpm_dir, self.source_dir]:
+            if not os.path.exists(directory):
+                os.mkdir(directory)
+
+        ret.messages.dbg("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.")
+
+        return ret
+
+    def cleanup(self) -> KtrResult:
+        ret = KtrResult()
+
+        try:
+            assert os.path.exists(self.basepath)
+            assert os.path.isdir(self.basepath)
+        except AssertionError:
+            ret.messages.log("The temporary rpmbuild directory isn't present as expected.")
+            ret.submit(False)
+
+        shutil.rmtree(self.basepath)
+        ret.messages.dbg("Temporary rpmbuild directory '{}' deleted.".format(self.basepath))
+        return ret.submit(True)
+
+
 class SrpmConstructor(Constructor):
     NAME = "SRPM Constructor"
 
     def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
-        self.dirs = dict()
+        self.rpmbuild = RPMBuild()
 
         self.path = os.path.join(self.context.get_specdir(),
                                  self.package.conf_name,
@@ -135,37 +181,6 @@ class SrpmConstructor(Constructor):
 
         return KtrResult(True, state=state)
 
-    def init(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
-
-        # make sure to finally call self.clean()!
-        self.dirs["tempdir"] = tempfile.mkdtemp()
-
-        ret.messages.dbg("Temporary directory " + self.dirs["tempdir"] + " created.")
-
-        self.dirs["rpmbuild_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild")
-        self.dirs["build_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "BUILD")
-        self.dirs["buildroot_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "BUILDROOT")
-        self.dirs["rpm_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "RPMS")
-        self.dirs["source_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SOURCES")
-        self.dirs["spec_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SPECS")
-        self.dirs["srpm_dir"] = os.path.join(self.dirs["tempdir"], "rpmbuild", "SRPMS")
-
-        # create $TEMPDIR/rpmbuild
-        if not os.path.exists(self.dirs["rpmbuild_dir"]):
-            os.mkdir(self.dirs["rpmbuild_dir"])
-
-        ret.messages.dbg("Temporary rpmbuild directory created: " + self.dirs["tempdir"])
-
-        # create $TEMPDIR/rpmbuild/{SPECS,SRPMS,SOURCES}
-        for directory in [self.dirs["spec_dir"], self.dirs["srpm_dir"], self.dirs["source_dir"]]:
-            if not os.path.exists(directory):
-                os.mkdir(directory)
-
-        ret.messages.dbg("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.")
-
-        return ret.submit(True)
-
     def _check_source_presence(self, logger: LogCollector) -> bool:
         # source is a NoSource
         if self.stype is None:
@@ -204,7 +219,7 @@ class SrpmConstructor(Constructor):
         for entry in os.listdir(self.sdir):
             entry_path = os.path.join(self.sdir, entry)
             if os.path.isfile(entry_path):
-                shutil.copy2(entry_path, self.dirs["source_dir"])
+                shutil.copy2(entry_path, self.rpmbuild.source_dir)
                 logger.log("File copied to SOURCES: " + entry_path)
 
     def _get_source_list(self) -> list:
@@ -262,7 +277,7 @@ class SrpmConstructor(Constructor):
         return ret.submit(True)
 
     def _copy_configuration(self, logger: LogCollector):
-        shutil.copy2(self.package.file, self.dirs["source_dir"])
+        shutil.copy2(self.package.file, self.rpmbuild.source_dir)
         logger.log("Package configuration copied to SOURCES: " + self.package.file)
 
     def _get_old_status(self, logger: LogCollector) -> (str, str):
@@ -274,7 +289,7 @@ class SrpmConstructor(Constructor):
         return old_version, old_release
 
     def _get_spec_destination(self) -> str:
-        return os.path.join(self.dirs["spec_dir"], self.package.name + ".spec")
+        return os.path.join(self.rpmbuild.spec_dir, self.package.name + ".spec")
 
     def _prepare_spec(self, logger: LogCollector) -> str:
         spec = RPMSpec(self.path, self.package, self.context)
@@ -499,16 +514,16 @@ class SrpmConstructor(Constructor):
         else:
             cmd.append("--quiet")
 
-        cmd.extend(["--define", "_topdir {}".format(self.dirs["rpmbuild_dir"])])
-        cmd.extend(["--define", "_builddir {}".format(self.dirs["build_dir"])])
-        cmd.extend(["--define", "_buildrootdir {}".format(self.dirs["buildroot_dir"])])
-        cmd.extend(["--define", "_rpmdir {}".format(self.dirs["rpm_dir"])])
-        cmd.extend(["--define", "_sourcedir {}".format(self.dirs["source_dir"])])
-        cmd.extend(["--define", "_specdir {}".format(self.dirs["spec_dir"])])
-        cmd.extend(["--define", "_srcrpmdir {}".format(self.dirs["srpm_dir"])])
+        cmd.extend(["--define", "_topdir {}".format(self.rpmbuild.rpmbuild_dir)])
+        cmd.extend(["--define", "_builddir {}".format(self.rpmbuild.build_dir)])
+        cmd.extend(["--define", "_buildrootdir {}".format(self.rpmbuild.buildroot_dir)])
+        cmd.extend(["--define", "_rpmdir {}".format(self.rpmbuild.rpm_dir)])
+        cmd.extend(["--define", "_sourcedir {}".format(self.rpmbuild.source_dir)])
+        cmd.extend(["--define", "_specdir {}".format(self.rpmbuild.spec_dir)])
+        cmd.extend(["--define", "_srcrpmdir {}".format(self.rpmbuild.srpm_dir)])
 
         cmd.append("-bs")
-        cmd.append(os.path.join(self.dirs["spec_dir"], self.package.name + ".spec"))
+        cmd.append(os.path.join(self.rpmbuild.spec_dir, self.package.name + ".spec"))
 
         ret.messages.cmd(cmd)
 
@@ -529,7 +544,7 @@ class SrpmConstructor(Constructor):
     def export(self) -> KtrResult:
         ret = KtrResult(name=self.name())
 
-        srpms = glob.glob(os.path.join(self.dirs["srpm_dir"], "*.src.rpm"))
+        srpms = glob.glob(os.path.join(self.rpmbuild.srpm_dir, "*.src.rpm"))
 
         os.makedirs(self.pdir, exist_ok=True)
 
@@ -539,15 +554,11 @@ class SrpmConstructor(Constructor):
 
         return ret.submit(True)
 
-    def cleanup(self) -> KtrResult:
-        shutil.rmtree(self.dirs["tempdir"])
-        return KtrResult(True)
-
     def execute(self) -> KtrResult:
         ret = KtrResult(name=self.name())
 
         # initialize srpm construction
-        res = self.init()
+        res = self.rpmbuild.init()
         ret.collect(res)
 
         # prepare srpm construction
@@ -556,7 +567,7 @@ class SrpmConstructor(Constructor):
 
         if not res.success:
             # clean up temporary directory
-            res = self.cleanup()
+            res = self.rpmbuild.cleanup()
             ret.collect(res)
             ret.messages.log("Source package assembly unsuccessful.")
             return ret.submit(False)
@@ -570,7 +581,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         # clean up temporary directory
-        res = self.cleanup()
+        res = self.rpmbuild.cleanup()
         ret.collect(res)
 
         ret.state["rpm_last_sources"] = self._get_source_list()

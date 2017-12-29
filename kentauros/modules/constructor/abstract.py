@@ -23,14 +23,6 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def init(self) -> KtrResult:
-        pass
-
-    @abc.abstractmethod
-    def prepare(self) -> KtrResult:
-        pass
-
-    @abc.abstractmethod
     def build(self) -> KtrResult:
         pass
 
@@ -38,6 +30,4 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
     def export(self) -> KtrResult:
         pass
 
-    @abc.abstractmethod
-    def cleanup(self) -> KtrResult:
-        pass
+    # TODO: add "update" action?
