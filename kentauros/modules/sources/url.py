@@ -12,11 +12,14 @@ from ...validator import KtrValidator
 class WGetCommand(ShellCommand):
     NAME = "wget Command"
 
-    def __init__(self, path: str, *args, binary=None):
+    def __init__(self, *args, path: str = None, binary: str = None):
         if binary is None:
             self.exec = "wget"
         else:
             self.exec = binary
+
+        if path is None:
+            path = os.getcwd()
 
         super().__init__(path, self.exec, *args)
 
@@ -104,7 +107,7 @@ class UrlSource(Source):
         # construct wget commands
         cmd = ["wget", self.get_orig(), "-O", self.dest]
 
-        res = WGetCommand(".", *cmd).execute()
+        res = WGetCommand(*cmd).execute()
         ret.collect(res)
 
         if not res.success:

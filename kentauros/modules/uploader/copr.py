@@ -16,11 +16,14 @@ DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
 class COPRCommand(ShellCommand):
     NAME = "copr-cli Command"
 
-    def __init__(self, path: str, *args, binary=None):
+    def __init__(self, *args, path: str = None, binary: str = None):
         if binary is None:
             self.exec = "copr-cli"
         else:
             self.exec = binary
+
+        if path is None:
+            path = os.getcwd()
 
         super().__init__(path, self.exec, *args)
 
@@ -117,7 +120,7 @@ class CoprUploader(Uploader):
 
         ret.messages.cmd(cmd)
 
-        res = COPRCommand(".", *cmd).execute()
+        res = COPRCommand(*cmd).execute()
         ret.collect(res)
 
         if not res.success:

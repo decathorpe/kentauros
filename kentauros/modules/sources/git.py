@@ -19,11 +19,14 @@ from ...validator import KtrValidator
 class GitCommand(ShellCommand):
     NAME = "git Command"
 
-    def __init__(self, path: str, *args, binary=None):
+    def __init__(self, *args, path: str = None, binary: str = None):
         if binary is None:
             self.exec = "git"
         else:
             self.exec = binary
+
+        if path is None:
+            path = os.getcwd()
 
         super().__init__(path, self.exec, *args)
 
@@ -138,7 +141,7 @@ class GitRepo:
             ref = self.ref
         assert isinstance(ref, str)
 
-        ret = GitCommand(self.path, "checkout", ref).execute()
+        ret = GitCommand("checkout", ref, path=self.path).execute()
         return ret
 
     def pull(self, rebase: bool = True, all_branches: bool = True, ref: str = None) -> KtrResult:
@@ -158,7 +161,7 @@ class GitRepo:
 
         # execute "git pull" command
         # ignore return codes different than 0, which indicates "Everything up-to-date" or errors
-        res = GitCommand(self.path, *cmd).execute(ignore_retcode=True)
+        res = GitCommand(*cmd, path=self.path).execute(ignore_retcode=True)
         ret.collect(res)
 
         if not res.success:
@@ -177,8 +180,8 @@ class GitRepo:
             ref = self.ref
         assert isinstance(ref, str)
 
-        ret = GitCommand(self.path, "archive", ref, "--prefix=" + prefix,
-                         "--output", path).execute()
+        ret = GitCommand("archive", ref, "--prefix=" + prefix, "--output", path,
+                         path=self.path).execute()
         return ret
 
     @staticmethod
@@ -191,9 +194,9 @@ class GitRepo:
 
         # clone the repository
         if not shallow:
-            res = GitCommand(".", "clone", orig, path).execute()
+            res = GitCommand("clone", orig, path).execute()
         else:
-            res = GitCommand(".", "clone", "--depth=1", orig, path).execute()
+            res = GitCommand("clone", "--depth=1", orig, path).execute()
 
         ret.collect(res)
 
