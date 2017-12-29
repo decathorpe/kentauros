@@ -188,6 +188,22 @@ def add_builder_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     build_parser.set_defaults(module_action="build")
 
+    build_parser.add_argument(
+        "-b",
+        "--bump",
+        action="store_const",
+        const=True,
+        default=False,
+        help="bump release before building")
+
+    build_parser.add_argument(
+        "-m",
+        "--message",
+        action="store",
+        nargs="?",
+        default=None,
+        help="custom changelog message")
+
     clean_parser: ArgumentParser = builder_parsers.add_parser(
         "clean",
         aliases=["c", "cl", "cle", "clea"],

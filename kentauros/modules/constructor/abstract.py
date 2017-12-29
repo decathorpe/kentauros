@@ -19,10 +19,6 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
         # TODO: test "constructor verify all" action
 
     @abc.abstractmethod
-    def status(self) -> KtrResult:
-        pass
-
-    @abc.abstractmethod
     def build(self) -> KtrResult:
         pass
 

@@ -11,6 +11,9 @@ from ....package import KtrPackage
 from ....result import KtrResult
 
 
+# TODO: Use a ShellCommand subclass for rpmdev-bumpspec commands
+
+
 def parse_release(release: str) -> (str, str):
     if "%{dist}" in release:
         parts = release.split("%{dist}")
