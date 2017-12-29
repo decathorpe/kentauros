@@ -61,3 +61,9 @@ If you want to generate pylint stats or build the docs locally, you will also ne
 
 - `python3-pylint` (for generating stats before commits: `./make-stats.sh`)
 - `python3-sphinx` (for generating and building docs locally: `./make-docs.sh`)
+
+You can install all dependencies with the following command:
+
+```sh
+sudo dnf install copr-cli git mock python3-argcomplete python3-GitPython python3-pylint python3-sphinx python3-tinydb rpm-build rpmdevtools wget
+```
