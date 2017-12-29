@@ -1,18 +1,28 @@
 import glob
 import os
-import subprocess as sp
 
 from .abstract import Uploader
 from ...conntest import is_connected
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
+from ...shellcmd import ShellCommand
 from ...validator import KtrValidator
+
 
 DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
 
 
-# TODO: use a ShellCommand subclass for copr-cli commands
+class COPRCommand(ShellCommand):
+    NAME = "copr-cli Command"
+
+    def __init__(self, path: str, *args, binary=None):
+        if binary is None:
+            self.exec = "copr-cli"
+        else:
+            self.exec = binary
+
+        super().__init__(path, self.exec, *args)
 
 
 class CoprUploader(Uploader):
@@ -106,16 +116,18 @@ class CoprUploader(Uploader):
             return ret.submit(False)
 
         ret.messages.cmd(cmd)
-        res = sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
-        success = (res.returncode == 0)
 
-        if success:
-            if not self.get_keep():
-                os.remove(srpm)
-            return ret.submit(True)
-        else:
+        res = COPRCommand(".", *cmd).execute()
+        ret.collect(res)
+
+        if not res.success:
             ret.messages.log("copr-cli command did not complete successfully.")
             return ret.submit(False)
+
+        if not self.get_keep():
+            os.remove(srpm)
+
+        return ret.submit(True)
 
     def execute(self) -> KtrResult:
         return self.upload()
