@@ -15,10 +15,6 @@ C: 31, 4: Missing method docstring (missing-docstring)
 C: 34, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.definitions
 C:  1, 0: Missing module docstring (missing-docstring)
-************* Module kentauros.bootstrap
-C:  1, 0: Missing module docstring (missing-docstring)
-C:  7, 0: Missing function docstring (missing-docstring)
-C: 26, 0: Missing function docstring (missing-docstring)
 ************* Module kentauros.context
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
@@ -74,6 +70,11 @@ C: 54, 4: Missing method docstring (missing-docstring)
 C: 60, 4: Missing method docstring (missing-docstring)
 C: 63, 4: Missing method docstring (missing-docstring)
 C: 67, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.bootstrap
+W: 29, 0: TODO: create kentaurosrc file from template (fixme)
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  7, 0: Missing function docstring (missing-docstring)
+C: 26, 0: Missing function docstring (missing-docstring)
 ************* Module kentauros.modules.module
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
@@ -205,9 +206,6 @@ C: 11, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.modules.sources
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  9, 0: Missing function docstring (missing-docstring)
-************* Module kentauros.modules.sources.url
-C:  1, 0: Missing module docstring (missing-docstring)
-C: 12, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.modules.sources.git
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 19, 0: Missing class docstring (missing-docstring)
@@ -243,17 +241,13 @@ C: 40, 4: Missing method docstring (missing-docstring)
 C: 44, 4: Missing method docstring (missing-docstring)
 C:110, 4: Missing method docstring (missing-docstring)
 C:166, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.modules.sources.url
+W: 12, 0: TODO: Use a ShellCommand subclass for wget commands (fixme)
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 15, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.modules.uploader
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  7, 0: Missing function docstring (missing-docstring)
-************* Module kentauros.modules.uploader.copr
-C:  1, 0: Missing module docstring (missing-docstring)
-C: 15, 0: Missing class docstring (missing-docstring)
-C: 37, 4: Missing method docstring (missing-docstring)
-C: 40, 4: Missing method docstring (missing-docstring)
-C: 48, 4: Missing method docstring (missing-docstring)
-C: 51, 4: Missing method docstring (missing-docstring)
-C: 54, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.uploader.abstract
 W: 14, 0: TODO: test "uploader clean all" action (fixme)
 W: 15, 0: TODO: test "uploader status all" action (fixme)
@@ -262,6 +256,15 @@ W: 17, 0: TODO: test "uploader verify all" action (fixme)
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  9, 0: Missing class docstring (missing-docstring)
 C: 24, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.modules.uploader.copr
+W: 15, 0: TODO: use a ShellCommand subclass for copr-cli commands (fixme)
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 18, 0: Missing class docstring (missing-docstring)
+C: 40, 4: Missing method docstring (missing-docstring)
+C: 43, 4: Missing method docstring (missing-docstring)
+C: 51, 4: Missing method docstring (missing-docstring)
+C: 54, 4: Missing method docstring (missing-docstring)
+C: 57, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.cli
 C:  1, 0: Missing module docstring (missing-docstring)
 ************* Module kentauros.cli.parser
@@ -301,22 +304,24 @@ C: 10, 4: Missing method docstring (missing-docstring)
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.tasks.package
+W: 69, 0: TODO: implement adding package from templates (fixme)
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 13, 0: Missing class docstring (missing-docstring)
-C: 67, 4: Missing method docstring (missing-docstring)
-C: 84, 4: Missing method docstring (missing-docstring)
-C: 87, 4: Missing method docstring (missing-docstring)
-C: 90, 4: Missing method docstring (missing-docstring)
-C: 93, 4: Missing method docstring (missing-docstring)
-C: 96, 4: Missing method docstring (missing-docstring)
-C:117, 4: Missing method docstring (missing-docstring)
+C: 68, 4: Missing method docstring (missing-docstring)
+C: 72, 4: Missing method docstring (missing-docstring)
+C: 89, 4: Missing method docstring (missing-docstring)
+C: 92, 4: Missing method docstring (missing-docstring)
+C: 95, 4: Missing method docstring (missing-docstring)
+C: 98, 4: Missing method docstring (missing-docstring)
+C:101, 4: Missing method docstring (missing-docstring)
+C:122, 4: Missing method docstring (missing-docstring)
 ************* Module ktr
 C:  1, 0: Missing module docstring (missing-docstring)
 
 
 Report
 ======
-2470 statements analysed.
+2472 statements analysed.
 
 Statistics by type
 ------------------
@@ -328,7 +333,7 @@ Statistics by type
 +---------+-------+-----------+-----------+------------+---------+
 |class    |38     |38         |=          |0.00        |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
-|method   |264    |264        |=          |50.38       |0.00     |
+|method   |265    |265        |=          |50.19       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
 |function |38     |38         |=          |0.00        |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
@@ -382,13 +387,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |2845   |68.14 |2845     |=          |
+|code      |2847   |67.98 |2847     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |64     |1.53  |64       |=          |
+|docstring |65     |1.55  |65       |=          |
 +----------+-------+------+---------+-----------+
-|comment   |175    |4.19  |175      |=          |
+|comment   |179    |4.27  |179      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1091   |26.13 |1091     |=          |
+|empty     |1097   |26.19 |1097     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -412,11 +417,11 @@ Messages by category
 +-----------+-------+---------+-----------+
 |type       |number |previous |difference |
 +===========+=======+=========+===========+
-|convention |252    |252      |=          |
+|convention |253    |253      |=          |
 +-----------+-------+---------+-----------+
 |refactor   |0      |0        |=          |
 +-----------+-------+---------+-----------+
-|warning    |17     |17       |=          |
+|warning    |21     |21       |=          |
 +-----------+-------+---------+-----------+
 |error      |0      |0        |=          |
 +-----------+-------+---------+-----------+
@@ -429,39 +434,43 @@ Messages by category
 +----------------------------------------------------+------+--------+---------+-----------+
 |module                                              |error |warning |refactor |convention |
 +====================================================+======+========+=========+===========+
-|kentauros.modules.package                           |0.00  |29.41   |0.00     |0.79       |
+|kentauros.modules.package                           |0.00  |23.81   |0.00     |0.79       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.abstract              |0.00  |23.53   |0.00     |2.78       |
+|kentauros.modules.constructor.abstract              |0.00  |19.05   |0.00     |2.77       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.builder.abstract                  |0.00  |23.53   |0.00     |1.59       |
+|kentauros.modules.builder.abstract                  |0.00  |19.05   |0.00     |1.58       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.uploader.abstract                 |0.00  |23.53   |0.00     |1.19       |
+|kentauros.modules.uploader.abstract                 |0.00  |19.05   |0.00     |1.19       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.git                       |0.00  |0.00    |0.00     |9.52       |
+|kentauros.tasks.package                             |0.00  |4.76    |0.00     |3.95       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.srpm                  |0.00  |0.00    |0.00     |8.33       |
+|kentauros.modules.uploader.copr                     |0.00  |4.76    |0.00     |2.77       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.builder.mock                      |0.00  |0.00    |0.00     |5.95       |
+|kentauros.bootstrap                                 |0.00  |4.76    |0.00     |1.19       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.rpm.__init__          |0.00  |0.00    |0.00     |5.56       |
+|kentauros.modules.sources.url                       |0.00  |4.76    |0.00     |0.79       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.logcollector                              |0.00  |0.00    |0.00     |5.16       |
+|kentauros.modules.sources.git                       |0.00  |0.00    |0.00     |9.49       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.package                                   |0.00  |0.00    |0.00     |4.37       |
+|kentauros.modules.constructor.srpm                  |0.00  |0.00    |0.00     |8.30       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.context                                   |0.00  |0.00    |0.00     |4.37       |
+|kentauros.modules.builder.mock                      |0.00  |0.00    |0.00     |5.93       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.module                            |0.00  |0.00    |0.00     |3.97       |
+|kentauros.modules.constructor.rpm.__init__          |0.00  |0.00    |0.00     |5.53       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.package                             |0.00  |0.00    |0.00     |3.57       |
+|kentauros.logcollector                              |0.00  |0.00    |0.00     |5.14       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.abstract                  |0.00  |0.00    |0.00     |3.57       |
+|kentauros.package                                   |0.00  |0.00    |0.00     |4.35       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.cli.parser                                |0.00  |0.00    |0.00     |3.57       |
+|kentauros.context                                   |0.00  |0.00    |0.00     |4.35       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.uploader.copr                     |0.00  |0.00    |0.00     |2.78       |
+|kentauros.modules.module                            |0.00  |0.00    |0.00     |3.95       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.state                                     |0.00  |0.00    |0.00     |2.38       |
+|kentauros.modules.sources.abstract                  |0.00  |0.00    |0.00     |3.56       |
++----------------------------------------------------+------+--------+---------+-----------+
+|kentauros.cli.parser                                |0.00  |0.00    |0.00     |3.56       |
++----------------------------------------------------+------+--------+---------+-----------+
+|kentauros.state                                     |0.00  |0.00    |0.00     |2.37       |
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.modules.constructor.rpm.spec_version_out  |0.00  |0.00    |0.00     |1.98       |
 +----------------------------------------------------+------+--------+---------+-----------+
@@ -473,7 +482,7 @@ Messages by category
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.cli.context                               |0.00  |0.00    |0.00     |1.98       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.result                                    |0.00  |0.00    |0.00     |1.59       |
+|kentauros.result                                    |0.00  |0.00    |0.00     |1.58       |
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.validator                                 |0.00  |0.00    |0.00     |1.19       |
 +----------------------------------------------------+------+--------+---------+-----------+
@@ -491,15 +500,11 @@ Messages by category
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.cli.runner                                |0.00  |0.00    |0.00     |1.19       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.bootstrap                                 |0.00  |0.00    |0.00     |1.19       |
-+----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.tasks.task                                |0.00  |0.00    |0.00     |0.79       |
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.tasks.init                                |0.00  |0.00    |0.00     |0.79       |
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.modules.uploader.__init__                 |0.00  |0.00    |0.00     |0.79       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.url                       |0.00  |0.00    |0.00     |0.79       |
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.modules.sources.local                     |0.00  |0.00    |0.00     |0.79       |
 +----------------------------------------------------+------+--------+---------+-----------+
@@ -528,14 +533,14 @@ Messages
 +------------------+------------+
 |message id        |occurrences |
 +==================+============+
-|missing-docstring |252         |
+|missing-docstring |253         |
 +------------------+------------+
-|fixme             |17          |
+|fixme             |21          |
 +------------------+------------+
 
 
 
 
 ------------------------------------------------------------------
-Your code has been rated at 8.91/10 (previous run: 8.91/10, +0.00)
+Your code has been rated at 8.89/10 (previous run: 8.89/10, +0.00)
 

@@ -12,6 +12,9 @@ from ...validator import KtrValidator
 DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
 
 
+# TODO: use a ShellCommand subclass for copr-cli commands
+
+
 class CoprUploader(Uploader):
     NAME = "COPR Uploader"
 

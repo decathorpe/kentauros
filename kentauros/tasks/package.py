@@ -41,7 +41,8 @@ class KtrPackageTask(KtrMetaTask):
             self.modules.append(mod)
 
     def execute(self) -> KtrResult:
-        actions = {"chain": self._execute,
+        actions = {"add": self._add,
+                   "chain": self._execute,
                    "clean": self._clean,
                    "import": self._imports,
                    "status": self._status_string,
@@ -63,6 +64,10 @@ class KtrPackageTask(KtrMetaTask):
         ret.messages.log("")
 
         return ret
+
+    def _add(self) -> KtrResult:
+        # TODO: implement adding package from templates
+        pass
 
     def _collect_action(self) -> KtrResult:
         # "simple" collecting action

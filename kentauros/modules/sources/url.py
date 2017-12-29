@@ -9,6 +9,9 @@ from ...result import KtrResult
 from ...validator import KtrValidator
 
 
+# TODO: Use a ShellCommand subclass for wget commands
+
+
 class UrlSource(Source):
     NAME = "URL Source"
 

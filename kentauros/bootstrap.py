@@ -26,6 +26,8 @@ def ktr_mkdirp(path: str) -> KtrResult:
 def ktr_bootstrap(context: KtrContext) -> KtrResult:
     ret = KtrResult(name="bootstrap")
 
+    # TODO: create kentaurosrc file from template
+
     for path in [context.get_basedir(), context.get_confdir(), context.get_datadir(),
                  context.get_expodir(), context.get_packdir(), context.get_specdir()]:
 
