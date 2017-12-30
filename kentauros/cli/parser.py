@@ -41,6 +41,7 @@ def add_source_parser(parsers: _SubParsersAction,
 
     source_parsers: _SubParsersAction = source_parser.add_subparsers()
 
+    # "source clean" command
     clean_parser: ArgumentParser = source_parsers.add_parser(
         "clean",
         aliases=["c", "cl", "cle", "clea"],
@@ -49,6 +50,7 @@ def add_source_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     clean_parser.set_defaults(module_action="clean")
 
+    # "source export" command
     export_parser: ArgumentParser = source_parsers.add_parser(
         "export",
         aliases=["e", "ex", "exp", "expo", "expor"],
@@ -57,6 +59,7 @@ def add_source_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     export_parser.set_defaults(module_action="export")
 
+    # "source get" command
     get_parser: ArgumentParser = source_parsers.add_parser(
         "get",
         aliases=["g", "ge"],
@@ -65,6 +68,7 @@ def add_source_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     get_parser.set_defaults(module_action="get")
 
+    # "source prepare" command
     prepare_parser: ArgumentParser = source_parsers.add_parser(
         "prepare",
         aliases=["p", "pr", "pre", "prep", "prepa", "prepar"],
@@ -73,6 +77,7 @@ def add_source_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     prepare_parser.set_defaults(module_action="prepare")
 
+    # "source refresh" command
     refresh_parser: ArgumentParser = source_parsers.add_parser(
         "refresh",
         aliases=["r", "re", "ref", "refr", "refre", "refres"],
@@ -81,6 +86,7 @@ def add_source_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     refresh_parser.set_defaults(module_action="refresh")
 
+    # "source status" command
     status_parser: ArgumentParser = source_parsers.add_parser(
         "status",
         aliases=["s", "st", "sta", "stat", "statu"],
@@ -89,6 +95,7 @@ def add_source_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     status_parser.set_defaults(module_action="status")
 
+    # "source update" command
     update_parser: ArgumentParser = source_parsers.add_parser(
         "update",
         aliases=["u", "up", "upd", "upda", "updat"],
@@ -97,6 +104,7 @@ def add_source_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     update_parser.set_defaults(module_action="update")
 
+    # "source verify" command
     verify_parser: ArgumentParser = source_parsers.add_parser(
         "verify",
         aliases=["v", "ve", "ver", "veri", "verif"],
@@ -119,21 +127,16 @@ def add_constructor_parser(parsers: _SubParsersAction,
 
     constructor_parsers: _SubParsersAction = constructor_parser.add_subparsers()
 
+    # "constructor build" command
     build_parser: ArgumentParser = constructor_parsers.add_parser(
         "build",
         aliases=["b", "bu", "bui", "buil"],
         description="build source packages",
         help="build source packages",
         parents=[package_parser])
-    build_parser.add_argument(
-        "-m",
-        "--message",
-        action="store",
-        dest="basedir",
-        nargs="?",
-        help="set changelog message")
     build_parser.set_defaults(module_action="build")
 
+    # "constructor clean" command
     clean_parser: ArgumentParser = constructor_parsers.add_parser(
         "clean",
         aliases=["c", "cl", "cle", "clea"],
@@ -142,14 +145,33 @@ def add_constructor_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     clean_parser.set_defaults(module_action="clean")
 
-    # lint_parser: ArgumentParser = constructor_parsers.add_parser(
-    #     "lint",
-    #     aliases=["l", "li", "lin"],
-    #     description="lint source packages",
-    #     help="lint source packages",
-    #     parents=[package_parser])
-    # lint_parser.set_defaults(module_action="lint")
+    # "constructor increment" command
+    increment_parser: ArgumentParser = constructor_parsers.add_parser(
+        "increment",
+        aliases=["i", "in", "inc", "incr", "incre", "increm", "increme", "incremen"],
+        description="increment release of the source package",
+        help="increment release",
+        parents=[package_parser])
+    increment_parser.set_defaults(module_action="bump")
 
+    increment_parser.add_argument(
+        "-m",
+        "--message",
+        action="store",
+        nargs="?",
+        default=None,
+        help="custom changelog message")
+
+    # "constructor lint" command
+    lint_parser: ArgumentParser = constructor_parsers.add_parser(
+        "lint",
+        aliases=["l", "li", "lin"],
+        description="lint source packages",
+        help="lint source packages",
+        parents=[package_parser])
+    lint_parser.set_defaults(module_action="lint")
+
+    # "constructor status" command
     status_parser: ArgumentParser = constructor_parsers.add_parser(
         "status",
         aliases=["s", "st", "sta", "stat", "statu"],
@@ -158,6 +180,24 @@ def add_constructor_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     status_parser.set_defaults(module_action="status")
 
+    # "constructor upgrade" command
+    upgrade_parser: ArgumentParser = constructor_parsers.add_parser(
+        "upgrade",
+        aliases=["u", "up", "upg", "upgr", "upgra", "upgrad"],
+        description="increment release and build source package",
+        help="increment release and build source package",
+        parents=[package_parser])
+    upgrade_parser.set_defaults(module_action="upgrade")
+
+    upgrade_parser.add_argument(
+        "-m",
+        "--message",
+        action="store",
+        nargs="?",
+        default=None,
+        help="custom changelog message")
+
+    # "constructor verify" command
     verify_parser: ArgumentParser = constructor_parsers.add_parser(
         "verify",
         aliases=["v", "ve", "ver", "veri", "verif"],
@@ -180,6 +220,7 @@ def add_builder_parser(parsers: _SubParsersAction,
 
     builder_parsers: _SubParsersAction = builder_parser.add_subparsers()
 
+    # "builder build" command
     build_parser: ArgumentParser = builder_parsers.add_parser(
         "build",
         aliases=["b", "bu", "bui", "buil"],
@@ -188,22 +229,7 @@ def add_builder_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     build_parser.set_defaults(module_action="build")
 
-    build_parser.add_argument(
-        "-b",
-        "--bump",
-        action="store_const",
-        const=True,
-        default=False,
-        help="bump release before building")
-
-    build_parser.add_argument(
-        "-m",
-        "--message",
-        action="store",
-        nargs="?",
-        default=None,
-        help="custom changelog message")
-
+    # "builder clean" command
     clean_parser: ArgumentParser = builder_parsers.add_parser(
         "clean",
         aliases=["c", "cl", "cle", "clea"],
@@ -212,14 +238,16 @@ def add_builder_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     clean_parser.set_defaults(module_action="clean")
 
-    # lint_parser: ArgumentParser = builder_parsers.add_parser(
-    #     "lint",
-    #     aliases=["l", "li", "lin"],
-    #     description="lint binary packages",
-    #     help="lint binary packages",
-    #     parents=[package_parser])
-    # lint_parser.set_defaults(module_action="lint")
+    # "builder lint" command
+    lint_parser: ArgumentParser = builder_parsers.add_parser(
+        "lint",
+        aliases=["l", "li", "lin"],
+        description="lint binary packages",
+        help="lint binary packages",
+        parents=[package_parser])
+    lint_parser.set_defaults(module_action="lint")
 
+    # "builder status" command
     status_parser: ArgumentParser = builder_parsers.add_parser(
         "status",
         aliases=["s", "st", "sta", "stat", "statu"],
@@ -228,6 +256,7 @@ def add_builder_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     status_parser.set_defaults(module_action="status")
 
+    # "builder verify" command
     verify_parser: ArgumentParser = builder_parsers.add_parser(
         "verify",
         aliases=["v", "ve", "ver", "veri", "verif"],
@@ -250,6 +279,7 @@ def add_uploader_parser(parsers: _SubParsersAction,
 
     uploader_parsers: _SubParsersAction = uploader_parser.add_subparsers()
 
+    # "uploader clean" command
     clean_parser: ArgumentParser = uploader_parsers.add_parser(
         "clean",
         aliases=["c", "cl", "cle", "clea"],
@@ -258,6 +288,7 @@ def add_uploader_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     clean_parser.set_defaults(module_action="clean")
 
+    # "uploader status" command
     status_parser: ArgumentParser = uploader_parsers.add_parser(
         "status",
         aliases=["s", "st", "sta", "stat", "statu"],
@@ -266,6 +297,7 @@ def add_uploader_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     status_parser.set_defaults(module_action="status")
 
+    # "uploader upload" command
     upload_parser: ArgumentParser = uploader_parsers.add_parser(
         "upload",
         aliases=["u", "up", "upl", "uplo", "uploa"],
@@ -274,6 +306,7 @@ def add_uploader_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     upload_parser.set_defaults(module_action="upload")
 
+    # "uploader verify" command
     verify_parser: ArgumentParser = uploader_parsers.add_parser(
         "verify",
         aliases=["v", "ve", "ver", "veri", "verif"],
@@ -296,6 +329,7 @@ def add_pkg_parser(parsers: _SubParsersAction,
 
     pkg_parsers: _SubParsersAction = pkg_parser.add_subparsers()
 
+    # "package add" command
     add_parser: ArgumentParser = pkg_parsers.add_parser(
         "add",
         aliases=["a", "ad"],
@@ -304,6 +338,7 @@ def add_pkg_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     add_parser.set_defaults(module_action="add")
 
+    # "package clean" command
     clean_parser: ArgumentParser = pkg_parsers.add_parser(
         "clean",
         aliases=["c", "cl", "cle", "clea"],
@@ -312,6 +347,7 @@ def add_pkg_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     clean_parser.set_defaults(module_action="clean")
 
+    # "package import" command
     import_parser: ArgumentParser = pkg_parsers.add_parser(
         "import",
         aliases=["i", "im", "imp", "impo", "impor"],
@@ -320,6 +356,7 @@ def add_pkg_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     import_parser.set_defaults(module_action="import")
 
+    # "package status" command
     status_parser: ArgumentParser = pkg_parsers.add_parser(
         "status",
         aliases=["s", "st", "sta", "stat", "statu"],
@@ -328,6 +365,7 @@ def add_pkg_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     status_parser.set_defaults(module_action="status")
 
+    # "package verify" command
     verify_parser: ArgumentParser = pkg_parsers.add_parser(
         "verify",
         aliases=["v", "ve", "ver", "veri", "verif"],
@@ -340,6 +378,7 @@ def add_pkg_parser(parsers: _SubParsersAction,
 
 
 def add_init_parser(parsers: _SubParsersAction) -> ArgumentParser:
+    # "init" command
     init_parser: ArgumentParser = parsers.add_parser(
         "init",
         aliases=["i", "in", "ini"],

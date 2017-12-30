@@ -299,12 +299,12 @@ C: 35, 4: Missing method docstring (missing-docstring)
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 10, 0: Missing function docstring (missing-docstring)
 C: 33, 0: Missing function docstring (missing-docstring)
-C:111, 0: Missing function docstring (missing-docstring)
-C:204, 0: Missing function docstring (missing-docstring)
-C:258, 0: Missing function docstring (missing-docstring)
-C:304, 0: Missing function docstring (missing-docstring)
-C:358, 0: Missing function docstring (missing-docstring)
-C:369, 0: Missing function docstring (missing-docstring)
+C:119, 0: Missing function docstring (missing-docstring)
+C:212, 0: Missing function docstring (missing-docstring)
+C:271, 0: Missing function docstring (missing-docstring)
+C:321, 0: Missing function docstring (missing-docstring)
+C:380, 0: Missing function docstring (missing-docstring)
+C:392, 0: Missing function docstring (missing-docstring)
 ************* Module kentauros.tasks.meta
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  6, 0: Missing class docstring (missing-docstring)
@@ -339,7 +339,7 @@ C:  1, 0: Missing module docstring (missing-docstring)
 
 Report
 ======
-2638 statements analysed.
+2640 statements analysed.
 
 Statistics by type
 ------------------
@@ -405,13 +405,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3040   |68.10 |3040     |=          |
+|code      |3046   |67.89 |3046     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |67     |1.50  |67       |=          |
+|docstring |68     |1.52  |68       |=          |
 +----------+-------+------+---------+-----------+
-|comment   |184    |4.12  |184      |=          |
+|comment   |200    |4.46  |200      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1173   |26.28 |1173     |=          |
+|empty     |1173   |26.14 |1173     |=          |
 +----------+-------+------+---------+-----------+
 
 

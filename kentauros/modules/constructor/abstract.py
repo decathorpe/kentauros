@@ -11,11 +11,18 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
     def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
         self.pdir = os.path.join(self.context.get_packdir(), self.package.conf_name)
+
         self.actions["build"] = self.execute
+        self.actions["increment"] = self.increment
+        self.actions["lint"] = self.lint
+        self.actions["upgrade"] = self.upgrade
 
         # TODO: test "constructor build all" action
         # TODO: test "constructor clean all" action
+        # TODO: test "constructor increment all" action
+        # TODO: test "constructor lint all" action
         # TODO: test "constructor status all" action
+        # TODO: test "constructor upgrade all" action
         # TODO: test "constructor verify all" action
 
     @abc.abstractmethod
@@ -23,7 +30,13 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def export(self) -> KtrResult:
+    def increment(self) -> KtrResult:
         pass
 
-    # TODO: add "update" action?
+    @abc.abstractmethod
+    def lint(self) -> KtrResult:
+        pass
+
+    @abc.abstractmethod
+    def upgrade(self) -> KtrResult:
+        pass
