@@ -8,6 +8,11 @@ from ...result import KtrResult
 from ...shellcmd import ShellCommand
 from ...validator import KtrValidator
 
+URL_STATUS_TEMPLATE = """
+URL source module:
+  Last version:     {download}
+"""
+
 
 class WGetCommand(ShellCommand):
     NAME = "wget Command"
@@ -70,16 +75,19 @@ class UrlSource(Source):
             return KtrResult(True, state=state)
 
     def status_string(self) -> KtrResult:
+        ret = KtrResult()
+
         state = self.context.state.read(self.package.conf_name)
 
         if "url_last_version" in state:
-            string = ("url source module:\n" +
-                      "  Last download:    {}\n".format(state["url_last_version"]))
+            last_version = state["url_last_version"]
         else:
-            string = ("url source module:\n" +
-                      "  Last download:    None\n")
+            last_version = "None"
 
-        return KtrResult(True, string, state=state)
+        for line in URL_STATUS_TEMPLATE.format(download=last_version).split("\n"):
+            ret.messages.log(line, origin="")
+
+        return ret
 
     def imports(self) -> KtrResult:
         if os.path.exists(self.dest):
@@ -105,13 +113,14 @@ class UrlSource(Source):
             return ret.submit(False)
 
         # construct wget commands
-        cmd = ["wget", self.get_orig(), "-O", self.dest]
+        cmd = [self.get_orig(), "-O", self.dest]
 
         res = WGetCommand(*cmd).execute()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.lst("Sources could not be downloaded successfully. CLI output:", res.value)
+            ret.messages.lst("Sources could not be downloaded successfully. CLI output:",
+                             res.value.split("\n"))
             return ret.submit(False)
 
         self.last_version = self.package.get_version()

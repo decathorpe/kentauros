@@ -15,6 +15,13 @@ from ...result import KtrResult
 from ...shellcmd import ShellCommand
 from ...validator import KtrValidator
 
+GIT_STATUS_TEMPLATE = """
+git source module:
+  Current ref:      {ref}
+  Last Commit:      {commit}
+  Last Commit Date: {commit_date}
+"""
+
 
 class GitCommand(ShellCommand):
     NAME = "git Command"
@@ -413,29 +420,23 @@ class GitSource(Source):
         commit = self.commit()
         ret.collect(commit)
 
-        date = self.datetime_str()
+        date = self.datetime()
         ret.collect(date)
 
-        template = """
-        git source module:
-          Current ref:      {ref}
-          Last Commit:      {commit}
-          Last Commit Date: {commit_date}
-        """
-
-        template = template.format(ref=self.get_ref())
-
         if commit.success:
-            template = template.format(commit=commit.value)
+            commit_string = commit.value
         else:
-            template = template.format(commit="Unavailable")
+            commit_string = "Unavailable"
 
         if date.success:
-            template = template.format(commit_date=date.value)
+            date_string = str(date.value)
         else:
-            template = template.format(commit_date="Unavailable")
+            date_string = "Unavailable"
 
-        ret.value = template
+        for line in GIT_STATUS_TEMPLATE.format(ref=self.get_ref(), commit=commit_string,
+                                               commit_date=date_string).split("\n"):
+            ret.messages.log(line, origin="")
+
         return ret
 
     def imports(self) -> KtrResult:
