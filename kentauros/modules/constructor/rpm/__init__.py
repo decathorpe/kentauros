@@ -1,6 +1,6 @@
 import configparser as cp
 import os
-import subprocess
+import re
 
 from .spec_common import RPMSpecError, format_tag_line
 from .spec_preamble_out import get_spec_preamble
@@ -9,9 +9,22 @@ from .spec_version_out import get_spec_version
 from ....context import KtrContext
 from ....package import KtrPackage
 from ....result import KtrResult
+from ....shellcmd import ShellCommand
 
 
-# TODO: Use a ShellCommand subclass for rpmdev-bumpspec commands
+class RPMDevBumpSpecCommand(ShellCommand):
+    NAME = "rpmdev-bumpspec Command"
+
+    def __init__(self, *args, path: str = None, binary: str = None):
+        if binary is None:
+            self.exec = "rpmdev-bumpspec"
+        else:
+            self.exec = binary
+
+        if path is None:
+            path = os.getcwd()
+
+        super().__init__(path, self.exec, *args)
 
 
 def parse_release(release: str) -> (str, str):
@@ -105,28 +118,41 @@ class RPMSpec:
 
         self.contents = contents_new
 
-    def build_preamble_string(self) -> KtrResult:
-        return get_spec_preamble(self.stype, self.package, self.context)
+    def set_variables(self):
+        macro_regex = re.compile("(%global)[ \t]+([a-zA-Z0-9]+)[ \t]+(.+)")
+
+        table = get_spec_preamble(self.stype, self.package, self.context)
+
+        # remove globals that will be set from the spec
+        med_contents = str()
+
+        for line in self.get_lines():
+            match = macro_regex.match(line)
+
+            if match is None:
+                med_contents += (line + "\n")
+            else:
+                groups = match.groups()
+                var = groups[1]
+
+                if var in table.keys():
+                    continue
+                else:
+                    med_contents += (line + "\n")
+
+        # add new globals to the spec
+        new_contents = str()
+
+        for var in table.keys():
+            new_contents += "%global {} {}\n".format(var, table.get(var))
+        new_contents += med_contents
+
+        self.contents = new_contents
 
     def build_version_string(self) -> str:
         return get_spec_version(self.stype, self.package, self.context)
 
-    def export_to_file(self, path: str):
-        assert isinstance(path, str)
-
-        if path == self.path:
-            os.remove(path)
-
-        res = self.build_preamble_string()
-        if not res.success:
-            raise NotImplementedError("The RPM .spec handler can't work successfully.")
-        preamble = res.value
-
-        with open(path, "w") as file:
-            file.write(preamble)
-            file.write(self.contents)
-
-    def write_contents_to_file(self, path: str):
+    def write_to_file(self, path: str):
         assert isinstance(path, str)
 
         if path == self.path:
@@ -149,31 +175,40 @@ class RPMSpec:
 
         self.contents = contents_new
 
+    def do_release_bump(self, comment: str = None) -> KtrResult:
+        ret = KtrResult(name="RPM .spec Handler")
 
-def do_release_bump(path: str, context: KtrContext, comment: str = None) -> KtrResult:
-    ret = KtrResult(name="RPM .spec Handler")
+        if not os.path.exists(self.path):
+            raise FileNotFoundError()
 
-    if not os.path.exists(path):
-        raise FileNotFoundError()
+        if comment is None:
+            comment = "Automatic build by kentauros."
 
-    if comment is None:
-        comment = "Automatic build by kentauros."
+        # construct rpmdev-bumpspec command
+        cmd = list()
 
-    # construct rpmdev-bumpspec command
-    cmd = ["rpmdev-bumpspec"]
+        # add --verbose or --quiet depending on settings
+        if self.context.debug:
+            cmd.append("--verbose")
 
-    # add --verbose or --quiet depending on settings
-    if context.debug:
-        cmd.append("--verbose")
+        cmd.append(self.path)
+        cmd.append('--comment=' + comment)
 
-    cmd.append(path)
-    cmd.append('--comment=' + comment)
+        ret.messages.cmd(cmd)
 
-    ret.messages.cmd(cmd)
-    res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    success = (res.returncode == 0)
+        self.write_to_file(self.path)
 
-    return ret.submit(success)
+        res = RPMDevBumpSpecCommand(*cmd).execute()
+        ret.collect(res)
+
+        with open(self.path, "r") as file:
+            self.contents = file.read()
+
+        if not res.success:
+            ret.messages.log("Release tag in the RPM .spec could not be bumped correctly.")
+            return ret.submit(False)
+
+        return ret
 
 
-__all__ = ["parse_release", "RPMSpec", "do_release_bump"]
+__all__ = ["parse_release", "RPMSpec"]

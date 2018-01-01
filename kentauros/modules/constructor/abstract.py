@@ -12,7 +12,7 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
         super().__init__(package, context)
         self.pdir = os.path.join(self.context.get_packdir(), self.package.conf_name)
 
-        self.actions["build"] = self.execute
+        self.actions["build"] = self.build
         self.actions["increment"] = self.increment
         self.actions["lint"] = self.lint
         self.actions["upgrade"] = self.upgrade
