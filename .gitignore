@@ -3,7 +3,9 @@
 /examples/packages/*
 /examples/sources/*
 
+/.eggs
 /.idea
+/kentauros.egg-info
 
 *.old
 *.tmp

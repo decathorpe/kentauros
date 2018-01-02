@@ -12,17 +12,26 @@ from kentauros.definitions import KTR_SYSTEM_DATADIR, KTR_VERSION
 setup(
     name="kentauros",
     version=KTR_VERSION,
+
     author="Fabio Valentini",
     author_email="decathorpe@gmail.com",
+
     description="Modular, automatic and configurable package build system",
-    license="GPLv2",
-    keywords="development packaging",
     url="http://github.com/decathorpe/kentauros",
+    license="GPLv2",
+
+    keywords="development packaging",
+
     packages=find_packages(exclude=['data', 'docs', 'examples', 'meta', 'scripts']),
     install_requires=["argcomplete", "tinydb", "GitPython"],
+    tests_require=["nose"],
+
+    test_suite="nose.collector",
+
     scripts=['scripts/ktr'],
     data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
                 (KTR_SYSTEM_DATADIR, ['data/template.conf'])],
+
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

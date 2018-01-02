@@ -20,6 +20,14 @@ kentauros\.modules\.builder\.mock module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.modules\.builder\.mock\_tests module
+-----------------------------------------------
+
+.. automodule:: kentauros.modules.builder.mock_tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
