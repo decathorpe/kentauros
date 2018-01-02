@@ -160,7 +160,7 @@ def add_constructor_parser(parsers: _SubParsersAction,
         description="increment release of the source package",
         help="increment release",
         parents=[package_parser])
-    increment_parser.set_defaults(module_action="bump")
+    increment_parser.set_defaults(module_action="increment")
 
     increment_parser.add_argument(
         "-m",
