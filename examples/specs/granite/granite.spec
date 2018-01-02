@@ -1,7 +1,7 @@
 Name:           granite
 Summary:        elementary Development Library
 Version:        0.5
-Release:        1%{?dist}
+Release:        0%{?dist}
 License:        LGPLv3+
 
 URL:            https://github.com/elementary/%{name}
