@@ -16,14 +16,6 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
         self.actions["increment"] = self.increment
         self.actions["lint"] = self.lint
 
-        # TODO: test "constructor build all" action
-        # TODO: test "constructor clean all" action
-        # TODO: test "constructor increment all" action
-        # TODO: test "constructor lint all" action
-        # TODO: test "constructor status all" action
-        # TODO: test "constructor upgrade all" action
-        # TODO: test "constructor verify all" action
-
     @abc.abstractmethod
     def build(self) -> KtrResult:
         pass

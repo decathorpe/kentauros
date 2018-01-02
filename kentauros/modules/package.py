@@ -12,12 +12,6 @@ class PackageModule(KtrModule):
 
         self.actions["chain"] = self.execute
 
-        # TODO: test "package chain all" action
-        # TODO: test "package clean all" action
-        # TODO: test "package import all" action
-        # TODO: test "package status all" action
-        # TODO: test "package verify all" action
-
     def name(self):
         return "{} {}".format(self.NAME, self.package.name)
 
