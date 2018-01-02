@@ -201,7 +201,7 @@ class SrpmConstructor(Constructor):
 
         # create ./packages/PACKAGE directory
         if not os.path.exists(self.pdir):
-            os.mkdir(self.pdir)
+            os.makedirs(self.pdir, exist_ok=True)
 
     def __str__(self) -> str:
         return "SRPM Constructor for Package '" + self.package.conf_name + "'"
@@ -447,8 +447,11 @@ class SrpmConstructor(Constructor):
         spec = RPMSpec(self.rpmbuild.spec_path(), self.package, self.context)
 
         spec.set_variables()
+        spec.set_source()
 
         if int(parse_release(spec.get_release())[0]) == 0:
+            spec.set_version()
+
             res = spec.do_release_bump("Initial package.")
             ret.collect(res)
 
@@ -505,15 +508,30 @@ class SrpmConstructor(Constructor):
         return ret.submit(True)
 
     def clean(self) -> KtrResult:
+        ret = KtrResult()
+
         if not os.path.exists(self.pdir):
-            return KtrResult(True)
+            return ret.submit(True)
 
         for file in os.listdir(self.pdir):
-            os.remove(file)
+            path = os.path.join(self.pdir, file)
+            if os.path.isfile(path):
+                os.remove(path)
+            elif os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                ret.messages.log("The 'packages/{}' directory contains an unexpected item.".format(
+                    self.package.conf_name))
+                return ret.submit(False)
 
-        os.remove(self.pdir)
+        try:
+            os.rmdir(self.pdir)
+        except OSError:
+            ret.messages.log("The 'packages/{}' directory could not be deleted.".format(
+                self.package.conf_name))
+            return ret.submit(False)
 
-        return KtrResult(True)
+        return ret.submit(True)
 
     def _pre_build(self) -> KtrResult:
         ret = KtrResult()
@@ -552,6 +570,10 @@ class SrpmConstructor(Constructor):
 
         for file in files:
             shutil.copy2(file, self.pdir)
+
+        # retrieve the .spec file, including Version, Release bumps and new changelog entries
+        shutil.copy2(self.spec_path, self.spec_path + ".old")
+        shutil.copy2(self.rpmbuild.spec_path(), self.spec_path)
 
         # clean up the temporary directory
         res = self.rpmbuild.cleanup()
@@ -596,10 +618,12 @@ class SrpmConstructor(Constructor):
             ret.messages.log("Could not execute post-build stage.")
             return ret.submit(False)
 
+        return ret.submit(True)
+
     def lint(self) -> KtrResult:
         ret = KtrResult()
 
-        files = os.listdir(self.pdir)
+        files = list(os.path.join(self.pdir, path) for path in os.listdir(self.pdir))
 
         if not files:
             ret.messages.log("No package has been built yet. Only linting the .spec file.")
@@ -644,6 +668,8 @@ class SrpmConstructor(Constructor):
         if not res.success:
             ret.messages.log("Could not execute post-build stage.")
             return ret.submit(False)
+
+        return ret.submit(True)
 
     def execute(self) -> KtrResult:
         spec = RPMSpec(self.spec_path, self.package, self.context)
