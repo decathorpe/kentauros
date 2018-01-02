@@ -128,7 +128,7 @@ class MockBuild:
         cmd = self.get_command()
         ret.messages.cmd(cmd)
 
-        res = MockCommand(cmd, binary=self.mock).execute()
+        res = MockCommand(*cmd, binary=self.mock).execute()
         ret.collect(res)
 
         if not res.success:
@@ -224,7 +224,7 @@ class MockBuilder(Builder):
         build_queue = list()
 
         for dist in self.get_dists():
-            build_queue.append(MockBuild(srpm, dist))
+            build_queue.append(MockBuild(srpm, self.context, dist))
 
         # run builds in queue
         builds_success = list()
@@ -233,9 +233,9 @@ class MockBuilder(Builder):
         for build in build_queue:
             res = build.build()
             if res.success:
-                builds_failure.append((build.path, build.dist))
-            else:
                 builds_success.append((build.path, build.dist))
+            else:
+                builds_failure.append((build.path, build.dist))
 
         # remove source package if keep=False is specified
         if not self.get_keep():
@@ -311,6 +311,10 @@ class MockBuilder(Builder):
             return ret.submit(False)
         else:
             return ret.submit(True)
+
+    def lint(self) -> KtrResult:
+        # TODO
+        return KtrResult(True)
 
     def clean(self) -> KtrResult:
         if not os.path.exists(self.edir):

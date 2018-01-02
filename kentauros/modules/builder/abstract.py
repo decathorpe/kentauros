@@ -13,6 +13,7 @@ class Builder(KtrModule, metaclass=abc.ABCMeta):
 
         self.pdir = os.path.join(self.context.get_packdir(), self.package.conf_name)
         self.actions["build"] = self.execute
+        self.actions["lint"] = self.lint
 
     @abc.abstractmethod
     def status(self) -> KtrResult:
@@ -24,4 +25,8 @@ class Builder(KtrModule, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def export(self) -> KtrResult:
+        pass
+
+    @abc.abstractmethod
+    def lint(self) -> KtrResult:
         pass
