@@ -3,17 +3,32 @@ import glob
 import grp
 import os
 import shutil
-import subprocess
 import time
 
 from .abstract import Builder
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
+from ...shellcmd import ShellCommand
 from ...validator import KtrValidator
 
 DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
 DEFAULT_VAR_PATH = "/var/lib/mock"
+
+
+class MockCommand(ShellCommand):
+    NAME = "mock Command"
+
+    def __init__(self, *args, path: str = None, binary: str = None):
+        if binary is None:
+            self.exec = "mock"
+        else:
+            self.exec = binary
+
+        if path is None:
+            path = os.getcwd()
+
+        super().__init__(path, self.exec, *args)
 
 
 class MockError(Exception):
@@ -47,23 +62,19 @@ def get_dist_result_path(dist: str) -> str:
     return os.path.join(DEFAULT_VAR_PATH, dist, "result")
 
 
-def get_mock_cmd() -> str:
-    mock_cmd = shutil.which("mock")
-
-    # check if the right binary is used or if something is messing up $PATH
-    if mock_cmd == "/usr/sbin/mock":
-        mock_cmd = "/usr/bin/mock"
-
-    return mock_cmd
-
-
 class MockBuild:
     NAME = "Mock Build"
 
-    def __init__(self, mock: str, path: str, context: KtrContext, dist: str = None):
-        self.mock = mock
+    def __init__(self, path: str, context: KtrContext, dist: str = None):
         self.path = path
         self.context = context
+
+        mock_path = shutil.which("mock")
+
+        if "/sbin/" in mock_path:
+            self.mock = mock_path.replace("/sbin/", "/bin/")
+        else:
+            self.mock = mock_path
 
         if dist is None:
             # determine which dist is pointed to by the "default.cfg" link
@@ -75,7 +86,7 @@ class MockBuild:
         return self.NAME
 
     def get_command(self) -> list:
-        cmd = [self.mock]
+        cmd = list()
 
         # add --verbose or --quiet depending on settings
         if not self.context.debug:
@@ -117,14 +128,14 @@ class MockBuild:
         cmd = self.get_command()
         ret.messages.cmd(cmd)
 
-        try:
-            res: subprocess.CompletedProcess = subprocess.run(cmd,
-                                                              stdout=subprocess.PIPE,
-                                                              stderr=subprocess.STDOUT)
-            return ret.submit(res.returncode == 0)
-        except PermissionError:
-            ret.messages.log("Mock build has been cancelled.")
+        res = MockCommand(cmd, binary=self.mock).execute()
+        ret.collect(res)
+
+        if not res.success:
+            ret.messages.log("Mock build was not successful.")
             return ret.submit(False)
+
+        return ret.submit(True)
 
 
 class MockBuilder(Builder):
@@ -212,10 +223,8 @@ class MockBuilder(Builder):
         # generate build queue
         build_queue = list()
 
-        mock_cmd = get_mock_cmd()
-
         for dist in self.get_dists():
-            build_queue.append(MockBuild(mock_cmd, srpm, dist))
+            build_queue.append(MockBuild(srpm, dist))
 
         # run builds in queue
         builds_success = list()
