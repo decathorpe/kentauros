@@ -13,14 +13,6 @@ Subpackages
 Submodules
 ----------
 
-kentauros\.bootstrap module
----------------------------
-
-.. automodule:: kentauros.bootstrap
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros\.config module
 ------------------------
 
