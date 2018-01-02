@@ -136,6 +136,14 @@ def add_constructor_parser(parsers: _SubParsersAction,
         parents=[package_parser])
     build_parser.set_defaults(module_action="build")
 
+    build_parser.add_argument(
+        "-m",
+        "--message",
+        action="store",
+        nargs="?",
+        default=None,
+        help="custom changelog message")
+
     # "constructor clean" command
     clean_parser: ArgumentParser = constructor_parsers.add_parser(
         "clean",
@@ -179,23 +187,6 @@ def add_constructor_parser(parsers: _SubParsersAction,
         help="print source package status",
         parents=[package_parser])
     status_parser.set_defaults(module_action="status")
-
-    # "constructor upgrade" command
-    upgrade_parser: ArgumentParser = constructor_parsers.add_parser(
-        "upgrade",
-        aliases=["u", "up", "upg", "upgr", "upgra", "upgrad"],
-        description="increment release and build source package",
-        help="increment release and build source package",
-        parents=[package_parser])
-    upgrade_parser.set_defaults(module_action="upgrade")
-
-    upgrade_parser.add_argument(
-        "-m",
-        "--message",
-        action="store",
-        nargs="?",
-        default=None,
-        help="custom changelog message")
 
     # "constructor verify" command
     verify_parser: ArgumentParser = constructor_parsers.add_parser(

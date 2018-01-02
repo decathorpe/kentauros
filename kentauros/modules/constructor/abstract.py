@@ -15,7 +15,6 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
         self.actions["build"] = self.build
         self.actions["increment"] = self.increment
         self.actions["lint"] = self.lint
-        self.actions["upgrade"] = self.upgrade
 
         # TODO: test "constructor build all" action
         # TODO: test "constructor clean all" action
@@ -35,8 +34,4 @@ class Constructor(KtrModule, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def lint(self) -> KtrResult:
-        pass
-
-    @abc.abstractmethod
-    def upgrade(self) -> KtrResult:
         pass

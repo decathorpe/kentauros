@@ -460,7 +460,7 @@ class SrpmConstructor(Constructor):
 
         return ret.submit(True)
 
-    def _spec_upgrade(self) -> KtrResult:
+    def _spec_build(self) -> KtrResult:
         ret = KtrResult()
 
         spec = RPMSpec(self.rpmbuild.spec_path(), self.package, self.context)
@@ -563,53 +563,6 @@ class SrpmConstructor(Constructor):
 
         return ret.submit(True)
 
-    def build(self) -> KtrResult:
-        ret = KtrResult()
-
-        res = self._pre_build()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.log("Could not execute pre-build stage.")
-            return ret.submit(False)
-
-        spec = RPMSpec(self.rpmbuild.spec_path(), self.package, self.context)
-        spec.set_version()
-        spec.write_to_file(self.rpmbuild.spec_path())
-
-        # build the source package
-        res = self.rpmbuild.build()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.log("Could not build the source package successfully.")
-            return ret.submit(False)
-
-        res = self._post_build()
-        ret.collect(res)
-
-        if not res.success:
-            ret.messages.log("Could not execute post-build stage.")
-            return ret.submit(False)
-
-        return ret.submit(True)
-
-    def execute(self) -> KtrResult:
-        spec = RPMSpec(self.spec_path, self.package, self.context)
-
-        old_version = spec.get_version()
-        new_version = spec.build_version_string()
-
-        updated = new_version != old_version
-        force = self.context.get_argument("force")
-
-        if updated:
-            return self.upgrade()
-        elif force:
-            return self.increment()
-        else:
-            return self.build()
-
     def increment(self) -> KtrResult:
         ret = KtrResult()
 
@@ -659,7 +612,7 @@ class SrpmConstructor(Constructor):
         ret.messages.lst("rpmlint output:", res.value.split("\n"))
         return ret.submit(True)
 
-    def upgrade(self) -> KtrResult:
+    def build(self) -> KtrResult:
         ret = KtrResult()
 
         res = self._pre_build()
@@ -670,7 +623,7 @@ class SrpmConstructor(Constructor):
             return ret.submit(False)
 
         # bump the "Version" tag and reset the "Release" tag
-        res = self._spec_upgrade()
+        res = self._spec_build()
         ret.collect(res)
 
         if not res.success:
@@ -691,3 +644,17 @@ class SrpmConstructor(Constructor):
         if not res.success:
             ret.messages.log("Could not execute post-build stage.")
             return ret.submit(False)
+
+    def execute(self) -> KtrResult:
+        spec = RPMSpec(self.spec_path, self.package, self.context)
+
+        old_version = spec.get_version()
+        new_version = spec.build_version_string()
+
+        updated = new_version != old_version
+        force = self.context.get_argument("force")
+
+        if force and (not updated):
+            return self.increment()
+        else:
+            return self.build()
