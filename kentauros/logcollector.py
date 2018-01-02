@@ -32,6 +32,11 @@ class LogCollector:
             origin = self.origin
         self.messages.append(LogMessage(LogMessageType.NORMAL, message, origin))
 
+    def wrn(self, message: str, origin: str = None):
+        if origin is None:
+            origin = self.origin
+        self.messages.append(LogMessage(LogMessageType.WARNING, message, origin))
+
     def cmd(self, command: list, origin: str = None):
         cmd = " ".join(command)
         if origin is None:
