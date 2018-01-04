@@ -79,6 +79,14 @@ class CoprUploader(Uploader):
     def imports(self) -> KtrResult:
         return KtrResult(True)
 
+    def get_last_srpm(self) -> str:
+        state = self.context.state.read(self.package.conf_name)
+
+        if "copr_last_srpm" in state.keys():
+            return state["copr_last_srpm"]
+        else:
+            return ""
+
     def upload(self) -> KtrResult:
         ret = KtrResult(name=self.name())
 
@@ -94,9 +102,19 @@ class CoprUploader(Uploader):
             ret.messages.log("No source packages were found. Construct them first.")
             return ret.submit(False)
 
-        # figure out which srpm to build
+        # only upload the most recent srpm file
         srpms.sort(reverse=True)
-        srpm = srpms[0]
+        srpm_path = srpms[0]
+
+        srpm_file = os.path.basename(srpm_path)
+        last_file = self.get_last_srpm()
+
+        if srpm_file == last_file:
+            force = self.context.get_argument("force")
+
+            if not force:
+                ret.messages.log("This file has already been uploaded. Skipping.")
+                return ret.submit(True)
 
         # construct copr-cli command
         cmd = ["copr-cli", "build", self.get_repo()]
@@ -111,7 +129,7 @@ class CoprUploader(Uploader):
             cmd.append("--nowait")
 
         # append package
-        cmd.append(srpm)
+        cmd.append(srpm_path)
 
         # check for connectivity to server
         if not is_connected(self.remote):
@@ -128,7 +146,10 @@ class CoprUploader(Uploader):
             return ret.submit(False)
 
         if not self.get_keep():
-            os.remove(srpm)
+            os.remove(srpm_path)
+
+        # save the last successfully uploaded srpm file
+        ret.state["copr_last_srpm"] = srpm_file
 
         return ret.submit(True)
 
