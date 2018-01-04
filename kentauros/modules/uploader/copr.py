@@ -113,7 +113,8 @@ class CoprUploader(Uploader):
             force = self.context.get_argument("force")
 
             if not force:
-                ret.messages.log("This file has already been uploaded. Skipping.")
+                ret.messages.log(
+                    "This file has already been uploaded. Skipping (add --force to override).")
                 return ret.submit(True)
 
         # construct copr-cli command

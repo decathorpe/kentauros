@@ -214,9 +214,20 @@ class MockBuilder(Builder):
             ret.messages.log("No source packages were found. Construct them first.")
             return ret.submit(False)
 
-        # figure out which srpm to build
+        # only build the most recent srpm file
         srpms.sort(reverse=True)
-        srpm = srpms[0]
+        srpm_path = srpms[0]
+
+        srpm_file = os.path.basename(srpm_path)
+        last_file = self.get_last_srpm()
+
+        if srpm_file == last_file:
+            force = self.context.get_argument("force")
+
+            if not force:
+                ret.messages.log(
+                    "This file has already been built. Skipping (add --force to override).")
+                return ret.submit(True)
 
         ret.messages.log("Specified chroots: " + str(" ").join(self.get_dists()))
 
@@ -224,7 +235,7 @@ class MockBuilder(Builder):
         build_queue = list()
 
         for dist in self.get_dists():
-            build_queue.append(MockBuild(srpm, self.context, dist))
+            build_queue.append(MockBuild(srpm_path, self.context, dist))
 
         # run builds in queue
         builds_success = list()
@@ -239,7 +250,7 @@ class MockBuilder(Builder):
 
         # remove source package if keep=False is specified
         if not self.get_keep():
-            os.remove(srpm)
+            os.remove(srpm_path)
 
         if builds_success:
             for build in builds_success:
@@ -248,6 +259,9 @@ class MockBuilder(Builder):
         if builds_failure:
             for build in builds_failure:
                 ret.messages.log("Build failed: " + str(build))
+
+        if not builds_failure:
+            ret.state["mock_last_srpm"] = srpm_file
 
         return ret.submit(not builds_failure)
 
@@ -292,6 +306,14 @@ class MockBuilder(Builder):
             shutil.copy2(file, self.edir)
 
         return ret.submit(True)
+
+    def get_last_srpm(self) -> str:
+        state = self.context.state.read(self.package.conf_name)
+
+        if "mock_last_srpm" in state.keys():
+            return state["mock_last_srpm"]
+        else:
+            return ""
 
     def execute(self) -> KtrResult:
         ret = KtrResult(name=self.name())
