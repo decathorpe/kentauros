@@ -1,5 +1,4 @@
 from .meta import KtrMetaTask
-from .task import KtrTask
 from ..result import KtrResult
 
 

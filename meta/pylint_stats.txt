@@ -10,6 +10,27 @@ C: 34, 4: Missing method docstring (missing-docstring)
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing function docstring (missing-docstring)
 C: 25, 0: Missing function docstring (missing-docstring)
+************* Module kentauros.definitions
+C:  1, 0: Missing module docstring (missing-docstring)
+************* Module kentauros.package
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 10, 0: Missing class docstring (missing-docstring)
+C: 19, 0: Missing class docstring (missing-docstring)
+C: 25, 0: Missing class docstring (missing-docstring)
+C: 37, 4: Missing method docstring (missing-docstring)
+C: 40, 4: Missing method docstring (missing-docstring)
+C: 43, 4: Missing method docstring (missing-docstring)
+C: 53, 4: Missing method docstring (missing-docstring)
+C: 64, 4: Missing method docstring (missing-docstring)
+C: 70, 4: Missing method docstring (missing-docstring)
+C: 86, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.state
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  4, 0: Missing function docstring (missing-docstring)
+C: 21, 0: Missing class docstring (missing-docstring)
+C: 27, 4: Missing method docstring (missing-docstring)
+C: 39, 4: Missing method docstring (missing-docstring)
+C: 59, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.context
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
@@ -22,8 +43,6 @@ C: 48, 4: Missing method docstring (missing-docstring)
 C: 52, 4: Missing method docstring (missing-docstring)
 C: 56, 4: Missing method docstring (missing-docstring)
 C: 60, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.definitions
-C:  1, 0: Missing module docstring (missing-docstring)
 ************* Module kentauros.logcollector
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  5, 0: Missing class docstring (missing-docstring)
@@ -39,18 +58,6 @@ C: 59, 4: Missing method docstring (missing-docstring)
 C: 65, 4: Missing method docstring (missing-docstring)
 C: 68, 4: Missing method docstring (missing-docstring)
 C: 72, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.package
-C:  1, 0: Missing module docstring (missing-docstring)
-C: 10, 0: Missing class docstring (missing-docstring)
-C: 19, 0: Missing class docstring (missing-docstring)
-C: 25, 0: Missing class docstring (missing-docstring)
-C: 37, 4: Missing method docstring (missing-docstring)
-C: 40, 4: Missing method docstring (missing-docstring)
-C: 43, 4: Missing method docstring (missing-docstring)
-C: 53, 4: Missing method docstring (missing-docstring)
-C: 64, 4: Missing method docstring (missing-docstring)
-C: 70, 4: Missing method docstring (missing-docstring)
-C: 86, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.result
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  4, 0: Missing class docstring (missing-docstring)
@@ -60,13 +67,6 @@ C: 37, 4: Missing method docstring (missing-docstring)
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  7, 0: Missing class docstring (missing-docstring)
 C: 14, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.state
-C:  1, 0: Missing module docstring (missing-docstring)
-C:  4, 0: Missing function docstring (missing-docstring)
-C: 21, 0: Missing class docstring (missing-docstring)
-C: 27, 4: Missing method docstring (missing-docstring)
-C: 39, 4: Missing method docstring (missing-docstring)
-C: 59, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.validator
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
@@ -162,21 +162,6 @@ C:466, 4: Missing method docstring (missing-docstring)
 C:490, 4: Missing method docstring (missing-docstring)
 C:536, 4: Missing method docstring (missing-docstring)
 C:565, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.modules.constructor.rpm
-C:  1, 0: Missing module docstring (missing-docstring)
-C: 15, 0: Missing class docstring (missing-docstring)
-C: 30, 0: Missing function docstring (missing-docstring)
-C: 52, 0: Missing class docstring (missing-docstring)
-C: 77, 4: Missing method docstring (missing-docstring)
-C: 80, 4: Missing method docstring (missing-docstring)
-C: 88, 4: Missing method docstring (missing-docstring)
-C: 96, 4: Missing method docstring (missing-docstring)
-C:108, 4: Missing method docstring (missing-docstring)
-C:121, 4: Missing method docstring (missing-docstring)
-C:152, 4: Missing method docstring (missing-docstring)
-C:155, 4: Missing method docstring (missing-docstring)
-C:164, 4: Missing method docstring (missing-docstring)
-C:178, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.constructor.rpm.spec_common
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  1, 0: Missing class docstring (missing-docstring)
@@ -199,6 +184,21 @@ C:  5, 0: Missing function docstring (missing-docstring)
 C: 19, 0: Missing function docstring (missing-docstring)
 C: 27, 0: Missing function docstring (missing-docstring)
 C: 35, 0: Missing function docstring (missing-docstring)
+************* Module kentauros.modules.constructor.rpm
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 15, 0: Missing class docstring (missing-docstring)
+C: 30, 0: Missing function docstring (missing-docstring)
+C: 52, 0: Missing class docstring (missing-docstring)
+C: 77, 4: Missing method docstring (missing-docstring)
+C: 80, 4: Missing method docstring (missing-docstring)
+C: 88, 4: Missing method docstring (missing-docstring)
+C: 96, 4: Missing method docstring (missing-docstring)
+C:108, 4: Missing method docstring (missing-docstring)
+C:121, 4: Missing method docstring (missing-docstring)
+C:152, 4: Missing method docstring (missing-docstring)
+C:155, 4: Missing method docstring (missing-docstring)
+C:164, 4: Missing method docstring (missing-docstring)
+C:178, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.sources
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  9, 0: Missing function docstring (missing-docstring)
@@ -263,6 +263,10 @@ C: 70, 4: Missing method docstring (missing-docstring)
 C: 82, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.cli
 C:  1, 0: Missing module docstring (missing-docstring)
+************* Module kentauros.cli.runner
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  7, 0: Missing class docstring (missing-docstring)
+C: 38, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.cli.context
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 11, 0: Missing class docstring (missing-docstring)
@@ -279,10 +283,6 @@ C:262, 0: Missing function docstring (missing-docstring)
 C:312, 0: Missing function docstring (missing-docstring)
 C:371, 0: Missing function docstring (missing-docstring)
 C:383, 0: Missing function docstring (missing-docstring)
-************* Module kentauros.cli.runner
-C:  1, 0: Missing module docstring (missing-docstring)
-C:  7, 0: Missing class docstring (missing-docstring)
-C: 38, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.tasks
 C:  1, 0: Missing module docstring (missing-docstring)
 ************* Module kentauros.tasks.init
@@ -311,9 +311,8 @@ C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.tasks.tasklist
 C:  1, 0: Missing module docstring (missing-docstring)
-C:  6, 0: Missing class docstring (missing-docstring)
-C: 10, 4: Missing method docstring (missing-docstring)
-W:  2, 0: Unused KtrTask imported from task (unused-import)
+C:  5, 0: Missing class docstring (missing-docstring)
+C:  9, 4: Missing method docstring (missing-docstring)
 ************* Module ktr
 C:  1, 0: Missing module docstring (missing-docstring)
 R:  1, 0: Similar lines in 2 files
@@ -348,7 +347,7 @@ R:  1, 0: Similar lines in 2 files
 
 Report
 ======
-2667 statements analysed.
+2666 statements analysed.
 
 Statistics by type
 ------------------
@@ -402,7 +401,7 @@ External dependencies
       \-state (kentauros.context)
       \-tasks (kentauros.cli.runner)
       | \-meta (kentauros.tasks.init,kentauros.tasks.package,kentauros.tasks.task,kentauros.tasks.tasklist)
-      | \-task (kentauros.tasks.package,kentauros.tasks.tasklist)
+      | \-task (kentauros.tasks.package)
       \-validator (kentauros.modules.builder.mock,kentauros.modules.constructor.srpm,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.url,kentauros.modules.uploader.copr,kentauros.package)
     tinydb (kentauros.state)
 
@@ -414,13 +413,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3069   |68.64 |3069     |=          |
+|code      |3068   |68.64 |3068     |=          |
 +----------+-------+------+---------+-----------+
 |docstring |64     |1.43  |64       |=          |
 +----------+-------+------+---------+-----------+
 |comment   |155    |3.47  |155      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1183   |26.46 |1183     |=          |
+|empty     |1183   |26.47 |1183     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -448,7 +447,7 @@ Messages by category
 +-----------+-------+---------+-----------+
 |refactor   |1      |1        |=          |
 +-----------+-------+---------+-----------+
-|warning    |3      |3        |=          |
+|warning    |2      |2        |=          |
 +-----------+-------+---------+-----------+
 |error      |0      |0        |=          |
 +-----------+-------+---------+-----------+
@@ -461,11 +460,9 @@ Messages by category
 +----------------------------------------------------+------+--------+---------+-----------+
 |module                                              |error |warning |refactor |convention |
 +====================================================+======+========+=========+===========+
-|kentauros.tasks.package                             |0.00  |33.33   |0.00     |3.70       |
+|kentauros.tasks.package                             |0.00  |50.00   |0.00     |3.70       |
 +----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.tasklist                            |0.00  |33.33   |0.00     |1.11       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.init                                |0.00  |33.33   |0.00     |1.11       |
+|kentauros.tasks.init                                |0.00  |50.00   |0.00     |1.11       |
 +----------------------------------------------------+------+--------+---------+-----------+
 |ktr                                                 |0.00  |0.00    |100.00   |0.37       |
 +----------------------------------------------------+------+--------+---------+-----------+
@@ -512,6 +509,8 @@ Messages by category
 |kentauros.modules.builder.mock_tests                |0.00  |0.00    |0.00     |1.48       |
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.validator                                 |0.00  |0.00    |0.00     |1.11       |
++----------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.tasklist                            |0.00  |0.00    |0.00     |1.11       |
 +----------------------------------------------------+------+--------+---------+-----------+
 |kentauros.tasks.meta                                |0.00  |0.00    |0.00     |1.11       |
 +----------------------------------------------------+------+--------+---------+-----------+
@@ -564,8 +563,6 @@ Messages
 +------------------+------------+
 |fixme             |2           |
 +------------------+------------+
-|unused-import     |1           |
-+------------------+------------+
 |duplicate-code    |1           |
 +------------------+------------+
 
@@ -573,5 +570,5 @@ Messages
 
 
 ------------------------------------------------------------------
-Your code has been rated at 8.97/10 (previous run: 8.97/10, +0.00)
+Your code has been rated at 8.98/10 (previous run: 8.98/10, +0.00)
 
