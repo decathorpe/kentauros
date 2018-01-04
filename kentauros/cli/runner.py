@@ -1,7 +1,7 @@
 from .context import KtrCLIContext
 from ..modules import get_module
 from ..package import KtrPackage
-from ..tasks import KtrTask, KtrInitTask, KtrTaskList, KtrPackageTask
+from ..tasks import KtrMetaTask, KtrTask, KtrInitTask, KtrTaskList, KtrPackageTask
 
 
 class KtrCLIRunner:
@@ -35,20 +35,48 @@ class KtrCLIRunner:
 
                 self.task.add(task)
 
-    def run(self) -> int:
-        result = self.task.execute()
+    def _run_task(self, logfile: str, warnings: bool, debug: bool) -> int:
+        assert isinstance(self.task, KtrMetaTask)
+        assert not isinstance(self.task, KtrTaskList)
 
-        logfile = self.context.get_argument("logfile")
-        warnings = self.context.warnings()
-        debug = self.context.debug()
+        result = self.task.execute()
 
         if not logfile:
             result.messages.print_all(warnings, debug)
         else:
             with open(logfile, "a") as file:
-                result.messages.print_all(dest=file, warnings=warnings, debug=debug)
+                result.messages.print_all(warnings, debug, file)
 
         if result.success:
             return 0
         else:
             return 1
+
+    def _run_task_list(self, logfile: str, warnings: bool, debug: bool) -> int:
+        assert isinstance(self.task, KtrTaskList)
+
+        code = 0
+        for task in self.task.tasks:
+            assert isinstance(task, KtrMetaTask)
+            result = task.execute()
+
+            if not logfile:
+                result.messages.print_all(warnings, debug)
+            else:
+                with open(logfile, "a") as file:
+                    result.messages.print_all(warnings, debug, file)
+
+            if not result.success:
+                code += 1
+
+        return code
+
+    def run(self) -> int:
+        logfile = self.context.get_argument("logfile")
+        warnings = self.context.warnings()
+        debug = self.context.debug()
+
+        if isinstance(self.task, KtrTaskList):
+            return self._run_task_list(logfile, warnings, debug)
+        else:
+            return self._run_task(logfile, warnings, debug)
