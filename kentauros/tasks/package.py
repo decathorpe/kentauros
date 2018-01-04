@@ -139,7 +139,4 @@ class KtrPackageTask(KtrMetaTask):
             res = module.status_string()
             ret.collect(res)
 
-            if res.success:
-                string += res.value
-
         return ret
