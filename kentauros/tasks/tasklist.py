@@ -14,7 +14,7 @@ class KtrTaskList(KtrMetaTask):
         ret = KtrResult()
 
         for task in self.tasks:
-            assert isinstance(task, KtrTask)
+            assert isinstance(task, KtrMetaTask)
 
             res = task.execute()
             ret.collect(res)

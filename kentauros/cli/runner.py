@@ -17,9 +17,12 @@ class KtrCLIRunner:
         elif module_type == "package":
             action = self.context.get_module_action()
 
+            self.task: KtrTaskList = KtrTaskList()
+
             for conf_name in conf_names:
                 package = KtrPackage(self.context, conf_name)
-                self.task = KtrPackageTask(package, action, self.context)
+                task = KtrPackageTask(package, action, self.context)
+                self.task.add(task)
         else:
             action = self.context.get_module_action()
             self.task: KtrTaskList = KtrTaskList()
