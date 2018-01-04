@@ -225,8 +225,7 @@ class MockBuilder(Builder):
             force = self.context.get_argument("force")
 
             if not force:
-                ret.messages.log(
-                    "This file has already been built. Skipping (add --force to override).")
+                ret.messages.log("This file has already been built. Skipping.")
                 return ret.submit(True)
 
         ret.messages.log("Specified chroots: " + str(" ").join(self.get_dists()))

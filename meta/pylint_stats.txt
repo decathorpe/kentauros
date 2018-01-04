@@ -104,7 +104,7 @@ C:  6, 0: Missing class docstring (missing-docstring)
 C:  7, 4: Missing method docstring (missing-docstring)
 C: 13, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.builder.mock
-W:338, 0: TODO (fixme)
+W:337, 0: TODO (fixme)
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 19, 0: Missing class docstring (missing-docstring)
 C: 34, 0: Missing class docstring (missing-docstring)
@@ -120,7 +120,7 @@ C:176, 4: Missing method docstring (missing-docstring)
 C:179, 4: Missing method docstring (missing-docstring)
 C:187, 4: Missing method docstring (missing-docstring)
 C:190, 4: Missing method docstring (missing-docstring)
-C:310, 4: Missing method docstring (missing-docstring)
+C:309, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.constructor
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  7, 0: Missing function docstring (missing-docstring)
@@ -342,8 +342,7 @@ R:  1, 0: Similar lines in 2 files
         if srpm_file == last_file:
             force = self.context.get_argument("force")
 
-            if not force:
-                ret.messages.log( (duplicate-code)
+            if not force: (duplicate-code)
 
 
 Report
@@ -414,13 +413,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3046   |68.60 |3046     |=          |
+|code      |3046   |68.63 |3046     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |66     |1.49  |66       |=          |
+|docstring |64     |1.44  |64       |=          |
 +----------+-------+------+---------+-----------+
-|comment   |156    |3.51  |156      |=          |
+|comment   |156    |3.52  |156      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1172   |26.40 |1172     |=          |
+|empty     |1172   |26.41 |1172     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -431,9 +430,9 @@ Duplication
 +-------------------------+------+---------+-----------+
 |                         |now   |previous |difference |
 +=========================+======+=========+===========+
-|nb duplicated lines      |26    |26       |=          |
+|nb duplicated lines      |25    |25       |=          |
 +-------------------------+------+---------+-----------+
-|percent duplicated lines |0.598 |0.598    |=          |
+|percent duplicated lines |0.575 |0.575    |=          |
 +-------------------------+------+---------+-----------+
 
 
