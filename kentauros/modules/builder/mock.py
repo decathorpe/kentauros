@@ -16,6 +16,21 @@ DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
 DEFAULT_VAR_PATH = "/var/lib/mock"
 
 
+class RPMLintCommand(ShellCommand):
+    NAME = "rpmlint Command"
+
+    def __init__(self, *args, path: str = None, binary: str = None):
+        if binary is None:
+            self.exec = "rpmlint"
+        else:
+            self.exec = binary
+
+        if path is None:
+            path = os.getcwd()
+
+        super().__init__(path, self.exec, *args)
+
+
 class MockCommand(ShellCommand):
     NAME = "mock Command"
 
@@ -199,6 +214,14 @@ class MockBuilder(Builder):
     def imports(self) -> KtrResult:
         return KtrResult(True)
 
+    def get_last_srpm(self) -> str:
+        state = self.context.state.read(self.package.conf_name)
+
+        if "mock_last_srpm" in state.keys():
+            return state["mock_last_srpm"]
+        else:
+            return ""
+
     def build(self) -> KtrResult:
         ret = KtrResult(name=self.name())
 
@@ -306,14 +329,6 @@ class MockBuilder(Builder):
 
         return ret.submit(True)
 
-    def get_last_srpm(self) -> str:
-        state = self.context.state.read(self.package.conf_name)
-
-        if "mock_last_srpm" in state.keys():
-            return state["mock_last_srpm"]
-        else:
-            return ""
-
     def execute(self) -> KtrResult:
         ret = KtrResult(name=self.name())
 
@@ -334,8 +349,23 @@ class MockBuilder(Builder):
             return ret.submit(True)
 
     def lint(self) -> KtrResult:
-        # TODO
-        return KtrResult(True)
+        ret = KtrResult()
+
+        if not os.path.exists(self.edir):
+            ret.messages.log("No packages have been built yet.")
+            return ret.submit(True)
+
+        files = list(os.path.join(self.edir, path) for path in os.listdir(self.edir))
+
+        if not files:
+            ret.messages.log("No packages have been built yet.")
+            return ret.submit(True)
+
+        res = RPMLintCommand(*files).execute(ignore_retcode=True)
+        ret.collect(res)
+
+        ret.messages.lst("rpmlint output:", res.value.split("\n"))
+        return ret.submit(True)
 
     def clean(self) -> KtrResult:
         if not os.path.exists(self.edir):
