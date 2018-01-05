@@ -6,7 +6,7 @@ setuptools install script for kentauros
 
 from setuptools import setup, find_packages
 
-from kentauros.definitions import KTR_SYSTEM_DATADIR, KTR_VERSION
+from kentauros import KTR_VERSION
 
 
 setup(
@@ -29,8 +29,6 @@ setup(
     test_suite="nose.collector",
 
     scripts=['scripts/ktr'],
-    data_files=[(KTR_SYSTEM_DATADIR, ['data/default.conf']),
-                (KTR_SYSTEM_DATADIR, ['data/template.conf'])],
 
     classifiers=[
         'Development Status :: 4 - Beta',

@@ -1,7 +1,8 @@
 from .context import KtrCLIContext
 from ..modules import get_module
 from ..package import KtrPackage
-from ..tasks import KtrMetaTask, KtrTask, KtrInitTask, KtrTaskList, KtrPackageTask
+from ..tasks import KtrMetaTask, KtrTask, KtrInitTask
+from ..tasks import KtrTaskList, KtrPackageTask, KtrPackageAddTask
 
 
 class KtrCLIRunner:
@@ -19,10 +20,16 @@ class KtrCLIRunner:
 
             self.task: KtrTaskList = KtrTaskList()
 
-            for conf_name in conf_names:
-                package = KtrPackage(self.context, conf_name)
-                task = KtrPackageTask(package, action, self.context)
-                self.task.add(task)
+            if action == "add":
+                for conf_name in conf_names:
+                    task = KtrPackageAddTask(conf_name, self.context)
+                    self.task.add(task)
+
+            else:
+                for conf_name in conf_names:
+                    package = KtrPackage(self.context, conf_name)
+                    task = KtrPackageTask(package, action, self.context)
+                    self.task.add(task)
         else:
             action = self.context.get_module_action()
             self.task: KtrTaskList = KtrTaskList()

@@ -21,7 +21,7 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../'))
 
-from kentauros.definitions import KTR_VERSION
+from kentauros import KTR_VERSION
 
 # -- General configuration ------------------------------------------------
 

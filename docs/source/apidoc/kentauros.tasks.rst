@@ -28,6 +28,14 @@ kentauros\.tasks\.package module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.tasks\.packageadd module
+-----------------------------------
+
+.. automodule:: kentauros.tasks.packageadd
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros\.tasks\.task module
 -----------------------------
 

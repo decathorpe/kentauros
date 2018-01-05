@@ -37,14 +37,6 @@ kentauros\.context module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.definitions module
------------------------------
-
-.. automodule:: kentauros.definitions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros\.logcollector module
 ------------------------------
 
@@ -81,6 +73,14 @@ kentauros\.state module
 -----------------------
 
 .. automodule:: kentauros.state
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros\.templates module
+---------------------------
+
+.. automodule:: kentauros.templates
     :members:
     :undoc-members:
     :show-inheritance:

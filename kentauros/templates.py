@@ -1,4 +1,4 @@
-# This is a package.conf template.
+PACKAGE_CONF_TEMPLATE = """# This is a package.conf template.
 #
 # The expected type is given for all keys that are not normal strings, with
 # default values in parentheses. All listed keys need to be specified, even if
@@ -16,48 +16,48 @@ name =
 version =
 release =
 # supported modules: source, constructor, builder, uploader
-modules = list()
+modules =
 
 # only specified modules are necessary
 [modules]
-source = (git / url / local)
-constructor = (srpm)
-builder = (mock)
-uploader = (copr)
+#source = (git / url / local)
+#constructor = (srpm)
+#builder = (mock)
+#uploader = (copr)
 
 # only if source = git:
-[git]
-keep = bool()
-keep_repo = bool()
-orig =
-ref =
-shallow = bool()
+#[git]
+#keep = bool()
+#keep_repo = bool()
+#orig =
+#ref =
+#shallow = bool()
 
 # only if source = url:
-[url]
-keep = bool()
-orig =
+#[url]
+#keep = bool()
+#orig =
 
 # only if source = local:
-[local]
-keep = bool()
-orig =
+#[local]
+#keep = bool()
+#orig =
 
 # only if constructor = srpm:
-[srpm]
+#[srpm]
 
 # only if builder = mock:
-[mock]
-active = bool()
-dists = list()
-export = bool()
-keep = bool()
+#[mock]
+#active = bool()
+#dists = list()
+#export = bool()
+#keep = bool()
 
 # only if package/uploader=copr
-[copr]
-active = bool()
-dists = list()
-keep = bool()
-repo =
-wait = bool()
-
+#[copr]
+#active = bool()
+#dists = list()
+#keep = bool()
+#repo =
+#wait = bool()
+"""
