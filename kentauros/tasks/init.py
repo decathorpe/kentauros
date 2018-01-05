@@ -1,8 +1,10 @@
+import configparser as cp
 import os
 
 from .meta import KtrMetaTask
 from ..context import KtrContext
 from ..result import KtrResult
+from ..templates import KENTAUROSRC_TEMPLATE
 
 
 def ktr_mkdirp(path: str) -> KtrResult:
@@ -29,9 +31,30 @@ class KtrInitTask(KtrMetaTask):
         self.context = context
 
     def execute(self) -> KtrResult:
-        ret = KtrResult(name="bootstrap")
+        ret = KtrResult(True, name="bootstrap")
 
-        # TODO: create kentaurosrc file from template
+        try:
+            basedir = self.context.get_basedir()
+            path = os.path.join(basedir, "kentaurosrc")
+
+            with open(path, "a") as file:
+                file.write(KENTAUROSRC_TEMPLATE)
+
+            conf = cp.ConfigParser()
+            conf.read(path)
+
+            if basedir == os.getcwd():
+                basedir_conf = "./"
+            else:
+                basedir_conf = basedir
+
+            conf.set("main", "basedir", basedir_conf)
+
+            with open(path, "w") as file:
+                conf.write(file)
+        except OSError:
+            ret.messages.log("kentaurosrc file could not be created.")
+            ret.success = False
 
         for path in [self.context.get_basedir(), self.context.get_confdir(),
                      self.context.get_datadir(), self.context.get_expodir(),
@@ -41,6 +64,6 @@ class KtrInitTask(KtrMetaTask):
             ret.collect(res)
 
             if not res.success:
-                return ret.submit(False)
+                return ret
 
-        return ret.submit(True)
+        return ret

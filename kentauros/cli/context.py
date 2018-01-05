@@ -35,7 +35,16 @@ class KtrCLIContext(KtrContext):
         # CLI argument --basedir was specified
         if "basedir" in self.args and self.args.get("basedir") != "":
             basedir = os.path.abspath(self.args.get("basedir"))
-            conf_path = os.path.join(basedir, "kentauros")
+            conf_path = os.path.join(basedir, "kentaurosrc")
+
+        # create basedir if it doesn't exist
+        if not os.path.exists(basedir):
+            os.makedirs(basedir)
+
+        # create an empty config file if none exists
+        if not os.path.exists(conf_path):
+            with open(conf_path, "w") as file:
+                file.write("")
 
         super().__init__(basedir, conf_path)
 

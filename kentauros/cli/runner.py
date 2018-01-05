@@ -1,7 +1,7 @@
 from .context import KtrCLIContext
 from ..modules import get_module
 from ..package import KtrPackage
-from ..tasks import KtrMetaTask, KtrTask, KtrInitTask
+from ..tasks import KtrMetaTask, KtrTask, KtrInitTask, KtrNoTask
 from ..tasks import KtrTaskList, KtrPackageTask, KtrPackageAddTask
 
 
@@ -12,7 +12,10 @@ class KtrCLIRunner:
         conf_names = self.context.get_packages()
         module_type = self.context.get_module()
 
-        if module_type == "init":
+        if module_type is None:
+            self.task = KtrNoTask()
+
+        elif module_type == "init":
             self.task = KtrInitTask(self.context)
 
         elif module_type == "package":

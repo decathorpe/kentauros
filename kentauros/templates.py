@@ -61,3 +61,13 @@ modules =
 #repo =
 #wait = bool()
 """
+
+KENTAUROSRC_TEMPLATE = """# default kentaurosrc file
+[main]
+basedir=./
+
+version_template_git = %{version}%{version_sep}%{date}.%{time}.git%{shortcommit}
+
+version_separator_pre = ~
+version_separator_post = +
+"""
