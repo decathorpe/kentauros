@@ -462,7 +462,7 @@ class SrpmConstructor(Constructor):
 
         spec = RPMSpec(self.rpmbuild.spec_path(), self.package, self.context)
 
-        message = self.context.get_argument("message")
+        message = self.context.get_message()
 
         spec.set_version()
 
@@ -648,7 +648,7 @@ class SrpmConstructor(Constructor):
         new_version = spec.build_version_string()
 
         updated = new_version != old_version
-        force = self.context.get_argument("force")
+        force = self.context.get_force()
 
         if force and (not updated):
             return self.increment()

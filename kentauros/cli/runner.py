@@ -82,7 +82,7 @@ class KtrCLIRunner:
         return code
 
     def run(self) -> int:
-        logfile = self.context.get_argument("logfile")
+        logfile = self.context.get_logfile()
         warnings = self.context.warnings()
         debug = self.context.debug()
 

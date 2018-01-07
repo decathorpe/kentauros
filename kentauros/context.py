@@ -25,7 +25,15 @@ class KtrContext(metaclass=abc.ABCMeta):
         self.conf = KtrConfig(conf_path)
 
     @abc.abstractmethod
-    def get_argument(self, key: str):
+    def get_force(self) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_logfile(self) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_message(self) -> str:
         pass
 
     @abc.abstractmethod

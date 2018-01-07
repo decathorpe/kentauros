@@ -107,7 +107,7 @@ class KtrPackageTask(KtrMetaTask):
             res = task.execute()
             ret.collect(res)
 
-            if self.context.get_argument("force"):
+            if self.context.get_force():
                 continue
             if not res.success:
                 break

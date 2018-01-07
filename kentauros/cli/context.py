@@ -51,11 +51,23 @@ class KtrCLIContext(KtrContext):
         self.debug_flag = self.args.get("debug")
         self.warning_flag = self.args.get("warnings")
 
-    def get_argument(self, key: str):
-        if key in self.args:
-            return self.args.get(key)
+    def get_force(self) -> bool:
+        if "force" in self.args.keys():
+            return self.args.get("force")
         else:
-            return None
+            return False
+
+    def get_logfile(self) -> str:
+        if "logfile" in self.args.keys():
+            return self.args.get("logfile")
+        else:
+            return ""
+
+    def get_message(self) -> str:
+        if "message" in self.args.keys():
+            return self.args.get("message")
+        else:
+            return ""
 
     def debug(self) -> bool:
         return self.debug_flag or os.getenv("KTR_DEBUG", False)

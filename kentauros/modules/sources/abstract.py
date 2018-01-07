@@ -119,7 +119,7 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
     def execute(self) -> KtrResult:
         ret = KtrResult(name=self.name())
 
-        force = self.context.get_argument("force")
+        force = self.context.get_force()
         old_status = self.status()
 
         res = self.get()

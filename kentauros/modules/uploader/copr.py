@@ -95,7 +95,7 @@ class CoprUploader(Uploader):
         last_file = self.get_last_srpm()
 
         if srpm_file == last_file:
-            force = self.context.get_argument("force")
+            force = self.context.get_force()
 
             if not force:
                 ret.messages.log("This file has already been uploaded. Skipping.")

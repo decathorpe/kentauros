@@ -166,7 +166,7 @@ class RPMSpec:
         if not os.path.exists(self.path):
             raise FileNotFoundError()
 
-        if comment is None:
+        if not comment:
             comment = "Automatic build by kentauros."
 
         # construct rpmdev-bumpspec command
