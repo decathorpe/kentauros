@@ -7,6 +7,8 @@ import sys
 
 sys.path.insert(0, os.getcwd())
 
+# pylint: disable=wrong-import-position
+
 from kentauros import KtrCLIRunner
 
 sys.exit(KtrCLIRunner().run())
