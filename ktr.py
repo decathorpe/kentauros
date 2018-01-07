@@ -7,6 +7,6 @@ import sys
 
 sys.path.insert(0, os.getcwd())
 
-from kentauros.cli import KtrCLIRunner
+from kentauros import KtrCLIRunner
 
 sys.exit(KtrCLIRunner().run())
