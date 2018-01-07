@@ -5,45 +5,14 @@ import os
 import shutil
 import time
 
-from .abstract import Builder
+from .abstract import Builder, Build
 from ...context import KtrContext
-from ...package import KtrPackage
 from ...result import KtrResult
-from ...shellcmd import ShellCommand
+from ...shellcmd import ShellCmd
 from ...validator import KtrValidator
 
 DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
 DEFAULT_VAR_PATH = "/var/lib/mock"
-
-
-class RPMLintCommand(ShellCommand):
-    NAME = "rpmlint Command"
-
-    def __init__(self, *args, path: str = None, binary: str = None):
-        if binary is None:
-            self.exec = "rpmlint"
-        else:
-            self.exec = binary
-
-        if path is None:
-            path = os.getcwd()
-
-        super().__init__(path, self.exec, *args)
-
-
-class MockCommand(ShellCommand):
-    NAME = "mock Command"
-
-    def __init__(self, *args, path: str = None, binary: str = None):
-        if binary is None:
-            self.exec = "mock"
-        else:
-            self.exec = binary
-
-        if path is None:
-            path = os.getcwd()
-
-        super().__init__(path, self.exec, *args)
 
 
 class MockError(Exception):
@@ -77,12 +46,11 @@ def get_dist_result_path(dist: str) -> str:
     return os.path.join(DEFAULT_VAR_PATH, dist, "result")
 
 
-class MockBuild:
+class MockBuild(Build):
     NAME = "Mock Build"
 
-    def __init__(self, path: str, context: KtrContext, dist: str = None):
-        self.path = path
-        self.context = context
+    def __init__(self, context: KtrContext, path: str, dist: str = None):
+        super().__init__(path, dist, context)
 
         mock_path = shutil.which("mock")
 
@@ -103,7 +71,7 @@ class MockBuild:
     def get_command(self) -> list:
         cmd = list()
 
-        # add --verbose or --quiet depending on settings
+        # add --quiet depending on settings
         if not self.context.debug:
             cmd.append("--quiet")
 
@@ -143,7 +111,7 @@ class MockBuild:
         cmd = self.get_command()
         ret.messages.cmd(cmd)
 
-        res = MockCommand(*cmd, binary=self.mock).execute()
+        res = ShellCmd(self.mock).command(*cmd).execute()
         ret.collect(res)
 
         if not res.success:
@@ -154,12 +122,10 @@ class MockBuild:
 
 
 class MockBuilder(Builder):
-    def __init__(self, package: KtrPackage, context: KtrContext):
-        super().__init__(package, context)
-        self.edir = os.path.join(context.get_expodir(), self.package.conf_name)
+    NAME = "mock Builder"
 
     def name(self) -> str:
-        return "Mock Builder"
+        return self.NAME
 
     def __str__(self) -> str:
         return "Mock Builder for Package '" + self.package.conf_name + "'"
@@ -228,10 +194,8 @@ class MockBuilder(Builder):
         if not self.get_active():
             return ret.submit(True)
 
-        package_dir = os.path.join(self.context.get_packdir(), self.package.conf_name)
-
         # get all srpms in the package directory
-        srpms = glob.glob(os.path.join(package_dir, self.package.name + "*.src.rpm"))
+        srpms = glob.glob(os.path.join(self.pdir, self.package.name + "*.src.rpm"))
 
         if not srpms:
             ret.messages.log("No source packages were found. Construct them first.")
@@ -361,26 +325,8 @@ class MockBuilder(Builder):
             ret.messages.log("No packages have been built yet.")
             return ret.submit(True)
 
-        res = RPMLintCommand(*files).execute(ignore_retcode=True)
+        res = ShellCmd("rpmlint").command(*files).execute(ignore_retcode=True)
         ret.collect(res)
 
         ret.messages.lst("rpmlint output:", res.value.split("\n"))
         return ret.submit(True)
-
-    def clean(self) -> KtrResult:
-        if not os.path.exists(self.edir):
-            return KtrResult(True)
-
-        ret = KtrResult(name=self.name())
-
-        try:
-            assert self.context.get_expodir() in self.edir
-            assert os.path.isabs(self.edir)
-            shutil.rmtree(self.edir)
-            return ret.submit(True)
-        except AssertionError:
-            ret.messages.err("The Package exports directory looks weird. Doing nothing.")
-            return ret.submit(False)
-        except OSError:
-            ret.messages.err("The Package exports directory couldn't be removed.")
-            return ret.submit(False)

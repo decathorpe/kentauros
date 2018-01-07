@@ -1,5 +1,6 @@
 import abc
 import os
+import shutil
 
 from ...context import KtrContext
 from ...modules.module import KtrModule
@@ -7,11 +8,28 @@ from ...package import KtrPackage
 from ...result import KtrResult
 
 
+class Build(metaclass=abc.ABCMeta):
+    def __init__(self, path: str, dist: str, context: KtrContext):
+        self.path = path
+        self.dist = dist
+        self.context = context
+
+    @abc.abstractmethod
+    def name(self) -> str:
+        pass
+
+    @abc.abstractmethod
+    def build(self) -> KtrResult:
+        pass
+
+
 class Builder(KtrModule, metaclass=abc.ABCMeta):
     def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
 
+        self.edir = os.path.join(self.context.get_expodir(), self.package.conf_name)
         self.pdir = os.path.join(self.context.get_packdir(), self.package.conf_name)
+
         self.actions["build"] = self.execute
         self.actions["lint"] = self.lint
 
@@ -30,3 +48,21 @@ class Builder(KtrModule, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def lint(self) -> KtrResult:
         pass
+
+    def clean(self) -> KtrResult:
+        if not os.path.exists(self.edir):
+            return KtrResult(True)
+
+        ret = KtrResult(name=self.name())
+
+        try:
+            assert self.context.get_expodir() in self.edir
+            assert os.path.isabs(self.edir)
+            shutil.rmtree(self.edir)
+            return ret.submit(True)
+        except AssertionError:
+            ret.messages.err("The Package exports directory looks weird. Doing nothing.")
+            return ret.submit(False)
+        except OSError:
+            ret.messages.err("The Package exports directory couldn't be removed.")
+            return ret.submit(False)
