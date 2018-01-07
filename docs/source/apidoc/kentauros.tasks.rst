@@ -20,6 +20,14 @@ kentauros\.tasks\.meta module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.tasks\.no module
+---------------------------
+
+.. automodule:: kentauros.tasks.no
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros\.tasks\.package module
 --------------------------------
 

@@ -12,6 +12,7 @@ BuildArch:      noarch
 BuildRequires:  python3-GitPython
 BuildRequires:  python3-argcomplete
 BuildRequires:  python3-devel >= 3.5
+BuildRequires:  python3-nose
 BuildRequires:  python3-tinydb
 
 Requires:       python3-GitPython
@@ -20,12 +21,13 @@ Requires:       python3-tinydb
 
 Recommends:     python3-ujson
 
+Recommends:     createrepo_c
+Recommends:     copr-cli
 Recommends:     git
+Recommends:     mock
+Recommends:     rpmdevtools
+Recommends:     rpmlint
 Recommends:     wget
-
-Suggests:       copr-cli
-Suggests:       mock
-Suggests:       rpmdevtools
 
 
 %description
@@ -49,8 +51,6 @@ uploading to copr works.
 
 %files
 %{_bindir}/ktr
-
-%{_datadir}/kentauros/
 
 %{python3_sitelib}/kentauros
 %{python3_sitelib}/kentauros-%{version}-py%{python3_version}.egg-info/

@@ -12,6 +12,14 @@ kentauros\.modules\.builder\.abstract module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.modules\.builder\.kojiscratch module
+-----------------------------------------------
+
+.. automodule:: kentauros.modules.builder.kojiscratch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros\.modules\.builder\.mock module
 ----------------------------------------
 

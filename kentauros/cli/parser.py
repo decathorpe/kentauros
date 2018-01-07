@@ -309,6 +309,56 @@ def add_uploader_parser(parsers: _SubParsersAction,
     return uploader_parser
 
 
+def add_exporter_parser(parsers: _SubParsersAction,
+                        package_parser: ArgumentParser) -> ArgumentParser:
+    exporter_parser: ArgumentParser = parsers.add_parser(
+        "exporter",
+        aliases=["e", "ex", "exp", "expo", "expor"],
+        description="interact with a package's exports",
+        help="interact with package exports")
+    exporter_parser.set_defaults(module="exporter")
+
+    uploader_parsers: _SubParsersAction = exporter_parser.add_subparsers()
+
+    # "exporter clean" command
+    clean_parser: ArgumentParser = uploader_parsers.add_parser(
+        "clean",
+        aliases=["c", "cl", "cle", "clea"],
+        description="clean up exporter",
+        help="clean up exporter",
+        parents=[package_parser])
+    clean_parser.set_defaults(module_action="clean")
+
+    # "exporter export" command
+    export_parser: ArgumentParser = uploader_parsers.add_parser(
+        "export",
+        aliases=["u", "up", "upl", "uplo", "uploa"],
+        description="export packages",
+        help="export packages",
+        parents=[package_parser])
+    export_parser.set_defaults(module_action="export")
+
+    # "exporter status" command
+    status_parser: ArgumentParser = uploader_parsers.add_parser(
+        "status",
+        aliases=["s", "st", "sta", "stat", "statu"],
+        description="print exporter status",
+        help="print exporter status",
+        parents=[package_parser])
+    status_parser.set_defaults(module_action="status")
+
+    # "exporter verify" command
+    verify_parser: ArgumentParser = uploader_parsers.add_parser(
+        "verify",
+        aliases=["v", "ve", "ver", "veri", "verif"],
+        description="verify export functionality",
+        help="verify export functionality",
+        parents=[package_parser])
+    verify_parser.set_defaults(module_action="verify")
+
+    return exporter_parser
+
+
 def add_pkg_parser(parsers: _SubParsersAction,
                    package_parser: ArgumentParser) -> ArgumentParser:
     pkg_parser: ArgumentParser = parsers.add_parser(
@@ -442,5 +492,6 @@ def get_cli_parser() -> ArgumentParser:
     add_constructor_parser(parsers, package_parser)
     add_builder_parser(parsers, package_parser)
     add_uploader_parser(parsers, package_parser)
+    add_exporter_parser(parsers, package_parser)
 
     return cli_parser

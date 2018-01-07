@@ -1,5 +1,6 @@
 from .builder import get_builder
 from .constructor import get_constructor
+from .exporter import get_exporter
 from .module import KtrModule
 from .package import PackageModule
 from .sources import get_source
@@ -15,6 +16,7 @@ def _get_pkg_module(mtype: str, mimpl: str, pkg: KtrPackage, context: KtrContext
     pkg_module_dict["constructor"] = get_constructor
     pkg_module_dict["builder"] = get_builder
     pkg_module_dict["uploader"] = get_uploader
+    pkg_module_dict["exporter"] = get_exporter
 
     return pkg_module_dict[mtype](mimpl, pkg, context)
 
