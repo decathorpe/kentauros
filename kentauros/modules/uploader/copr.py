@@ -6,26 +6,11 @@ from ...conntest import is_connected
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
-from ...shellcmd import ShellCommand
+from ...shellcmd import ShellCmd
 from ...validator import KtrValidator
 
 
 DEFAULT_COPR_URL = "https://copr.fedorainfracloud.org"
-
-
-class COPRCommand(ShellCommand):
-    NAME = "copr-cli Command"
-
-    def __init__(self, *args, path: str = None, binary: str = None):
-        if binary is None:
-            self.exec = "copr-cli"
-        else:
-            self.exec = binary
-
-        if path is None:
-            path = os.getcwd()
-
-        super().__init__(path, self.exec, *args)
 
 
 class CoprUploader(Uploader):
@@ -138,7 +123,7 @@ class CoprUploader(Uploader):
 
         ret.messages.cmd(cmd)
 
-        res = COPRCommand(*cmd).execute()
+        res = ShellCmd("copr-cli").command(*cmd).execute()
         ret.collect(res)
 
         if not res.success:

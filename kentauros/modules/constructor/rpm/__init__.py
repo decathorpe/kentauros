@@ -9,22 +9,7 @@ from .spec_version_out import get_spec_version
 from ....context import KtrContext
 from ....package import KtrPackage
 from ....result import KtrResult
-from ....shellcmd import ShellCommand
-
-
-class RPMDevBumpSpecCommand(ShellCommand):
-    NAME = "rpmdev-bumpspec Command"
-
-    def __init__(self, *args, path: str = None, binary: str = None):
-        if binary is None:
-            self.exec = "rpmdev-bumpspec"
-        else:
-            self.exec = binary
-
-        if path is None:
-            path = os.getcwd()
-
-        super().__init__(path, self.exec, *args)
+from ....shellcmd import ShellCmd
 
 
 def parse_release(release: str) -> (str, str):
@@ -198,7 +183,7 @@ class RPMSpec:
 
         self.write_to_file(self.path)
 
-        res = RPMDevBumpSpecCommand(*cmd).execute()
+        res = ShellCmd("rpmdev-bumpspec").command(*cmd).execute()
         ret.collect(res)
 
         with open(self.path, "r") as file:

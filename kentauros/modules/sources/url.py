@@ -5,28 +5,13 @@ from ...conntest import is_connected
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
-from ...shellcmd import ShellCommand
+from ...shellcmd import ShellCmd
 from ...validator import KtrValidator
 
 URL_STATUS_TEMPLATE = """
 URL source module:
   Last version:     {download}
 """
-
-
-class WGetCommand(ShellCommand):
-    NAME = "wget Command"
-
-    def __init__(self, *args, path: str = None, binary: str = None):
-        if binary is None:
-            self.exec = "wget"
-        else:
-            self.exec = binary
-
-        if path is None:
-            path = os.getcwd()
-
-        super().__init__(path, self.exec, *args)
 
 
 class UrlSource(Source):
@@ -115,7 +100,7 @@ class UrlSource(Source):
         # construct wget commands
         cmd = [self.get_orig(), "-O", self.dest]
 
-        res = WGetCommand(*cmd).execute()
+        res = ShellCmd("wget").command(*cmd).execute()
         ret.collect(res)
 
         if not res.success:

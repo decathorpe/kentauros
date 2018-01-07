@@ -4,25 +4,30 @@ import subprocess as sp
 from .result import KtrResult
 
 
-class ShellCommand:
+class ShellCmd:
     NAME = "Shell Command"
 
-    def __init__(self, path: str, *args):
-        self.path = path
-        self.args = args
+    def __init__(self, binary: str, path: str = None):
+        if path is None:
+            self.path = os.getcwd()
+        else:
+            self.path = path
+
+        self.args = [binary]
+
+    def command(self, *args) -> 'ShellCmd':
+        self.args.extend(args)
+        return self
 
     def execute(self, ignore_retcode: bool = False) -> KtrResult:
         ret = KtrResult()
-
-        cmd = list()
-        cmd.extend(self.args)
 
         cwd = os.getcwd()
 
         try:
             os.chdir(self.path)
-            ret.messages.cmd(cmd)
-            res: sp.CompletedProcess = sp.run(cmd, stdout=sp.PIPE, stderr=sp.STDOUT)
+            ret.messages.cmd(self.args)
+            res: sp.CompletedProcess = sp.run(self.args, stdout=sp.PIPE, stderr=sp.STDOUT)
         finally:
             os.chdir(cwd)
 

@@ -9,38 +9,8 @@ from .rpm import RPMSpec, RPMSpecError, parse_release
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
-from ...shellcmd import ShellCommand
+from ...shellcmd import ShellCmd
 from ...validator import KtrValidator
-
-
-class RPMBuildCommand(ShellCommand):
-    NAME = "rpmbuild Command"
-
-    def __init__(self, *args, path: str = None, binary: str = None):
-        if binary is None:
-            self.exec = "rpmbuild"
-        else:
-            self.exec = binary
-
-        if path is None:
-            path = os.getcwd()
-
-        super().__init__(path, self.exec, *args)
-
-
-class RPMLintCommand(ShellCommand):
-    NAME = "rpmlint Command"
-
-    def __init__(self, *args, path: str = None, binary: str = None):
-        if binary is None:
-            self.exec = "rpmlint"
-        else:
-            self.exec = binary
-
-        if path is None:
-            path = os.getcwd()
-
-        super().__init__(path, self.exec, *args)
 
 
 class RPMBuild:
@@ -117,7 +87,7 @@ class RPMBuild:
 
         ret.messages.cmd(cmd)
 
-        res = RPMBuildCommand(*cmd).execute()
+        res = ShellCmd("rpmbuild").command(*cmd).execute()
         ret.collect(res)
 
         if not res.success:
@@ -630,7 +600,7 @@ class SrpmConstructor(Constructor):
 
         files.append(self.spec_path)
 
-        res = RPMLintCommand(*files).execute(ignore_retcode=True)
+        res = ShellCmd("rpmlint").command(*files).execute(ignore_retcode=True)
         ret.collect(res)
 
         ret.messages.lst("rpmlint output:", res.value.split("\n"))

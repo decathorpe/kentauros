@@ -6,23 +6,8 @@ from .abstract import Exporter
 from ...context import KtrContext
 from ...package import KtrPackage
 from ...result import KtrResult
-from ...shellcmd import ShellCommand
+from ...shellcmd import ShellCmd
 from ...validator import KtrValidator
-
-
-class CreateRepoCommand(ShellCommand):
-    NAME = "createrepo_c Command"
-
-    def __init__(self, *args, path: str = None, binary: str = None):
-        if binary is None:
-            self.exec = "createrepo_c"
-        else:
-            self.exec = binary
-
-        if path is None:
-            path = os.getcwd()
-
-        super().__init__(path, self.exec, *args)
 
 
 class CreateRepoExporter(Exporter):
@@ -74,7 +59,7 @@ class CreateRepoExporter(Exporter):
             for file in glob.glob(os.path.join(self.pdir, "*.rpm")):
                 shutil.copy2(file, self.get_path())
 
-        res = CreateRepoCommand("--update", self.get_path()).execute()
+        res = ShellCmd("createrepo_c").command("--update", self.get_path()).execute()
         ret.collect(res)
 
         return ret
