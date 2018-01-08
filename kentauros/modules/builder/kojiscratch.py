@@ -1,12 +1,12 @@
 import glob
 import os
 
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
+from kentauros.result import KtrResult
+from kentauros.shellcmd import ShellCmd
+from kentauros.validator import KtrValidator
 from .abstract import Builder, Build
-from ...context import KtrContext
-from ...package import KtrPackage
-from ...result import KtrResult
-from ...shellcmd import ShellCmd
-from ...validator import KtrValidator
 
 
 class KojiBuild(Build):

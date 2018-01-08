@@ -5,11 +5,11 @@ import os
 import shutil
 import time
 
+from kentauros.context import KtrContext
+from kentauros.result import KtrResult
+from kentauros.shellcmd import ShellCmd
+from kentauros.validator import KtrValidator
 from .abstract import Builder, Build
-from ...context import KtrContext
-from ...result import KtrResult
-from ...shellcmd import ShellCmd
-from ...validator import KtrValidator
 
 DEFAULT_CFG_PATH = "/etc/mock/default.cfg"
 DEFAULT_VAR_PATH = "/var/lib/mock"

@@ -1,8 +1,8 @@
+from kentauros.config import KtrRealConfig
+from kentauros.context import KtrContext
+from kentauros.result import KtrResult
+from kentauros.validator import KtrValidator
 from .meta_package import KtrPackage
-from ..config import KtrRealConfig
-from ..context import KtrContext
-from ..result import KtrResult
-from ..validator import KtrValidator
 
 
 class KtrRealPackage(KtrPackage):

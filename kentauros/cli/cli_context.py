@@ -4,10 +4,10 @@ import os
 
 import argcomplete as ac
 
+from kentauros.config import KtrRealConfig
+from kentauros.context import KtrContext
+from kentauros.state import KtrJSONState
 from .parser import get_cli_parser
-from ..config import KtrRealConfig
-from ..context import KtrContext
-from ..state import KtrJSONState
 
 
 class KtrCLIContext(KtrContext):

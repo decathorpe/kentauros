@@ -1,7 +1,7 @@
 import abc
 
-from ..config import KtrConfig
-from ..state import KtrState
+from kentauros.config import KtrConfig
+from kentauros.state import KtrState
 
 
 class KtrContext(metaclass=abc.ABCMeta):

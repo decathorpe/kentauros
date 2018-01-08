@@ -1,6 +1,6 @@
-from ..config import KtrTestConfig
-from ..context import KtrTestContext
-from ..result import KtrResult
+from kentauros.config import KtrTestConfig
+from kentauros.context import KtrTestContext
+from kentauros.result import KtrResult
 from .meta_package import KtrPackage
 
 

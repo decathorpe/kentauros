@@ -1,9 +1,9 @@
 import abc
 
-from ..module import KtrModule
-from ...context import KtrContext
-from ...package import KtrPackage
-from ...result import KtrResult
+from kentauros.context import KtrContext
+from kentauros.modules.module import KtrModule
+from kentauros.package import KtrPackage
+from kentauros.result import KtrResult
 
 
 class Exporter(KtrModule, metaclass=abc.ABCMeta):

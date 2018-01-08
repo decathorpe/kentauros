@@ -2,9 +2,9 @@ import abc
 import enum
 import os
 
-from ..config import KtrConfig
-from ..context import KtrContext
-from ..result import KtrResult
+from kentauros.config import KtrConfig
+from kentauros.context import KtrContext
+from kentauros.result import KtrResult
 
 PACKAGE_STATUS_TEMPLATE = """
 Configuration:      {conf_name}

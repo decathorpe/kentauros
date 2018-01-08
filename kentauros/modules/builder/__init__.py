@@ -1,7 +1,7 @@
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
 from .abstract import Builder
 from .mock import MockBuilder
-from ...context import KtrContext
-from ...package import KtrPackage
 
 
 def get_builder(btype: str, package: KtrPackage, context: KtrContext) -> Builder:

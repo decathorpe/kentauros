@@ -1,7 +1,7 @@
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
 from .abstract import Exporter
 from .createrepo import CreateRepoExporter
-from ...context import KtrContext
-from ...package import KtrPackage
 
 
 def get_exporter(ctype: str, package: KtrPackage, context: KtrContext) -> Exporter:

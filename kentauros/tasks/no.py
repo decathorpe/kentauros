@@ -1,4 +1,4 @@
-from ..result import KtrResult
+from kentauros.result import KtrResult
 from .meta import KtrMetaTask
 
 

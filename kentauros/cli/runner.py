@@ -1,8 +1,8 @@
+from kentauros.modules import get_module
+from kentauros.package import KtrRealPackage
+from kentauros.tasks import KtrMetaTask, KtrTask, KtrInitTask, KtrNoTask
+from kentauros.tasks import KtrTaskList, KtrPackageTask, KtrPackageAddTask
 from .cli_context import KtrCLIContext
-from ..modules import get_module
-from ..package import KtrRealPackage
-from ..tasks import KtrMetaTask, KtrTask, KtrInitTask, KtrNoTask
-from ..tasks import KtrTaskList, KtrPackageTask, KtrPackageAddTask
 
 
 class KtrCLIRunner:

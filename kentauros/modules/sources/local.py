@@ -1,11 +1,11 @@
 import os
 import shutil
 
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
+from kentauros.result import KtrResult
+from kentauros.validator import KtrValidator
 from .abstract import Source
-from ...context import KtrContext
-from ...package import KtrPackage
-from ...result import KtrResult
-from ...validator import KtrValidator
 
 
 class LocalSource(Source):

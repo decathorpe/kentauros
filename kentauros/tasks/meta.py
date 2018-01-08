@@ -1,6 +1,6 @@
 import abc
 
-from ..result import KtrResult
+from kentauros.result import KtrResult
 
 
 class KtrMetaTask(metaclass=abc.ABCMeta):

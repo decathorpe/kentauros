@@ -2,14 +2,14 @@ import configparser as cp
 import os
 import re
 
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
+from kentauros.result import KtrResult
+from kentauros.shellcmd import ShellCmd
 from .spec_common import RPMSpecError, format_tag_line
 from .spec_preamble_out import get_spec_preamble
 from .spec_source_out import get_spec_source
 from .spec_version_out import get_spec_version
-from ....context import KtrContext
-from ....package import KtrPackage
-from ....result import KtrResult
-from ....shellcmd import ShellCmd
 
 
 def parse_release(release: str) -> (str, str):

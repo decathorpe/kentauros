@@ -1,9 +1,9 @@
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
 from .abstract import Source
 from .git import GitSource
 from .local import LocalSource
 from .url import UrlSource
-from ...context import KtrContext
-from ...package import KtrPackage
 
 
 def get_source(stype: str, package: KtrPackage, context: KtrContext) -> Source:

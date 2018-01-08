@@ -1,10 +1,10 @@
 import configparser as cp
 import os
 
+from kentauros.context import KtrContext
+from kentauros.result import KtrResult
+from kentauros.templates import KENTAUROSRC_TEMPLATE
 from .meta import KtrMetaTask
-from ..context import KtrContext
-from ..result import KtrResult
-from ..templates import KENTAUROSRC_TEMPLATE
 
 
 def ktr_mkdirp(path: str) -> KtrResult:

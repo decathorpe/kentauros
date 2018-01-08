@@ -1,8 +1,8 @@
 import abc
 
-from ..context import KtrContext
-from ..package import KtrPackage
-from ..result import KtrResult
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
+from kentauros.result import KtrResult
 
 
 class KtrModule(metaclass=abc.ABCMeta):

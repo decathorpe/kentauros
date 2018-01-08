@@ -1,13 +1,13 @@
 import configparser as cp
 
+from kentauros.context import KtrContext
+from kentauros.modules import get_module
+from kentauros.modules.module import KtrModule
+from kentauros.modules.package import PackageModule
+from kentauros.package import KtrPackage
+from kentauros.result import KtrResult
 from .meta import KtrMetaTask
 from .task import KtrTask
-from ..context import KtrContext
-from ..modules import get_module
-from ..modules.module import KtrModule
-from ..modules.package import PackageModule
-from ..package import KtrPackage
-from ..result import KtrResult
 
 
 class KtrPackageTask(KtrMetaTask):

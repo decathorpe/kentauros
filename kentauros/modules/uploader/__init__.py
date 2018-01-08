@@ -1,7 +1,7 @@
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
 from .abstract import Uploader
 from .copr import CoprUploader
-from ...context import KtrContext
-from ...package import KtrPackage
 
 
 def get_uploader(utype: str, package: KtrPackage, context: KtrContext) -> Uploader:

@@ -2,10 +2,9 @@ import os
 import shutil
 import tempfile
 
+from kentauros.config import KtrRealConfig
+from kentauros.state import KtrTestState
 from .meta_context import KtrContext
-from ..config import KtrRealConfig
-from ..state import KtrTestState
-
 
 TEST_CONF = """# kentaurosrc file for running tests in a temporary directory
 [main]
@@ -21,7 +20,6 @@ version_separator_post = +
 class KtrTestContext(KtrContext):
     def __init__(self, force: bool = False, logfile: str = "", message: str = "",
                  debug: bool = False, warnings: bool = False):
-
         super().__init__()
 
         self.basedir = tempfile.mkdtemp()

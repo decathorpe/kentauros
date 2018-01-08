@@ -1,8 +1,8 @@
+from kentauros.context import KtrContext
+from kentauros.modules.module import KtrModule
+from kentauros.package import KtrPackage
+from kentauros.result import KtrResult
 from .meta import KtrMetaTask
-from ..context import KtrContext
-from ..modules.module import KtrModule
-from ..package import KtrPackage
-from ..result import KtrResult
 
 
 class KtrTask(KtrMetaTask):

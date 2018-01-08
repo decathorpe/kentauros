@@ -1,5 +1,5 @@
-from ....context import KtrContext
-from ....package import KtrPackage
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
 
 
 def _spec_version_git(package: KtrPackage, context: KtrContext) -> str:

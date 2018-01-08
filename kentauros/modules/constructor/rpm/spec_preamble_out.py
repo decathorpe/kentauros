@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
-from ....context import KtrContext
-from ....package import KtrPackage
+from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
 
 
 def _spec_preamble_git(package: KtrPackage, context: KtrContext) -> OrderedDict:

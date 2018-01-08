@@ -1,10 +1,9 @@
 import os
 
+from kentauros.context import KtrContext
+from kentauros.result import KtrResult
+from kentauros.templates import PACKAGE_CONF_TEMPLATE
 from .meta import KtrMetaTask
-
-from ..context import KtrContext
-from ..result import KtrResult
-from ..templates import PACKAGE_CONF_TEMPLATE
 
 
 class KtrPackageAddTask(KtrMetaTask):

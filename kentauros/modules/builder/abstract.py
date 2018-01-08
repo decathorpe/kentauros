@@ -2,10 +2,10 @@ import abc
 import os
 import shutil
 
-from ...context import KtrContext
-from ...modules.module import KtrModule
-from ...package import KtrPackage
-from ...result import KtrResult
+from kentauros.context import KtrContext
+from kentauros.modules.module import KtrModule
+from kentauros.package import KtrPackage
+from kentauros.result import KtrResult
 
 
 class Build(metaclass=abc.ABCMeta):
