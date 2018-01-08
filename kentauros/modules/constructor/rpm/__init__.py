@@ -103,6 +103,43 @@ class RPMSpec:
 
         self.contents = contents_new
 
+    def get_sources(self) -> dict:
+        source_regex = re.compile("(Source[0-9]*):[ \t]+(.+)")
+
+        sources = dict()
+
+        for line in self.get_lines():
+            match = source_regex.match(line)
+
+            if match is None:
+                continue
+
+            groups = match.groups()
+
+            number: str = groups[0]
+            raw_file: str = groups[1]
+
+            file = raw_file
+
+            if "%{name}" in file:
+                file = file.replace("%{name}", self.package.name)
+
+            if "%{version}" in file:
+                file = file.replace("%{version}", self.build_version_string())
+
+            table = get_spec_preamble(self.stype, self.package, self.context)
+            for var in table.keys():
+                pattern = "%{" + var + "}"
+                if pattern in file:
+                    if var == "shortcommit":
+                        file = file.replace(pattern, table.get("commit")[0:7])
+                    else:
+                        file = file.replace(pattern, table.get(var))
+
+            sources[number] = file
+
+        return sources
+
     def set_variables(self):
         macro_regex = re.compile("(%global)[ \t]+([a-zA-Z0-9]+)[ \t]+(.+)")
 

@@ -300,43 +300,35 @@ class SrpmConstructor(Constructor):
         return ret
 
     def _check_source_presence(self) -> KtrResult:
-        result = KtrResult()
+        ret = KtrResult()
 
         # source is a NoSource: nothing to be checked
         if self.stype is None:
-            return result.submit(True)
+            return ret.submit(True)
 
         # source directory is non-existent
         if not os.path.exists(self.sdir):
-            result.messages.log("Package source directory does not exist. Aborting.")
-            return result.submit(False)
+            ret.messages.log("Package source directory does not exist. Aborting.")
+            return ret.submit(False)
 
-        # get source directory contents
-        contents = os.listdir(self.sdir)
+        # get expected files from .spec file
+        spec = RPMSpec(self.spec_path, self.package, self.context)
+        sources = spec.get_sources()
 
-        # directory empty: abort
-        if not contents:
-            result.messages.log("Package source directory is empty. Aborting.")
-            return result.submit(False)
+        # check if all those files are present
+        found = True
+        for number in sources:
+            file = os.path.basename(sources[number])
 
-        # look for files (directories are not enough)
-        file_found = False
+            if not os.path.exists(os.path.join(self.rpmbuild.source_dir(), file)):
+                ret.messages.log("The file '{file}' for '{number}' could not be found.".format(
+                    file=file, number=number))
+                found = False
 
-        for entry in contents:
-            if os.path.isfile(os.path.join(self.sdir, entry)):
-                file_found = True
-
-        # files were found
-        if file_found:
-            return result.submit(True)
-
-        # no files were found
-        else:
-            result.messages.log("Package source directory contains no files. Aborting.")
-            return result.submit(False)
+        return ret.submit(found)
 
     def _copy_sources(self, keep: bool = True) -> KtrResult:
-        result = KtrResult()
+        ret = KtrResult()
 
         state = self.context.state.read(self.package.conf_name)
 
@@ -355,9 +347,9 @@ class SrpmConstructor(Constructor):
             entry_path = os.path.join(self.sdir, entry)
             if os.path.isfile(entry_path):
                 result2 = self.rpmbuild.add_source(entry_path, keep_file)
-                result.collect(result2)
+                ret.collect(result2)
 
-        return result
+        return ret
 
     def _get_source_keep(self) -> bool:
         conf = self.package.conf
@@ -375,14 +367,6 @@ class SrpmConstructor(Constructor):
 
         if self.stype is None:
             ret.messages.dbg("This package does not define a source module.")
-
-        else:
-            # if source module is defined check if sources are present
-            res = self._check_source_presence()
-            ret.collect(res)
-
-            if not res.success:
-                return ret.submit(False)
 
         # copy sources to rpmbuild/SOURCES
         if self.stype is not None:
@@ -528,6 +512,13 @@ class SrpmConstructor(Constructor):
 
         if not res.success:
             ret.messages.log("Could not prepare the rpm .spec file successfully.")
+            return ret.submit(False)
+
+        # check if all expected source files are present
+        res = self._check_source_presence()
+        ret.collect(res)
+
+        if not res.success:
             return ret.submit(False)
 
         return ret.submit(True)

@@ -59,11 +59,7 @@ class LogCollector:
     def dbg(self, message: str, origin: str = None):
         if origin is None:
             origin = self.origin
-
         self.messages.append(LogMessage(LogMessageType.DEBUG, message, origin))
-
-    def collect(self):
-        return self.messages
 
     def merge(self, logs: 'LogCollector'):
         assert isinstance(logs, LogCollector)
