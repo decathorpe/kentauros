@@ -91,7 +91,17 @@ class KtrCLIContext(KtrContext):
             packages.sort()
             return packages
         else:
-            return self.args.get("package")
+            packages = list()
+
+            for package in self.args.get("package"):
+                if "*" not in package:
+                    packages.append(package)
+                else:
+                    packages.extend(
+                        (os.path.basename(path) for path in
+                         glob.glob(os.path.join(self.get_confdir(), package + ".conf"))))
+
+            return packages
 
     def get_basedir(self) -> str:
         return self.basedir
