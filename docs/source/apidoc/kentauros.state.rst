@@ -4,18 +4,18 @@ kentauros\.state package
 Submodules
 ----------
 
-kentauros\.state\.meta\_state module
+kentauros\.state\.json\_state module
 ------------------------------------
 
-.. automodule:: kentauros.state.meta_state
+.. automodule:: kentauros.state.json_state
     :members:
     :undoc-members:
     :show-inheritance:
 
-kentauros\.state\.state module
-------------------------------
+kentauros\.state\.meta\_state module
+------------------------------------
 
-.. automodule:: kentauros.state.state
+.. automodule:: kentauros.state.meta_state
     :members:
     :undoc-members:
     :show-inheritance:

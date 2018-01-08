@@ -1,6 +1,6 @@
-from .context import KtrCLIContext
+from .cli_context import KtrCLIContext
 from ..modules import get_module
-from ..package import KtrPackage
+from ..package import KtrRealPackage
 from ..tasks import KtrMetaTask, KtrTask, KtrInitTask, KtrNoTask
 from ..tasks import KtrTaskList, KtrPackageTask, KtrPackageAddTask
 
@@ -30,7 +30,7 @@ class KtrCLIRunner:
 
             else:
                 for conf_name in conf_names:
-                    package = KtrPackage(self.context, conf_name)
+                    package = KtrRealPackage(self.context, conf_name)
                     task = KtrPackageTask(package, action, self.context)
                     self.task.add(task)
         else:
@@ -38,7 +38,7 @@ class KtrCLIRunner:
             self.task: KtrTaskList = KtrTaskList()
 
             for conf_name in conf_names:
-                package = KtrPackage(self.context, conf_name)
+                package = KtrRealPackage(self.context, conf_name)
                 module_impl = package.conf.get("modules", module_type)
                 module = get_module(module_type, module_impl, package, self.context)
                 task = KtrTask(package, module, action, self.context)

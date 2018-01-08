@@ -20,7 +20,7 @@ git source module:
   Current ref:      {ref}
   Last Commit:      {commit}
   Last Commit Date: {commit_date}
-"""
+""".lstrip("\n")
 
 
 class GitRepo:

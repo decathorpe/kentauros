@@ -1,6 +1,6 @@
 from tinydb import TinyDB, Query
 
-from .meta_state import KtrMetaState
+from .meta_state import KtrState
 
 
 def _dict_is_subset(sup: dict, sub: dict) -> bool:
@@ -20,7 +20,10 @@ def _dict_is_subset(sup: dict, sub: dict) -> bool:
     return True
 
 
-class KtrState(KtrMetaState):
+class KtrJSONState(KtrState):
+    def __init__(self, path: str):
+        self.path = path
+
     def read(self, conf_name: str) -> dict:
         assert isinstance(conf_name, str)
 

@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     kentauros.cli
+    kentauros.config
     kentauros.context
     kentauros.modules
     kentauros.package
@@ -15,14 +16,6 @@ Subpackages
 
 Submodules
 ----------
-
-kentauros\.config module
-------------------------
-
-.. automodule:: kentauros.config
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 kentauros\.conntest module
 --------------------------

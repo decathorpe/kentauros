@@ -12,10 +12,10 @@ kentauros\.package\.meta\_package module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.package\.package module
-----------------------------------
+kentauros\.package\.real\_package module
+----------------------------------------
 
-.. automodule:: kentauros.package.package
+.. automodule:: kentauros.package.real_package
     :members:
     :undoc-members:
     :show-inheritance:

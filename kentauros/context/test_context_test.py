@@ -7,10 +7,10 @@ from .test_context import KtrTestContext
 class KtrTestContextTest(unittest.TestCase):
     def test_init_and_del(self):
         context = KtrTestContext()
-        test_dir = context.test_dir
+        basedir = context.basedir
 
         del context
-        self.assertFalse(os.path.exists(test_dir))
+        self.assertFalse(os.path.exists(basedir))
 
     def test_init_force_true(self):
         context = KtrTestContext(force=True)

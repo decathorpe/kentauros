@@ -1,28 +1,13 @@
 import abc
-import os
 
 from ..config import KtrConfig
 from ..state import KtrState
 
 
 class KtrContext(metaclass=abc.ABCMeta):
-    def __init__(self, basedir: str, conf_path: str):
-        assert isinstance(basedir, str)
-        assert isinstance(conf_path, str)
-
-        if not os.path.exists(basedir):
-            raise FileNotFoundError(
-                "The specified base directory ({}) could not be found.".format(basedir))
-
-        if not os.path.exists(conf_path):
-            raise FileNotFoundError(
-                "The specified kentaurosrc file ({}) could not be found.".format(conf_path))
-
-        self.basedir = basedir
-        self.conf_path = conf_path
-
-        self.state = KtrState(os.path.join(self.basedir, "state.json"))
-        self.conf = KtrConfig(conf_path)
+    def __init__(self):
+        self.conf: KtrConfig = None
+        self.state: KtrState = None
 
     @abc.abstractmethod
     def get_force(self) -> bool:

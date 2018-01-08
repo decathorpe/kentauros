@@ -4,10 +4,10 @@ kentauros\.cli package
 Submodules
 ----------
 
-kentauros\.cli\.context module
-------------------------------
+kentauros\.cli\.cli\_context module
+-----------------------------------
 
-.. automodule:: kentauros.cli.context
+.. automodule:: kentauros.cli.cli_context
     :members:
     :undoc-members:
     :show-inheritance:

@@ -5,11 +5,15 @@ import os
 import argcomplete as ac
 
 from .parser import get_cli_parser
+from ..config import KtrRealConfig
 from ..context import KtrContext
+from ..state import KtrJSONState
 
 
 class KtrCLIContext(KtrContext):
     def __init__(self):
+        super().__init__()
+
         cli_parser = get_cli_parser()
 
         ac.autocomplete(cli_parser)
@@ -46,7 +50,19 @@ class KtrCLIContext(KtrContext):
             with open(conf_path, "w") as file:
                 file.write("")
 
-        super().__init__(basedir, conf_path)
+        if not os.path.exists(basedir):
+            raise FileNotFoundError(
+                "The specified base directory ({}) could not be found.".format(basedir))
+
+        if not os.path.exists(conf_path):
+            raise FileNotFoundError(
+                "The specified kentaurosrc file ({}) could not be found.".format(conf_path))
+
+        self.basedir = basedir
+        self.conf_path = conf_path
+
+        self.state = KtrJSONState(os.path.join(self.basedir, "state.json"))
+        self.conf = KtrRealConfig(self.conf_path)
 
         self.debug_flag = self.args.get("debug")
         self.warning_flag = self.args.get("warnings")

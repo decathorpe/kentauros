@@ -1,17 +1,10 @@
 import configparser as cp
 import os
 
-
-class KtrConfigError(Exception):
-    def __init__(self, value: str = ""):
-        super().__init__()
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
+from .meta_config import KtrConfig, KtrConfigError
 
 
-class KtrConfig:
+class KtrRealConfig(KtrConfig):
     def __init__(self, conf_path: str):
         assert isinstance(conf_path, str)
         self.conf_path = conf_path
