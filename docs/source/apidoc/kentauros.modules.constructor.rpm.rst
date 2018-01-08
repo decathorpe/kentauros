@@ -12,10 +12,26 @@ kentauros\.modules\.constructor\.rpm\.spec\_common module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.modules\.constructor\.rpm\.spec\_common\_test module
+---------------------------------------------------------------
+
+.. automodule:: kentauros.modules.constructor.rpm.spec_common_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros\.modules\.constructor\.rpm\.spec\_preamble\_out module
 ----------------------------------------------------------------
 
 .. automodule:: kentauros.modules.constructor.rpm.spec_preamble_out
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+kentauros\.modules\.constructor\.rpm\.spec\_preamble\_out\_test module
+----------------------------------------------------------------------
+
+.. automodule:: kentauros.modules.constructor.rpm.spec_preamble_out_test
     :members:
     :undoc-members:
     :show-inheritance:

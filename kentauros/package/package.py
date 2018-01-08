@@ -1,36 +1,14 @@
-import enum
-import os
-
-from .config import KtrConfig
-from .context import KtrContext
-from .result import KtrResult
-from .validator import KtrValidator
+from ..config import KtrConfig
+from ..context import KtrContext
+from ..result import KtrResult
+from ..validator import KtrValidator
+from .meta_package import KtrMetaPackage, ReleaseType
 
 
-class PackageError(Exception):
-    def __init__(self, value: str = ""):
-        super().__init__()
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
-class ReleaseType(enum.Enum):
-    STABLE = 0
-    POST = 1
-    PRE = 2
-
-
-class KtrPackage:
+class KtrPackage(KtrMetaPackage):
     def __init__(self, context: KtrContext, conf_name: str):
-        assert isinstance(context, KtrContext)
-        assert isinstance(conf_name, str)
+        super().__init__(context, conf_name)
 
-        self.context = context
-
-        self.conf_name = conf_name
-        self.conf_path = os.path.join(self.context.get_confdir(), self.conf_name + ".conf")
         self.conf = KtrConfig(self.conf_path)
         self.name = self.conf.get("package", "name")
 

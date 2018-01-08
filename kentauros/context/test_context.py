@@ -2,7 +2,7 @@ import os
 import shutil
 import tempfile
 
-from ..context import KtrContext
+from .meta_context import KtrContext
 
 
 TEST_CONF = """# kentaurosrc file for running tests in a temporary directory

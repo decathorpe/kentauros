@@ -7,7 +7,10 @@ Subpackages
 .. toctree::
 
     kentauros.cli
+    kentauros.context
     kentauros.modules
+    kentauros.package
+    kentauros.state
     kentauros.tasks
 
 Submodules
@@ -29,26 +32,10 @@ kentauros\.conntest module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.context module
--------------------------
-
-.. automodule:: kentauros.context
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros\.logcollector module
 ------------------------------
 
 .. automodule:: kentauros.logcollector
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros\.package module
--------------------------
-
-.. automodule:: kentauros.package
     :members:
     :undoc-members:
     :show-inheritance:
@@ -65,14 +52,6 @@ kentauros\.shellcmd module
 --------------------------
 
 .. automodule:: kentauros.shellcmd
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-kentauros\.state module
------------------------
-
-.. automodule:: kentauros.state
     :members:
     :undoc-members:
     :show-inheritance:

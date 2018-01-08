@@ -1,8 +1,8 @@
 import abc
 import os
 
-from .config import KtrConfig
-from .state import KtrState
+from ..config import KtrConfig
+from ..state import KtrState
 
 
 class KtrContext(metaclass=abc.ABCMeta):
