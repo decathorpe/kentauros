@@ -1,14 +1,12 @@
 from collections import OrderedDict
 
-from kentauros.context import KtrContext
 from kentauros.package import KtrPackage
 
 
-def _spec_preamble_git(package: KtrPackage, context: KtrContext) -> OrderedDict:
+def _spec_preamble_git(package: KtrPackage) -> OrderedDict:
     assert isinstance(package, KtrPackage)
-    assert isinstance(context, KtrContext)
 
-    state = context.state.read(package.conf_name)
+    state = package.context.state.read(package.conf_name)
 
     commit: str = state["git_last_commit"]
     dt_string: str = state["git_last_date"]
@@ -26,27 +24,24 @@ def _spec_preamble_git(package: KtrPackage, context: KtrContext) -> OrderedDict:
     return preamble
 
 
-def _spec_preamble_url(package: KtrPackage, context: KtrContext) -> OrderedDict:
+def _spec_preamble_url(package: KtrPackage) -> OrderedDict:
     assert isinstance(package, KtrPackage)
-    assert isinstance(context, KtrContext)
 
     preamble = OrderedDict()
     return preamble
 
 
-def _spec_preamble_local(package: KtrPackage, context: KtrContext) -> OrderedDict:
+def _spec_preamble_local(package: KtrPackage) -> OrderedDict:
     assert isinstance(package, KtrPackage)
-    assert isinstance(context, KtrContext)
-
     preamble = OrderedDict()
     return preamble
 
 
-def get_spec_preamble(srctype: str, package: KtrPackage, context: KtrContext) -> OrderedDict:
+def get_spec_preamble(srctype: str, package: KtrPackage) -> OrderedDict:
     spec_preambles = dict()
 
     spec_preambles["git"] = _spec_preamble_git
     spec_preambles["local"] = _spec_preamble_local
     spec_preambles["url"] = _spec_preamble_url
 
-    return spec_preambles[srctype](package, context)
+    return spec_preambles[srctype](package)

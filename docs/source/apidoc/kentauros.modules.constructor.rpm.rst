@@ -44,6 +44,14 @@ kentauros\.modules\.constructor\.rpm\.spec\_source\_out module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.modules\.constructor\.rpm\.spec\_source\_out\_test module
+--------------------------------------------------------------------
+
+.. automodule:: kentauros.modules.constructor.rpm.spec_source_out_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 kentauros\.modules\.constructor\.rpm\.spec\_version\_out module
 ---------------------------------------------------------------
 

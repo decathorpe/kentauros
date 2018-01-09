@@ -127,7 +127,7 @@ class RPMSpec:
             if "%{version}" in file:
                 file = file.replace("%{version}", self.build_version_string())
 
-            table = get_spec_preamble(self.stype, self.package, self.context)
+            table = get_spec_preamble(self.stype, self.package)
             for var in table.keys():
                 pattern = "%{" + var + "}"
                 if pattern in file:
@@ -143,7 +143,7 @@ class RPMSpec:
     def set_variables(self):
         macro_regex = re.compile("(%global)[ \t]+([a-zA-Z0-9]+)[ \t]+(.+)")
 
-        table = get_spec_preamble(self.stype, self.package, self.context)
+        table = get_spec_preamble(self.stype, self.package)
 
         # remove globals that will be set from the spec
         med_contents = str()
@@ -172,7 +172,7 @@ class RPMSpec:
         self.contents = new_contents
 
     def build_version_string(self) -> str:
-        return get_spec_version(self.stype, self.package, self.context)
+        return get_spec_version(self.stype, self.package)
 
     def write_to_file(self, path: str):
         assert isinstance(path, str)
