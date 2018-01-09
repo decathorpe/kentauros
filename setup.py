@@ -4,9 +4,16 @@
 setuptools install script for kentauros
 """
 
+import unittest
 from setuptools import setup, find_packages
 
 from kentauros import KTR_VERSION
+
+
+def test_suite():
+    loader = unittest.TestLoader()
+    suite = loader.discover("kentauros", pattern="*_test.py")
+    return suite
 
 
 setup(
@@ -24,9 +31,8 @@ setup(
 
     packages=find_packages(exclude=['data', 'docs', 'examples', 'meta', 'scripts']),
     install_requires=["argcomplete", "tinydb", "GitPython"],
-    tests_require=["nose"],
 
-    test_suite="nose.collector",
+    test_suite="setup.test_suite",
 
     scripts=['scripts/ktr'],
 
