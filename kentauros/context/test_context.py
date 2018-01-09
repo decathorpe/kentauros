@@ -19,7 +19,7 @@ version_separator_post = +
 
 class KtrTestContext(KtrContext):
     def __init__(self, force: bool = False, logfile: str = "", message: str = "",
-                 debug: bool = False, warnings: bool = False):
+                 debug: bool = False, warnings: bool = False, state: dict = None):
         super().__init__()
 
         self.basedir = tempfile.mkdtemp()
@@ -28,8 +28,8 @@ class KtrTestContext(KtrContext):
         with open(conf_path, "w") as file:
             file.write(TEST_CONF)
 
-        self.state = KtrTestState()
         self.conf = KtrRealConfig(conf_path)
+        self.state = KtrTestState(state)
 
         self.logfile = logfile
         self.message = message

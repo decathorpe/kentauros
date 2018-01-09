@@ -61,11 +61,6 @@ C: 26, 0: Missing class docstring (missing-docstring)
 C: 41, 4: Missing method docstring (missing-docstring)
 C: 45, 4: Missing method docstring (missing-docstring)
 C: 49, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.modules.builder.mock_tests
-C:  1, 0: Missing module docstring (missing-docstring)
-C: 10, 0: Missing class docstring (missing-docstring)
-C: 12, 4: Missing method docstring (missing-docstring)
-C: 19, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.builder.mock
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 18, 0: Missing class docstring (missing-docstring)
@@ -93,6 +88,12 @@ C: 84, 4: Missing method docstring (missing-docstring)
 C: 92, 4: Missing method docstring (missing-docstring)
 C: 95, 4: Missing method docstring (missing-docstring)
 C:107, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.modules.builder.mock_test
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 11, 0: Missing class docstring (missing-docstring)
+C: 13, 4: Missing method docstring (missing-docstring)
+C: 20, 4: Missing method docstring (missing-docstring)
+C: 27, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.constructor.abstract
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 10, 0: Missing class docstring (missing-docstring)
@@ -136,18 +137,6 @@ C:526, 4: Missing method docstring (missing-docstring)
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  1, 0: Missing class docstring (missing-docstring)
 C: 10, 0: Missing function docstring (missing-docstring)
-************* Module kentauros.modules.constructor.rpm.spec_preamble_out
-C:  1, 0: Missing module docstring (missing-docstring)
-C:  7, 0: Missing function docstring (missing-docstring)
-C: 29, 0: Missing function docstring (missing-docstring)
-C: 37, 0: Missing function docstring (missing-docstring)
-C: 45, 0: Missing function docstring (missing-docstring)
-************* Module kentauros.modules.constructor.rpm.spec_version_out
-C:  1, 0: Missing module docstring (missing-docstring)
-C:  5, 0: Missing function docstring (missing-docstring)
-C: 19, 0: Missing function docstring (missing-docstring)
-C: 27, 0: Missing function docstring (missing-docstring)
-C: 35, 0: Missing function docstring (missing-docstring)
 ************* Module kentauros.modules.constructor.rpm.spec_common_test
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  6, 0: Missing class docstring (missing-docstring)
@@ -160,6 +149,18 @@ C:  7, 0: Missing function docstring (missing-docstring)
 C: 15, 0: Missing function docstring (missing-docstring)
 C: 22, 0: Missing function docstring (missing-docstring)
 C: 29, 0: Missing function docstring (missing-docstring)
+************* Module kentauros.modules.constructor.rpm.spec_preamble_out
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  6, 0: Missing function docstring (missing-docstring)
+C: 27, 0: Missing function docstring (missing-docstring)
+C: 34, 0: Missing function docstring (missing-docstring)
+C: 40, 0: Missing function docstring (missing-docstring)
+************* Module kentauros.modules.constructor.rpm.spec_version_out
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  4, 0: Missing function docstring (missing-docstring)
+C: 17, 0: Missing function docstring (missing-docstring)
+C: 24, 0: Missing function docstring (missing-docstring)
+C: 31, 0: Missing function docstring (missing-docstring)
 ************* Module kentauros.modules.constructor.rpm
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 15, 0: Missing function docstring (missing-docstring)
@@ -175,6 +176,18 @@ C:174, 4: Missing method docstring (missing-docstring)
 C:177, 4: Missing method docstring (missing-docstring)
 C:186, 4: Missing method docstring (missing-docstring)
 C:200, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.modules.constructor.rpm.spec_preamble_out_test
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 10, 0: Missing class docstring (missing-docstring)
+C: 11, 4: Missing method docstring (missing-docstring)
+C: 19, 4: Missing method docstring (missing-docstring)
+C: 24, 4: Missing method docstring (missing-docstring)
+************* Module kentauros.modules.constructor.rpm.spec_source_out_test
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 10, 0: Missing class docstring (missing-docstring)
+C: 11, 4: Missing method docstring (missing-docstring)
+C: 16, 4: Missing method docstring (missing-docstring)
+C: 24, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.modules.sources.local
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 11, 0: Missing class docstring (missing-docstring)
@@ -337,8 +350,7 @@ C: 51, 4: Missing method docstring (missing-docstring)
 ************* Module kentauros.context.test_context
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 20, 0: Missing class docstring (missing-docstring)
-************* Module kentauros.package
-C:  1, 0: Missing module docstring (missing-docstring)
+R: 21, 4: Too many arguments (7/6) (too-many-arguments)
 ************* Module kentauros.package.meta_package
 C:  1, 0: Missing module docstring (missing-docstring)
 C: 18, 0: Missing class docstring (missing-docstring)
@@ -350,30 +362,29 @@ C: 53, 4: Missing method docstring (missing-docstring)
 C: 64, 4: Missing method docstring (missing-docstring)
 C: 70, 4: Missing method docstring (missing-docstring)
 C: 79, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.package.test_package
-C:  1, 0: Missing module docstring (missing-docstring)
-C:  7, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.package.real_package
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  8, 0: Missing class docstring (missing-docstring)
+************* Module kentauros.package
+C:  1, 0: Missing module docstring (missing-docstring)
+************* Module kentauros.package.test_package
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  7, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.state.meta_state
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  4, 0: Missing class docstring (missing-docstring)
 C:  6, 4: Missing method docstring (missing-docstring)
 C: 10, 4: Missing method docstring (missing-docstring)
 C: 14, 4: Missing method docstring (missing-docstring)
-************* Module kentauros.state.test_state
-W:  9, 0: TODO (fixme)
-W: 13, 0: TODO (fixme)
-W: 17, 0: TODO (fixme)
-C:  1, 0: Missing module docstring (missing-docstring)
-C:  4, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.state.json_state
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  6, 0: Missing function docstring (missing-docstring)
 C: 23, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.state
 C:  1, 0: Missing module docstring (missing-docstring)
+************* Module kentauros.state.test_state
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  4, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.config.meta_config
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  4, 0: Missing class docstring (missing-docstring)
@@ -386,8 +397,6 @@ C:  1, 0: Missing module docstring (missing-docstring)
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  7, 0: Missing class docstring (missing-docstring)
 ************* Module kentauros.config.test_config
-W:  9, 0: TODO (fixme)
-W: 13, 0: TODO (fixme)
 C:  1, 0: Missing module docstring (missing-docstring)
 C:  4, 0: Missing class docstring (missing-docstring)
 ************* Module ktr
@@ -494,7 +503,7 @@ R:  1, 0: Similar lines in 2 files
 
 Report
 ======
-3120 statements analysed.
+3157 statements analysed.
 
 Statistics by type
 ------------------
@@ -502,11 +511,11 @@ Statistics by type
 +---------+-------+-----------+-----------+------------+---------+
 |type     |number |old number |difference |%documented |%badname |
 +=========+=======+===========+===========+============+=========+
-|module   |65     |65         |=          |1.54        |0.00     |
+|module   |66     |66         |=          |0.00        |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
-|class    |54     |54         |=          |0.00        |0.00     |
+|class    |56     |56         |=          |0.00        |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
-|method   |359    |359        |=          |52.65       |0.00     |
+|method   |366    |366        |=          |51.64       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
 |function |37     |37         |=          |0.00        |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
@@ -527,18 +536,20 @@ External dependencies
       \-config (kentauros.cli.cli_context,kentauros.context.meta_context,kentauros.context.test_context,kentauros.package.meta_package,kentauros.package.real_package,kentauros.package.test_package)
       | \-meta_config (kentauros.config.real_config,kentauros.config.test_config)
       \-conntest (kentauros.modules.sources.git,kentauros.modules.sources.url,kentauros.modules.uploader.copr)
-      \-context (kentauros.cli.cli_context,kentauros.modules,kentauros.modules.builder,kentauros.modules.builder.abstract,kentauros.modules.builder.kojiscratch,kentauros.modules.builder.mock,kentauros.modules.constructor,kentauros.modules.constructor.abstract,kentauros.modules.constructor.rpm,kentauros.modules.constructor.rpm.spec_preamble_out,kentauros.modules.constructor.rpm.spec_version_out,kentauros.modules.constructor.srpm,kentauros.modules.exporter,kentauros.modules.exporter.abstract,kentauros.modules.exporter.createrepo,kentauros.modules.module,kentauros.modules.package,kentauros.modules.sources,kentauros.modules.sources.abstract,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.url,kentauros.modules.uploader,kentauros.modules.uploader.abstract,kentauros.modules.uploader.copr,kentauros.package.meta_package,kentauros.package.real_package,kentauros.package.test_package,kentauros.tasks.init,kentauros.tasks.package,kentauros.tasks.packageadd,kentauros.tasks.task)
+      \-context (kentauros.cli.cli_context,kentauros.modules,kentauros.modules.builder,kentauros.modules.builder.abstract,kentauros.modules.builder.kojiscratch,kentauros.modules.builder.mock,kentauros.modules.constructor,kentauros.modules.constructor.abstract,kentauros.modules.constructor.rpm,kentauros.modules.constructor.srpm,kentauros.modules.exporter,kentauros.modules.exporter.abstract,kentauros.modules.exporter.createrepo,kentauros.modules.module,kentauros.modules.package,kentauros.modules.sources,kentauros.modules.sources.abstract,kentauros.modules.sources.git,kentauros.modules.sources.local,kentauros.modules.sources.url,kentauros.modules.uploader,kentauros.modules.uploader.abstract,kentauros.modules.uploader.copr,kentauros.package.meta_package,kentauros.package.real_package,kentauros.package.test_package,kentauros.tasks.init,kentauros.tasks.package,kentauros.tasks.packageadd,kentauros.tasks.task)
       | \-meta_context (kentauros.context.test_context)
       | \-test_context (kentauros.context.test_context_test)
       \-logcollector (kentauros.modules.sources.git,kentauros.result)
       \-modules (kentauros.cli.runner,kentauros.tasks.package)
       | \-builder 
       | | \-abstract (kentauros.modules.builder.kojiscratch,kentauros.modules.builder.mock)
-      | | \-mock (kentauros.modules.builder.mock_tests)
+      | | \-mock (kentauros.modules.builder.mock_test)
       | \-constructor 
       | | \-abstract (kentauros.modules.constructor.srpm)
       | | \-rpm (kentauros.modules.constructor.srpm)
-      | |   \-spec_common (kentauros.modules.constructor.rpm.spec_common_test,kentauros.modules.constructor.rpm.spec_source_out)
+      | |   \-spec_common (kentauros.modules.constructor.rpm.spec_common_test,kentauros.modules.constructor.rpm.spec_source_out,kentauros.modules.constructor.rpm.spec_source_out_test)
+      | |   \-spec_preamble_out (kentauros.modules.constructor.rpm.spec_preamble_out_test)
+      | |   \-spec_source_out (kentauros.modules.constructor.rpm.spec_source_out_test)
       | \-exporter 
       | | \-abstract (kentauros.modules.exporter.createrepo)
       | \-module (kentauros.modules.builder.abstract,kentauros.modules.constructor.abstract,kentauros.modules.exporter.abstract,kentauros.modules.package,kentauros.modules.sources.abstract,kentauros.modules.uploader.abstract,kentauros.tasks.package,kentauros.tasks.task)
@@ -568,13 +579,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |3677   |69.26 |3677     |=          |
+|code      |3720   |69.51 |3720     |=          |
 +----------+-------+------+---------+-----------+
-|docstring |76     |1.43  |76       |=          |
+|docstring |77     |1.44  |77       |=          |
 +----------+-------+------+---------+-----------+
-|comment   |182    |3.43  |182      |=          |
+|comment   |165    |3.08  |165      |=          |
 +----------+-------+------+---------+-----------+
-|empty     |1374   |25.88 |1374     |=          |
+|empty     |1390   |25.97 |1390     |=          |
 +----------+-------+------+---------+-----------+
 
 
@@ -587,7 +598,7 @@ Duplication
 +=========================+======+=========+===========+
 |nb duplicated lines      |89    |89       |=          |
 +-------------------------+------+---------+-----------+
-|percent duplicated lines |1.719 |1.719    |=          |
+|percent duplicated lines |1.706 |1.706    |=          |
 +-------------------------+------+---------+-----------+
 
 
@@ -598,11 +609,11 @@ Messages by category
 +-----------+-------+---------+-----------+
 |type       |number |previous |difference |
 +===========+=======+=========+===========+
-|convention |325    |325      |=          |
+|convention |336    |336      |=          |
 +-----------+-------+---------+-----------+
-|refactor   |3      |3        |=          |
+|refactor   |4      |4        |=          |
 +-----------+-------+---------+-----------+
-|warning    |5      |5        |=          |
+|warning    |0      |0        |=          |
 +-----------+-------+---------+-----------+
 |error      |0      |0        |=          |
 +-----------+-------+---------+-----------+
@@ -612,156 +623,160 @@ Messages by category
 % errors / warnings by module
 -----------------------------
 
-+----------------------------------------------------+------+--------+---------+-----------+
-|module                                              |error |warning |refactor |convention |
-+====================================================+======+========+=========+===========+
-|kentauros.state.test_state                          |0.00  |60.00   |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.config.test_config                        |0.00  |40.00   |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|ktr                                                 |0.00  |0.00    |100.00   |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.srpm                  |0.00  |0.00    |0.00     |8.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.git                       |0.00  |0.00    |0.00     |7.08       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.rpm.__init__          |0.00  |0.00    |0.00     |4.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.builder.mock                      |0.00  |0.00    |0.00     |4.00       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.logcollector                              |0.00  |0.00    |0.00     |4.00       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.context.test_context_test                 |0.00  |0.00    |0.00     |4.00       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.context.meta_context                      |0.00  |0.00    |0.00     |4.00       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.package.meta_package                      |0.00  |0.00    |0.00     |3.08       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.module                            |0.00  |0.00    |0.00     |3.08       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.cli.parser                                |0.00  |0.00    |0.00     |3.08       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.package                             |0.00  |0.00    |0.00     |2.77       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.abstract                  |0.00  |0.00    |0.00     |2.77       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.builder.kojiscratch               |0.00  |0.00    |0.00     |2.77       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.uploader.copr                     |0.00  |0.00    |0.00     |2.46       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.builder.abstract                  |0.00  |0.00    |0.00     |2.46       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.state.meta_state                          |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.rpm.spec_version_out  |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.rpm.spec_source_out   |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.rpm.spec_preamble_out |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.rpm.spec_common_test  |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.abstract              |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.config.meta_config                        |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.cli.runner                                |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.cli.cli_context                           |0.00  |0.00    |0.00     |1.54       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.shellcmd                                  |0.00  |0.00    |0.00     |1.23       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.result                                    |0.00  |0.00    |0.00     |1.23       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.exporter.createrepo               |0.00  |0.00    |0.00     |1.23       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.builder.mock_tests                |0.00  |0.00    |0.00     |1.23       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.validator                                 |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.tasklist                            |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.meta                                |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.init                                |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.state.json_state                          |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.uploader.abstract                 |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.exporter.abstract                 |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.rpm.spec_common       |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.__init__                          |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.conntest                                  |0.00  |0.00    |0.00     |0.92       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.task                                |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.packageadd                          |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.no                                  |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.package.test_package                      |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.package.real_package                      |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.uploader.__init__                 |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.url                       |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.local                     |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.sources.__init__                  |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.package                           |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.exporter.__init__                 |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.constructor.__init__              |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.modules.builder.__init__                  |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.context.test_context                      |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.config.real_config                        |0.00  |0.00    |0.00     |0.62       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.templates                                 |0.00  |0.00    |0.00     |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.tasks.__init__                            |0.00  |0.00    |0.00     |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.state.__init__                            |0.00  |0.00    |0.00     |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.package.__init__                          |0.00  |0.00    |0.00     |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.context.__init__                          |0.00  |0.00    |0.00     |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.config.__init__                           |0.00  |0.00    |0.00     |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros.cli.__init__                              |0.00  |0.00    |0.00     |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
-|kentauros                                           |0.00  |0.00    |0.00     |0.31       |
-+----------------------------------------------------+------+--------+---------+-----------+
++---------------------------------------------------------+------+--------+---------+-----------+
+|module                                                   |error |warning |refactor |convention |
++=========================================================+======+========+=========+===========+
+|ktr                                                      |0.00  |0.00    |75.00    |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.context.test_context                           |0.00  |0.00    |25.00    |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.srpm                       |0.00  |0.00    |0.00     |8.63       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.git                            |0.00  |0.00    |0.00     |6.85       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.rpm.__init__               |0.00  |0.00    |0.00     |4.17       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.builder.mock                           |0.00  |0.00    |0.00     |3.87       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.logcollector                                   |0.00  |0.00    |0.00     |3.87       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.context.test_context_test                      |0.00  |0.00    |0.00     |3.87       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.context.meta_context                           |0.00  |0.00    |0.00     |3.87       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.package.meta_package                           |0.00  |0.00    |0.00     |2.98       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.module                                 |0.00  |0.00    |0.00     |2.98       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.cli.parser                                     |0.00  |0.00    |0.00     |2.98       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.package                                  |0.00  |0.00    |0.00     |2.68       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.abstract                       |0.00  |0.00    |0.00     |2.68       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.builder.kojiscratch                    |0.00  |0.00    |0.00     |2.68       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.uploader.copr                          |0.00  |0.00    |0.00     |2.38       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.builder.abstract                       |0.00  |0.00    |0.00     |2.38       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.state.meta_state                               |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.rpm.spec_version_out       |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.rpm.spec_source_out_test   |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.rpm.spec_source_out        |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.rpm.spec_preamble_out_test |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.rpm.spec_preamble_out      |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.rpm.spec_common_test       |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.abstract                   |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.builder.mock_test                      |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.config.meta_config                             |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.cli.runner                                     |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.cli.cli_context                                |0.00  |0.00    |0.00     |1.49       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.shellcmd                                       |0.00  |0.00    |0.00     |1.19       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.result                                         |0.00  |0.00    |0.00     |1.19       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.exporter.createrepo                    |0.00  |0.00    |0.00     |1.19       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.validator                                      |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.tasklist                                 |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.meta                                     |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.init                                     |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.state.json_state                               |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.uploader.abstract                      |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.exporter.abstract                      |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.rpm.spec_common            |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.__init__                               |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.conntest                                       |0.00  |0.00    |0.00     |0.89       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.task                                     |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.packageadd                               |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.no                                       |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.state.test_state                               |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.package.test_package                           |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.package.real_package                           |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.uploader.__init__                      |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.url                            |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.local                          |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.sources.__init__                       |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.package                                |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.exporter.__init__                      |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.constructor.__init__                   |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.modules.builder.__init__                       |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.config.test_config                             |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.config.real_config                             |0.00  |0.00    |0.00     |0.60       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.templates                                      |0.00  |0.00    |0.00     |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.tasks.__init__                                 |0.00  |0.00    |0.00     |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.state.__init__                                 |0.00  |0.00    |0.00     |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.package.__init__                               |0.00  |0.00    |0.00     |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.context.__init__                               |0.00  |0.00    |0.00     |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.config.__init__                                |0.00  |0.00    |0.00     |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros.cli.__init__                                   |0.00  |0.00    |0.00     |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
+|kentauros                                                |0.00  |0.00    |0.00     |0.30       |
++---------------------------------------------------------+------+--------+---------+-----------+
 
 
 
 Messages
 --------
 
-+------------------+------------+
-|message id        |occurrences |
-+==================+============+
-|missing-docstring |325         |
-+------------------+------------+
-|fixme             |5           |
-+------------------+------------+
-|duplicate-code    |3           |
-+------------------+------------+
++-------------------+------------+
+|message id         |occurrences |
++===================+============+
+|missing-docstring  |336         |
++-------------------+------------+
+|duplicate-code     |3           |
++-------------------+------------+
+|too-many-arguments |1           |
++-------------------+------------+
 
 
 
 
 ------------------------------------------------------------------
-Your code has been rated at 8.93/10 (previous run: 8.93/10, +0.00)
+Your code has been rated at 8.92/10 (previous run: 8.92/10, +0.00)
 
