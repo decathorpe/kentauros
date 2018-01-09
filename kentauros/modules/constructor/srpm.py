@@ -198,7 +198,7 @@ class SrpmConstructor(Constructor):
             return ret
 
         saved_state = self.context.state.read(self.package.conf_name)
-        spec = RPMSpec(self.spec_path, self.package, self.context)
+        spec = RPMSpec(self.spec_path, self.package)
 
         # package is present in database and "rpm_last_version" is set:
         if (saved_state is not None) and ("rpm_last_version" in saved_state):
@@ -222,7 +222,7 @@ class SrpmConstructor(Constructor):
             return ret
 
         saved_state = self.context.state.read(self.package.conf_name)
-        spec = RPMSpec(self.spec_path, self.package, self.context)
+        spec = RPMSpec(self.spec_path, self.package)
 
         # package is present in database and "rpm_last_release" is set:
         if (saved_state is not None) and ("rpm_last_release" in saved_state):
@@ -292,7 +292,7 @@ class SrpmConstructor(Constructor):
     def imports(self) -> KtrResult:
         ret = KtrResult()
 
-        spec = RPMSpec(self.spec_path, self.package, self.context)
+        spec = RPMSpec(self.spec_path, self.package)
 
         ret.state = dict(rpm_last_release=spec.get_release(),
                          rpm_last_version=spec.get_version())
@@ -312,7 +312,7 @@ class SrpmConstructor(Constructor):
             return ret.submit(False)
 
         # get expected files from .spec file
-        spec = RPMSpec(self.spec_path, self.package, self.context)
+        spec = RPMSpec(self.spec_path, self.package)
         sources = spec.get_sources()
 
         # check if all those files are present
@@ -398,7 +398,7 @@ class SrpmConstructor(Constructor):
     def _spec_prepare(self):
         ret = KtrResult()
 
-        spec = RPMSpec(self.rpmbuild.spec_path(), self.package, self.context)
+        spec = RPMSpec(self.rpmbuild.spec_path(), self.package)
 
         spec.set_variables()
         spec.set_source()
@@ -420,7 +420,7 @@ class SrpmConstructor(Constructor):
     def _spec_build(self) -> KtrResult:
         ret = KtrResult()
 
-        spec = RPMSpec(self.rpmbuild.spec_path(), self.package, self.context)
+        spec = RPMSpec(self.rpmbuild.spec_path(), self.package)
 
         old_version = spec.get_version()
         new_version = spec.build_version_string()
@@ -444,7 +444,7 @@ class SrpmConstructor(Constructor):
     def _spec_increment(self) -> KtrResult:
         ret = KtrResult()
 
-        spec = RPMSpec(self.rpmbuild.spec_path(), self.package, self.context)
+        spec = RPMSpec(self.rpmbuild.spec_path(), self.package)
 
         message = self.context.get_message()
 
@@ -633,7 +633,7 @@ class SrpmConstructor(Constructor):
         return ret.submit(True)
 
     def execute(self) -> KtrResult:
-        spec = RPMSpec(self.spec_path, self.package, self.context)
+        spec = RPMSpec(self.spec_path, self.package)
 
         old_version = spec.get_version()
         new_version = spec.build_version_string()
