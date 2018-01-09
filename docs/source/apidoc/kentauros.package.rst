@@ -28,6 +28,14 @@ kentauros\.package\.test\_package module
     :undoc-members:
     :show-inheritance:
 
+kentauros\.package\.test\_package\_test module
+----------------------------------------------
+
+.. automodule:: kentauros.package.test_package_test
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

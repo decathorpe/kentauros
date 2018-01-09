@@ -1,6 +1,5 @@
 from kentauros.config import KtrConfig
 from kentauros.context import KtrContext
-from kentauros.result import KtrResult
 from .meta_package import KtrPackage
 
 
@@ -10,6 +9,3 @@ class KtrTestPackage(KtrPackage):
 
         self.conf = conf
         self.name = self.conf.get("package", "name")
-
-    def verify(self) -> KtrResult:
-        return KtrResult(True)

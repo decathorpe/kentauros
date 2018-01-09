@@ -5,6 +5,7 @@ import os
 from kentauros.config import KtrConfig
 from kentauros.context import KtrContext
 from kentauros.result import KtrResult
+from kentauros.validator import KtrValidator
 
 PACKAGE_STATUS_TEMPLATE = """
 Configuration:      {conf_name}
@@ -33,6 +34,46 @@ class KtrPackage(metaclass=abc.ABCMeta):
 
         self.conf: KtrConfig = None
         self.name: str = None
+
+    def verify(self) -> KtrResult:
+        name = "Package {}".format(self.conf_name)
+        ret = KtrResult(True, name=name)
+
+        conf = self.conf.conf
+
+        # check [package] section
+        package_expected_keys = ["name", "version", "release", "modules"]
+
+        package_validator = KtrValidator(conf, "package", package_expected_keys)
+        res = package_validator.validate()
+        ret.collect(res)
+
+        # check validity of [package][release] option ("stable", "post", or "pre")
+        if conf.has_section("package") and conf.has_option("package", "release"):
+            release_types = ["stable", "post", "pre"]
+            ret.success = ret.success and (conf.get("package", "release") in release_types)
+
+        # check [modules] section, if present
+        if conf.has_section("package") and conf.has_option("package", "modules"):
+            modules: str = conf.get("package", "modules")
+
+            if modules == "":
+                modules_expected_keys = []
+            else:
+                modules_expected_keys = modules.split(",")
+
+            modules_validator = KtrValidator(conf, "modules", modules_expected_keys)
+            res = modules_validator.validate()
+            ret.collect(res)
+
+            # check if sections for all modules exist
+            modules = modules_expected_keys
+
+            for module in modules:
+                if not conf.has_option("modules", module):
+                    ret.success = False
+
+        return ret
 
     def get_version(self) -> str:
         return self.conf.get("package", "version")
@@ -74,7 +115,3 @@ class KtrPackage(metaclass=abc.ABCMeta):
                                                 release_type=str(self.get_release_type()))
 
         return KtrResult(True, string)
-
-    @abc.abstractmethod
-    def verify(self) -> KtrResult:
-        pass
