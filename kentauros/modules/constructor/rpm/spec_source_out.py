@@ -4,6 +4,9 @@ from kentauros.package import KtrPackage
 from .spec_common import format_tag_line
 
 
+# TODO: return source string instead of tag line and format only when needed
+
+
 def _spec_source_git(package: KtrPackage) -> str:
     assert isinstance(package, KtrPackage)
 

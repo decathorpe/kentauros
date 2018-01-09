@@ -22,6 +22,6 @@ class SpecPreambleOutTest(unittest.TestCase):
         self.assertEqual(preamble, OrderedDict())
 
     def test_get_local_spec_preamble(self):
-        preamble = get_spec_preamble("url", TEST_PACKAGE_LOCAL_SOURCE)
+        preamble = get_spec_preamble("local", TEST_PACKAGE_LOCAL_SOURCE)
 
         self.assertEqual(preamble, OrderedDict())
