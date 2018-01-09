@@ -28,10 +28,10 @@ kentauros\.modules\.builder\.mock module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.modules\.builder\.mock\_tests module
------------------------------------------------
+kentauros\.modules\.builder\.mock\_test module
+----------------------------------------------
 
-.. automodule:: kentauros.modules.builder.mock_tests
+.. automodule:: kentauros.modules.builder.mock_test
     :members:
     :undoc-members:
     :show-inheritance:
