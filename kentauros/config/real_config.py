@@ -6,6 +6,8 @@ from .meta_config import KtrConfig, KtrConfigError
 
 class KtrRealConfig(KtrConfig):
     def __init__(self, conf_path: str):
+        super().__init__()
+
         assert isinstance(conf_path, str)
         self.conf_path = conf_path
 

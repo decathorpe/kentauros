@@ -1,4 +1,5 @@
 import abc
+import configparser as cp
 
 
 class KtrConfigError(Exception):
@@ -11,6 +12,11 @@ class KtrConfigError(Exception):
 
 
 class KtrConfig(metaclass=abc.ABCMeta):
+    def __init__(self):
+        super().__init__()
+
+        self.conf: cp.ConfigParser = None
+
     @abc.abstractmethod
     def get(self, section: str, key: str):
         pass
