@@ -1,3 +1,5 @@
 argcomplete
+nose
 tinydb
 GitPython
+ujson
