@@ -65,6 +65,14 @@ class LogCollector:
         assert isinstance(logs, LogCollector)
         self.messages.extend(logs.messages)
 
+    def collect_all(self) -> str:
+        string = str()
+
+        for message in self.messages:
+            string += message.format() + "\n"
+
+        return string
+
     def print_all(self, warnings: bool = False, debug: bool = False, dest=None):
         default_dest = dict()
         default_dest[LogMessageType.NORMAL] = sys.stdout
