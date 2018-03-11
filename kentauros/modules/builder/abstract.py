@@ -1,4 +1,5 @@
 import abc
+import logging
 import os
 import shutil
 
@@ -53,7 +54,8 @@ class Builder(KtrModule, metaclass=abc.ABCMeta):
         if not os.path.exists(self.edir):
             return KtrResult(True)
 
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
+        logger = logging.getLogger("ktr/builder")
 
         try:
             assert self.context.get_expodir() in self.edir
@@ -61,8 +63,8 @@ class Builder(KtrModule, metaclass=abc.ABCMeta):
             shutil.rmtree(self.edir)
             return ret.submit(True)
         except AssertionError:
-            ret.messages.err("The Package exports directory looks weird. Doing nothing.")
+            logger.error("The Package exports directory looks weird. Doing nothing.")
             return ret.submit(False)
         except OSError:
-            ret.messages.err("The Package exports directory couldn't be removed.")
+            logger.error("The Package exports directory couldn't be removed.")
             return ret.submit(False)

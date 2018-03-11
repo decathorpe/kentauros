@@ -25,14 +25,6 @@ kentauros\.conntest module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.logcollector module
-------------------------------
-
-.. automodule:: kentauros.logcollector
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 kentauros\.result module
 ------------------------
 
@@ -41,10 +33,10 @@ kentauros\.result module
     :undoc-members:
     :show-inheritance:
 
-kentauros\.shellcmd module
---------------------------
+kentauros\.shell\_env module
+----------------------------
 
-.. automodule:: kentauros.shellcmd
+.. automodule:: kentauros.shell_env
     :members:
     :undoc-members:
     :show-inheritance:

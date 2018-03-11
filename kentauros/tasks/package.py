@@ -1,3 +1,5 @@
+import logging
+
 import configparser as cp
 
 from kentauros.context import KtrContext
@@ -18,6 +20,8 @@ class KtrPackageTask(KtrMetaTask):
         self.modules = list()
 
         self.action = action
+
+        self.logger = logging.getLogger("ktr/task/package")
 
         try:
             modules = self.package.conf.get("package", "modules")
@@ -51,16 +55,16 @@ class KtrPackageTask(KtrMetaTask):
             action = actions[self.action]
         except KeyError:
             ret = KtrResult()
-            ret.messages.err("This action ({}) is not supported for packages.".format(self.action))
+            self.logger.error("This action ({}) is not supported for packages.".format(self.action))
             return ret.submit(False)
 
         ret = KtrResult()
-        ret.messages.log("Processing package: {}".format(self.package.conf_name))
+        self.logger.info("Processing package: {}".format(self.package.conf_name))
 
         res = action()
         ret.collect(res)
 
-        ret.messages.log("")
+        self.logger.info("")
 
         return ret
 

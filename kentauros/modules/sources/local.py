@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 
@@ -17,11 +18,17 @@ class LocalSource(Source):
         self.dest = os.path.join(self.sdir, os.path.basename(self.get_orig()))
         self.stype = "local"
 
+        self._logger = logging.getLogger("ktr/sources/local")
+
     def __str__(self) -> str:
         return "Local Source for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME
+
+    @property
+    def logger(self):
+        return self._logger
 
     def verify(self) -> KtrResult:
         # check if the configuration file is valid
@@ -46,7 +53,7 @@ class LocalSource(Source):
         return KtrResult(True)
 
     def get(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -54,7 +61,7 @@ class LocalSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            ret.messages.log("Sources already present.")
+            self.logger.info("Sources already present.")
             return ret.submit(False)
 
         # copy file from origin to destination

@@ -1,10 +1,11 @@
+import logging
 import os
 
 from kentauros.conntest import is_connected
 from kentauros.context import KtrContext
 from kentauros.package import KtrPackage
 from kentauros.result import KtrResult
-from kentauros.shellcmd import ShellCmd
+from kentauros.shell_env import ShellEnv
 from kentauros.validator import KtrValidator
 from .abstract import Source
 
@@ -32,11 +33,17 @@ class UrlSource(Source):
         else:
             self.last_version = None
 
+        self._logger = logging.getLogger("ktr/sources/url")
+
     def __str__(self) -> str:
         return "URL Source for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME
+
+    @property
+    def logger(self):
+        return self._logger
 
     def verify(self) -> KtrResult:
         expected_keys = ["keep", "orig"]
@@ -69,8 +76,7 @@ class UrlSource(Source):
         else:
             last_version = "None"
 
-        for line in URL_STATUS_TEMPLATE.format(download=last_version).split("\n"):
-            ret.messages.log(line, origin="")
+        self.logger.info(URL_STATUS_TEMPLATE.format(download=last_version))
 
         return ret
 
@@ -81,7 +87,7 @@ class UrlSource(Source):
             return KtrResult(True)
 
     def get(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         # check if $KTR_BASE_DIR/sources/$PACKAGE exists and create if not
         if not os.access(self.sdir, os.W_OK):
@@ -89,23 +95,24 @@ class UrlSource(Source):
 
         # if source seems to already exist, return False
         if os.access(self.dest, os.R_OK):
-            ret.messages.log("Sources already downloaded.")
+            self.logger.info("Sources already downloaded.")
             return ret.submit(True)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            ret.messages.log("No connection to remote host detected. Cancelling source download.")
+            self.logger.error("No connection to remote host detected. Cancelling source download.")
             return ret.submit(False)
 
         # construct wget commands
-        cmd = [self.get_orig(), "-O", self.dest]
+        cmd = ["wget", self.get_orig(), "-O", self.dest]
 
-        res = ShellCmd("wget").command(*cmd).execute()
+        with ShellEnv() as env:
+            res = env.execute(*cmd)
         ret.collect(res)
 
         if not res.success:
-            ret.messages.lst("Sources could not be downloaded successfully. CLI output:",
-                             res.value.split("\n"))
+            self.logger.error("Sources could not be downloaded successfully:")
+            self.logger.error(res.value)
             return ret.submit(False)
 
         self.last_version = self.package.get_version()
@@ -114,11 +121,11 @@ class UrlSource(Source):
         return ret.submit(True)
 
     def update(self) -> KtrResult:
-        ret = KtrResult(True, name=self.name())
-        ret.messages.log("URL sources don't need to be updated.")
-        return ret
+        ret = KtrResult()
+        self.logger.info("URL sources don't need to be updated.")
+        return ret.submit(True)
 
     def export(self) -> KtrResult:
-        ret = KtrResult(True, name=self.name())
-        ret.messages.log("URL sources don't need to be exported.")
-        return ret
+        ret = KtrResult()
+        self.logger.info("URL sources don't need to be exported.")
+        return ret.submit(True)

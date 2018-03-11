@@ -1,4 +1,5 @@
 import configparser as cp
+import logging
 import os
 
 from kentauros.context import KtrContext
@@ -8,20 +9,21 @@ from .meta import KtrMetaTask
 
 
 def ktr_mkdirp(path: str) -> KtrResult:
-    ret = KtrResult(name="bootstrap")
+    ret = KtrResult()
+    logger = logging.getLogger("ktr/bootstrap")
 
     if os.path.exists(path):
         if os.access(path, os.W_OK):
             return ret.submit(True)
         else:
-            ret.messages.err(path + " can't be written to.")
+            logger.error(path + " can't be written to.")
             return ret.submit(False)
     else:
-        ret.messages.log(path + " directory doesn't exist and will be created.")
+        logger.info(path + " directory doesn't exist and will be created.")
         try:
             os.makedirs(path)
         except OSError:
-            ret.messages.err(path + " directory could not be created.")
+            logger.error(path + " directory could not be created.")
             return ret.submit(False)
         return ret.submit(True)
 
@@ -29,9 +31,10 @@ def ktr_mkdirp(path: str) -> KtrResult:
 class KtrInitTask(KtrMetaTask):
     def __init__(self, context: KtrContext):
         self.context = context
+        self.logger = logging.getLogger("ktr/task/init")
 
     def execute(self) -> KtrResult:
-        ret = KtrResult(True, name="bootstrap")
+        ret = KtrResult(True)
 
         try:
             basedir = self.context.get_basedir()
@@ -53,7 +56,7 @@ class KtrInitTask(KtrMetaTask):
             with open(path, "w") as file:
                 conf.write(file)
         except OSError:
-            ret.messages.log("kentaurosrc file could not be created.")
+            self.logger.info("kentaurosrc file could not be created.")
             ret.success = False
 
         for path in [self.context.get_basedir(), self.context.get_confdir(),

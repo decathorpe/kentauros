@@ -1,13 +1,15 @@
 import fcntl
 import glob
 import grp
+import logging
 import os
 import shutil
 import time
 
 from kentauros.context import KtrContext
+from kentauros.package import KtrPackage
 from kentauros.result import KtrResult
-from kentauros.shellcmd import ShellCmd
+from kentauros.shell_env import ShellEnv
 from kentauros.validator import KtrValidator
 from .abstract import Builder, Build
 
@@ -47,7 +49,7 @@ def get_dist_result_path(dist: str) -> str:
 
 
 class MockBuild(Build):
-    NAME = "Mock Build"
+    NAME = "ktr/builder/mock"
 
     def __init__(self, context: KtrContext, path: str, dist: str = None):
         super().__init__(path, dist, context)
@@ -64,6 +66,8 @@ class MockBuild(Build):
             self.dist = get_default_mock_dist()
         else:
             self.dist = dist
+
+        self.logger = logging.getLogger(self.NAME)
 
     def name(self):
         return self.NAME
@@ -86,7 +90,7 @@ class MockBuild(Build):
         return cmd
 
     def build(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         dist_path = os.path.join("/var/lib/mock/", self.dist)
         lock_path = os.path.join(dist_path, "buildroot.lock")
@@ -101,7 +105,7 @@ class MockBuild(Build):
                 try:
                     fcntl.lockf(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 except IOError:
-                    ret.messages.log("The specified build chroot is busy, waiting.")
+                    self.logger.info("The specified build chroot is busy, waiting.")
                     time.sleep(120)
                 else:
                     build_wait = False
@@ -109,20 +113,25 @@ class MockBuild(Build):
                     lock_file.close()
 
         cmd = self.get_command()
-        ret.messages.cmd(cmd)
+        self.logger.debug(" ".join(cmd))
 
-        res = ShellCmd(self.mock).command(*cmd).execute()
+        with ShellEnv() as env:
+            res = env.execute(self.mock, *cmd)
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Mock build was not successful.")
+            self.logger.error("Mock build was not successful.")
             return ret.submit(False)
 
         return ret.submit(True)
 
 
 class MockBuilder(Builder):
-    NAME = "mock Builder"
+    NAME = "ktr/builder/mock"
+
+    def __init__(self, package: KtrPackage, context: KtrContext):
+        super().__init__(package, context)
+        self.logger = logging.getLogger(self.NAME)
 
     def name(self) -> str:
         return self.NAME
@@ -144,12 +153,12 @@ class MockBuilder(Builder):
         success = True
 
         if mock_user not in mock_group.gr_mem:
-            ret.messages.err("The current user is not allowed to use mock.")
-            ret.messages.err("Add yourself to the 'mock' group, log out and back in.")
+            self.logger.error("The current user is not allowed to use mock.")
+            self.logger.error("Add yourself to the 'mock' group, log out and back in.")
             success = False
 
         if mock_user == "root":
-            ret.messages.err("Don't attempt to run mock as root.")
+            self.logger.error("Don't attempt to run mock as root.")
             success = False
 
         return ret.submit(success)
@@ -189,7 +198,7 @@ class MockBuilder(Builder):
             return ""
 
     def build(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         if not self.get_active():
             return ret.submit(True)
@@ -198,7 +207,7 @@ class MockBuilder(Builder):
         srpms = glob.glob(os.path.join(self.pdir, self.package.name + "*.src.rpm"))
 
         if not srpms:
-            ret.messages.log("No source packages were found. Construct them first.")
+            self.logger.info("No source packages were found. Construct them first.")
             return ret.submit(False)
 
         # only build the most recent srpm file
@@ -212,16 +221,16 @@ class MockBuilder(Builder):
             force = self.context.get_force()
 
             if not force:
-                ret.messages.log("This file has already been built. Skipping.")
+                self.logger.info("This file has already been built. Skipping.")
                 return ret.submit(True)
 
-        ret.messages.log("Specified chroots: " + str(" ").join(self.get_dists()))
+        self.logger.info("Specified chroots: " + str(" ").join(self.get_dists()))
 
         # generate build queue
         build_queue = list()
 
         for dist in self.get_dists():
-            build_queue.append(MockBuild(srpm_path, self.context, dist))
+            build_queue.append(MockBuild(self.context, srpm_path, dist))
 
         # run builds in queue
         builds_success = list()
@@ -240,11 +249,11 @@ class MockBuilder(Builder):
 
         if builds_success:
             for build in builds_success:
-                ret.messages.log("Build succesful: " + str(build))
+                self.logger.info("Build succesful: " + str(build))
 
         if builds_failure:
             for build in builds_failure:
-                ret.messages.log("Build failed: " + str(build))
+                self.logger.info("Build failed: " + str(build))
 
         if not builds_failure:
             ret.state["mock_last_srpm"] = srpm_file
@@ -258,16 +267,16 @@ class MockBuilder(Builder):
         if not self.get_export():
             return KtrResult(True)
 
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         os.makedirs(self.edir, exist_ok=True)
 
         if not os.path.exists(self.edir):
-            ret.messages.err("Package exports directory could not be created.")
+            self.logger.error("Package exports directory could not be created.")
             return ret.submit(False)
 
         if not os.access(self.edir, os.W_OK):
-            ret.messages.err("Package exports directory can not be written to.")
+            self.logger.error("Package exports directory can not be written to.")
             return ret.submit(False)
 
         mock_result_dirs = list()
@@ -294,20 +303,20 @@ class MockBuilder(Builder):
         return ret.submit(True)
 
     def execute(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         res = self.build()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Binary package building unsuccessful, aborting action.")
+            self.logger.info("Binary package building unsuccessful, aborting action.")
             return ret.submit(False)
 
         res = self.export()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Binary package exporting unsuccessful, aborting action.")
+            self.logger.info("Binary package exporting unsuccessful, aborting action.")
             return ret.submit(False)
         else:
             return ret.submit(True)
@@ -316,17 +325,18 @@ class MockBuilder(Builder):
         ret = KtrResult()
 
         if not os.path.exists(self.edir):
-            ret.messages.log("No packages have been built yet.")
+            self.logger.info("No packages have been built yet.")
             return ret.submit(True)
 
         files = list(os.path.join(self.edir, path) for path in os.listdir(self.edir))
 
         if not files:
-            ret.messages.log("No packages have been built yet.")
+            self.logger.info("No packages have been built yet.")
             return ret.submit(True)
 
-        res = ShellCmd("rpmlint").command(*files).execute(ignore_retcode=True)
+        with ShellEnv() as env:
+            res = env.execute("rpmlint", *files, ignore_retcode=True)
         ret.collect(res)
 
-        ret.messages.lst("rpmlint output:", res.value.split("\n"))
+        self.logger.info("rpmlint output: " + res.value)
         return ret.submit(True)

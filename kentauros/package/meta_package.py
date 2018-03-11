@@ -36,8 +36,7 @@ class KtrPackage(metaclass=abc.ABCMeta):
         self.name: str = None
 
     def verify(self) -> KtrResult:
-        name = "Package {}".format(self.conf_name)
-        ret = KtrResult(True, name=name)
+        ret = KtrResult(True)
 
         conf = self.conf.conf
 

@@ -1,3 +1,5 @@
+import logging
+
 from kentauros.modules import get_module
 from kentauros.package import KtrRealPackage
 from kentauros.tasks import KtrMetaTask, KtrTask, KtrInitTask, KtrNoTask
@@ -45,24 +47,18 @@ class KtrCLIRunner:
 
                 self.task.add(task)
 
-    def _run_task(self, logfile: str, warnings: bool, debug: bool) -> int:
+    def _run_task(self) -> int:
         assert isinstance(self.task, KtrMetaTask)
         assert not isinstance(self.task, KtrTaskList)
 
         result = self.task.execute()
-
-        if not logfile:
-            result.messages.print_all(warnings, debug)
-        else:
-            with open(logfile, "a") as file:
-                result.messages.print_all(warnings, debug, file)
 
         if result.success:
             return 0
         else:
             return 1
 
-    def _run_task_list(self, logfile: str, warnings: bool, debug: bool) -> int:
+    def _run_task_list(self) -> int:
         assert isinstance(self.task, KtrTaskList)
 
         code = 0
@@ -70,23 +66,19 @@ class KtrCLIRunner:
             assert isinstance(task, KtrMetaTask)
             result = task.execute()
 
-            if not logfile:
-                result.messages.print_all(warnings, debug)
-            else:
-                with open(logfile, "a") as file:
-                    result.messages.print_all(warnings, debug, file)
-
             if not result.success:
                 code += 1
 
         return code
 
     def run(self) -> int:
+        logging.basicConfig(level=logging.INFO)
+
         logfile = self.context.get_logfile()
-        warnings = self.context.warnings()
-        debug = self.context.debug()
+        if logfile != "":
+            logging.basicConfig(filename=logfile)
 
         if isinstance(self.task, KtrTaskList):
-            return self._run_task_list(logfile, warnings, debug)
+            return self._run_task_list()
         else:
-            return self._run_task(logfile, warnings, debug)
+            return self._run_task()

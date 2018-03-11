@@ -1,10 +1,11 @@
 import glob
+import logging
 import os
 
 from kentauros.context import KtrContext
 from kentauros.package import KtrPackage
 from kentauros.result import KtrResult
-from kentauros.shellcmd import ShellCmd
+from kentauros.shell_env import ShellEnv
 from kentauros.validator import KtrValidator
 from .abstract import Builder, Build
 
@@ -35,16 +36,18 @@ class KojiBuild(Build):
         return cmd
 
     def build(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
+        logger = logging.getLogger("ktr/builder/koji-scratch")
 
         cmd = self.get_command()
-        ret.messages.cmd(cmd)
+        logger.debug(" ".join(cmd))
 
-        res = ShellCmd("koji").command(*cmd).execute()
+        with ShellEnv() as env:
+            res = env.execute("koji", *cmd)
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("koji scratch build was not successful.")
+            logger.error("koji scratch build was not successful.")
             return ret.submit(False)
 
         for line in res.value.split("\n"):
@@ -52,22 +55,23 @@ class KojiBuild(Build):
                 ret.value = line.replace("Created task: ", "")
                 return ret.submit(True)
 
-        ret.messages.log("koji scratch build output could not be parsed.")
+        logger.error("koji scratch build output could not be parsed.")
         return ret.submit(False)
 
 
 class KojiScratchBuilder(Builder):
-    NAME = "koji scratch Builder"
+    NAME = "ktr/builder/koji-scratch"
 
     def __init__(self, package: KtrPackage, context: KtrContext):
         super().__init__(package, context)
         self.task_ids = list()
+        self.logger = logging.getLogger(self.NAME)
 
     def name(self) -> str:
         return self.NAME
 
     def __str__(self) -> str:
-        return "koji scratch builder for package '{}'".format(self.package.conf_name)
+        return f"koji scratch builder for package '{self.package.conf_name}'"
 
     def verify(self) -> KtrResult:
         expected_keys = ["active", "dists", "export", "keep"]
@@ -113,7 +117,7 @@ class KojiScratchBuilder(Builder):
             return ""
 
     def build(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         if not self.get_active():
             return ret.submit(True)
@@ -122,7 +126,7 @@ class KojiScratchBuilder(Builder):
         srpms = glob.glob(os.path.join(self.pdir, self.package.name + "*.src.rpm"))
 
         if not srpms:
-            ret.messages.log("No source packages were found. Construct them first.")
+            self.logger.info("No source packages were found. Construct them first.")
             return ret.submit(False)
 
         # only build the most recent srpm file
@@ -136,10 +140,10 @@ class KojiScratchBuilder(Builder):
             force = self.context.get_force()
 
             if not force:
-                ret.messages.log("This file has already been built. Skipping.")
+                self.logger.info("This file has already been built. Skipping.")
                 return ret.submit(True)
 
-        ret.messages.log("Specified chroots: " + str(" ").join(self.get_dists()))
+        self.logger.info("Specified chroots: " + str(" ").join(self.get_dists()))
 
         # generate build queue
         build_queue = list()
@@ -165,11 +169,11 @@ class KojiScratchBuilder(Builder):
 
         if builds_success:
             for build in builds_success:
-                ret.messages.log("Build succesful: " + str(build))
+                self.logger.info("Build succesful: " + str(build))
 
         if builds_failure:
             for build in builds_failure:
-                ret.messages.log("Build failed: " + str(build))
+                self.logger.info("Build failed: " + str(build))
 
         if not builds_failure:
             ret.state["koji_last_srpm"] = srpm_file
@@ -180,27 +184,28 @@ class KojiScratchBuilder(Builder):
         ret = KtrResult()
 
         for task_id in self.task_ids:
-            cmd = ShellCmd("koji", path=self.edir).command("download-task", "--noprogress", task_id)
-            res = cmd.execute(ignore_retcode=True)
+            with ShellEnv(self.edir) as env:
+                res = env.execute("koji", "download-task", "--noprogress", task_id,
+                                  ignore_retcode=True)
             ret.collect(res)
 
         return ret
 
     def execute(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         res = self.build()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Binary package building unsuccessful, aborting action.")
+            self.logger.error("Binary package building unsuccessful, aborting action.")
             return ret.submit(False)
 
         res = self.export()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Binary package exporting unsuccessful, aborting action.")
+            self.logger.error("Binary package exporting unsuccessful, aborting action.")
             return ret.submit(False)
         else:
             return ret.submit(True)
@@ -209,17 +214,18 @@ class KojiScratchBuilder(Builder):
         ret = KtrResult()
 
         if not os.path.exists(self.edir):
-            ret.messages.log("No packages have been built yet.")
+            self.logger.info("No packages have been built yet.")
             return ret.submit(True)
 
         files = list(os.path.join(self.edir, path) for path in os.listdir(self.edir))
 
         if not files:
-            ret.messages.log("No packages have been built yet.")
+            self.logger.info("No packages have been built yet.")
             return ret.submit(True)
 
-        res = ShellCmd("rpmlint").command(*files).execute(ignore_retcode=True)
+        with ShellEnv() as env:
+            res = env.execute("rpmlint", *files, ignore_retcode=True)
         ret.collect(res)
 
-        ret.messages.lst("rpmlint output:", res.value.split("\n"))
+        self.logger.info("rpmlint output:" + res.value)
         return ret.submit(True)

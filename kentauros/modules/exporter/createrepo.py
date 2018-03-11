@@ -1,11 +1,12 @@
 import glob
+import logging
 import os
 import shutil
 
 from kentauros.context import KtrContext
 from kentauros.package import KtrPackage
 from kentauros.result import KtrResult
-from kentauros.shellcmd import ShellCmd
+from kentauros.shell_env import ShellEnv
 from kentauros.validator import KtrValidator
 from .abstract import Exporter
 
@@ -17,6 +18,7 @@ class CreateRepoExporter(Exporter):
         super().__init__(package, context)
 
         self.pdir = os.path.join(self.context.get_expodir(), self.package.conf_name)
+        self.logger = logging.getLogger("ktr/exporter/createrepo")
 
     def name(self) -> str:
         return self.NAME
@@ -43,9 +45,8 @@ class CreateRepoExporter(Exporter):
         if not os.path.exists(repodata_path):
             return ret.submit(True)
 
-        print(repodata_path)
         shutil.rmtree(repodata_path)
-        ret.messages.log("repodata directory removed.")
+        self.logger.info(f"repodata directory '{repodata_path}' removed.")
 
         return ret.submit(True)
 
@@ -59,7 +60,8 @@ class CreateRepoExporter(Exporter):
             for file in glob.glob(os.path.join(self.pdir, "*.rpm")):
                 shutil.copy2(file, self.get_path())
 
-        res = ShellCmd("createrepo_c").command("--update", self.get_path()).execute()
+        with ShellEnv() as env:
+            res = env.execute("createrepo_c", "--update", self.get_path())
         ret.collect(res)
 
         return ret

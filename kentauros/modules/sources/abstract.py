@@ -1,4 +1,5 @@
 import abc
+import logging
 import os
 import shutil
 
@@ -23,6 +24,11 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
         self.actions["prepare"] = self.execute
         self.actions["refresh"] = self.refresh
         self.actions["update"] = self.update
+
+    @property
+    @abc.abstractmethod
+    def logger(self) -> logging.Logger:
+        pass
 
     @abc.abstractmethod
     def get_orig(self) -> str:
@@ -49,10 +55,10 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
         pass
 
     def clean(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         if not os.path.exists(self.sdir):
-            ret.messages.log("Nothing here to be cleaned.")
+            self.logger.info("Nothing here to be cleaned.")
             return ret.submit(True)
 
         # try to be careful with "rm -r"
@@ -60,8 +66,8 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             assert os.path.isabs(self.dest)
             assert self.context.get_datadir() in self.dest
         except AssertionError as error:
-            ret.messages.log("Source directory looked suspicious, not recursively deleting. Error:")
-            ret.messages.log(str(error))
+            self.logger.error("Source directory looked suspicious, not recursively deleting:")
+            self.logger.error(str(error))
             return ret.submit(False)
 
         # remove source destination first
@@ -78,7 +84,7 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
         if os.path.isfile(self.dest):
             os.remove(self.dest)
             file = os.path.basename(self.dest)
-            ret.messages.log("Removed file: '{}'".format(file))
+            self.logger.info("Removed file: '{}'".format(file))
 
             if file in source_files:
                 source_files.remove(file)
@@ -86,7 +92,7 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
         # if destination is a directory (VCS repo):
         elif os.path.isdir(self.dest):
             shutil.rmtree(self.dest)
-            ret.messages.log("Removed directory: '{}'".format(os.path.basename(self.dest)))
+            self.logger.info("Removed directory: '{}'".format(os.path.basename(self.dest)))
 
         # check all other files:
         for file in source_files:
@@ -94,7 +100,7 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
 
             if os.path.exists(path):
                 os.remove(path)
-                ret.messages.log("Removed file: '{}'".format(file))
+                self.logger.info("Removed file: '{}'".format(file))
                 source_files.remove(file)
 
         ret.state["source_files"] = source_files
@@ -103,12 +109,12 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
         # remove whole directory
         if not os.listdir(self.sdir):
             os.rmdir(self.sdir)
-            ret.messages.log("Removed sources directory.")
+            self.logger.info("Removed sources directory.")
 
         return ret.submit(True)
 
     def formatver(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         version_format = self.package.conf.get("source", "version")
 
@@ -117,7 +123,7 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
         return ret.submit(True)
 
     def execute(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         force = self.context.get_force()
         old_status = self.status()
@@ -129,7 +135,7 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             new_status = self.status()
 
             if new_status == old_status:
-                ret.messages.log(
+                self.logger.info(
                     "The downloaded Source is not newer than the last known source state.")
                 return ret.submit(False)
             else:
@@ -145,8 +151,8 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
             new_status = self.status()
 
             if new_status == old_status:
-                ret.messages.log(
-                    "The \"updated\" Source is not newer than the last known source state.")
+                self.logger.info(
+                    "The 'updated' Source is not newer than the last known source state.")
                 return ret.submit(False)
             else:
                 self.updated = True
@@ -155,29 +161,29 @@ class Source(KtrModule, metaclass=abc.ABCMeta):
                 return ret.submit(res.success)
 
         if force:
-            ret.messages.log("Force-Exporting the Sources despite no source changes.")
+            self.logger.info("Force-Exporting the Sources despite no source changes.")
             res = self.export()
             ret.collect(res)
             return ret.submit(res.success)
 
-        ret.messages.log("The Source did not change.")
+        self.logger.info("The Source did not change.")
         return ret.submit(False)
 
     def refresh(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         res = self.clean()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Source cleanup not successful. Not getting sources again.")
+            self.logger.error("Source cleanup not successful. Not getting sources again.")
             return ret.submit(False)
 
         res = self.get()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Source getting not successful.")
+            self.logger.error("Source getting not successful.")
             return ret.submit(False)
 
         # everything successful:

@@ -1,11 +1,12 @@
 import glob
+import logging
 import os
 
 from kentauros.conntest import is_connected
 from kentauros.context import KtrContext
 from kentauros.package import KtrPackage
 from kentauros.result import KtrResult
-from kentauros.shellcmd import ShellCmd
+from kentauros.shell_env import ShellEnv
 from kentauros.validator import KtrValidator
 from .abstract import Uploader
 
@@ -19,6 +20,8 @@ class CoprUploader(Uploader):
         super().__init__(package, context)
 
         self.remote = DEFAULT_COPR_URL
+
+        self.logger = logging.getLogger("ktr/uploader/copr")
 
     def __str__(self) -> str:
         return "COPR Uploader for Package '" + self.package.conf_name + "'"
@@ -72,7 +75,7 @@ class CoprUploader(Uploader):
             return ""
 
     def upload(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         if not self.get_active():
             return ret.submit(True)
@@ -83,7 +86,7 @@ class CoprUploader(Uploader):
         srpms = glob.glob(os.path.join(package_dir, self.package.name + "*.src.rpm"))
 
         if not srpms:
-            ret.messages.log("No source packages were found. Construct them first.")
+            self.logger.error("No source packages were found. Construct them first.")
             return ret.submit(False)
 
         # only upload the most recent srpm file
@@ -97,7 +100,7 @@ class CoprUploader(Uploader):
             force = self.context.get_force()
 
             if not force:
-                ret.messages.log("This file has already been uploaded. Skipping.")
+                self.logger.info("This file has already been uploaded. Skipping.")
                 return ret.submit(True)
 
         # construct copr-cli command
@@ -117,16 +120,17 @@ class CoprUploader(Uploader):
 
         # check for connectivity to server
         if not is_connected(self.remote):
-            ret.messages.log("No connection to remote host detected. Cancelling upload.")
+            self.logger.error("No connection to remote host detected. Cancelling upload.")
             return ret.submit(False)
 
-        ret.messages.cmd(cmd)
+        self.logger.debug(" ".join(cmd))
 
-        res = ShellCmd("copr-cli").command(*cmd).execute()
+        with ShellEnv() as env:
+            res = env.execute(*cmd)
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("copr-cli command did not complete successfully.")
+            self.logger.error("copr-cli command did not complete successfully.")
             return ret.submit(False)
 
         if not self.get_keep():

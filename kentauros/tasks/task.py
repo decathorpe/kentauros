@@ -1,3 +1,5 @@
+import logging
+
 from kentauros.context import KtrContext
 from kentauros.modules.module import KtrModule
 from kentauros.package import KtrPackage
@@ -13,14 +15,14 @@ class KtrTask(KtrMetaTask):
         self.module = module
         self.action = action
 
+        self.logger = logging.getLogger("ktr/task/task")
+
     def execute(self) -> KtrResult:
         ret = KtrResult()
-        ret.messages.log("Processing package: {}".format(self.package.conf_name))
+        self.logger.info("Processing package: {}".format(self.package.conf_name))
 
         res = self.module.act(self.action)
         ret.collect(res)
-
-        ret.messages.log("")
 
         if ret.success:
             self.context.state.write(self.package.conf_name, ret.state)

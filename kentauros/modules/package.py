@@ -31,7 +31,7 @@ class PackageModule(KtrModule):
         return KtrResult(True)
 
     def status_string(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         res = self.package.status_string()
         ret.collect(res)
@@ -40,7 +40,7 @@ class PackageModule(KtrModule):
         return ret.submit(res.success)
 
     def verify(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         res = self.package.verify()
         ret.collect(res)

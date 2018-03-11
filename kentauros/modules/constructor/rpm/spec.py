@@ -1,10 +1,11 @@
 import configparser as cp
+import logging
 import os
 import re
 
 from kentauros.package import KtrPackage
 from kentauros.result import KtrResult
-from kentauros.shellcmd import ShellCmd
+from kentauros.shell_env import ShellEnv
 from .spec_common import RPMSpecError, format_tag_line
 from .spec_preamble_out import get_spec_preamble
 from .spec_source_out import get_spec_source
@@ -199,7 +200,8 @@ class RPMSpec:
         self.contents = contents_new
 
     def do_release_bump(self, comment: str = None) -> KtrResult:
-        ret = KtrResult(name="RPM .spec Handler")
+        ret = KtrResult()
+        logger = logging.getLogger("ktr/rpm")
 
         if not os.path.exists(self.path):
             raise FileNotFoundError()
@@ -217,18 +219,19 @@ class RPMSpec:
         cmd.append(self.path)
         cmd.append('--comment=' + comment)
 
-        ret.messages.cmd(cmd)
+        logger.debug(" ".join(cmd))
 
         self.write_to_file(self.path)
 
-        res = ShellCmd("rpmdev-bumpspec").command(*cmd).execute()
+        with ShellEnv() as env:
+            res = env.execute("rpmdev-bumpspec", *cmd)
         ret.collect(res)
 
         with open(self.path, "r") as file:
             self.contents = file.read()
 
         if not res.success:
-            ret.messages.log("Release tag in the RPM .spec could not be bumped correctly.")
+            logger.error("Release tag in the RPM .spec could not be bumped correctly.")
             return ret.submit(False)
 
         return ret

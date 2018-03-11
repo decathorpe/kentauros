@@ -1,3 +1,4 @@
+import logging
 import os
 
 from kentauros.context import KtrContext
@@ -10,6 +11,7 @@ class KtrPackageAddTask(KtrMetaTask):
     def __init__(self, conf_name: str, context: KtrContext):
         self.conf_name = conf_name
         self.context = context
+        self.logger = logging.getLogger("ktr/task/package-add")
 
     def execute(self) -> KtrResult:
         ret = KtrResult(True)
@@ -20,7 +22,7 @@ class KtrPackageAddTask(KtrMetaTask):
             with open(path, "w") as file:
                 file.write(PACKAGE_CONF_TEMPLATE)
         except OSError:
-            ret.messages.log(
+            self.logger.info(
                 "Package .conf file for package '{}' could not be created.".format(self.conf_name))
             ret.success = False
 

@@ -1,5 +1,6 @@
 import configparser as cp
 import glob
+import logging
 import os
 import shutil
 import tempfile
@@ -7,7 +8,7 @@ import tempfile
 from kentauros.context import KtrContext
 from kentauros.package import KtrPackage
 from kentauros.result import KtrResult
-from kentauros.shellcmd import ShellCmd
+from kentauros.shell_env import ShellEnv
 from kentauros.validator import KtrValidator
 from .abstract import Constructor
 from .rpm import RPMSpec, RPMSpecError, parse_release
@@ -19,6 +20,7 @@ class RPMBuild:
         self.package_name = package_name
 
         self.basepath = tempfile.mkdtemp()
+        self.logger = logging.getLogger("ktr/rpmbuild")
 
     def rpmbuild_dir(self):
         return os.path.join(self.basepath, "rpmbuild")
@@ -51,14 +53,14 @@ class RPMBuild:
         if not os.path.exists(self.rpmbuild_dir()):
             os.mkdir(self.rpmbuild_dir())
 
-        ret.messages.dbg("Temporary rpmbuild directory created: " + self.rpmbuild_dir())
+        self.logger.debug("Temporary rpmbuild directory created: " + self.rpmbuild_dir())
 
         # create $TEMPDIR/rpmbuild/{SPECS,SRPMS,SOURCES}
         for directory in [self.spec_dir(), self.srpm_dir(), self.source_dir()]:
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
-        ret.messages.dbg("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.")
+        self.logger.debug("Temporary 'SOURCES', 'SPECS', 'SRPMS' directories created.")
 
         return ret
 
@@ -66,7 +68,7 @@ class RPMBuild:
         ret = KtrResult()
 
         # construct rpmbuild command
-        cmd = list()
+        cmd = ["rpmbuild"]
 
         # add --verbose or --quiet depending on settings
         if self.context.debug():
@@ -85,14 +87,15 @@ class RPMBuild:
         cmd.append("-bs")
         cmd.append(self.spec_path())
 
-        ret.messages.cmd(cmd)
+        self.logger.debug(" ".join(cmd))
 
-        res = ShellCmd("rpmbuild").command(*cmd).execute()
+        with ShellEnv() as env:
+            res = env.execute(*cmd)
         ret.collect(res)
 
         if not res.success:
-            ret.messages.lst("rpmbuild command to build the source package was not successful.",
-                             res.value.split("\n"))
+            self.logger.error("rpmbuild command to build the source package was not successful.")
+            self.logger.error(res.value)
             return ret.submit(False)
 
         return ret
@@ -107,11 +110,12 @@ class RPMBuild:
             assert os.path.exists(self.basepath)
             assert os.path.isdir(self.basepath)
         except AssertionError:
-            ret.messages.log("The temporary rpmbuild directory isn't present as expected.")
+            self.logger.error("The temporary rpmbuild directory isn't present as expected.")
             ret.submit(False)
 
         shutil.rmtree(self.basepath)
-        ret.messages.dbg("Temporary rpmbuild directory '{}' deleted.".format(self.basepath))
+        self.logger.debug("Temporary rpmbuild directory '{}' deleted.".format(self.basepath))
+
         return ret.submit(True)
 
     def add_source(self, path: str, keep: bool = True) -> KtrResult:
@@ -122,7 +126,7 @@ class RPMBuild:
         else:
             shutil.move(path, self.source_dir())
 
-        ret.messages.log("File copied to SOURCES: '{}'".format(path))
+        self.logger.info("File copied to SOURCES: '{}'".format(path))
         return ret
 
     def add_spec(self, path: str) -> KtrResult:
@@ -130,7 +134,7 @@ class RPMBuild:
 
         shutil.copy2(path, self.spec_dir())
 
-        ret.messages.log("RPM .spec copied to SPECS: '{}'".format(path))
+        self.logger.info("RPM .spec copied to SPECS: '{}'".format(path))
         return ret
 
     def get_spec(self) -> KtrResult:
@@ -172,6 +176,8 @@ class SrpmConstructor(Constructor):
         # create ./packages/PACKAGE directory
         if not os.path.exists(self.pdir):
             os.makedirs(self.pdir, exist_ok=True)
+
+        self.logger = logging.getLogger("ktr/constructor/srpm")
 
     def __str__(self) -> str:
         return "SRPM Constructor for Package '" + self.package.conf_name + "'"
@@ -244,7 +250,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Last version could not be determined correctly.")
+            self.logger.warning("Last version could not be determined correctly.")
             last_version = None
         else:
             last_version = res.value
@@ -253,7 +259,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Last release could not be determined correctly.")
+            self.logger.warning("Last release could not be determined correctly.")
             last_release = None
         else:
             last_release = res.value
@@ -276,7 +282,7 @@ class SrpmConstructor(Constructor):
             last_version = res.state["rpm_last_version"]
             last_release = res.state["rpm_last_release"]
         else:
-            ret.messages.log("Last status could not be determined correctly.")
+            self.logger.error("Last status could not be determined correctly.")
             last_version = "Unavailable"
             last_release = "Unavailable"
 
@@ -308,7 +314,7 @@ class SrpmConstructor(Constructor):
 
         # source directory is non-existent
         if not os.path.exists(self.sdir):
-            ret.messages.log("Package source directory does not exist. Aborting.")
+            self.logger.error("Package source directory does not exist. Aborting.")
             return ret.submit(False)
 
         # get expected files from .spec file
@@ -321,7 +327,7 @@ class SrpmConstructor(Constructor):
             file = os.path.basename(sources[number])
 
             if not os.path.exists(os.path.join(self.rpmbuild.source_dir(), file)):
-                ret.messages.log("The file '{file}' for '{number}' could not be found.".format(
+                self.logger.error("The file '{file}' for '{number}' could not be found.".format(
                     file=file, number=number))
                 found = False
 
@@ -363,10 +369,10 @@ class SrpmConstructor(Constructor):
         return keep
 
     def _prepare(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         if self.stype is None:
-            ret.messages.dbg("This package does not define a source module.")
+            self.logger.debug("This package does not define a source module.")
 
         # copy sources to rpmbuild/SOURCES
         if self.stype is not None:
@@ -374,7 +380,7 @@ class SrpmConstructor(Constructor):
             ret.collect(res)
 
             if not res.success:
-                ret.messages.log("Sources could not be moved / copied successfully.")
+                self.logger.error("Sources could not be moved / copied successfully.")
                 return ret.submit(False)
 
         # copy package.conf to rpmbuild/SOURCES
@@ -382,7 +388,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Package configuration could not be copied successfully.")
+            self.logger.error("Package configuration could not be copied successfully.")
             return ret.submit(False)
 
         # copy .spec file to rpmbuild/SPECS
@@ -390,7 +396,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("RPM .spec file could not be copied successfully.")
+            self.logger.error("RPM .spec file could not be copied successfully.")
             return ret.submit(False)
 
         return ret.submit(True)
@@ -410,7 +416,7 @@ class SrpmConstructor(Constructor):
             ret.collect(res)
 
             if not res.success:
-                ret.messages.log("Could not process the .spec file successfully.")
+                self.logger.error("Could not process the .spec file successfully.")
                 return ret.submit(False)
 
         spec.write_to_file(self.rpmbuild.spec_path())
@@ -434,7 +440,7 @@ class SrpmConstructor(Constructor):
             ret.collect(res)
 
             if not res.success:
-                ret.messages.log("Could not process the .spec file successfully.")
+                self.logger.error("Could not process the .spec file successfully.")
                 return ret.submit(False)
 
         spec.write_to_file(self.rpmbuild.spec_path())
@@ -454,7 +460,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not process the .spec file successfully.")
+            self.logger.error("Could not process the .spec file successfully.")
             return ret.submit(False)
 
         spec.write_to_file(self.rpmbuild.spec_path())
@@ -474,14 +480,14 @@ class SrpmConstructor(Constructor):
             elif os.path.isdir(path):
                 shutil.rmtree(path)
             else:
-                ret.messages.log("The 'packages/{}' directory contains an unexpected item.".format(
+                self.logger.error("The 'packages/{}' directory contains an unexpected item.".format(
                     self.package.conf_name))
                 return ret.submit(False)
 
         try:
             os.rmdir(self.pdir)
         except OSError:
-            ret.messages.log("The 'packages/{}' directory could not be deleted.".format(
+            self.logger.error("The 'packages/{}' directory could not be deleted.".format(
                 self.package.conf_name))
             return ret.submit(False)
 
@@ -495,7 +501,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("rpmbuild directory could not be initialized correctly.")
+            self.logger.error("rpmbuild directory could not be initialized correctly.")
             return ret.submit(False)
 
         # populate rpmbuild directory
@@ -503,7 +509,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not prepare the rpmbuild directory successfuly.")
+            self.logger.error("Could not prepare the rpmbuild directory successfuly.")
             return ret.submit(False)
 
         # parse spec and set version, release, and other variables
@@ -511,7 +517,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not prepare the rpm .spec file successfully.")
+            self.logger.error("Could not prepare the rpm .spec file successfully.")
             return ret.submit(False)
 
         # check if all expected source files are present
@@ -541,7 +547,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not clean up the rpmbuild directory.")
+            self.logger.error("Could not clean up the rpmbuild directory.")
             return ret.submit(False)
 
         return ret.submit(True)
@@ -553,7 +559,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not execute pre-build stage.")
+            self.logger.error("Could not execute pre-build stage.")
             return ret.submit(False)
 
         # bump the "Release" tag
@@ -561,7 +567,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not bump the Release tag successfully.")
+            self.logger.error("Could not bump the Release tag successfully.")
             return ret.submit(False)
 
         # build the source package
@@ -569,14 +575,14 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not build the source package successfully.")
+            self.logger.error("Could not build the source package successfully.")
             return ret.submit(False)
 
         res = self._post_build()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not execute post-build stage.")
+            self.logger.error("Could not execute post-build stage.")
             return ret.submit(False)
 
         return ret.submit(True)
@@ -587,14 +593,17 @@ class SrpmConstructor(Constructor):
         files = list(os.path.join(self.pdir, path) for path in os.listdir(self.pdir))
 
         if not files:
-            ret.messages.log("No package has been built yet. Only linting the .spec file.")
+            self.logger.info("No package has been built yet. Only linting the .spec file.")
 
         files.append(self.spec_path)
 
-        res = ShellCmd("rpmlint").command(*files).execute(ignore_retcode=True)
+        with ShellEnv() as env:
+            res = env.execute("rpmlint", *files, ignore_retcode=True)
         ret.collect(res)
 
-        ret.messages.lst("rpmlint output:", res.value.split("\n"))
+        self.logger.info("rpmlint output:")
+        self.logger.info(res.value)
+
         return ret.submit(True)
 
     def build(self) -> KtrResult:
@@ -604,7 +613,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not execute pre-build stage.")
+            self.logger.error("Could not execute pre-build stage.")
             return ret.submit(False)
 
         # bump the "Version" tag and reset the "Release" tag
@@ -612,7 +621,7 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not bump the Release tag successfully.")
+            self.logger.error("Could not bump the Release tag successfully.")
             return ret.submit(False)
 
         # build the source package
@@ -620,14 +629,14 @@ class SrpmConstructor(Constructor):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not build the source package successfully.")
+            self.logger.error("Could not build the source package successfully.")
             return ret.submit(False)
 
         res = self._post_build()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.log("Could not execute post-build stage.")
+            self.logger.error("Could not execute post-build stage.")
             return ret.submit(False)
 
         return ret.submit(True)

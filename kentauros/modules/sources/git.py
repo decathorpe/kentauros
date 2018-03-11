@@ -1,5 +1,6 @@
 import configparser as cp
 import datetime
+import logging
 import os
 import shutil
 
@@ -8,10 +9,9 @@ from git.exc import BadName
 
 from kentauros.conntest import is_connected
 from kentauros.context import KtrContext
-from kentauros.logcollector import LogCollector
 from kentauros.package import KtrPackage
 from kentauros.result import KtrResult
-from kentauros.shellcmd import ShellCmd
+from kentauros.shell_env import ShellEnv
 from kentauros.validator import KtrValidator
 from .abstract import Source
 
@@ -35,6 +35,8 @@ class GitRepo:
         else:
             self.ref = ref
 
+        self.logger = logging.getLogger("ktr/git")
+
     def get_commit(self, ref: str = None) -> KtrResult:
         if ref is None:
             ref = self.ref
@@ -45,7 +47,7 @@ class GitRepo:
         try:
             rev = self.repo.rev_parse(ref)
         except BadName as error:
-            ret.messages.log(repr(error))
+            self.logger.error(repr(error))
             return ret.submit(False)
 
         ret.value = rev.hexsha
@@ -68,7 +70,7 @@ class GitRepo:
         try:
             commit_obj = self.repo.commit(commit)
         except BadName as error:
-            ret.messages.log(repr(error))
+            self.logger.error(repr(error))
             return ret.submit(False)
 
         ret.value = commit_obj.committed_datetime.astimezone(datetime.timezone.utc)
@@ -133,7 +135,8 @@ class GitRepo:
             ref = self.ref
         assert isinstance(ref, str)
 
-        ret = ShellCmd("git", path=self.path).command("checkout", ref).execute()
+        with ShellEnv(self.path) as env:
+            ret = env.execute("git", "checkout", ref)
         return ret
 
     def pull(self, rebase: bool = True, all_branches: bool = True, ref: str = None) -> KtrResult:
@@ -143,7 +146,7 @@ class GitRepo:
 
         ret = KtrResult()
 
-        cmd = ["pull"]
+        cmd = ["git", "pull"]
 
         if rebase:
             cmd.append("--rebase")
@@ -153,7 +156,8 @@ class GitRepo:
 
         # execute "git pull" command
         # ignore return codes different than 0, which indicates "Everything up-to-date" or errors
-        res = ShellCmd("git", path=self.path).command(*cmd).execute(ignore_retcode=True)
+        with ShellEnv(self.path) as env:
+            res = env.execute(*cmd, ignore_retcode=True)
         ret.collect(res)
 
         if not res.success:
@@ -172,8 +176,8 @@ class GitRepo:
             ref = self.ref
         assert isinstance(ref, str)
 
-        ret = ShellCmd("git", path=self.path).command("archive", ref, "--prefix=" + prefix,
-                                                      "--output", path).execute()
+        with ShellEnv(self.path) as env:
+            ret = env.execute("git", "archive", ref, "--prefix=" + prefix, "--output", path)
         return ret
 
     @staticmethod
@@ -186,9 +190,11 @@ class GitRepo:
 
         # clone the repository
         if not shallow:
-            res = ShellCmd("git").command("clone", orig, path).execute()
+            with ShellEnv() as env:
+                res = env.execute("git", "clone", orig, path)
         else:
-            res = ShellCmd("git").command("clone", "--depth=1", orig, path).execute()
+            with ShellEnv() as env:
+                res = env.execute("git", "clone", "--depth=1", orig, path)
 
         ret.collect(res)
 
@@ -223,11 +229,17 @@ class GitSource(Source):
         self.saved_date: datetime.datetime = None
         self.saved_commit: str = None
 
+        self._logger = logging.getLogger("ktr/source/git")
+
     def __str__(self) -> str:
         return "git Source for Package '" + self.package.conf_name + "'"
 
     def name(self):
         return self.NAME
+
+    @property
+    def logger(self):
+        return self._logger
 
     def verify(self) -> KtrResult:
         expected_keys = ["keep", "keep_repo", "orig", "ref", "shallow"]
@@ -239,7 +251,7 @@ class GitSource(Source):
 
         # shallow clones and checking out a specific commit is not supported
         if (self.get_ref() != "master") and self.get_shallow():
-            ret.messages.err(
+            self.logger.error(
                 "Shallow clones are not compatible with specifying a specific ref.")
 
             return ret.submit(False)
@@ -271,7 +283,7 @@ class GitSource(Source):
         return self.package.conf.getboolean("git", "shallow")
 
     def datetime(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         # initialize datetime with fallback value 'now'
         dt = datetime.datetime.now()
@@ -287,13 +299,13 @@ class GitSource(Source):
                     saved_dt = state["git_last_date"]
 
                     if saved_dt == "":
-                        ret.messages.dbg("Saved git commit date not available. Returning 'now'.")
+                        self.logger.debug("Saved git commit date not available. Returning 'now'.")
                         dt = datetime.datetime.now()
                     else:
                         dt = datetime.datetime.strptime(saved_dt, "%Y%m%d %H%M%S")
             else:
-                ret.messages.err("Sources need to be 'get' before the commit date can be read.")
-                ret.messages.err("Falling back to 'now'.")
+                self.logger.error("Sources need to be 'get' before the commit date can be read.")
+                self.logger.error("Falling back to 'now'.")
                 dt = datetime.datetime.now().astimezone(datetime.timezone.utc)
         else:
             repo = GitRepo(self.dest)
@@ -309,7 +321,7 @@ class GitSource(Source):
         return ret.submit(True)
 
     def datetime_str(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         res = self.datetime()
         ret.collect(res)
@@ -327,7 +339,7 @@ class GitSource(Source):
         return ret
 
     def date(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         res = self.datetime()
         ret.collect(res)
@@ -339,7 +351,7 @@ class GitSource(Source):
         return ret
 
     def time(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         res = self.datetime()
         ret.collect(res)
@@ -351,7 +363,7 @@ class GitSource(Source):
         return ret
 
     def commit(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         if not os.access(self.dest, os.R_OK):
             state = self.context.state.read(self.package.conf_name)
@@ -367,7 +379,7 @@ class GitSource(Source):
                 return ret
 
             else:
-                ret.messages.err("Sources must be present to determine the revision.")
+                self.logger.error("Sources must be present to determine the revision.")
                 return ret.submit(False)
 
         res = self._get_commit()
@@ -384,7 +396,7 @@ class GitSource(Source):
         return ret
 
     def status(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         dt = self.datetime_str()
         ret.collect(dt)
@@ -400,7 +412,7 @@ class GitSource(Source):
         return ret
 
     def status_string(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         commit = self.commit()
         ret.collect(commit)
@@ -418,9 +430,9 @@ class GitSource(Source):
         else:
             date_string = "Unavailable"
 
-        for line in GIT_STATUS_TEMPLATE.format(ref=self.get_ref(), commit=commit_string,
-                                               commit_date=date_string).split("\n"):
-            ret.messages.log(line, origin="")
+        self.logger.info(GIT_STATUS_TEMPLATE.format(ref=self.get_ref(),
+                                                    commit=commit_string,
+                                                    commit_date=date_string))
 
         return ret
 
@@ -433,7 +445,7 @@ class GitSource(Source):
             return KtrResult(True, state=dict(git_ref=self.get_ref()))
 
     def formatver(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         try:
             template: str = self.context.conf.get("main", "version_template_git")
@@ -471,8 +483,8 @@ class GitSource(Source):
         if res.success:
             commit = res.value
         else:
-            ret.messages.log("Commit hash string could not be determined successfully.")
-            return ret
+            self.logger.error("Commit hash string could not be determined successfully.")
+            return ret.submit(False)
 
         if "%{commit}" in template:
             template = template.replace("%{revision}", commit)
@@ -482,7 +494,7 @@ class GitSource(Source):
 
         # look for variables that are still present
         if "%{" in template:
-            ret.messages.log("Unrecognized variables present in git version template.")
+            self.logger.error("Unrecognized variables present in git version template.")
 
         ret.value = template
         ret.state["version_format"] = template
@@ -500,7 +512,7 @@ class GitSource(Source):
         if not os.access(self.sdir, os.W_OK):
             os.makedirs(self.sdir)
 
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         # if source directory seems to already exist, return False
         if os.access(self.dest, os.R_OK):
@@ -508,13 +520,13 @@ class GitSource(Source):
             ret.collect(res)
 
             if res.success:
-                ret.messages.log("Sources already downloaded. Latest commit id:")
-                ret.messages.log(res.value)
-                return ret
+                self.logger.info("Sources already downloaded. Latest commit id:")
+                self.logger.info(res.value)
+                return ret.submit(True)
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            ret.messages.log("No connection to remote host detected. Cancelling source checkout.")
+            self.logger.error("No connection to remote host detected. Cancelling source checkout.")
             return ret.submit(False)
 
         # clone the repository and check out the specified ref
@@ -529,27 +541,27 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.err("Commit hash could not be determined successfully.")
-            return ret
+            self.logger.error("Commit hash could not be determined successfully.")
+            return ret.submit(False)
 
         # get commit date/time
         res = self.date()
         ret.collect(res)
 
         if not res.success:
-            ret.messages.err("Commit date/time not be determined successfully.")
-            return ret
+            self.logger.error("Commit date/time not be determined successfully.")
+            return ret.submit(False)
 
         # everything eas successful
         ret.collect(self.status())
-        return ret
+        return ret.submit(True)
 
     def update(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         # check for connectivity to server
         if not is_connected(self.get_orig()):
-            ret.messages.log("No connection to remote host detected. Cancelling source update.")
+            self.logger.error("No connection to remote host detected. Cancelling source update.")
             return ret.submit(False)
 
         # get old commit ID
@@ -557,8 +569,8 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.err("Commit hash could not be determined successfully.")
-            return ret
+            self.logger.error("Commit hash could not be determined successfully.")
+            return ret.submit(False)
         rev_old = res.value
 
         # pull updates
@@ -574,8 +586,8 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.err("Commit hash could not be determined successfully.")
-            return ret
+            self.logger.error("Commit hash could not be determined successfully.")
+            return ret.submit(False)
         rev_new = res.value
 
         # get new commit date/time
@@ -583,36 +595,36 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.err("Commit date/time not be determined successfully.")
-            return ret
+            self.logger.error("Commit date/time not be determined successfully.")
+            return ret.submit(False)
 
         # return True if update found, False if not
         updated = rev_new != rev_old
 
         if updated:
-            ret.messages.log("Repository updated. Old commit: {}; New commit: {}".format(
+            self.logger.info("Repository updated. Old commit: {}; New commit: {}".format(
                 rev_new[0:7], rev_old[0:7]))
         else:
-            ret.messages.log("Repository already up-to-date. Current commit: {}".format(
+            self.logger.info("Repository already up-to-date. Current commit: {}".format(
                 rev_new[0:7]))
 
         ret.collect(self.status())
         return ret.submit(updated)
 
-    def _remove_not_keep(self, logger: LogCollector):
+    def _remove_not_keep(self):
         if not self.get_keep_repo():
             # try to be careful with "rm -r"
             assert os.path.isabs(self.dest)
             assert self.context.get_datadir() in self.dest
             shutil.rmtree(self.dest)
-            logger.log("git repository has been deleted after exporting to tarball.")
+            self.logger.info("git repository has been deleted after exporting to tarball.")
 
     def export(self) -> KtrResult:
-        ret = KtrResult(name=self.name())
+        ret = KtrResult()
 
         # check if git repo exists
         if not os.access(self.dest, os.R_OK):
-            ret.messages.err("Sources need to be get before they can be exported.")
+            self.logger.error("Sources need to be get before they can be exported.")
             return ret.submit(False)
 
         # get formatted version string
@@ -620,7 +632,7 @@ class GitSource(Source):
         ret.collect(res)
 
         if not res.success:
-            ret.messages.err("Version could not be formatted successfully.")
+            self.logger.error("Version could not be formatted successfully.")
             return ret
         version = res.value
 
@@ -632,9 +644,9 @@ class GitSource(Source):
 
         # check if file has already been exported to the determined file path
         if os.path.exists(file_path):
-            ret.messages.log("Tarball has already been exported.")
+            self.logger.info("Tarball has already been exported.")
             # remove git repo if keep is False
-            self._remove_not_keep(ret.messages)
+            self._remove_not_keep()
             ret.state["source_files"] = [file_name]
             return ret.submit(True)
 
@@ -647,7 +659,7 @@ class GitSource(Source):
             return ret.submit(False)
 
         # remove git repo if keep is False
-        self._remove_not_keep(ret.messages)
+        self._remove_not_keep()
 
         ret.collect(self.status())
         ret.state["source_files"] = [file_name]
