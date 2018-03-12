@@ -43,11 +43,3 @@ class KtrTestContextTest(unittest.TestCase):
     def test_init_debug_false(self):
         context = KtrTestContext()
         self.assertFalse(context.debug())
-
-    def test_init_warnings_true(self):
-        context = KtrTestContext(warnings=True)
-        self.assertTrue(context.warnings())
-
-    def test_init_warnings_false(self):
-        context = KtrTestContext()
-        self.assertFalse(context.warnings())

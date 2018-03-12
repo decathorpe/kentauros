@@ -26,10 +26,6 @@ class KtrContext(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def warnings(self) -> bool:
-        pass
-
-    @abc.abstractmethod
     def get_basedir(self) -> str:
         pass
 

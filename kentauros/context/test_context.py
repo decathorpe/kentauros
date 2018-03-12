@@ -54,9 +54,6 @@ class KtrTestContext(KtrContext):
     def debug(self) -> bool:
         return self.debug_flag or os.getenv("KTR_DEBUG", False)
 
-    def warnings(self) -> bool:
-        return self.warnings_flag or os.getenv("KTR_WARNINGS", False)
-
     def get_basedir(self) -> str:
         return self.basedir
 

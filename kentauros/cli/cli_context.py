@@ -65,7 +65,6 @@ class KtrCLIContext(KtrContext):
         self.conf = KtrRealConfig(self.conf_path)
 
         self.debug_flag = self.args.get("debug")
-        self.warning_flag = self.args.get("warnings")
 
     def get_force(self) -> bool:
         if "force" in self.args.keys():
@@ -87,9 +86,6 @@ class KtrCLIContext(KtrContext):
 
     def debug(self) -> bool:
         return self.debug_flag or os.getenv("KTR_DEBUG", False)
-
-    def warnings(self) -> bool:
-        return self.warning_flag or os.getenv("KTR_WARNINGS", False)
 
     def get_module(self) -> str:
         return self.args.get("module")

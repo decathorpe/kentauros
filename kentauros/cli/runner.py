@@ -72,9 +72,15 @@ class KtrCLIRunner:
         return code
 
     def run(self) -> int:
-        logging.basicConfig(level=logging.INFO)
+        debugging = self.context.debug()
+
+        if debugging:
+            logging.basicConfig(level=logging.DEBUG)
+        else:
+            logging.basicConfig(level=logging.INFO)
 
         logfile = self.context.get_logfile()
+
         if logfile != "":
             logging.basicConfig(filename=logfile)
 

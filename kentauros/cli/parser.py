@@ -440,13 +440,6 @@ def get_cli_parser() -> ArgumentParser:
         default=False,
         help="enable debug output")
     cli_parser.add_argument(
-        "-w",
-        "--warnings",
-        action="store_const",
-        const=True,
-        default=False,
-        help="enable warning messages")
-    cli_parser.add_argument(
         "-l",
         "--logfile",
         action="store",
