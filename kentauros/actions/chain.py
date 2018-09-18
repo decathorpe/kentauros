@@ -52,13 +52,15 @@ class ChainAction(Action):
         for module in self.kpkg.get_modules():
             succeeded = module.execute()
 
-            if not succeeded:
+            if succeeded:
+                self.update_status()
+
+            else:
                 logger.log("Execution of module unsuccessful: " + str(module))
                 success = False
                 break
 
         if success:
-            self.update_status()
             logger.log(self.kpkg.get_conf_name() + ": Success!")
         else:
             logger.log(self.kpkg.get_conf_name() + ": Not successful.")
